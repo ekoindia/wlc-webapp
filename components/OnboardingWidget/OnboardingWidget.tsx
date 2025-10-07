@@ -1,8 +1,7 @@
-import { Box, Center, Spinner, useToast, useToken } from "@chakra-ui/react";
+import { Box, Center, Spinner, useToken } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 
 import { type OnboardingStep } from "constants/OnboardingSteps";
-import { agreementProvider } from "constants/ProductDetails";
 import { useAppSource, usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useCountryStates, useRefreshToken, useShopTypes } from "hooks";
@@ -71,8 +70,6 @@ const OnboardingWidget = ({
 	const { accessToken } = useSession();
 
 	const { state, actions } = useOnboardingState();
-
-	const toast = useToast();
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
 	const { generateNewToken } = useRefreshToken();
@@ -175,7 +172,7 @@ const OnboardingWidget = ({
 
 			console.log("inside initial api error", error);
 		}
-	}, [userData, isAssistedOnboarding]);
+	}, [userData, isAssistedOnboarding, accessToken]);
 
 	const initialStepSetter = useCallback(
 		(user_data) => {
@@ -184,26 +181,29 @@ const OnboardingWidget = ({
 		[stepConfiguration]
 	);
 
-	const handleStepDataSubmit = (data) => {
-		console.log("[AgentOnboarding] handleStepDataSubmit data", data);
-		if (data?.id === 3) {
-			actions.setLocation(data?.form_data?.latlong);
-		}
+	const handleStepDataSubmit = useCallback(
+		(data) => {
+			console.log("[AgentOnboarding] handleStepDataSubmit data", data);
+			if (data?.id === 3) {
+				actions.setLocation(data?.form_data?.latlong);
+			}
 
-		// Route to appropriate handler based on form type
-		if (
-			data?.id === 1 ||
-			data?.id === 4 ||
-			data?.id === 8 ||
-			data?.id === 11
-		) {
-			// File upload forms
-			fileUpload.uploadFile(data);
-		} else {
-			// Regular form submission
-			formSubmission.submitForm(data);
-		}
-	};
+			// Route to appropriate handler based on form type
+			if (
+				data?.id === 1 ||
+				data?.id === 4 ||
+				data?.id === 8 ||
+				data?.id === 11
+			) {
+				// File upload forms
+				fileUpload.uploadFile(data);
+			} else {
+				// Regular form submission
+				formSubmission.submitForm(data);
+			}
+		},
+		[actions, fileUpload, formSubmission]
+	);
 
 	// Method only for file upload data
 
@@ -211,47 +211,14 @@ const OnboardingWidget = ({
 		if (callType.type === 12) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
+				// Initialize script if not already loaded before getting sign URL
+				if (!document.getElementById("legality")) {
+					esign.initializeEsignScript();
+				}
 				esign.getSignUrl();
 			}
 			if (callType.method === "legalityOpen") {
-				if (
-					state.esign.signUrlData &&
-					state.esign.signUrlData.pipe == agreementProvider.SIGNZY
-				) {
-					window.open(
-						state.esign.signUrlData.short_url,
-						"SignAgreementWindow"
-					);
-				} else if (
-					state.esign.signUrlData &&
-					state.esign.signUrlData.pipe == agreementProvider.KARZA
-				) {
-					if (!state.esign.signUrlData.short_url) {
-						toast({
-							title: "Error starting eSign session. Please reload and try again later.",
-							status: "error",
-							duration: 2000,
-						});
-					}
-
-					if (isAndroid) {
-						doAndroidAction(
-							ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
-							JSON.stringify({
-								signing_url: state.esign.signUrlData?.short_url,
-								document_id:
-									state.esign.signUrlData?.document_id,
-							})
-						);
-					} else {
-						const leegality = new (window as any).Leegality({
-							callback: esign.handleLeegalityCallback.bind(this),
-							logo: logo,
-						});
-						leegality.init();
-						leegality.esign(state.esign.signUrlData?.short_url);
-					}
-				}
+				esign.openEsign();
 			}
 		} else if (callType.type === 10) {
 			if (callType.method === "getBookletNumber") {
@@ -285,27 +252,6 @@ const OnboardingWidget = ({
 			}
 		}
 	};
-
-	// Note: Load leegality script only when E-sign step is reached...track script status independently
-	useEffect(() => {
-		const script = document.createElement("script");
-		script.src = "/scripts/leegalityv5.min.js";
-		script.id = "legality";
-		document.body.appendChild(script);
-		script.onload = () => {};
-		script.onerror = () => {
-			toast({
-				title: "Failed to initialize eSign",
-				description:
-					"Please check your network connection & try again.",
-				status: "error",
-				duration: 2000,
-			});
-			actions.updateEsignStatus("failed");
-		};
-
-		refreshApiCall(); // Consider optimizing this call frequency
-	}, []);
 
 	useEffect(() => {
 		const handleMessage = (event) => {
