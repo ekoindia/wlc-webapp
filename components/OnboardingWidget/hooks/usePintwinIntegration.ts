@@ -5,13 +5,12 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback, useEffect } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
-import { getMobileFromData, type UnifiedUserData } from "../utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 interface UsePintwinIntegrationProps {
 	state: OnboardingStateHook["state"];
 	actions: OnboardingStateHook["actions"];
-	userData: UnifiedUserData;
+	mobile: string;
 }
 
 interface UsePintwinIntegrationReturn {
@@ -32,12 +31,10 @@ interface UsePintwinIntegrationReturn {
 export const usePintwinIntegration = ({
 	state,
 	actions,
-	userData,
+	mobile,
 }: UsePintwinIntegrationProps): UsePintwinIntegrationReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-
-	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Fetches booklet number from the backend
@@ -51,7 +48,7 @@ export const usePintwinIntegration = ({
 					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
 					document_id: "",
 					latlong: state.latLong || "27.176670,78.008075,7787",
-					user_id,
+					user_id: mobile,
 				},
 			},
 			generateNewToken
@@ -62,7 +59,7 @@ export const usePintwinIntegration = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	}, [accessToken, state.latLong, user_id]);
+	}, [state.latLong, mobile]);
 
 	/**
 	 * Fetches booklet key from the backend
@@ -76,7 +73,7 @@ export const usePintwinIntegration = ({
 					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
 					document_id: "",
 					latlong: state.latLong || "27.176670,78.008075,7787",
-					user_id,
+					user_id: mobile,
 				},
 			},
 			generateNewToken
@@ -87,7 +84,7 @@ export const usePintwinIntegration = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
-	}, [accessToken, state.latLong, user_id]);
+	}, [state.latLong, mobile]);
 
 	/**
 	 * Formats pintwin data using the utility function

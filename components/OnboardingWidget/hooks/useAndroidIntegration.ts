@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 
 interface UseAndroidIntegrationProps {
-	userData: any;
+	agreementId: any;
 	onStepSubmit: (_data: any) => void;
 }
 
@@ -18,12 +18,11 @@ interface UseAndroidIntegrationReturn {
  * Custom hook for managing Android WebView integration
  * Handles Android-specific actions, permissions, and pub/sub responses
  * @param {UseAndroidIntegrationProps} params - Hook parameters
- * @param {any} params.userData - User data object
  * @param {Function} params.onStepSubmit - Callback for step submission
  * @returns {UseAndroidIntegrationReturn} Android integration methods
  */
 export const useAndroidIntegration = ({
-	userData,
+	agreementId,
 	onStepSubmit,
 }: UseAndroidIntegrationProps): UseAndroidIntegrationReturn => {
 	const toast = useToast();
@@ -40,7 +39,7 @@ export const useAndroidIntegration = ({
 					onStepSubmit({
 						id: 12,
 						form_data: {
-							agreement_id: userData?.userDetails?.agreement_id,
+							agreement_id: agreementId,
 							document_id: value.document_id,
 						},
 					});
@@ -60,7 +59,7 @@ export const useAndroidIntegration = ({
 				});
 			}
 		},
-		[userData?.userDetails?.agreement_id, onStepSubmit, toast]
+		[agreementId]
 	);
 
 	/**

@@ -4,7 +4,6 @@ import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
-import { getMobileFromData, type UnifiedUserData } from "../utils";
 
 /**
  * File upload data structure for different document types
@@ -43,11 +42,9 @@ interface OnboardingActions {
  * Props for useFileUpload hook
  */
 interface UseFileUploadProps {
-	userData: UnifiedUserData;
 	state: OnboardingState;
 	actions: OnboardingActions;
-	isAssistedOnboarding: boolean;
-	assistedAgentMobile: string | null;
+	mobile: string;
 	refreshApiCall: () => Promise<any>;
 }
 
@@ -63,7 +60,6 @@ interface UseFileUploadReturn {
  * Custom hook for handling file upload operations
  * Manages formData creation, upload API calls, and response processing
  * @param {UseFileUploadProps} props - Configuration object for the hook
- * @param {UnifiedUserData} props.userData - User data containing mobile information
  * @param {OnboardingState} props.state - Current onboarding state including location
  * @param {OnboardingActions} props.actions - State management actions for API progress and responses
  * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
@@ -72,18 +68,14 @@ interface UseFileUploadReturn {
  * @returns {UseFileUploadReturn} Object containing file upload methods
  */
 export const useFileUpload = ({
-	userData,
 	state,
 	actions,
-	isAssistedOnboarding,
-	assistedAgentMobile,
+	mobile,
 	refreshApiCall,
 }: UseFileUploadProps): UseFileUploadReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
-
-	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Converts object to URLSearchParams format for form data
@@ -106,21 +98,17 @@ export const useFileUpload = ({
 	 * Creates base form data structure for uploads
 	 */
 	const createBaseFormData = useCallback(() => {
-		const cspId = isAssistedOnboarding
-			? { csp_id: assistedAgentMobile }
-			: {};
-
 		return {
 			client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
-			user_id,
+			user_id: mobile,
 			interaction_type_id: TransactionIds.USER_ONBOARDING_AADHAR,
 			intent_id: 3,
 			doc_type: 1,
 			latlong: state.latLong,
 			source: "WLC",
-			...cspId,
+			csp_id: mobile,
 		};
-	}, [user_id, state.latLong, isAssistedOnboarding, assistedAgentMobile]);
+	}, [mobile, state.latLong]);
 
 	/**
 	 * Handles Aadhaar document upload (front and back images)
@@ -328,15 +316,7 @@ export const useFileUpload = ({
 				actions.setApiInProgress(false);
 			}
 		},
-		[
-			actions,
-			processFileUpload,
-			accessToken,
-			generateNewToken,
-			toast,
-			handleUploadSuccess,
-			handleUploadError,
-		]
+		[actions]
 	);
 
 	return {

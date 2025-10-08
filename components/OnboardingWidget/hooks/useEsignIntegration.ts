@@ -7,19 +7,15 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
-import {
-	getAgreementIdFromData,
-	getMobileFromData,
-	type UnifiedUserData,
-} from "../utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 interface UseEsignIntegrationProps {
-	userData: UnifiedUserData;
 	state: OnboardingStateHook["state"];
 	actions: OnboardingStateHook["actions"];
 	isAndroid: boolean;
 	logo: string;
+	agreementId?: string | number;
+	mobile?: string;
 	onStepSubmit: (_data: any) => void;
 }
 
@@ -34,7 +30,6 @@ interface UseEsignIntegrationReturn {
  * Custom hook for managing e-signature integration
  * Handles Leegality/Karza esign flow, URL generation, and callbacks
  * @param {UseEsignIntegrationProps} params - Hook parameters
- * @param {any} params.userData - User data object
  * @param {object} params.state - Onboarding state from useOnboardingState
  * @param {object} params.actions - State actions from useOnboardingState
  * @param {boolean} params.isAndroid - Whether running in Android WebView
@@ -43,20 +38,17 @@ interface UseEsignIntegrationReturn {
  * @returns {UseEsignIntegrationReturn} E-signature integration methods
  */
 export const useEsignIntegration = ({
-	userData,
 	state,
 	actions,
 	isAndroid,
 	logo,
+	agreementId,
+	mobile,
 	onStepSubmit,
 }: UseEsignIntegrationProps): UseEsignIntegrationReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
-
-	console.log("[AgentOnboarding] useEsignIntegration userData", userData);
-
-	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Fetches the e-signature URL from the backend
@@ -70,10 +62,10 @@ export const useEsignIntegration = ({
 					interaction_type_id:
 						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
 					document_id: "",
-					agreement_id: getAgreementIdFromData(userData) ?? 5,
+					agreement_id: agreementId ?? 5,
 					latlong: state.latLong || "27.176670,78.008075,7787",
-					csp_id: user_id || "",
-					user_id,
+					csp_id: mobile || "",
+					user_id: mobile,
 				},
 			},
 			generateNewToken
@@ -96,7 +88,7 @@ export const useEsignIntegration = ({
 			.catch((err) =>
 				console.error("[getSignUrl for Leegality] Error:", err)
 			);
-	}, [userData?.details?.user_detail?.agreement_id, state.latLong, user_id]);
+	}, [mobile, agreementId]);
 
 	/**
 	 * Handles the leegality callback response
@@ -116,12 +108,12 @@ export const useEsignIntegration = ({
 					id: 12,
 					form_data: {
 						document_id: res.documentId,
-						agreement_id: getAgreementIdFromData(userData),
+						agreement_id: agreementId,
 					},
 				});
 			}
 		},
-		[userData]
+		[agreementId]
 	);
 
 	/**

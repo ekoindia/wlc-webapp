@@ -7,7 +7,36 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
-import { getMobileFromData, type UnifiedUserData } from "../utils";
+import { type UnifiedUserData } from "../utils";
+
+/**
+ * Determines the interaction type ID based on form data
+ * @param data
+ */
+const getInteractionTypeId = (data: FormSubmissionData): number => {
+	switch (data.id) {
+		case 0:
+			return TransactionIds.USER_ONBOARDING_ROLE;
+		case 5:
+			return TransactionIds.USER_AADHAR_CONSENT;
+		case 6:
+			return TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
+		case 7:
+			return TransactionIds.USER_AADHAR_OTP_CONFIRM;
+		case 9:
+			return TransactionIds.USER_ONBOARDING_BUSINESS;
+		case 10:
+			return TransactionIds.USER_ONBOARDING_SECRET_PIN;
+		case 12:
+			return TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT;
+		case 16:
+			return TransactionIds.USER_ONBOARDING_PAN_VERIFICATION;
+		case 20:
+			return TransactionIds.USER_AADHAR_OTP_CONFIRM;
+		default:
+			return TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE;
+	}
+};
 
 /**
  * Form submission data structure
@@ -60,12 +89,10 @@ interface OnboardingActions {
  * Props for useFormSubmission hook
  */
 interface UseFormSubmissionProps {
-	userData: UnifiedUserData;
 	state: OnboardingState;
 	actions: OnboardingActions;
-	isAssistedOnboarding: boolean;
-	assistedAgentMobile: string | null;
-	roleSelectionStep?: OnboardingStep;
+	mobile: string;
+	selectedRole: string | number;
 	refreshApiCall: () => Promise<any>;
 	initialStepSetter: (_userData: any) => void;
 }
@@ -93,51 +120,16 @@ interface UseFormSubmissionReturn {
  * @returns {UseFormSubmissionReturn} Object containing form submission methods
  */
 export const useFormSubmission = ({
-	userData,
 	state,
 	actions,
-	isAssistedOnboarding,
-	assistedAgentMobile,
-	roleSelectionStep,
+	mobile,
+	selectedRole,
 	refreshApiCall,
 	initialStepSetter,
 }: UseFormSubmissionProps): UseFormSubmissionReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
-
-	const user_id = getMobileFromData(userData);
-
-	/**
-	 * Determines the interaction type ID based on form data
-	 */
-	const getInteractionTypeId = useCallback(
-		(data: FormSubmissionData): number => {
-			switch (data.id) {
-				case 0:
-					return TransactionIds.USER_ONBOARDING_ROLE;
-				case 5:
-					return TransactionIds.USER_AADHAR_CONSENT;
-				case 6:
-					return TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
-				case 7:
-					return TransactionIds.USER_AADHAR_OTP_CONFIRM;
-				case 9:
-					return TransactionIds.USER_ONBOARDING_BUSINESS;
-				case 10:
-					return TransactionIds.USER_ONBOARDING_SECRET_PIN;
-				case 12:
-					return TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT;
-				case 16:
-					return TransactionIds.USER_ONBOARDING_PAN_VERIFICATION;
-				case 20:
-					return TransactionIds.USER_AADHAR_OTP_CONFIRM;
-				default:
-					return TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE;
-			}
-		},
-		[]
-	);
 
 	/**
 	 * Processes form data based on form type
@@ -148,22 +140,12 @@ export const useFormSubmission = ({
 
 			switch (data.id) {
 				case 0: // Role selection
-					if (roleSelectionStep) {
-						const applicantData =
-							roleSelectionStep.form_data.roles.find(
-								(role: any) =>
-									role.merchant_type ===
-									parseInt(data.form_data.merchant_type)
-							)?.applicant_type;
-
-						bodyData.form_data.applicant_type = applicantData;
-						bodyData.form_data.csp_id = getMobileFromData(userData);
-					}
+					bodyData.form_data.applicant_type = selectedRole;
+					bodyData.form_data.csp_id = mobile;
 					break;
 
 				case 5: // Aadhaar consent
-					bodyData.form_data.company_name =
-						getMobileFromData(userData);
+					bodyData.form_data.company_name = mobile;
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
@@ -182,7 +164,7 @@ export const useFormSubmission = ({
 
 				case 9: // Business details
 					bodyData.form_data.latlong = state.latLong;
-					bodyData.form_data.csp_id = getMobileFromData(userData);
+					bodyData.form_data.csp_id = mobile;
 					bodyData.form_data.communication = 1;
 					break;
 
@@ -226,7 +208,7 @@ export const useFormSubmission = ({
 					break;
 
 				case 16: // PAN verification
-					bodyData.form_data.csp_id = getMobileFromData(userData);
+					bodyData.form_data.csp_id = mobile;
 					break;
 
 				case 20: // Digilocker OTP confirmation
@@ -242,7 +224,7 @@ export const useFormSubmission = ({
 
 			return bodyData;
 		},
-		[userData, state, roleSelectionStep, actions]
+		[state, selectedRole, mobile]
 	);
 
 	/**
@@ -304,10 +286,6 @@ export const useFormSubmission = ({
 			const processedData = processFormData(data);
 			const interactionTypeId = getInteractionTypeId(data);
 
-			const cspId = isAssistedOnboarding
-				? { csp_id: assistedAgentMobile }
-				: {};
-
 			actions.setApiInProgress(true);
 
 			try {
@@ -318,9 +296,9 @@ export const useFormSubmission = ({
 						token: accessToken,
 						body: {
 							interaction_type_id: interactionTypeId,
-							user_id,
+							user_id: mobile,
+							csp_id: mobile,
 							...processedData.form_data,
-							...cspId,
 						},
 						timeout: 30000,
 					},
@@ -347,19 +325,7 @@ export const useFormSubmission = ({
 				actions.setApiInProgress(false);
 			}
 		},
-		[
-			processFormData,
-			getInteractionTypeId,
-			isAssistedOnboarding,
-			assistedAgentMobile,
-			actions,
-			accessToken,
-			user_id,
-			generateNewToken,
-			handleSubmissionSuccess,
-			handleSubmissionError,
-			toast,
-		]
+		[actions]
 	);
 
 	return {
