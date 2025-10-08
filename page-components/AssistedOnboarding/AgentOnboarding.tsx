@@ -1,15 +1,9 @@
 import { OnboardingWidget } from "components/OnboardingWidget";
 import { Endpoints } from "constants/EndPoints";
-import { createRoleSelectionStep } from "constants/OnboardingSteps";
-import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
-
-// Define agent types for assisted onboarding (only merchant/retailer)
-const visibleAgentTypes = [UserType.MERCHANT];
 
 export interface AgentOnboardingProps {
 	agentMobile?: string;
@@ -31,16 +25,10 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasError, setHasError] = useState(false);
 
-	console.log("[AgentOnboarding] agentDetails", agentDetails);
-	console.log("[AgentOnboarding] agentMobile", agentMobile);
-	const { userData, updateUserInfo } = useUser();
+	const { userData } = useUser();
 	const { accessToken } = useSession();
 
 	console.log("[AgentOnboarding] userData", userData);
-	const { orgDetail } = useOrgDetailContext();
-	const { logo, app_name, org_name } = orgDetail ?? {};
-
-	const agentOnboardingRoleStep = createRoleSelectionStep(visibleAgentTypes);
 
 	// call api for getting agent details (151)
 	const fetchAgentDetails = async (): Promise<any> => {
@@ -153,7 +141,6 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 
 	useEffect(() => {
 		initializeAgentOnboarding();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// MARK: JSX
@@ -168,12 +155,6 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	return (
 		<OnboardingWidget
 			isAssistedOnboarding
-			logo={logo}
-			appName={app_name}
-			orgName={org_name}
-			userData={userData}
-			updateUserInfo={updateUserInfo}
-			roleSelectionStep={agentOnboardingRoleStep}
 			assistedAgentDetails={agentDetails}
 		/>
 	);
