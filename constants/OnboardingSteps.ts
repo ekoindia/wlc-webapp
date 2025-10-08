@@ -185,6 +185,27 @@ export const createRoleSelectionStep = (
 };
 
 /**
+ * Filters step data based on onboarding step roles
+ * @param stepData
+ * @param onboardingSteps
+ */
+export const filterOnboardingStepsByRoles = (
+	stepData: OnboardingStep[],
+	onboardingSteps: Array<{ role: number; label?: string }>
+): OnboardingStep[] => {
+	const filteredSteps: OnboardingStep[] = [];
+
+	onboardingSteps?.forEach((step) => {
+		const matchingSteps = stepData?.filter(
+			(singleStep) => singleStep.role === step.role
+		);
+		filteredSteps.push(...matchingSteps);
+	});
+
+	return filteredSteps;
+};
+
+/**
  * Default role selection step data for role capture during user onboarding.
  * This step allows users to select their role (Retailer, Distributor, or Enterprise).
  * Used in the initial onboarding flow to determine the appropriate steps for each user type.
