@@ -20,7 +20,7 @@ import {
 	useDigilockerApi,
 	useEsignIntegration,
 	useFileUpload,
-	useFormSubmission,
+	useKycFormSubmission,
 	useOnboardingState,
 	usePintwinIntegration,
 	useStepConfiguration,
@@ -40,7 +40,6 @@ const ExternalOnboardingWidget = dynamic(
 
 const OnboardingSteps = ({
 	// setStep,
-	selectedRole,
 	isAssistedOnboarding,
 	logo,
 	appName,
@@ -140,24 +139,36 @@ const OnboardingSteps = ({
 		onboardingSteps,
 	});
 
-	const formSubmission = useFormSubmission({
+	const formSubmission = useKycFormSubmission({
 		state,
 		actions,
 		mobile,
-		selectedRole,
-		refreshApiCall: () => refreshApiCall(),
-		initialStepSetter: stepConfiguration.initializeSteps,
+		onSuccess: !isAssistedOnboarding
+			? async (_data, bodyData) => {
+					// Refresh API and handle step initialization for role selection
+					const refreshResult = await refreshApiCall();
+					if (bodyData.id === 0) {
+						initialStepSetter(refreshResult);
+					}
+				}
+			: undefined,
 	});
 
 	const fileUpload = useFileUpload({
 		state,
 		actions,
 		mobile,
-		refreshApiCall: () => refreshApiCall(),
+		refreshApiCall: !isAssistedOnboarding
+			? () => refreshApiCall()
+			: undefined,
 	});
 
 	const initialStepSetter = useCallback(
 		(user_data) => {
+			console.log(
+				"[AgentOnboarding] initialStepSetter user_data",
+				user_data
+			);
 			stepConfiguration.initializeSteps(user_data);
 		},
 		[stepConfiguration]
@@ -166,6 +177,15 @@ const OnboardingSteps = ({
 	const handleStepDataSubmit = useCallback(
 		(data) => {
 			console.log("[AgentOnboarding] handleStepDataSubmit data", data);
+
+			// Skip role selection (ID 0) as it's handled in RoleSelection component
+			if (data?.id === 0) {
+				console.log(
+					"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
+				);
+				return;
+			}
+
 			if (data?.id === 3) {
 				actions.setLocation(data?.form_data?.latlong);
 			}
@@ -184,7 +204,7 @@ const OnboardingSteps = ({
 				formSubmission.submitForm(data);
 			}
 		},
-		[actions, fileUpload, formSubmission]
+		[actions]
 	);
 
 	// Method only for file upload data
@@ -272,7 +292,7 @@ const OnboardingSteps = ({
 
 			console.log("inside initial api error", error);
 		}
-	}, [userData, isAssistedOnboarding, accessToken]);
+	}, []);
 
 	useEffect(() => {
 		const handleMessage = (event) => {
@@ -297,13 +317,17 @@ const OnboardingSteps = ({
 		return () => {
 			controller.abort();
 		};
-	}, [state.esign.signUrlData, userData?.userDetails?.agreement_id]);
+	}, [
+		state.esign.signUrlData,
+		userData?.userDetails?.agreement_id,
+		handleStepDataSubmit,
+	]);
 
 	useEffect(() => {
 		if (state.pintwin.bookletNumber) {
 			pintwin.getBookletKey();
 		}
-	}, [state.pintwin.bookletNumber]);
+	}, [state.pintwin.bookletNumber, pintwin]);
 
 	// Subscribe to the Android responses
 	useEffect(() => {
@@ -314,16 +338,16 @@ const OnboardingSteps = ({
 		});
 
 		return unsubscribe;
-	}, [TOPICS.ANDROID_RESPONSE, subscribe]);
+	}, [TOPICS.ANDROID_RESPONSE, subscribe, android]);
 
 	useEffect(() => {
 		initialStepSetter({
 			details: onboardingUserDetails,
 		});
-	}, []);
+	}, [onboardingUserDetails]);
 
 	useEffect(() => {
-		// TODO: based on the assisted onboarding prop, decide that to do.
+		// Based on the assisted onboarding prop, decide what to do.
 		refreshApiCall();
 	}, []);
 	return (

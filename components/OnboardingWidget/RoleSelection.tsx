@@ -4,6 +4,7 @@ import {
 	visibleAgentTypes,
 } from "constants/OnboardingSteps";
 import dynamic from "next/dynamic";
+import { useOnboardingState, useRoleFormSubmission } from "./hooks";
 
 const ExternalSelectionScreen = dynamic(
 	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
@@ -18,13 +19,35 @@ const RoleSelection = ({
 	userData,
 	updateUserInfo,
 	isAssistedOnboarding,
+	selectedRole,
 	setSelectedRole,
+	assistedAgentDetails,
 }) => {
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
 		"primary.DEFAULT",
 		"accent.DEFAULT",
 	]);
+
+	const mobile = isAssistedOnboarding
+		? assistedAgentDetails?.user_detail?.mobile
+		: userData?.userDetails?.signup_mobile;
+
+	const { state, actions } = useOnboardingState();
+	console.log("[AgentOnboarding] userData", userData);
+
+	const roleSubmission = useRoleFormSubmission({
+		state,
+		actions,
+		mobile,
+		selectedRole,
+		onSuccess: (data, _bodyData) => {
+			// Check if role selection was successful and transition to KYC
+			if (data?.response_type_id === 1566) {
+				setStep("KYC_FLOW");
+			}
+		},
+	});
 
 	const forAgentTypes = isAssistedOnboarding
 		? visibleAgentTypes.assistedOnboarding
@@ -50,9 +73,16 @@ const RoleSelection = ({
 				primaryColor={primaryColor}
 				accentColor={accentColor}
 				stepData={onboardingRoleStep}
-				handleSubmit={() => {
-					setSelectedRole();
-					setStep("KYC_FLOW");
+				handleSubmit={(value) => {
+					setSelectedRole(value);
+
+					// Submit role selection via API
+					roleSubmission.submitRole({
+						id: 0,
+						form_data: {
+							applicant_type: value - 1,
+						},
+					});
 				}}
 				logo={logo} // check if needed
 				appName={appName} // check if needed

@@ -1,10 +1,12 @@
 import { type OnboardingStep } from "constants/OnboardingSteps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { Center, Spinner } from "@chakra-ui/react";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
+import { getOnboardingStepsFromData } from "./utils";
 
 /**
  * Constants representing the different steps in the onboarding flow
@@ -34,14 +36,34 @@ const OnboardingWidget = ({
 	assistedAgentDetails,
 }: OnboardingWidgetProps): JSX.Element => {
 	const { userData, updateUserInfo } = useUser();
+	console.log("[AgentOnboarding] userData", userData);
 	const { orgDetail } = useOrgDetailContext();
 	const { logo, app_name, org_name } = orgDetail ?? {};
 	const [selectedRole, setSelectedRole] = useState<string>("");
 
 	// State to manage the current step in the onboarding process
 	const [step, setStep] = useState<keyof typeof ONBOARDING_STEPS>(
-		ONBOARDING_STEPS.ROLE_SELECTION
+		ONBOARDING_STEPS.LOADING
 	);
+
+	// Determine the user details to use for onboarding
+	const onboardingUserDetails = isAssistedOnboarding
+		? assistedAgentDetails
+		: userData;
+
+	// why do I need to pass this twice??
+	const onboardingSteps = getOnboardingStepsFromData(
+		onboardingUserDetails,
+		isAssistedOnboarding
+	);
+
+	useEffect(() => {
+		if (onboardingSteps?.length > 0) {
+			setStep(ONBOARDING_STEPS.KYC_FLOW);
+		} else {
+			setStep(ONBOARDING_STEPS.ROLE_SELECTION);
+		}
+	}, []);
 
 	const renderCurrentStep = () => {
 		switch (step) {
@@ -49,6 +71,7 @@ const OnboardingWidget = ({
 				return (
 					<RoleSelection
 						setStep={setStep}
+						selectedRole={selectedRole}
 						setSelectedRole={setSelectedRole}
 						isAssistedOnboarding={isAssistedOnboarding}
 						logo={logo}
@@ -56,13 +79,12 @@ const OnboardingWidget = ({
 						orgName={org_name}
 						userData={userData}
 						updateUserInfo={updateUserInfo}
+						assistedAgentDetails={assistedAgentDetails}
 					/>
 				);
 			case "KYC_FLOW":
 				return (
 					<OnboardingSteps
-						// setStep={setStep}
-						selectedRole={selectedRole}
 						isAssistedOnboarding={isAssistedOnboarding}
 						logo={logo}
 						appName={app_name}
@@ -73,7 +95,11 @@ const OnboardingWidget = ({
 					/>
 				);
 			default:
-				return "Loading...";
+				return (
+					<Center>
+						<Spinner size="md" />
+					</Center>
+				);
 		}
 	};
 	// MARK: JSX
