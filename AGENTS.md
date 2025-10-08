@@ -25,8 +25,7 @@ Layout shell: `layout-components/Layout/Layout.tsx` orchestrates Nav (`component
 ### Development Workflow (Concrete Commands)
 Setup: `npm i && npm run prepare && chmod +x .husky/pre-commit`
 Run (HTTP): `npm run dev` (3002) | HTTPS: `npm run dev.https` (3004) | Perf scan: `npm run scan` (3006)
-Generate component/hook: `npm run g` (Plop) – prefer this to hand-crafting boilerplate.
-Quality Gate (pre-commit): `npm run lint && npm test` (or quicker focus: `npm run test-file path`)
+Quality Gate (pre-commit): `npm run lint && npm test` (or quicker focus: `npm run test:quick path/to/test/file`)
 Bundle analysis: `npm run analyze`.
 
 ### Coding Conventions (Enforced / Observed)

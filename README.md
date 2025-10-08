@@ -2,6 +2,10 @@
 Webapp for the Eloka white-labelled SaaS platform to run your business like agent-banking, micro-finance, payments, etc.
 
 ![Uptime](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fekoindia%2Fuptime%2Fmaster%2Fapi%2Feloka-webapp%2Fuptime.json)
+<a href="https://developers.eko.in" target="_blank">![Eko.in](https://img.shields.io/badge/Develop%20with-Eko.in-brightgreen)</a>
+<a href="https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Fekoindia%2Fwlc-webapp" target="_blank"><img alt="Twitter" src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fekoindia%2Fwlc-webapp"></a>
+<a href="https://twitter.com/intent/follow?screen_name=ekospeaks" target="_blank">![Twitter Follow](https://img.shields.io/twitter/follow/ekospeaks?label=Follow&style=social)</a>
+<a href="http://dsc.gg/ekodevs" target="_blank">![Discord Chat](https://img.shields.io/discord/1038006952573292574)</a>
 
 
 ## 🧑‍💻 Setup Development Environment:
@@ -28,24 +32,25 @@ Webapp for the Eloka white-labelled SaaS platform to run your business like agen
 
 ### Code Quality
 - `npm run lint` - Run Next.js linting
-- `npm run lint-error` - Run linting with fewer warnings
-- `npm run lint-fix` - Fix linting issues automatically
-- `npm run eslint` - Run ESLint with project config
-- `npm run eslint-fix` - Fix ESLint issues automatically
+- `npm run lint:error` - Run linting with fewer warnings
+- `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting without changes
 
-### Testing
+### Testing & Code Coverage
 - `npm test` - Run all tests
-- `npm run test-file` - Run tests for a single file
-- `npm run test-watch` - Run tests in watch mode
-- `npm run test-coverage` - Run tests with coverage report
-- `npm run test-update-snapshots` - Update test snapshots
+- `npm run test:quick` - Run tests quickly without coverage for a single or all files (skips if no tests found)
+- `npm run test:file` - Run tests for a single file in verbose mode (usage: `npm run test:file path/to/file`)
+- `npm run test:file:pattern` - Run tests matching a pattern (usage: `npm run test:file:pattern pattern`)
+- `npm run test:failed` - Run only the tests that failed in the last run
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
+- `npm run test:update:snapshots` - Update test snapshots to match current output
 
 ### Development Tools
 - `npm run g` or `npm run generate` - Run plop generator for new components
 - `npm run sb` or `npm run storybook` - Run Storybook on port 6006
-- `npm run build-storybook` - Build static Storybook
+- `npm run build:storybook` - Build static Storybook
 - `npm run check-updates` - Check for outdated dependencies
 - `npm run check-deps` - Run custom dependency checks
 

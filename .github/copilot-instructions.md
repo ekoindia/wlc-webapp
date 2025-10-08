@@ -30,10 +30,12 @@ Agent features:
 ## Code Standards
 
 ### Required Before Each Commit
-- Run `npm run lint` to ensure code follows project standards
+- Run `npm run lint` to ensure code follows project standards.
+  - Run `npm run lint:error` for to only check for and fix errors.
 - Ensure all documentation is up-to-date and reflects the latest changes made to the codebase
 - Make sure that the repository structure documentation is correct and accurate in the Copilot Instructions file
-- Ensure all tests pass by running `npm run test` in the terminal
+- Ensure all tests pass by running `npm run test:quick` in the terminal
+  - In case of errors in unit tests, run `npm run test:error` to only re-run failed tests in order to fix them.
 
 ### TypeScript and React Patterns
 - Use TypeScript interfaces/types for all props and data structures. Preferred interface over types.
@@ -79,8 +81,8 @@ Agent features:
 - Install dependencies: `npm install`
 - Development server: `npm run dev`
 - Build: `npm run build`
-- Test: `npm run test`
-- Lint: `npm run lint`
+- Test: `npm run test:quick`
+- Lint error: `npm run lint:error`
 
 
 ## Repository Structure
