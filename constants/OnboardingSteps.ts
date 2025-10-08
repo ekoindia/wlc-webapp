@@ -1,4 +1,10 @@
-import { UserTypeLabel } from "./UserTypes";
+import { UserType, UserTypeLabel } from "./UserTypes";
+
+// Configuration for which user types are visible in different onboarding contexts
+export const visibleAgentTypes = {
+	assistedOnboarding: [UserType.MERCHANT],
+	selfOnboarding: [UserType.I_MERCHANT, UserType.DISTRIBUTOR],
+};
 
 /**
  * Role interface representing different user types in the onboarding process
