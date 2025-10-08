@@ -7,11 +7,11 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
-import { type UnifiedUserData } from "../utils";
 
 /**
  * Determines the interaction type ID based on form data
- * @param data
+ * @param {FormSubmissionData} data - The form submission data
+ * @returns {number} The interaction type ID
  */
 const getInteractionTypeId = (data: FormSubmissionData): number => {
 	switch (data.id) {
@@ -109,12 +109,10 @@ interface UseFormSubmissionReturn {
  * Custom hook for handling form submission logic
  * Handles different form types with proper validation and API communication
  * @param {UseFormSubmissionProps} props - Configuration object for the hook
- * @param {UnifiedUserData} props.userData - User data containing details and mobile info
  * @param {OnboardingState} props.state - Current onboarding state including location and integration data
  * @param {OnboardingActions} props.actions - State management actions for updating onboarding state
- * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
- * @param {string | null} props.assistedAgentMobile - Mobile number of the assisted agent
- * @param {OnboardingStep} [props.roleSelectionStep] - Optional role selection step configuration
+ * @param {string} props.mobile - Mobile number for the user
+ * @param {string | number} props.selectedRole - Selected role for the user
  * @param {() => Promise<any>} props.refreshApiCall - Function to refresh API data
  * @param {(userData: any) => void} props.initialStepSetter - Function to set initial onboarding steps
  * @returns {UseFormSubmissionReturn} Object containing form submission methods
@@ -224,7 +222,7 @@ export const useFormSubmission = ({
 
 			return bodyData;
 		},
-		[state, selectedRole, mobile]
+		[state, selectedRole, mobile, actions]
 	);
 
 	/**
@@ -325,7 +323,16 @@ export const useFormSubmission = ({
 				actions.setApiInProgress(false);
 			}
 		},
-		[actions]
+		[
+			processFormData,
+			actions,
+			accessToken,
+			mobile,
+			generateNewToken,
+			handleSubmissionSuccess,
+			handleSubmissionError,
+			toast,
+		]
 	);
 
 	return {

@@ -61,46 +61,52 @@ export const useStepConfiguration = ({
 	/**
 	 * Initializes onboarding steps based on user data
 	 */
-	const initializeSteps = useCallback((userData) => {
-		console.log(
-			"[StepConfiguration] Initializing steps for userData:",
-			userData
-		);
-
-		// Get user type using utility function
-		if (!userType) {
-			console.warn("[StepConfiguration] No user type found in userData");
-			return;
-		}
-
-		const baseStepData = getStepsForUserType(userType);
-		if (baseStepData.length === 0) {
-			console.warn(
-				"[StepConfiguration] No base step data found for user type:",
-				userType
+	const initializeSteps = useCallback(
+		(userData) => {
+			console.log(
+				"[StepConfiguration] Initializing steps for userData:",
+				userData
 			);
-			return;
-		}
 
-		// Get onboarding steps using utility function
+			// Get user type using utility function
+			console.log("[StepConfiguration] userType", userType);
+			if (!userType) {
+				console.warn(
+					"[StepConfiguration] No user type found in userData"
+				);
+				return;
+			}
 
-		if (!onboardingSteps || onboardingSteps.length === 0) {
-			console.warn("[StepConfiguration] No onboarding steps found");
-			return;
-		}
+			const baseStepData = getStepsForUserType(userType);
+			if (baseStepData.length === 0) {
+				console.warn(
+					"[StepConfiguration] No base step data found for user type:",
+					userType
+				);
+				return;
+			}
 
-		// Filter steps based on roles
-		const filteredSteps = filterOnboardingStepsByRoles(
-			baseStepData,
-			onboardingSteps
-		);
+			// Get onboarding steps using utility function
 
-		console.log("[StepConfiguration] Filtered steps:", filteredSteps);
+			if (!onboardingSteps || onboardingSteps.length === 0) {
+				console.warn("[StepConfiguration] No onboarding steps found");
+				return;
+			}
 
-		// Set the stepper data with filtered steps
-		// Create a new array to prevent reference issues
-		actions.setStepperData([...filteredSteps]);
-	}, []);
+			// Filter steps based on roles
+			const filteredSteps = filterOnboardingStepsByRoles(
+				baseStepData,
+				onboardingSteps
+			);
+
+			console.log("[StepConfiguration] Filtered steps:", filteredSteps);
+
+			// Set the stepper data with filtered steps
+			// Create a new array to prevent reference issues
+			actions.setStepperData([...filteredSteps]);
+		},
+		[actions, userType, onboardingSteps]
+	);
 
 	return {
 		initializeSteps,

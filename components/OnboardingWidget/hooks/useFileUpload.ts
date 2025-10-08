@@ -45,7 +45,7 @@ interface UseFileUploadProps {
 	state: OnboardingState;
 	actions: OnboardingActions;
 	mobile: string;
-	refreshApiCall: () => Promise<any>;
+	refreshApiCall?: () => Promise<any>;
 }
 
 /**
@@ -224,7 +224,10 @@ export const useFileUpload = ({
 				duration: 2000,
 			});
 			actions.setLastStepResponse(response);
-			await refreshApiCall();
+			// Refresh API call if provided
+			if (refreshApiCall) {
+				await refreshApiCall();
+			}
 		},
 		[toast, actions, refreshApiCall]
 	);
