@@ -1,96 +1,112 @@
-/**
- * Utility functions for extracting data from unified userData structure
- * Handles both normal and assisted onboarding data formats
- */
+export interface OnboardingStep {
+	role: number;
+	label?: string;
+}
 
-/**
- * Unified user data interface that handles both normal and assisted onboarding
- */
-export interface UnifiedUserData {
-	details?: {
-		// Normal onboarding structure
-		user_type?: number;
-		onboarding_steps?: Array<{ role: number; label?: string }>;
-		mobile?: string;
-		agreement_id?: number | string;
+export interface UserDataDetails {
+	user_type: number;
+	mobile: string;
+	agreement_id: number;
+	code: string;
+	onboarding_steps: OnboardingStep[];
+}
 
-		// Assisted onboarding structure
-		user_detail?: {
-			user_type?: number;
-			onboarding_steps?: Array<{ role: number; label?: string }>;
-			mobile?: string;
-			agreement_id?: number | string;
-		};
-	};
-	// Assisted onboarding structure
-	user_detail?: {
-		user_type?: number;
-		onboarding_steps?: Array<{ role: number; label?: string }>;
-		mobile?: string;
-		agreement_id?: number | string;
-	};
+export interface AssistedUserData {
+	user_type: number;
+	mobile: string;
+	agreement_id: number;
+	code: string;
+	onboarding_steps: OnboardingStep[];
 }
 
 /**
- * Extracts user type from unified userData structure
- * @param {UnifiedUserData} userData - User data object
- * @returns {number | undefined} User type or undefined if not found
+ * Unified user data interface used by utility functions
+ */
+export interface UnifiedUserData {
+	userDetails?: UserDataDetails;
+	onboarding_steps?: OnboardingStep[];
+	user_detail?: AssistedUserData;
+}
+
+/**
+ * Extracts the user type from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @param {boolean} isAssistedOnboarding - Indicates if onboarding is assisted (done on behalf of an agent).
+ * @returns {number | undefined} The user type if found, otherwise undefined.
  */
 export const getUserTypeFromData = (
-	userData: UnifiedUserData
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
 ): number | undefined => {
-	console.log("[AgentOnboarding] getUserTypeFromData", userData);
-	console.log(
-		"[AgentOnboarding] getUserTypeFromData userData?.details?.user_detail?.user_type",
-		userData?.details?.user_detail?.user_type
-	);
-	console.log(
-		"[AgentOnboarding] getUserTypeFromData userData?.details?.user_type",
-		userData?.details?.user_type
-	);
-	return (
-		userData?.details?.user_detail?.user_type || // Assisted onboarding
-		userData?.details?.user_type // Normal onboarding
-	);
+	const _userType = isAssistedOnboarding
+		? data?.user_detail?.user_type
+		: data?.userDetails?.user_type;
+
+	return _userType;
 };
 
 /**
- * Extracts onboarding steps from unified userData structure
- * @param {UnifiedUserData} userData - User data object
- * @returns {Array<{ role: number; label?: string }> | undefined} Onboarding steps or undefined if not found
+ * Extracts the onboarding steps from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @param {boolean} isAssistedOnboarding - Indicates if onboarding is assisted (done on behalf of an agent).
+ * @returns {Array<{ role: number; label?: string }> | undefined} The list of onboarding steps if available, otherwise undefined.
  */
 export const getOnboardingStepsFromData = (
-	userData: UnifiedUserData
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
 ): Array<{ role: number; label?: string }> | undefined => {
-	return (
-		userData?.details?.user_detail?.onboarding_steps || // Assisted onboarding
-		userData?.details?.onboarding_steps // Normal onboarding
-	);
+	const _onboardingSteps = isAssistedOnboarding
+		? data?.user_detail?.onboarding_steps
+		: data?.onboarding_steps;
+
+	return _onboardingSteps;
 };
 
 /**
- * Extracts mobile number from unified userData structure
- * @param {UnifiedUserData} userData - User data object
- * @returns {string | undefined} Mobile number or undefined if not found
+ * Extracts the mobile number from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @param {boolean} isAssistedOnboarding - Indicates if onboarding is assisted (done on behalf of an agent).
+ * @returns {string | undefined} The mobile number if found, otherwise undefined.
  */
 export const getMobileFromData = (
-	userData: UnifiedUserData
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
 ): string | undefined => {
-	return (
-		userData?.user_detail?.mobile || userData?.details?.mobile // Assisted onboarding // Normal onboarding
-	);
+	const _mobile = isAssistedOnboarding
+		? data?.user_detail?.mobile
+		: data?.userDetails?.mobile;
+	return _mobile;
 };
 
 /**
- * Extracts agreement ID from unified userData structure
- * @param {UnifiedUserData} userData - User data object
- * @returns {number | string | undefined} Agreement ID or undefined if not found
+ * Extracts the agreement ID from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @param {boolean} isAssistedOnboarding - Indicates if onboarding is assisted (done on behalf of an agent).
+ * @returns {number | string | undefined} The agreement ID if found, otherwise undefined.
  */
 export const getAgreementIdFromData = (
-	userData: UnifiedUserData
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
 ): number | string | undefined => {
-	return (
-		userData?.details?.user_detail?.agreement_id || // Assisted onboarding
-		userData?.details?.agreement_id // Normal onboarding
-	);
+	const _agreementId = isAssistedOnboarding
+		? data?.user_detail?.agreement_id
+		: data?.userDetails?.agreement_id;
+	return _agreementId;
+};
+
+/**
+ * Extracts the user code from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @param {boolean} isAssistedOnboarding - Indicates if onboarding is assisted (done on behalf of an agent).
+ * @returns {string | undefined} The user code if found, otherwise undefined.
+ */
+export const getUserCodeFromData = (
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
+): string | undefined => {
+	const _userCode = isAssistedOnboarding
+		? data?.user_detail?.code
+		: data?.userDetails?.code;
+
+	return _userCode;
 };
