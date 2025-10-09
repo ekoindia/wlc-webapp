@@ -3,6 +3,7 @@ export { default as useAiChat } from "./useAiChat";
 export { default as useAiChatbotPopup } from "./useAiChatbotPopup";
 export { default as useApiFetch, useEpsV3Fetch } from "./useApiFetch";
 export { default as useAppLink } from "./useAppLink";
+export { default as useBankList } from "./useBankList";
 export { default as useCamera } from "./useCamera";
 export { default as useClipboard } from "./useClipboard";
 export { default as useCountryStates } from "./useCountryStates";

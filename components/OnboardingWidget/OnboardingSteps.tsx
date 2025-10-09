@@ -4,6 +4,7 @@ import { useAppSource } from "contexts/AppSourceContext";
 import { usePubSub } from "contexts/PubSubContext";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
+import useBankList from "hooks/useBankList";
 import useCountryStates from "hooks/useCountryStates";
 import useRefreshToken from "hooks/useRefreshToken";
 import useShopTypes from "hooks/useShopTypes";
@@ -52,6 +53,7 @@ const OnboardingSteps = ({
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
 	const { generateNewToken } = useRefreshToken();
+	const { banks: bankList } = useBankList();
 	const { shopTypes: shopTypesData } = useShopTypes();
 	const { states: stateTypesData } = useCountryStates();
 	const { accessToken } = useSession();
@@ -361,6 +363,7 @@ const OnboardingSteps = ({
 				selectedMerchantType: state.selectedRole,
 				shopTypes: shopTypesData,
 				stateTypes: stateTypesData,
+				bankList: bankList,
 				stepsData: state.stepperData,
 				handleStepCallBack: handleStepCallBack,
 				esignStatus:
