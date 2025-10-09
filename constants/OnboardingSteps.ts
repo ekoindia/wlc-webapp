@@ -358,7 +358,7 @@ export const distributorStepsData: OnboardingStep[] = [
 	{
 		id: 8,
 		name: "PanVerification",
-		label: "Pan Verification",
+		label: "PAN Verification",
 		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
@@ -374,7 +374,7 @@ export const distributorStepsData: OnboardingStep[] = [
 	{
 		id: 16,
 		name: "PanVerification",
-		label: "Pan Verification",
+		label: "PAN Verification",
 		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
@@ -567,7 +567,7 @@ export const retailerStepsData: OnboardingStep[] = [
 	{
 		id: 8,
 		name: "PanVerification",
-		label: "Pan Verification",
+		label: "PAN Verification",
 		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
