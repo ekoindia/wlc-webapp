@@ -58,12 +58,12 @@ const OtpVerificationForm = ({
 			parameter_type_id: ParamType.TEXT,
 			maxLength: 3,
 			minLength: 3,
-			placeholder: "Enter 3-digit OTP",
+			placeholder: "Enter OTP",
 			validations: {
 				required: "OTP is required",
 				pattern: {
 					value: /^[0-9]{3}$/,
-					message: "Enter a valid 3-digit OTP",
+					message: "Required",
 				},
 			},
 		},
