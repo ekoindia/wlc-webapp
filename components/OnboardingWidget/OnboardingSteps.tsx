@@ -106,6 +106,13 @@ const OnboardingSteps = ({
 
 	console.log("[AgentOnboarding] userCode", userCode);
 
+	// Initialize step configuration hook
+	const stepConfiguration = useStepConfiguration({
+		actions,
+		userType,
+		onboardingSteps,
+	});
+
 	// Initialize specialized hooks
 	const esign = useEsignIntegration({
 		state,
@@ -130,13 +137,6 @@ const OnboardingSteps = ({
 		state,
 		actions,
 		mobile,
-	});
-
-	// Initialize step configuration hook
-	const stepConfiguration = useStepConfiguration({
-		actions,
-		userType,
-		onboardingSteps,
 	});
 
 	const formSubmission = useKycFormSubmission({

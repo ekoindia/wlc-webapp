@@ -560,7 +560,7 @@ export const retailerStepsData: OnboardingStep[] = [
 		stepStatus: 0,
 		role: 51700,
 		primaryCTAText: "Next",
-		description: "Set Your 4-Digit Secret Pin",
+		description: "Add your bank account",
 		form_data: {},
 	},
 	{
