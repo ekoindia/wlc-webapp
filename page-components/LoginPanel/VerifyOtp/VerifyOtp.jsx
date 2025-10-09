@@ -16,10 +16,13 @@ import { useCallback, useEffect, useState } from "react";
  */
 const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 	const { login } = useUser();
-	const { orgDetail } = useOrgDetailContext();
 	const [loading, submitLogin] = useLogin(login, setStep);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 
 	const [Otp, setOtp] = useState("");
 	const [timer, setTimer] = useState(30);
@@ -49,7 +52,8 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 			number.original,
 			toast,
 			"resend",
-			isAndroid
+			isAndroid,
+			isMobileMappedUserId
 		);
 		if (!otp_sent) {
 			// OTP failed..back to previous screen
@@ -67,6 +71,7 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 			mobile: number.original,
 			id_token: _otp || Otp,
 			org_id: orgDetail.org_id,
+			...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
 		});
 	};
 
