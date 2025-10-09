@@ -1,4 +1,3 @@
-import { type OnboardingStep } from "constants/OnboardingSteps";
 import { useEffect, useState } from "react";
 
 import { Center, Spinner } from "@chakra-ui/react";
@@ -26,7 +25,6 @@ interface OnboardingWidgetProps {
  * A OnboardingWidget component for handling agent onboarding flow
  * @param {object} props - Properties passed to the component
  * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
- * @param {OnboardingStep} [props.roleSelectionStep] - Custom role selection step configuration
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
