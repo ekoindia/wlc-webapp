@@ -37,6 +37,7 @@ const AgentAlreadyExistsScreen = ({
 			borderRadius="md"
 			shadow="md"
 			maxW="500px"
+			w="100%"
 			textAlign="center"
 		>
 			{/* Title */}

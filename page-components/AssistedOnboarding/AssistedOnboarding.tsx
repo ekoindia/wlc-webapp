@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import {
@@ -92,9 +92,9 @@ const AssistedOnboarding = (): JSX.Element => {
 
 	// MARK: JSX
 	return (
-		<Box w="full" maxW="md" mx="auto" p="6">
+		<Flex w="100%" maxW="100%" align="center" justify="center" p="6">
 			{renderCurrentStep()}
-		</Box>
+		</Flex>
 	);
 };
 

@@ -194,10 +194,10 @@ const Login = ({
 			<Box flex="0.5 1 40px" />
 
 			<Input
-				label={`Login with your ${isMobileMappedUserId ? "User ID/mobile number" : "mobile number"}`} // "Enter mobile number"
-				placeholder="XXX XXX XXXX"
+				label={`Login with your ${isMobileMappedUserId ? "User ID" : "mobile number"}`} // "Enter mobile number"
+				placeholder={isMobileMappedUserId ? "" : "XXX XXX XXXX"}
 				required
-				leftAddon="+91"
+				leftAddon={isMobileMappedUserId ? undefined : "+91"}
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}

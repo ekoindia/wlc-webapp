@@ -162,6 +162,7 @@ const OtpVerificationForm = ({
 			borderRadius="md"
 			shadow="md"
 			maxW="500px"
+			w="100%"
 		>
 			{/* Form Title */}
 			<Text fontSize="xl" fontWeight="semibold" mb="4" textAlign="center">
