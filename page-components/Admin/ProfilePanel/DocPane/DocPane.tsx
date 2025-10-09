@@ -56,8 +56,6 @@ interface ProcessedDocument {
 interface DocPaneProps {
 	/** Document data from API response containing blob data */
 	documentData?: DocumentData | null;
-	/** Optional classes to pass to this component */
-	className?: string;
 }
 
 /**
@@ -69,7 +67,7 @@ interface DocPaneProps {
  * <DocPane documentData={agentDocuments} />
  * ```
  */
-const DocPane = ({ documentData, className }: DocPaneProps) => {
+const DocPane = ({ documentData }: DocPaneProps) => {
 	const { showImage } = useFileView();
 
 	/**
@@ -132,7 +130,7 @@ const DocPane = ({ documentData, className }: DocPaneProps) => {
 	const documents: ProcessedDocument[] = processDocuments(documentData!);
 
 	return (
-		<Card className={className}>
+		<Card h="auto">
 			<Heading
 				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 				fontWeight="semibold"
@@ -143,7 +141,7 @@ const DocPane = ({ documentData, className }: DocPaneProps) => {
 			</Heading>
 
 			<Flex direction="column">
-				<Box h="474px" fontSize={{ base: 16, md: 14, lg: 16 }}>
+				<Box fontSize={{ base: 16, md: 14, lg: 16 }}>
 					<Stack direction="column" divider={<StackDivider />} mt="5">
 						{documents.map((document) => (
 							<Box
