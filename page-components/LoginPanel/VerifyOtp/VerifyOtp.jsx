@@ -47,7 +47,7 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 	const resendOtpHandler = async () => {
 		if (previewMode === true) return;
 		resetTimer();
-		const otp_sent = await sendOtpRequest(
+		const { otp_sent } = await sendOtpRequest(
 			orgDetail.org_id,
 			number.original,
 			toast,
@@ -66,12 +66,14 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 		if (loading) return;
 		if (!(_otp || Otp)) return;
 
+		const _mobile = number?.verified ?? number?.original;
+
 		submitLogin({
 			id_type: "Mobile",
-			mobile: number.original,
+			mobile: _mobile,
 			id_token: _otp || Otp,
 			org_id: orgDetail.org_id,
-			...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
+			// ...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
 		});
 	};
 

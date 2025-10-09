@@ -82,14 +82,10 @@ const Login = ({
 			(!isMobileMappedUserId && value.length === 12)
 		) {
 			let originalNum = RemoveFormatted(value);
-			setNumber({
-				original: originalNum,
-				formatted: value,
-			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
 
-			const otp_sent = await sendOtpRequest(
+			const { otp_sent, verifiedMobileNumber } = await sendOtpRequest(
 				orgDetail.org_id,
 				originalNum,
 				toast,
@@ -97,6 +93,12 @@ const Login = ({
 				isAndroid,
 				isMobileMappedUserId
 			);
+
+			setNumber({
+				original: originalNum,
+				formatted: value,
+				verified: verifiedMobileNumber,
+			});
 
 			if (otp_sent) {
 				// Set login-type for current session...
@@ -192,7 +194,7 @@ const Login = ({
 			<Box flex="0.5 1 40px" />
 
 			<Input
-				label={`Login with your ${isMobileMappedUserId ? "user id/mobile number" : "mobile number"}`} // "Enter mobile number"
+				label={`Login with your ${isMobileMappedUserId ? "User ID/mobile number" : "mobile number"}`} // "Enter mobile number"
 				placeholder="XXX XXX XXXX"
 				required
 				leftAddon="+91"

@@ -28,6 +28,7 @@ async function sendOtpRequest(
 	let success = false;
 	let errMsg = "";
 	let _otp = ""; // Only for UAT
+	let _verifiedMobileNumber = "";
 	let _sendOtpLimitExhausted = false;
 	let _retryAfter = null;
 
@@ -55,6 +56,7 @@ async function sendOtpRequest(
 		if (data?.status == 0) {
 			success = true;
 			_otp = data?.data?.otp; // Only for UAT
+			_verifiedMobileNumber = data?.data?.mobile; // Verified mobile number
 		} else {
 			errMsg = data?.message || data?.invalid_params?.csp_id;
 			_sendOtpLimitExhausted =
@@ -102,7 +104,7 @@ async function sendOtpRequest(
 		}
 	}
 
-	return success;
+	return { otp_sent: success, verifiedMobileNumber: _verifiedMobileNumber };
 }
 
 /**
