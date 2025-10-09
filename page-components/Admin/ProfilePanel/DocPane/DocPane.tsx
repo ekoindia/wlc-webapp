@@ -141,7 +141,7 @@ const DocPane = ({ documentData }: DocPaneProps) => {
 			</Heading>
 
 			<Flex direction="column">
-				<Box fontSize={{ base: 16, md: 14, lg: 16 }}>
+				<Box fontSize="sm">
 					<Stack direction="column" divider={<StackDivider />} mt="5">
 						{documents.map((document) => (
 							<Box
