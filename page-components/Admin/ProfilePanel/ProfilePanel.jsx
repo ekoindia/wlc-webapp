@@ -186,10 +186,11 @@ const ProfilePanel = () => {
 				/>
 			),
 		},
-		// {
-		// 	id: 3,
-		// 	comp: <DocPane rowData={agentData?.document_details} />,
-		// },
+
+		{
+			id: 3,
+			comp: <DocPane documentData={agentDocuments} />,
+		},
 		{
 			id: 4,
 			comp: (
@@ -202,7 +203,7 @@ const ProfilePanel = () => {
 			),
 		},
 		{
-			id: 5,
+			id: 6,
 			comp: (
 				<ContactPane
 					data={{
@@ -211,10 +212,6 @@ const ProfilePanel = () => {
 					}}
 				/>
 			),
-		},
-		{
-			id: 6,
-			comp: <DocPane documentData={agentDocuments} />,
 		},
 	];
 
