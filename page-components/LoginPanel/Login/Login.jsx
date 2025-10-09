@@ -41,8 +41,12 @@ const Login = ({
 }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
-	const { orgDetail } = useOrgDetailContext();
 	const { isAndroid } = useAppSource();
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
@@ -70,7 +74,13 @@ const Login = ({
 	const sendOtp = async () => {
 		if (previewMode === true) return;
 
-		if (value.length === 12) {
+		// check based on the isMobileMappedUserId,
+		// if isMobileMappedUserId is true, then allow digits 7 to 12
+		// else exactly 12 digits are required
+		if (
+			(isMobileMappedUserId && value.length >= 7 && value.length <= 12) ||
+			(!isMobileMappedUserId && value.length === 12)
+		) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
 				original: originalNum,
@@ -84,7 +94,8 @@ const Login = ({
 				originalNum,
 				toast,
 				"send",
-				isAndroid
+				isAndroid,
+				isMobileMappedUserId
 			);
 
 			if (otp_sent) {
@@ -181,7 +192,7 @@ const Login = ({
 			<Box flex="0.5 1 40px" />
 
 			<Input
-				label="Login with your mobile number" // "Enter mobile number"
+				label={`Login with your ${isMobileMappedUserId ? "user id/mobile number" : "mobile number"}`} // "Enter mobile number"
 				placeholder="XXX XXX XXXX"
 				required
 				leftAddon="+91"
