@@ -186,8 +186,9 @@ export const createRoleSelectionStep = (
 
 /**
  * Filters step data based on onboarding step roles
- * @param stepData
- * @param onboardingSteps
+ * @param {OnboardingStep[]} stepData - Array of all possible onboarding steps
+ * @param {Array<{ role: number; label?: string }>} onboardingSteps - Array of onboarding step configurations with roles
+ * @returns {OnboardingStep[]} Filtered array of onboarding steps relevant to the user's roles
  */
 export const filterOnboardingStepsByRoles = (
 	stepData: OnboardingStep[],
@@ -551,7 +552,7 @@ export const retailerStepsData: OnboardingStep[] = [
 		form_data: {},
 	},
 	{
-		id: 11,
+		id: 25,
 		name: "addBankAccount",
 		label: "Add Bank Account",
 		isSkipable: false,

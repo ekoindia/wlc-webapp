@@ -1,3 +1,4 @@
+import { Center, Spinner } from "@chakra-ui/react";
 import { OnboardingWidget } from "components/OnboardingWidget";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
@@ -145,7 +146,11 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 
 	// MARK: JSX
 	if (isLoading) {
-		return <div>Loading agent onboarding...</div>;
+		return (
+			<Center>
+				<Spinner size="md" />
+			</Center>
+		);
 	}
 
 	if (hasError) {
