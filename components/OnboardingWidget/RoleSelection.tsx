@@ -11,6 +11,22 @@ const ExternalSelectionScreen = dynamic(
 	{ ssr: false }
 ) as any;
 
+/**
+ * RoleSelection component for selecting user role during onboarding
+ * @param {object} props - Properties passed to the component
+ * @param {Function} props.setStep - Function to set the current step in the onboarding process
+ * @param {string} props.logo - URL of the logo to be displayed
+ * @param {string} props.appName - Name of the application
+ * @param {string} props.orgName - Name of the organization
+ * @param {object} props.userData - User data object
+ * @param {Function} props.updateUserInfo - Function to update user information
+ * @param {boolean} props.isAssistedOnboarding - Flag indicating if it's assisted onboarding
+ * @param {string} props.selectedRole - Currently selected role
+ * @param {Function} props.setSelectedRole - Function to set the selected role
+ * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
+ * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
+ * @returns {JSX.Element} The rendered RoleSelection component
+ */
 const RoleSelection = ({
 	setStep,
 	logo,
@@ -22,6 +38,7 @@ const RoleSelection = ({
 	selectedRole,
 	setSelectedRole,
 	assistedAgentDetails,
+	allowedMerchantTypes,
 }) => {
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
@@ -51,7 +68,7 @@ const RoleSelection = ({
 
 	const forAgentTypes = isAssistedOnboarding
 		? visibleAgentTypes.assistedOnboarding
-		: visibleAgentTypes.selfOnboarding;
+		: allowedMerchantTypes || visibleAgentTypes.selfOnboarding;
 
 	// Example: Custom user type labels from org_metadata (in the future from orgDetail)
 	// const customUserTypeLabels = {

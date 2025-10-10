@@ -1,9 +1,17 @@
-import { UserType, UserTypeLabel } from "./UserTypes";
+import { UserTypeLabel } from "./UserTypes";
+
+// MerchantTypes as defined in the OaaS Widget configuration. Note, it is not the same as EPS's user-type-id
+const MERCHANT_TYPES = {
+	RETAILER: 1,
+	ENTERPRISE: 2,
+	DISTRIBUTOR: 3,
+};
 
 // Configuration for which user types are visible in different onboarding contexts
+// NOTE: The OaaS widget configration (getBaseRoleData) uses wrong merchantType values (1,2,3)
 export const visibleAgentTypes = {
-	assistedOnboarding: [UserType.MERCHANT],
-	selfOnboarding: [UserType.I_MERCHANT, UserType.DISTRIBUTOR],
+	assistedOnboarding: [MERCHANT_TYPES.RETAILER],
+	selfOnboarding: [MERCHANT_TYPES.RETAILER, MERCHANT_TYPES.DISTRIBUTOR],
 };
 
 /**
@@ -88,7 +96,7 @@ const getBaseRoleData = (
 ): Role[] => [
 	{
 		id: 1,
-		merchant_type: 1,
+		merchant_type: MERCHANT_TYPES.RETAILER,
 		applicant_type: 0,
 		label: `I'm a ${userTypeLabel[2] || "Retailer"}`,
 		description: "I serve customers from my shop",
@@ -101,7 +109,7 @@ const getBaseRoleData = (
 	},
 	{
 		id: 2,
-		merchant_type: 3,
+		merchant_type: MERCHANT_TYPES.DISTRIBUTOR,
 		applicant_type: 2,
 		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
 		description: "I have a network of retailer and i want to serve them",
@@ -111,7 +119,7 @@ const getBaseRoleData = (
 	},
 	{
 		id: 3,
-		merchant_type: 2,
+		merchant_type: MERCHANT_TYPES.ENTERPRISE,
 		applicant_type: 1,
 		label: `I'm an ${userTypeLabel[23] || "Enterprise Partner"}`,
 		description:
@@ -213,7 +221,7 @@ export const filterOnboardingStepsByRoles = (
  * @deprecated Use createRoleSelectionStep() with appropriate agent types instead
  */
 export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
-	[1, 3] // Default: Retailer and Distributor
+	[MERCHANT_TYPES.RETAILER, MERCHANT_TYPES.DISTRIBUTOR] // Default: Retailer and Distributor
 );
 
 /**

@@ -19,6 +19,7 @@ export const ONBOARDING_STEPS = {
 interface OnboardingWidgetProps {
 	isAssistedOnboarding?: boolean;
 	assistedAgentDetails?: any;
+	allowedMerchantTypes?: number[];
 }
 
 /**
@@ -26,12 +27,14 @@ interface OnboardingWidgetProps {
  * @param {object} props - Properties passed to the component
  * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
+ * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
 const OnboardingWidget = ({
 	isAssistedOnboarding = false,
 	assistedAgentDetails,
+	allowedMerchantTypes,
 }: OnboardingWidgetProps): JSX.Element => {
 	const { userData, updateUserInfo } = useUser();
 	console.log("[AgentOnboarding] userData", userData);
@@ -78,6 +81,7 @@ const OnboardingWidget = ({
 						userData={userData}
 						updateUserInfo={updateUserInfo}
 						assistedAgentDetails={assistedAgentDetails}
+						allowedMerchantTypes={allowedMerchantTypes}
 					/>
 				);
 			case "KYC_FLOW":

@@ -161,6 +161,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 		<OnboardingWidget
 			isAssistedOnboarding
 			assistedAgentDetails={agentDetails}
+			allowedMerchantTypes={[1]} // Restrict to Retailer role only
 		/>
 	);
 };
