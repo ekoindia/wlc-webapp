@@ -34,7 +34,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin Network pages to (Super)Distributors
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1, 7], // 7 = (SuperDistributor)
+		forUserType: [1, 4, 7], // 4 = (FOS), 7 = (SuperDistributor)
 		// forEnv: ["development", "staging"],
 		envConstraints: {
 			production: {
@@ -45,6 +45,20 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				],
 			},
 		},
+	},
+
+	// Assisted Full Onboarding
+	ASSISTED_FULL_ONBOARDING: {
+		enabled: true,
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+		},
+		forEnv: ["development", "staging"],
 	},
 
 	// Inventory Management for (Super)Distributors

@@ -174,7 +174,7 @@ const MyAccountCard = ({ onClose }) => {
 		isAdmin,
 		logout,
 		isOnboarding,
-		UserTypeLabel,
+		userTypeLabel,
 		userData,
 		isLoggedIn,
 	} = useUser();
@@ -329,7 +329,7 @@ const MyAccountCard = ({ onClose }) => {
 									</Text>
 								) : null}
 
-								{UserTypeLabel ? (
+								{userTypeLabel ? (
 									<Text
 										fontSize="12px"
 										color="rgba(255, 255, 255, 0.8)"
@@ -338,11 +338,11 @@ const MyAccountCard = ({ onClose }) => {
 										whiteSpace="nowrap"
 										overflow="hidden"
 										textOverflow="ellipsis"
-										title={UserTypeLabel || ""}
+										title={userTypeLabel || ""}
 										letterSpacing="0.5px"
 										lineHeight="1.2"
 									>
-										{UserTypeLabel}
+										{userTypeLabel}
 									</Text>
 								) : null}
 

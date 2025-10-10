@@ -38,7 +38,7 @@ const SocialVerify = ({ email, number, previewMode, setNumber, setStep }) => {
 			});
 
 			setStep("VERIFY_OTP");
-			const otp_sent = await sendOtpRequest(
+			const { otp_sent } = await sendOtpRequest(
 				orgDetail.org_id,
 				originalNum,
 				toast,

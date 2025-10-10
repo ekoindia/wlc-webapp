@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
-import { UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
+import { useUserType } from "hooks";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
 import { getOnboardingPermissions } from "./OnboardingPermissions";
@@ -24,6 +24,7 @@ const agentTypeValueToApi = {
  */
 const OnboardAgents = () => {
 	const { isAdmin, userType } = useSession();
+	const { getUserTypeLabel } = useUserType();
 
 	// Get permissions based on user role - determines which agent types the user can onboard
 	const permissions = useMemo(() => {
@@ -36,12 +37,12 @@ const OnboardAgents = () => {
 	const onboardingTitle =
 		permissions.allowedAgentTypes.length > 1
 			? "Onboard Agents"
-			: `Onboard ${UserTypeLabel[permissions.allowedAgentTypes[0]]}`;
+			: `Onboard ${getUserTypeLabel(permissions.allowedAgentTypes[0])}`;
 
 	// Convert agent types from permissions to a format usable by form components
 	// This creates an array of {label, value} objects for dropdowns and other inputs
 	const agentTypeList = permissions.allowedAgentTypes.map((type) => ({
-		label: UserTypeLabel[type],
+		label: getUserTypeLabel(type),
 		value: `${type}`,
 	}));
 

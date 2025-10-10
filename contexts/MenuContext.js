@@ -216,18 +216,28 @@ const MenuProvider = ({ children }) => {
 		const { trxnList: _trxnList, otherList: _otherList } =
 			filterTransactionLists(interactionList, isAdmin, isAdminAgentMode);
 
+		const isDisableAllTxns =
+			process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS === "true";
+		const isDisableAllOthers =
+			process.env.NEXT_PUBLIC_DISABLE_OTHERS === "true";
+
+		// Set the final lists
+
 		setAppLists({
 			menuList: _filteredMenuList,
-			trxnList: _trxnList,
-			otherList: [
-				{
-					icon: "transaction-history",
-					label: "Transaction History",
-					description: "Statement of your previous transactions",
-					link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
-				},
-				..._otherList,
-			],
+			trxnList: isDisableAllTxns ? [] : _trxnList,
+			otherList: isDisableAllOthers
+				? []
+				: [
+						{
+							icon: "transaction-history",
+							label: "Transaction History",
+							description:
+								"Statement of your previous transactions",
+							link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
+						},
+						..._otherList,
+					],
 		});
 		// setIsLoading(false);
 

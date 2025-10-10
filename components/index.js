@@ -143,3 +143,5 @@ export { MicInput } from "./MicInput";
 export { CopyButton } from "./CopyButton";
 
 export { SegmentedControl } from "./SegmentedControl";
+
+export { OnboardingWidget } from "./OnboardingWidget";
