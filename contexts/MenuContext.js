@@ -18,6 +18,10 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { limitText } from "utils/textFormat";
 import { useSession } from ".";
 
+const disabledFeaturesMock = {
+	features: [10, 9, 20, 25, 30, 40, 45, 50, 99, 901, 902],
+};
+
 const SESSION_STORAGE_KEYS = {
 	INTERACTION_LIST: "interaction_list",
 	ROLE_TX_LIST: "role_tx_list",
@@ -72,7 +76,8 @@ const MenuProvider = ({ children }) => {
 	const { ready } = useKBarReady();
 	const { orgDetail } = useOrgDetailContext();
 	const { metadata } = orgDetail || {};
-	const disabledFeatures = metadata?.disabled_features; // Used to disable any menu-item at the org-level
+	const disabledFeatures =
+		metadata?.disabled_features ?? disabledFeaturesMock; // Used to disable any menu-item at the org-level
 	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const [appLists, setAppLists] = useState({
@@ -216,18 +221,28 @@ const MenuProvider = ({ children }) => {
 		const { trxnList: _trxnList, otherList: _otherList } =
 			filterTransactionLists(interactionList, isAdmin, isAdminAgentMode);
 
+		const isDisableAllTxns =
+			process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS === "true";
+		const isDisableAllOthers =
+			process.env.NEXT_PUBLIC_DISABLE_OTHERS === "true";
+
+		// Set the final lists
+
 		setAppLists({
 			menuList: _filteredMenuList,
-			trxnList: _trxnList,
-			otherList: [
-				{
-					icon: "transaction-history",
-					label: "Transaction History",
-					description: "Statement of your previous transactions",
-					link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
-				},
-				..._otherList,
-			],
+			trxnList: isDisableAllTxns ? [] : _trxnList,
+			otherList: isDisableAllOthers
+				? []
+				: [
+						{
+							icon: "transaction-history",
+							label: "Transaction History",
+							description:
+								"Statement of your previous transactions",
+							link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
+						},
+						..._otherList,
+					],
 		});
 		// setIsLoading(false);
 
