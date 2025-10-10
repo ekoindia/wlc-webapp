@@ -73,10 +73,12 @@ const FileView = ({ file, type, options }: FileViewProps) => {
 					case "ogg":
 						setFileType("audio");
 						break;
+					case "htm":
 					case "html":
 						setFileType("html");
 						break;
 					default:
+						// If there is no recognizable extension, treat it as a webpage to try to open it inside an iframe
 						setFileType("html");
 						break;
 				}
