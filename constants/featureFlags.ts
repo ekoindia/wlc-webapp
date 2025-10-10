@@ -47,6 +47,20 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// Assisted Full Onboarding
+	ASSISTED_FULL_ONBOARDING: {
+		enabled: true,
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+		},
+		forEnv: ["development", "staging"],
+	},
+
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
