@@ -1,12 +1,7 @@
 import { Flex, Grid } from "@chakra-ui/react";
-import {
-	Endpoints,
-	ProductRoleConfiguration,
-	UserTypeIcon,
-	UserTypeLabel,
-} from "constants";
+import { Endpoints, ProductRoleConfiguration, UserTypeIcon } from "constants";
 import { useUser } from "contexts";
-import { useApiFetch, useDailyCacheState } from "hooks";
+import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
@@ -38,6 +33,8 @@ const BusinessDashboard = () => {
 		() => getDateRange(dateRange),
 		[dateRange]
 	);
+
+	const { getUserTypeLabel } = useUserTypes();
 
 	const productFilterList = useMemo(() => {
 		const productListWithRoleList =
@@ -72,7 +69,8 @@ const BusinessDashboard = () => {
 		},
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.totalActiveData || [];
-			const activeAgentsList = transformActiveAgentsData(_data) ?? [];
+			const activeAgentsList =
+				transformActiveAgentsData(_data, getUserTypeLabel) ?? [];
 			setActiveAgents(activeAgentsList);
 		},
 	});
@@ -128,14 +126,15 @@ export default BusinessDashboard;
 /**
  * Transforms API response into a format compatible with the component.
  * @param {object} apiData - The raw data from the API response.
+ * @param {Function} getUserTypeLabel - Function to get user type label by ID.
  * @returns {Array} A formatted array of objects for rendering.
  */
-const transformActiveAgentsData = (apiData) => {
+const transformActiveAgentsData = (apiData, getUserTypeLabel) => {
 	if (!apiData || typeof apiData !== "object") return [];
 
 	const agentsData = Object.entries(apiData)
 		.map(([key, data]) => {
-			const userType = UserTypeLabel[key]; // Get label from mapping
+			const userType = getUserTypeLabel(key); // Get label from mapping
 			const userTypeIcon = UserTypeIcon[key];
 			if (!userType) return null; // Ignore unknown user types
 			if (!data) return null; // Ignore if no data is present

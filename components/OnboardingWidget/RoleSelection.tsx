@@ -3,6 +3,7 @@ import {
 	createRoleSelectionStep,
 	visibleAgentTypes,
 } from "constants/OnboardingSteps";
+import { useUserTypes } from "hooks";
 import dynamic from "next/dynamic";
 import { useOnboardingState, useRoleFormSubmission } from "./hooks";
 
@@ -66,6 +67,8 @@ const RoleSelection = ({
 		},
 	});
 
+	const { userTypeLabels } = useUserTypes();
+
 	const forAgentTypes = isAssistedOnboarding
 		? visibleAgentTypes.assistedOnboarding
 		: allowedMerchantTypes || visibleAgentTypes.selfOnboarding;
@@ -81,7 +84,9 @@ const RoleSelection = ({
 	// 	userTypeLabel: customUserTypeLabels,
 	// });
 
-	const onboardingRoleStep = createRoleSelectionStep(forAgentTypes);
+	const onboardingRoleStep = createRoleSelectionStep(forAgentTypes, {
+		userTypeLabel: userTypeLabels,
+	});
 	console.log("[AgentOnboarding] onboardingRoleStep", onboardingRoleStep);
 
 	return (

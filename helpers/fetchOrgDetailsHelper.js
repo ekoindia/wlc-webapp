@@ -46,11 +46,23 @@ export const MockOrgDetails = {
 			accent_dark: stripQuotes(process.env.THEME_ACCENT_DARK) || "",
 			accent_light: stripQuotes(process.env.THEME_ACCENT_LIGHT) || "",
 		},
+		// Change Landing Page Design.
 		cms_meta: {
+			// CMS type ("default" | "card" | "page" | "image")
 			type: process.env.CMS_TYPE || undefined,
 		},
+		// img, img_small,
 		cms_data: {
 			img: process.env.CMS_IMG || undefined,
+		},
+		// Disable Admin's left menu items. It's an array of item IDS from Sidebar.
+		disabled_features: undefined,
+		user_type_labels: {
+			1: { en: "Branch Manager" },
+			2: { en: "Agent" },
+			3: { en: "Independent Agent" },
+			4: { en: "CSO" },
+			24: { en: "Head Office Admin" },
 		},
 	},
 	login_types: {

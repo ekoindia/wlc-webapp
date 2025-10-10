@@ -1,6 +1,5 @@
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { UserTypeLabel } from "constants";
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
 
@@ -50,7 +49,7 @@ const formatToCommaSeparated = (numberList) => {
  * A ProfileWidget page-component
  */
 const ProfileWidget = () => {
-	const { userData } = useUser();
+	const { userData, userTypeLabel } = useUser();
 	const [percent, setPercent] = useState(0);
 	const data = userData.userDetails;
 
@@ -115,7 +114,7 @@ const ProfileWidget = () => {
 							{data.name}
 						</Text>
 						<Flex gap="2" fontSize="14px">
-							<Text>{UserTypeLabel[data.user_type]}</Text>
+							<Text>{userTypeLabel}</Text>
 							<Text opacity={0.5}>&#124;</Text>
 							<Text>
 								User Code:

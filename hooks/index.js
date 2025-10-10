@@ -30,4 +30,5 @@ export { default as useSessionStorage } from "./useSessionStorage";
 export { default as useSet } from "./useSet";
 export { default as useShopTypes } from "./useShopTypes";
 export { default as useSwipe } from "./useSwipe";
+export { default as useUserTypes } from "./useUserTypes";
 export { default as useVoiceCapture } from "./useVoiceCapture";

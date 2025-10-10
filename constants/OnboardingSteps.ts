@@ -86,6 +86,7 @@ export interface OnboardingStep {
 }
 
 /**
+ * TODO: THIS IS NOT A CONSTANT
  * Base role data containing all possible roles with default labels
  * Labels will be dynamically replaced based on organization configuration
  * @param {Record<number, string>} userTypeLabel - User type labels mapping

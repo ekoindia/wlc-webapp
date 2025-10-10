@@ -1,7 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Endpoints, UserTypeIcon, UserTypeLabel } from "constants";
+import { Endpoints, UserTypeIcon } from "constants";
 import { useSession } from "contexts";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { LuHeartHandshake } from "react-icons/lu";
 import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
@@ -90,6 +90,8 @@ const OnboardingDashboard = () => {
 		[prevDate, currDate]
 	);
 
+	const { getUserTypeLabel } = useUserTypes();
+
 	const [fetchOnboardingAgentsTopPanelData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
@@ -109,8 +111,10 @@ const OnboardingDashboard = () => {
 				};
 
 				const _data = res?.data?.onboarding_funnel?.[0] || defaultData;
-				const onboardedAgentsList =
-					transformOnboardingAgentsData(_data);
+				const onboardedAgentsList = transformOnboardingAgentsData(
+					_data,
+					getUserTypeLabel
+				);
 
 				setOnboardingDashboardData((prev) => ({
 					...prev,
@@ -299,14 +303,15 @@ export default OnboardingDashboard;
 /**
  * Transforms API response into a format compatible with the component.
  * @param {object} apiData - The raw data from the API response.
+ * @param {Function} getUserTypeLabel - Function to get user type label by ID.
  * @returns {Array} A formatted array of objects for rendering.
  */
-const transformOnboardingAgentsData = (apiData) => {
+const transformOnboardingAgentsData = (apiData, getUserTypeLabel) => {
 	if (!apiData || typeof apiData !== "object") return [];
 
 	return Object.entries(apiData)
 		.map(([key, data]) => {
-			const userType = UserTypeLabel[key]; // Get label from mapping
+			const userType = getUserTypeLabel(key); // Get label from mapping
 			const userTypeIcon = UserTypeIcon[key];
 			if (!userType) return null; // Ignore unknown user types
 
