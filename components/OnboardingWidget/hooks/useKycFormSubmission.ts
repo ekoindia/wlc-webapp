@@ -26,6 +26,8 @@ const getKycInteractionTypeId = (data: FormSubmissionData): number => {
 			return TransactionIds.USER_ONBOARDING_PAN_VERIFICATION;
 		case 20:
 			return TransactionIds.USER_AADHAR_OTP_CONFIRM;
+		case 25:
+			return TransactionIds.ADD_BANK_ACCOUNT;
 		default:
 			return TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE;
 	}
@@ -128,6 +130,7 @@ export const useKycFormSubmission = ({
 	const processFormData = useCallback(
 		(data: FormSubmissionData): FormSubmissionData => {
 			const bodyData = { ...data };
+			console.log("[AgentOnboarding] processFormData data", bodyData);
 
 			switch (data.id) {
 				case 5: // Aadhaar consent
