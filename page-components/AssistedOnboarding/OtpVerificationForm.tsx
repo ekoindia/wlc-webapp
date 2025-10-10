@@ -71,18 +71,18 @@ const OtpVerificationForm = ({
 
 	const buttonConfigList = [
 		{
-			type: "button" as const,
-			size: "lg",
-			label: "Back",
-			variant: "outline",
-			onClick: () => setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT),
-		},
-		{
 			type: "submit" as const,
 			size: "lg",
 			label: "Verify OTP",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
+		},
+		{
+			type: "button" as const,
+			size: "lg",
+			label: "Back",
+			variant: "outline",
+			onClick: () => setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT),
 		},
 	];
 
