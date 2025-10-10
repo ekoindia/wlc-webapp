@@ -22,7 +22,6 @@ import {
 	/* AdminViewToggleCard, */
 	Icon,
 	ProfileCard,
-	StatusCard,
 	Tags,
 } from "..";
 
@@ -246,7 +245,11 @@ const SideBarMenu = ({
 
 						{/* {isAdmin && <AdminViewToggleCard />} */}
 
-						<StatusCard />
+						{/* Show status card unless disabled via env variable */}
+						{process.env.NEXT_PUBLIC_HIDE_STATUS_CARD ===
+						"true" ? null : (
+							<StatusCard />
+						)}
 
 						{/* Fixed menu items */}
 						{menuList?.map((menu) => (
