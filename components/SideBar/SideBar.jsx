@@ -22,6 +22,7 @@ import {
 	/* AdminViewToggleCard, */
 	Icon,
 	ProfileCard,
+	StatusCard,
 	Tags,
 } from "..";
 
@@ -245,11 +246,8 @@ const SideBarMenu = ({
 
 						{/* {isAdmin && <AdminViewToggleCard />} */}
 
-						{/* Show status card unless disabled via env variable */}
-						{process.env.NEXT_PUBLIC_HIDE_STATUS_CARD ===
-						"true" ? null : (
-							<StatusCard />
-						)}
+						{/* Show status card (auto-hides if `Add E-value` is not allowed and balance is 0) */}
+						<StatusCard />
 
 						{/* Fixed menu items */}
 						{menuList?.map((menu) => (
