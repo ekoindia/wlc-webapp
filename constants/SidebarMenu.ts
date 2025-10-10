@@ -111,6 +111,16 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	link: "/admin/invoicing",
 	// },
 	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/admin/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+	},
+	{
 		id: 20,
 		label: "Business Settings",
 		icon: "business-center",
