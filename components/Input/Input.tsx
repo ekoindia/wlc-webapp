@@ -1,17 +1,17 @@
 import {
-	Flex,
 	Input as ChakraInput,
+	Flex,
 	InputGroup,
 	InputLeftAddon,
 	InputLeftElement,
 	InputRightElement,
 } from "@chakra-ui/react";
 import {
+	CSSProperties,
 	forwardRef,
+	ReactElement,
 	useCallback,
 	useId,
-	ReactElement,
-	CSSProperties,
 } from "react";
 import { InputLabel, InputMsg } from "..";
 
@@ -152,6 +152,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 				let val = e.target.value;
 				if (isNumInput) {
 					if (
+						// TODO: FIX
 						val == "" ||
 						/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
 							val

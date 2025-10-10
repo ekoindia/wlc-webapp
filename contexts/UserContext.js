@@ -1,7 +1,7 @@
 import { Endpoints } from "constants";
-import { UserTypeLabel } from "constants/UserTypes";
 import { fetcher } from "helpers/apiHelper";
 import { createUserState, getSessions } from "helpers/loginHelper";
+import { useUserTypes } from "hooks";
 import {
 	createContext,
 	useCallback,
@@ -29,6 +29,8 @@ const UserProvider = ({ userMockData, children }) => {
 	const [loading, setLoading] = useState(true);
 
 	const { isAndroid } = useAppSource();
+
+	const { getUserTypeLabel } = useUserTypes();
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
@@ -181,7 +183,7 @@ const UserProvider = ({ userMockData, children }) => {
 	 */
 	const userTypeLabel = isAdmin
 		? "Organization Admin"
-		: UserTypeLabel[state?.userDetails?.user_type] || "";
+		: getUserTypeLabel(state?.userDetails?.user_type) || "";
 
 	// MARK: useUser()
 	const userContextValue = useMemo(() => {
@@ -191,7 +193,7 @@ const UserProvider = ({ userMockData, children }) => {
 			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
-			UserTypeLabel: userTypeLabel,
+			userTypeLabel: userTypeLabel,
 			accessToken: state?.access_token || "",
 			accessTokenLite:
 				state?.access_token_lite || state?.access_token || "",
@@ -221,7 +223,7 @@ const UserProvider = ({ userMockData, children }) => {
 			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
-			UserTypeLabel: userTypeLabel,
+			userTypeLabel: userTypeLabel,
 			accessToken: state?.access_token || "",
 			accessTokenLite:
 				state?.access_token_lite || state?.access_token || "",

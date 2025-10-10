@@ -5,7 +5,13 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { AddressPane, CompanyPane, ContactPane, PersonalPane } from ".";
+import {
+	AddressPane,
+	CompanyPane,
+	ContactPane,
+	DocPane,
+	PersonalPane,
+} from ".";
 
 const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 	return (
@@ -70,12 +76,13 @@ const ChangeRoleMobile = ({ changeRoleMenuList }) => {
 const ProfilePanel = () => {
 	const router = useRouter();
 	const [agentData, setAgentData] = useState({});
+	const [agentDocuments, setAgentDocuments] = useState({});
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
 	const { mobile } = router.query;
 
-	const hitQuery = () => {
+	const fetchAgentDetails = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -86,6 +93,25 @@ const ProfilePanel = () => {
 		})
 			.then((data) => {
 				setAgentData(data?.data?.agent_details[0]);
+			})
+			.catch((error) => {
+				// Handle any errors that occurred during the fetch
+				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+			});
+	};
+
+	const fetchAgentDocuments = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}&document=1`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((data) => {
+				setAgentDocuments(data?.data?.cspDetails);
+				// setAgentData(data?.data?.agent_details[0]);
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
@@ -120,7 +146,11 @@ const ProfilePanel = () => {
 		if (storedData?.agent_mobile === mobile) {
 			setAgentData(storedData);
 		} else {
-			hitQuery();
+			fetchAgentDetails();
+		}
+
+		if (agentDocuments && Object.keys(agentDocuments).length === 0) {
+			fetchAgentDocuments();
 		}
 	}, [mobile]);
 
@@ -156,10 +186,11 @@ const ProfilePanel = () => {
 				/>
 			),
 		},
-		// {
-		// 	id: 3,
-		// 	comp: <DocPane rowData={agentData?.document_details} />,
-		// },
+
+		{
+			id: 3,
+			comp: <DocPane documentData={agentDocuments} />,
+		},
 		{
 			id: 4,
 			comp: (
@@ -172,7 +203,7 @@ const ProfilePanel = () => {
 			),
 		},
 		{
-			id: 5,
+			id: 6,
 			comp: (
 				<ContactPane
 					data={{

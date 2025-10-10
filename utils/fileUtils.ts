@@ -107,3 +107,27 @@ export const dataUrlToBlob = (dataUrl: string): Blob => {
 
 	return new Blob([u8arr], { type: mime });
 };
+
+/**
+ * Converts blob data to image source URL for document preview
+ * @param {string} blobData - Base64 blob data from API response
+ * @param {string} [mimeType] - MIME type of the image (default: "image/jpeg")
+ * @returns {string} Data URL that can be used as image src
+ * @example
+ * ```typescript
+ * const imageSrc = blobToImageSrc(blobData);
+ * <img src={imageSrc} alt="Document" />
+ * ```
+ */
+export const blobToImageSrc = (
+	blobData: string,
+	mimeType: string = "image/jpeg"
+): string => {
+	// Handle case where blob data might already be a data URL
+	if (blobData.startsWith("data:")) {
+		return blobData;
+	}
+
+	// Create data URL from base64 blob data
+	return `data:${mimeType};base64,${blobData}`;
+};

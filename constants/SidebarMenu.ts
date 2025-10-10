@@ -111,6 +111,17 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	link: "/admin/invoicing",
 	// },
 	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/admin/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		featureFlag: "ASSISTED_FULL_ONBOARDING",
+	},
+	{
 		id: 20,
 		label: "Business Settings",
 		icon: "business-center",
@@ -230,6 +241,17 @@ export const sidebarMenu: sidebarMenuType[] = [
 		summary: "View transactions of agents in your network.",
 		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
 		beta: true,
+	},
+	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		featureFlag: "ASSISTED_FULL_ONBOARDING",
 	},
 	{
 		id: 215,

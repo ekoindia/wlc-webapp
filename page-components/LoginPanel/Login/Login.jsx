@@ -41,8 +41,12 @@ const Login = ({
 }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
-	const { orgDetail } = useOrgDetailContext();
 	const { isAndroid } = useAppSource();
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
@@ -70,22 +74,31 @@ const Login = ({
 	const sendOtp = async () => {
 		if (previewMode === true) return;
 
-		if (value.length === 12) {
+		// check based on the isMobileMappedUserId,
+		// if isMobileMappedUserId is true, then allow digits 7 to 12
+		// else exactly 12 digits are required
+		if (
+			(isMobileMappedUserId && value.length >= 7 && value.length <= 12) ||
+			(!isMobileMappedUserId && value.length === 12)
+		) {
 			let originalNum = RemoveFormatted(value);
-			setNumber({
-				original: originalNum,
-				formatted: value,
-			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
 
-			const otp_sent = await sendOtpRequest(
+			const { otp_sent, verifiedMobileNumber } = await sendOtpRequest(
 				orgDetail.org_id,
 				originalNum,
 				toast,
 				"send",
-				isAndroid
+				isAndroid,
+				isMobileMappedUserId
 			);
+
+			setNumber({
+				original: originalNum,
+				formatted: value,
+				verified: verifiedMobileNumber,
+			});
 
 			if (otp_sent) {
 				// Set login-type for current session...
@@ -181,10 +194,10 @@ const Login = ({
 			<Box flex="0.5 1 40px" />
 
 			<Input
-				label="Login with your mobile number" // "Enter mobile number"
-				placeholder="XXX XXX XXXX"
+				label={`Login with your ${isMobileMappedUserId ? "User ID" : "mobile number"}`} // "Enter mobile number"
+				placeholder={isMobileMappedUserId ? "" : "XXX XXX XXXX"}
 				required
-				leftAddon="+91"
+				leftAddon={isMobileMappedUserId ? undefined : "+91"}
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}

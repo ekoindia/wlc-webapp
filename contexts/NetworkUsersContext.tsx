@@ -1,7 +1,7 @@
 import { Endpoints } from "constants/EndPoints";
-import { UserType, UserTypeLabel } from "constants/UserTypes";
+import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts/UserContext";
-import { useApiFetch, useDailyCacheState } from "hooks";
+import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useCopilotInfo } from "libs";
 import {
 	createContext,
@@ -100,6 +100,8 @@ export const NetworkUsersProvider = ({
 	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId } =
 		useSession();
 
+	const { userTypeLabels } = useUserTypes();
+
 	// MARK: Fetch Users
 	const [fetchUsers, loading] = useApiFetch(Endpoints.TRANSACTION, {
 		onSuccess: (res) => {
@@ -128,11 +130,12 @@ export const NetworkUsersProvider = ({
 		setNetworkCount(networkUsers.networkUsersList.length || 0);
 		generateTree(
 			networkUsers.networkUsersList,
+			userTypeLabels,
 			setNetworkUsersTree,
 			setUserTypeIdList,
 			setActiveUserTypeCount
 		);
-	}, [networkUsers.networkUsersList]);
+	}, [networkUsers.networkUsersList, userTypeLabels]);
 
 	/**
 	 * Fetch the network users data from the server.
@@ -166,12 +169,11 @@ export const NetworkUsersProvider = ({
 		value: networkCount,
 	});
 
-	const test = Object.keys(activeUserTypeCount).map((key) => ({
-		label: UserTypeLabel[key] || `UserType-${key}`,
-		count: activeUserTypeCount[key],
-	}));
-
-	console.log("Active User Type Count:", test);
+	// const test = Object.keys(activeUserTypeCount).map((key) => ({
+	// 	label: userTypeLabels[key] || `UserType-${key}`,
+	// 	count: activeUserTypeCount[key],
+	// }));
+	// console.log("Active User Type Count:", test);
 
 	// Define AI Copilot readable state for the network users count based on user type
 	useCopilotInfo({
@@ -179,7 +181,7 @@ export const NetworkUsersProvider = ({
 		parentId: copilotReadableUserCountId,
 		value: Object.keys(activeUserTypeCount)
 			?.map((key) => ({
-				userType: UserTypeLabel[key] || `Type-${key}`,
+				userType: userTypeLabels[key] || `Type-${key}`,
 				count: activeUserTypeCount[key],
 			}))
 			?.reduce((acc, curr) => {
@@ -222,12 +224,14 @@ export const NetworkUsersProvider = ({
  * Generate a tree structure from the list of users.
  * MARK: Get Tree
  * @param list - The list of users.
+ * @param userTypeLabels
  * @param setNetworkUsersTree - The function to set the network users tree.
  * @param setUserTypeIdList - The function to set the available user-type-id list.
  * @param setActiveUserTypeCount
  */
 const generateTree = (
 	list: NetworkUser[],
+	userTypeLabels: Record<number, string>,
 	setNetworkUsersTree: (_tree: Record<string, TreeNode>) => void,
 	setUserTypeIdList: (_ids: number[]) => void,
 	setActiveUserTypeCount: (_count: Record<number, number>) => void
@@ -245,21 +249,21 @@ const generateTree = (
 			isFolder: true,
 			rootCategory: true,
 			children: [],
-			data: UserTypeLabel[UserType.SUPER_DISTRIBUTOR],
+			data: userTypeLabels[UserType.SUPER_DISTRIBUTOR],
 		},
 		dists: {
 			index: "dists",
 			isFolder: true,
 			rootCategory: true,
 			children: [],
-			data: `Independent ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
+			data: `Independent ${userTypeLabels[UserType.DISTRIBUTOR]}`,
 		},
 		iretailers: {
 			index: "iretailers",
 			isFolder: true,
 			rootCategory: true,
 			children: [],
-			data: UserTypeLabel[UserType.I_MERCHANT],
+			data: userTypeLabels[UserType.I_MERCHANT],
 		},
 		others: {
 			index: "others",
@@ -317,12 +321,12 @@ const generateTree = (
 			meta: {
 				...user,
 				user_type:
-					UserTypeLabel[user_type_id] || `Type-${user_type_id || 0}`,
+					userTypeLabels[user_type_id] || `Type-${user_type_id || 0}`,
 			},
 			data:
 				name +
 				(parent === "others"
-					? ` (${UserTypeLabel[user_type_id] || `Type-${user_type_id || 0}`})`
+					? ` (${userTypeLabels[user_type_id] || `Type-${user_type_id || 0}`})`
 					: ""),
 		};
 	});

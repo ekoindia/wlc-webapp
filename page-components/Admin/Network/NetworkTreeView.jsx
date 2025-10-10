@@ -1,20 +1,20 @@
 import { Box, Flex, Text /* Checkbox, Stack */ } from "@chakra-ui/react";
-import { UserType /*, UserTypeLabel */ } from "constants";
+import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
+import useHslColor from "hooks/useHslColor";
 import { useEffect, useMemo, useState } from "react";
 import {
-	UncontrolledTreeEnvironment,
-	Tree,
 	StaticTreeDataProvider,
+	Tree,
+	UncontrolledTreeEnvironment,
 } from "react-complex-tree";
-import useHslColor from "hooks/useHslColor";
+import "react-complex-tree/lib/style-modern.css";
 import { FaRegUser } from "react-icons/fa6";
 import { FcBusinessman, FcManager } from "react-icons/fc";
 import { MdFolderShared } from "react-icons/md";
 import { RiEBike2Fill } from "react-icons/ri";
 import { getInitials } from "utils/textFormat";
 import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
-import "react-complex-tree/lib/style-modern.css";
 // import { useSet } from "hooks";
 
 /**
@@ -62,7 +62,7 @@ const NetworkTreeView = () => {
 	// 		// Create list of options for the filter checkboxes
 	// 		const _userTypeFilterList = userTypeIdList.map((userTypeId) => ({
 	// 			value: userTypeId,
-	// 			label: UserTypeLabel[userTypeId] || "Type " + userTypeId,
+	// 			label: getUserTypeLabel(userTypeId) || "Type " + userTypeId,	// from useUserTypes()
 	// 		}));
 	// 		setUserTypeFilterList(_userTypeFilterList);
 	// 	}
