@@ -1,21 +1,17 @@
 import { useToken } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useAppSource } from "contexts/AppSourceContext";
-import { usePubSub } from "contexts/PubSubContext";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
-import useBankList from "hooks/useBankList";
-import useCountryStates from "hooks/useCountryStates";
-import useRefreshToken from "hooks/useRefreshToken";
-import useShopTypes from "hooks/useShopTypes";
+import { useAppSource, usePubSub, useSession } from "contexts";
+import { fetcher } from "helpers";
+import {
+	useBankList,
+	useCountryStates,
+	useRefreshToken,
+	useShopTypes,
+} from "hooks";
 import dynamic from "next/dynamic";
 import router from "next/router";
 import { useCallback, useEffect } from "react";
-import {
-	ANDROID_ACTION,
-	ANDROID_PERMISSION,
-	doAndroidAction,
-} from "utils/AndroidUtils";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
 	useAndroidIntegration,
 	useDigilockerApi,
