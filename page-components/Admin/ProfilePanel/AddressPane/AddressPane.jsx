@@ -7,6 +7,8 @@ import { capitalize, nullRemover } from "utils";
 
 const AddressPane = ({ data }) => {
 	const router = useRouter();
+	const isLocationAvailable = +data?.lattitude && +data?.longitude;
+
 	return (
 		<Card h={{ base: "auto", md: "560px" }}>
 			<Flex
@@ -34,14 +36,16 @@ const AddressPane = ({ data }) => {
 					</Flex>
 				</Flex>
 
-				<Flex justify="center" w="100%" h="180px">
-					<MapView
-						h="180"
-						w="560"
-						lat={data?.lattitude}
-						lng={data?.longitude}
-					/>
-				</Flex>
+				{isLocationAvailable ? (
+					<Flex justify="center" w="100%" h="180px">
+						<MapView
+							h="180"
+							w="560"
+							lat={data?.lattitude}
+							lng={data?.longitude}
+						/>
+					</Flex>
+				) : null}
 
 				<Flex
 					direction={{ base: "column", lg: "row" }}
@@ -58,26 +62,29 @@ const AddressPane = ({ data }) => {
 					>
 						Update Address
 					</Button>
-					<Flex
-						gap="2"
-						align="center"
-						color="primary.DEFAULT"
-						onClick={() =>
-							openGoogleMap(data?.lattitude, data?.longitude)
-						}
-						cursor="pointer"
-					>
-						<IcoButton
-							title="View on Google Maps"
-							theme="primary"
-							iconName="near-me"
+
+					{isLocationAvailable ? (
+						<Flex
+							gap="2"
+							align="center"
+							color="primary.DEFAULT"
+							onClick={() =>
+								openGoogleMap(data?.lattitude, data?.longitude)
+							}
 							cursor="pointer"
-							size="sm"
-						/>
-						<Text fontWeight="semibold" whiteSpace="nowrap">
-							View on Google Maps
-						</Text>
-					</Flex>
+						>
+							<IcoButton
+								title="View on Google Maps"
+								theme="primary"
+								iconName="near-me"
+								cursor="pointer"
+								size="sm"
+							/>
+							<Text fontWeight="semibold" whiteSpace="nowrap">
+								View on Google Maps
+							</Text>
+						</Flex>
+					) : null}
 				</Flex>
 			</Flex>
 		</Card>
