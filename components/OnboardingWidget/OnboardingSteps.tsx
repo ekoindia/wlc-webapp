@@ -1,15 +1,7 @@
 import { useToken } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
-import { useAppSource, usePubSub, useSession } from "contexts";
-import { fetcher } from "helpers";
-import {
-	useBankList,
-	useCountryStates,
-	useRefreshToken,
-	useShopTypes,
-} from "hooks";
+import { useAppSource, usePubSub } from "contexts";
+import { useBankList, useCountryStates, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
-import router from "next/router";
 import { useCallback, useEffect } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
@@ -36,23 +28,21 @@ const ExternalOnboardingWidget = dynamic(
 );
 
 const OnboardingSteps = ({
-	// setStep,
 	isAssistedOnboarding,
 	logo,
 	appName,
 	orgName,
 	userData,
-	updateUserInfo,
 	assistedAgentDetails,
+	refreshAgentProfile,
 }) => {
 	const { state, actions } = useOnboardingState();
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
-	const { generateNewToken } = useRefreshToken();
 	const { banks: bankList } = useBankList();
 	const { shopTypes: shopTypesData } = useShopTypes();
 	const { states: stateTypesData } = useCountryStates();
-	const { accessToken } = useSession();
+
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
 		"primary.DEFAULT",
@@ -141,24 +131,20 @@ const OnboardingSteps = ({
 		state,
 		actions,
 		mobile,
-		onSuccess: !isAssistedOnboarding
-			? async (_data, bodyData) => {
-					// Refresh API and handle step initialization for role selection
-					const refreshResult = await refreshApiCall();
-					if (bodyData.id === 0) {
-						initialStepSetter(refreshResult);
-					}
-				}
-			: undefined,
+		onSuccess: async (_data, bodyData) => {
+			// Refresh API and handle step initialization for role selection
+			const refreshResult = await refreshAgentProfile();
+			if (bodyData.id === 0) {
+				initialStepSetter(refreshResult);
+			}
+		},
 	});
 
 	const fileUpload = useFileUpload({
 		state,
 		actions,
 		mobile,
-		refreshApiCall: !isAssistedOnboarding
-			? () => refreshApiCall()
-			: undefined,
+		refreshApiCall: () => refreshAgentProfile(),
 	});
 
 	const initialStepSetter = useCallback(
@@ -253,45 +239,6 @@ const OnboardingSteps = ({
 		}
 	};
 
-	// Method to refresh user profile and update states
-	const refreshApiCall = useCallback(async () => {
-		actions.setApiInProgress(true);
-		try {
-			const res = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL +
-					Endpoints.REFRESH_PROFILE,
-				{
-					token: accessToken,
-					body: {
-						last_refresh_token: userData?.refresh_token,
-					},
-				},
-				generateNewToken
-			);
-
-			// Check if states list needs to be captured on refresh
-			updateUserInfo(res);
-			actions.setIsLoading(false);
-
-			if (
-				res?.details?.onboarding !== 1 &&
-				res?.details?.onboarding !== undefined &&
-				res?.details?.onboarding !== null &&
-				!isAssistedOnboarding
-			) {
-				router.push("/home");
-			}
-
-			actions.setApiInProgress(false);
-			return res;
-		} catch (error) {
-			actions.setIsLoading(false);
-			actions.setApiInProgress(false);
-
-			console.log("inside initial api error", error);
-		}
-	}, []);
-
 	useEffect(() => {
 		const handleMessage = (event) => {
 			if (event.data.type === "STATUS_UPDATE") {
@@ -346,7 +293,8 @@ const OnboardingSteps = ({
 
 	useEffect(() => {
 		// Based on the assisted onboarding prop, decide what to do.
-		refreshApiCall();
+		// TODO: CHECK IF NEEDED
+		refreshAgentProfile();
 	}, []);
 	return (
 		<ExternalOnboardingWidget

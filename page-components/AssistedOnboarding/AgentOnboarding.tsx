@@ -1,7 +1,7 @@
 import { Center, Spinner } from "@chakra-ui/react";
 import { OnboardingWidget } from "components/OnboardingWidget";
 import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
@@ -22,11 +22,14 @@ export interface AgentOnboardingProps {
  * ```
  */
 const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
+	const { userData, updateUserInfo } = useUser();
+	console.log("[AgentOnboarding] userData", userData);
+	const { orgDetail } = useOrgDetailContext();
+	const { logo, app_name, org_name } = orgDetail ?? {};
 	const [agentDetails, setAgentDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasError, setHasError] = useState(false);
 
-	const { userData } = useUser();
 	const { accessToken } = useSession();
 
 	console.log("[AgentOnboarding] userData", userData);
@@ -159,9 +162,15 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 
 	return (
 		<OnboardingWidget
-			isAssistedOnboarding
+			logo={logo}
+			appName={app_name}
+			orgName={org_name}
+			userData={userData}
+			updateUserInfo={updateUserInfo}
+			isAssistedOnboarding={true}
 			assistedAgentDetails={agentDetails}
 			allowedMerchantTypes={[1]} // Restrict to Retailer role only
+			refreshAgentProfile={fetchAgentDetails}
 		/>
 	);
 };

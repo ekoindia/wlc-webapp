@@ -26,20 +26,18 @@ const ExternalSelectionScreen = dynamic(
  * @param {Function} props.setSelectedRole - Function to set the selected role
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
+ * @param props.refreshAgentProfile
  * @returns {JSX.Element} The rendered RoleSelection component
  */
 const RoleSelection = ({
 	setStep,
-	logo,
-	appName,
-	orgName,
 	userData,
-	updateUserInfo,
 	isAssistedOnboarding,
 	selectedRole,
 	setSelectedRole,
 	assistedAgentDetails,
 	allowedMerchantTypes,
+	refreshAgentProfile,
 }) => {
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
@@ -62,7 +60,9 @@ const RoleSelection = ({
 		onSuccess: (data, _bodyData) => {
 			// Check if role selection was successful and transition to KYC
 			if (data?.response_type_id === 1566) {
-				setStep("KYC_FLOW");
+				refreshAgentProfile().then(() => {
+					setStep("KYC_FLOW");
+				});
 			}
 		},
 	});
@@ -106,11 +106,6 @@ const RoleSelection = ({
 						},
 					});
 				}}
-				logo={logo} // check if needed
-				appName={appName} // check if needed
-				orgName={orgName} // check if needed
-				userData={userData} // check if needed
-				updateUserInfo={updateUserInfo} // check if needed
 			/>
 		</Center>
 	);
