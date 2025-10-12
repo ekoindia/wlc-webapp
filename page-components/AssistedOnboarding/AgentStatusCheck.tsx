@@ -53,7 +53,9 @@ const AgentStatusCheck = ({
 			onAgentDetailsFetched(agentDetails);
 
 			// Check onboarding status
-			const { onboarding, onboarding_steps } = agentDetails;
+
+			const { user_detail } = agentDetails;
+			const { onboarding, onboarding_steps } = user_detail;
 
 			// If onboarding is incomplete (1) and has onboarding steps, continue onboarding
 			if (onboarding === 1 && onboarding_steps?.length > 0) {
