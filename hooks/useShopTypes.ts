@@ -3,7 +3,7 @@ import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRefreshToken } from ".";
 
 // Types
@@ -89,19 +89,23 @@ const useShopTypes = (): UseShopTypesReturn => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [accessToken, generateNewToken, toast]);
+	}, [accessToken, generateNewToken]);
 
 	// Auto-fetch on mount
 	useEffect(() => {
 		fetchShopTypes();
-	}, [fetchShopTypes]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-	return {
-		shopTypes,
-		isLoading,
-		error,
-		refetch: fetchShopTypes,
-	};
+	return useMemo(
+		() => ({
+			shopTypes,
+			isLoading,
+			error,
+			refetch: fetchShopTypes,
+		}),
+		[shopTypes, isLoading, error, fetchShopTypes]
+	);
 };
 
 export default useShopTypes;

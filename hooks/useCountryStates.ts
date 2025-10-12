@@ -3,7 +3,7 @@ import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRefreshToken } from ".";
 
 // Types
@@ -121,7 +121,7 @@ const useCountryStates = (
 				setIsLoading(false);
 			}
 		},
-		[accessToken, generateNewToken, toast]
+		[accessToken, generateNewToken]
 	);
 
 	// Auto-fetch on mount if enabled
@@ -129,15 +129,19 @@ const useCountryStates = (
 		if (autoFetch) {
 			fetchStates();
 		}
-	}, [autoFetch, fetchStates]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [autoFetch]);
 
-	return {
-		states,
-		isLoading,
-		error,
-		refetch: fetchStates,
-		countryCode, // Return current country code for reference
-	};
+	return useMemo(
+		() => ({
+			states,
+			isLoading,
+			error,
+			refetch: fetchStates,
+			countryCode, // Return current country code for reference
+		}),
+		[states, isLoading, error, fetchStates, countryCode]
+	);
 };
 
 export default useCountryStates;
