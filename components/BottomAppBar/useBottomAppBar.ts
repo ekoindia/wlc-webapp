@@ -45,13 +45,15 @@ export const useBottomAppBarItems = ({
 
 	return [
 		{
+			// Admin home page & dashboard
 			name: "dashboard",
-			label: "Dashboard",
+			label: "Home",
 			icon: "dashboard",
 			path: "/admin",
 			visible: isAdmin ? !isAdminAgentMode : isAdminAgentMode,
 		},
 		{
+			// Non-admin home page
 			name: "home",
 			label: "Home",
 			icon: "home",

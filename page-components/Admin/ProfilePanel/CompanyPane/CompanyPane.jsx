@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { capitalize } from "utils/textFormat";
 
 /**
- * A <CompanyPane> component that displays company details.
+ * A <CompanyPane> component that displays user/company details.
  *
  * This component receives a data object as a prop and displays the company's avatar, name, user code, account type, plan name, and wallet balance. It also provides a button to view all transactions.
  * @param {object} props - Properties passed to the component

@@ -186,7 +186,7 @@ const MyAccountCard = ({ onClose }) => {
 	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT_LINK");
 	const { orgDetail } = useOrgDetailContext();
 
-	const { userDetails } = userData;
+	const { userDetails } = userData ?? {};
 	const { name, code, email, mobile } = userDetails ?? {};
 	const router = useRouter();
 	const { copy, state } = useClipboard();

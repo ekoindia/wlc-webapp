@@ -218,18 +218,21 @@ const NetworkTreeView = () => {
 												/>
 											) : null}
 										</Flex>
-										<Box>
-											<strong>Type: </strong>
+										<Tag
+											w="fit-content"
+											fontSize="0.9em"
+											fontWeight="500"
+										>
 											{selectedItem?.meta?.user_type}
-										</Box>
+										</Tag>
 										<Box>
 											<strong>Mobile: </strong>
 											{selectedItem?.meta?.mobile}
 										</Box>
-										<Box>
+										{/* <Box>
 											<strong>User Code: </strong>
 											{selectedItem?.meta?.user_code}
-										</Box>
+										</Box> */}
 									</Flex>
 								)
 							) : (
@@ -263,6 +266,7 @@ const NetworkTreeView = () => {
 
 /**
  * Network Tree Item (Title) component
+ * MARK: Tree Item
  * @param {object} props
  * @param {object} props.user User object (tree item)
  * @param props.data
@@ -290,27 +294,41 @@ const NetworkTreeItem = ({
 			<Text textTransform="capitalize">
 				{(data || meta.mobile || "").toString().toLowerCase()}
 			</Text>
-			{isFolder && count ? (
-				<Flex
-					align="center"
-					justify="center"
-					borderRadius="full"
-					bg="#DDD"
-					color="#666"
-					fontSize="0.7em"
-					px="0.4em"
-					minW="15px"
-					minH="15px"
-				>
-					{count}
-				</Flex>
+			{meta.parent_user_code !== "root" && meta.user_type ? (
+				<Tag>{meta.user_type}</Tag>
 			) : null}
+			{isFolder && count ? <Tag borderRadius="full">{count}</Tag> : null}
+		</Flex>
+	);
+};
+
+/**
+ * Tag component to show user-type, user count, etc
+ * @param {object} props - Props for the Tag component
+ * @param {ReactNode} props.children - Child elements to be displayed inside the tag
+ */
+const Tag = ({ children, ...rest }) => {
+	return (
+		<Flex
+			align="center"
+			justify="center"
+			borderRadius="5px"
+			bg="#DDD"
+			color="#666"
+			fontSize="0.7em"
+			px="0.4em"
+			minW="15px"
+			minH="15px"
+			{...rest}
+		>
+			{children}
 		</Flex>
 	);
 };
 
 /**
  * Tree item logo: show a folder icon for root folders or an avatar based on the user-type
+ * MARK: Type Icon
  * @param {object} props
  * @param {boolean} props.rootCategory - Whether the item is a root category folder
  * @param {string} props.user_type - Type of the user
