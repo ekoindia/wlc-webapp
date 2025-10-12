@@ -2,7 +2,7 @@ import { useToken } from "@chakra-ui/react";
 import { useAppSource, usePubSub } from "contexts";
 import { useBankList, useCountryStates, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
 	useAndroidIntegration,
@@ -50,46 +50,52 @@ const OnboardingSteps = ({
 	]);
 
 	// Determine the user details to use for onboarding
-	const onboardingUserDetails = isAssistedOnboarding
-		? assistedAgentDetails
-		: userData;
+	const onboardingUserDetails = useMemo(
+		() => (isAssistedOnboarding ? assistedAgentDetails : userData),
+		[isAssistedOnboarding, assistedAgentDetails, userData]
+	);
 
 	console.log(
 		"[AgentOnboarding] onboardingUserDetails",
 		onboardingUserDetails
 	);
 
-	const userType = getUserTypeFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const userType = useMemo(
+		() => getUserTypeFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
 	console.log("[AgentOnboarding] userType", userType);
 
-	const onboardingSteps = getOnboardingStepsFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const onboardingSteps = useMemo(
+		() =>
+			getOnboardingStepsFromData(
+				onboardingUserDetails,
+				isAssistedOnboarding
+			),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
 	console.log("[AgentOnboarding] onboardingSteps", onboardingSteps);
 
-	const mobile = getMobileFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const mobile = useMemo(
+		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
 	console.log("[AgentOnboarding] mobile", mobile);
 
-	const agreementId = getAgreementIdFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const agreementId = useMemo(
+		() =>
+			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
 	console.log("[AgentOnboarding] agreementId", agreementId);
 
-	const userCode = getUserCodeFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const userCode = useMemo(
+		() => getUserCodeFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
 	console.log("[AgentOnboarding] userCode", userCode);
