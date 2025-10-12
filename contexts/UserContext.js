@@ -260,12 +260,13 @@ const UserProvider = ({ userMockData, children }) => {
 };
 
 /**
- * Get user profile details.
+ * Get the currently logged-in user's profile details (from the `UserContext`)
  * @returns {object} An object with the following properties:
  * @property {boolean} isLoggedIn - If true, user is logged in
  * @property {boolean} isAdmin - If true, user is an admin
  * @property {number} userId - User ID
- * @property {string} userType - User type
+ * @property {string} userType - User type ID
+ * @property {string} userTypeLabel - User type label
  * @property {string} accessToken - Access token
  * @property {object} userData - Detailed user profile data object
  * @property {Function} login - Login function
@@ -290,12 +291,14 @@ const useUser = () => {
 };
 
 /**
- * Get user session details.
+ * Get limited session details for the logged-in user (from the `UserContext`).
+ * For detailed user profile, use the `useUser()` hook.
  * @returns {object} An object with the following properties:
  * @property {boolean} isLoggedIn - If true, user is logged in
  * @property {boolean} isAdmin - If true, user is an admin
  * @property {number} userId - User ID
- * @property {string} userType - User type
+ * @property {string} userType - User type ID
+ * @property {string} userTypeLabel - User type label
  * @property {string} accessToken - Access token
  * @property {boolean} loading - If true, user data is being loaded
  * @property {Function} setLoading - Set loading state (used by RouteProtector)
