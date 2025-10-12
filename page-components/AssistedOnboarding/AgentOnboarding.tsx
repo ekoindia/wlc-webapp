@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 
 export interface AgentOnboardingProps {
 	agentMobile?: string;
+	agentDetails?: any;
+	fetchAgentDetails?: (_mobile: string) => Promise<any>;
 }
 
 /**
@@ -15,27 +17,46 @@ export interface AgentOnboardingProps {
  * Uses the OnboardingWidget with assisted onboarding specific configuration
  * @param {AgentOnboardingProps} props - Component props
  * @param {string} [props.agentMobile] - The agent's mobile number
+ * @param {any} [props.agentDetails] - Pre-fetched agent details to avoid redundant API calls
+ * @param {(mobile: string) => Promise<any>} [props.fetchAgentDetails] - Function to fetch agent details from API
  * @returns {JSX.Element} The rendered AgentOnboarding component
  * @example
  * ```tsx
- * <AgentOnboarding agentMobile="XXXXXXXXXX" />
+ * <AgentOnboarding agentMobile="XXXXXXXXXX" agentDetails={details} fetchAgentDetails={fetchAgentDetails} />
  * ```
  */
-const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
+const AgentOnboarding = ({
+	agentMobile,
+	agentDetails: initialAgentDetails,
+	fetchAgentDetails: fetchAgentDetailsProp,
+}: AgentOnboardingProps) => {
 	const { userData, updateUserInfo } = useUser();
 	console.log("[AgentOnboarding] userData", userData);
 	const { orgDetail } = useOrgDetailContext();
 	const { logo, app_name, org_name } = orgDetail ?? {};
-	const [agentDetails, setAgentDetails] = useState({});
+	const [agentDetails, setAgentDetails] = useState(initialAgentDetails ?? {});
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasError, setHasError] = useState(false);
 
 	const { accessToken } = useSession();
 
 	console.log("[AgentOnboarding] userData", userData);
+	console.log("[AgentOnboarding] initialAgentDetails", initialAgentDetails);
 
-	// call api for getting agent details (151)
+	/**
+	 * Wrapper function to fetch agent details
+	 * Uses passed prop function if available, otherwise falls back to local implementation
+	 * @returns {Promise<any>} The agent details response
+	 */
 	const fetchAgentDetails = async (): Promise<any> => {
+		// If fetchAgentDetails passed from parent, use it
+		if (fetchAgentDetailsProp && agentMobile) {
+			const details = await fetchAgentDetailsProp(agentMobile);
+			setAgentDetails(details);
+			return details;
+		}
+
+		// Fallback to local fetch if not provided
 		try {
 			const response = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -58,10 +79,8 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 					"[AgentOnboarding] Agent details fetched:",
 					response.data
 				);
-
-				// Update user info with fetched agent details
 				setAgentDetails(response.data);
-				// return response.data;
+				return response.data;
 			}
 			return null;
 		} catch (error) {
@@ -115,12 +134,27 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 		}
 	};
 
-	// Call both APIs simultaneously
+	/**
+	 * Initializes agent onboarding flow
+	 * If agent details are pre-fetched, only creates partial account
+	 * Otherwise, creates account and fetches details
+	 */
 	const initializeAgentOnboarding = async () => {
 		setIsLoading(true);
 		setHasError(false);
 
 		try {
+			// If agent details already provided, skip fetching
+			if (initialAgentDetails) {
+				console.log(
+					"[AgentOnboarding] Using pre-fetched agent details, only creating partial account..."
+				);
+				await createPartialAccount();
+				setIsLoading(false);
+				return;
+			}
+
+			// Otherwise, perform full initialization
 			console.log("[AgentOnboarding] Starting sequential API calls...");
 
 			// Step 1: Create partial account
@@ -145,6 +179,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 
 	useEffect(() => {
 		initializeAgentOnboarding();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// MARK: JSX

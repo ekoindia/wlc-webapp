@@ -1,4 +1,8 @@
 import { Flex } from "@chakra-ui/react";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts";
+import { useUser } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import {
@@ -13,6 +17,7 @@ import {
  */
 export const ASSISTED_ONBOARDING_STEPS = {
 	ADD_AGENT: "ADD_AGENT",
+	AGENT_STATUS_CHECK: "AGENT_STATUS_CHECK",
 	AGENT_ALREADY_EXISTS: "AGENT_ALREADY_EXISTS",
 	OTP_VERIFICATION: "OTP_VERIFICATION",
 	ONBOARDING_WIDGET: "ONBOARDING_WIDGET",
@@ -29,18 +34,22 @@ export const RESPONSE_TYPE_IDS = {
 	OTP_VERIFICATION_ERROR: 302,
 } as const;
 
+const AgentStatusCheck = dynamic(() => import("./AgentStatusCheck"), {
+	ssr: false,
+});
+
 const AgentAlreadyExistsScreen = dynamic(
 	() => import("./AgentAlreadyExistsScreen"),
 	{ ssr: false }
 ) as React.ComponentType<AgentAlreadyExistsScreenProps>;
 
-const AgentOnboarding = dynamic(() => import("./AgentOnboarding"), {
-	ssr: false,
-}) as React.ComponentType<AgentOnboardingProps>;
-
 const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
 	ssr: false,
 }) as React.ComponentType<OtpVerificationFormProps>;
+
+const AgentOnboarding = dynamic(() => import("./AgentOnboarding"), {
+	ssr: false,
+}) as React.ComponentType<AgentOnboardingProps>;
 
 /**
  * AssistedOnboarding component that manages the multi-step agent onboarding flow
@@ -51,10 +60,56 @@ const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
  * ```
  */
 const AssistedOnboarding = (): JSX.Element => {
+	const { userData } = useUser();
+	const { accessToken } = useSession();
+
 	const [step, setStep] = useState<keyof typeof ASSISTED_ONBOARDING_STEPS>(
 		ASSISTED_ONBOARDING_STEPS.ADD_AGENT
 	);
 	const [agentMobile, setAgentMobile] = useState<string>("");
+	const [agentDetails, setAgentDetails] = useState<any>(null);
+
+	/**
+	 * Fetches agent details using interaction_type_id: 151
+	 * Centralized API call shared across multiple child components
+	 * @param {string} mobile - The agent's mobile number to fetch details for
+	 * @returns {Promise<any>} The agent details response
+	 */
+	const fetchAgentDetails = async (mobile: string): Promise<any> => {
+		try {
+			const response = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					method: "POST",
+					body: {
+						interaction_type_id: 151,
+						csp_id: mobile,
+						user_identity_type: "mobile_number",
+						user_identity: userData?.userId,
+						mobile: userData?.userId,
+						id_type: "Mobile",
+					},
+					token: accessToken,
+				}
+			);
+
+			if (response?.data) {
+				console.log(
+					"[AssistedOnboarding] Agent details fetched:",
+					response.data
+				);
+				return response.data;
+			}
+			return null;
+		} catch (error) {
+			console.error(
+				"[AssistedOnboarding] Error fetching agent details:",
+				error
+			);
+			throw error;
+		}
+	};
+
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {
 		switch (step) {
@@ -63,6 +118,16 @@ const AssistedOnboarding = (): JSX.Element => {
 					<AddAgentForm
 						setStep={setStep}
 						setAgentMobile={setAgentMobile}
+					/>
+				);
+
+			case ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK:
+				return (
+					<AgentStatusCheck
+						agentMobile={agentMobile}
+						setStep={setStep}
+						onAgentDetailsFetched={setAgentDetails}
+						fetchAgentDetails={fetchAgentDetails}
 					/>
 				);
 
@@ -83,7 +148,13 @@ const AssistedOnboarding = (): JSX.Element => {
 				);
 
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
-				return <AgentOnboarding agentMobile={agentMobile} />;
+				return (
+					<AgentOnboarding
+						agentMobile={agentMobile}
+						agentDetails={agentDetails}
+						fetchAgentDetails={fetchAgentDetails}
+					/>
+				);
 
 			default:
 				return <div>Oops! Something went wrong.</div>;

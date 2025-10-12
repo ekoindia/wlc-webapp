@@ -115,8 +115,8 @@ const AddAgentForm = ({
 					responseTypeId ===
 					RESPONSE_TYPE_IDS.AGENT_COMPLETED_ONBOARDING
 				) {
-					// Agent already exists and completed onboarding
-					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_ALREADY_EXISTS);
+					// Agent already exists - check status to determine if onboarding is complete
+					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK);
 					return;
 				}
 
