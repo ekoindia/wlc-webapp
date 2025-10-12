@@ -123,16 +123,18 @@ const NetworkTable = ({
 	 * @param {object} rowData - Row data object
 	 */
 	const onRowClick = (rowData) => {
-		// Enable Agent Profile view for Admins only
-		if (!isAdmin) return;
-
 		const mobile = rowData?.agent_mobile;
 		localStorage.setItem(
 			"oth_last_selected_agent",
 			JSON.stringify(rowData)
 		);
+
+		let _pathname = isAdmin
+			? `/admin/my-network/profile`
+			: `/my-network/profile`;
+
 		router.push({
-			pathname: `/admin/my-network/profile`,
+			pathname: _pathname,
 			query: { mobile },
 		});
 	};
@@ -173,10 +175,7 @@ const NetworkTable = ({
 				data: agentDetails,
 				ResponsiveCard: NetworkCard,
 				variant: "stripedActionRedirect",
-				// For non-admins, remove last table column (menu-dropdown)
-				renderer: isAdmin
-					? columnsToRender
-					: columnsToRender.slice(0, -2),
+				renderer: columnsToRender,
 			}}
 		/>
 	);
