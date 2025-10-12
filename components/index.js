@@ -145,3 +145,5 @@ export { CopyButton } from "./CopyButton";
 export { SegmentedControl } from "./SegmentedControl";
 
 export { OnboardingWidget } from "./OnboardingWidget";
+
+export { default as ToggleColumns } from "./ToggleColumns";

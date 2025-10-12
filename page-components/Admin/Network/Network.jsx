@@ -4,12 +4,14 @@ import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag } from "hooks";
+import { useColumnVisibility } from "hooks/useColumnVisibility";
 import { formatDate } from "libs/dateFormat";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { NetworkTable, NetworkToolbar } from ".";
+import { NetworkTable, NetworkToggleColumns, NetworkToolbar } from ".";
+import { networkTableParameterList } from "./NetworkTable/NetworkTable";
 
 const NetworkTreeView = dynamic(
 	() => import(".").then((pkg) => pkg.NetworkTreeView),
@@ -25,6 +27,7 @@ const PAGE_LIMIT = 10;
 const action = {
 	FILTER: 0,
 	// EXPORT: 1,
+	TOGGLE_COLUMNS: 2,
 };
 
 const operation_type_list = [
@@ -106,6 +109,21 @@ const Network = () => {
 	const watcherFilter = useWatch({
 		control: controlFilter,
 	});
+
+	// Column visibility management
+	const {
+		hiddenColumns,
+		toggleColumnVisibility,
+		resetColumnVisibility,
+		getVisibleColumns,
+	} = useColumnVisibility({
+		storageKey: "networkHidnCols",
+		columns: networkTableParameterList,
+	});
+
+	// Recalculate visible columns when hiddenColumns changes
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const visibleColumns = useMemo(() => getVisibleColumns(), [hiddenColumns]);
 
 	const hitQuery = () => {
 		let tf_req_uri = queryParam
@@ -328,6 +346,17 @@ const Network = () => {
 					}
 				: null,
 		},
+		{
+			id: action.TOGGLE_COLUMNS,
+			label: "Columns",
+			icon: "visibility",
+			Component: NetworkToggleColumns,
+			columns: networkTableParameterList,
+			hiddenColumns,
+			onToggle: toggleColumnVisibility,
+			onReset: resetColumnVisibility,
+			desktopOnly: true,
+		},
 	];
 
 	useEffect(() => {
@@ -441,6 +470,7 @@ const Network = () => {
 							agentDetails,
 							pageNumber,
 							setPageNumber,
+							visibleColumns,
 						}}
 					/>
 				) : null}

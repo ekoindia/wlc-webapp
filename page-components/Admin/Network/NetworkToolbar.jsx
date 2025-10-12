@@ -125,6 +125,11 @@ const NetworkToolbar = ({
 							icon,
 							parameter_list,
 							handleSubmit,
+							Component,
+							columns,
+							hiddenColumns,
+							onToggle,
+							onReset,
 							register,
 							control,
 							errors,
@@ -135,6 +140,7 @@ const NetworkToolbar = ({
 							secondaryButtonAction,
 							secondaryButtonText,
 							styles,
+							desktopOnly,
 						}) => (
 							<React.Fragment key={id}>
 								<Button
@@ -146,6 +152,11 @@ const NetworkToolbar = ({
 										)
 									}
 									{...styles}
+									display={
+										desktopOnly
+											? { base: "none", md: "flex" }
+											: "flex"
+									}
 								>
 									<Icon name={icon} size="sm" />
 									&nbsp;
@@ -161,50 +172,59 @@ const NetworkToolbar = ({
 									onClose={() => setOpenModalId(null)}
 									title={label}
 								>
-									<form
-										onSubmit={handleSubmit(
-											handleFormSubmit
-										)}
-									>
-										<Flex
-											direction="column"
-											w="100%"
-											gap="8"
-											mb="4"
+									{Component ? (
+										<Component
+											columns={columns}
+											hiddenColumns={hiddenColumns}
+											onToggle={onToggle}
+											onReset={onReset}
+										/>
+									) : (
+										<form
+											onSubmit={handleSubmit(
+												handleFormSubmit
+											)}
 										>
-											<Form
-												{...{
-													parameter_list,
-													register,
-													control,
-													formValues,
-													errors,
-													hideOptionalMark: true,
-												}}
-											/>
-											<Flex gap="4">
-												<Button
-													w="100%"
-													size="lg"
-													variant="link"
-													color="primary.dark"
-													onClick={
-														secondaryButtonAction
-													}
-												>
-													{secondaryButtonText}
-												</Button>
-												<Button
-													w="100%"
-													size="lg"
-													type="submit"
-													loading={isSubmitting}
-												>
-													{submitButtonText}
-												</Button>
+											<Flex
+												direction="column"
+												w="100%"
+												gap="8"
+												mb="4"
+											>
+												<Form
+													{...{
+														parameter_list,
+														register,
+														control,
+														formValues,
+														errors,
+														hideOptionalMark: true,
+													}}
+												/>
+												<Flex gap="4">
+													<Button
+														w="100%"
+														size="lg"
+														variant="link"
+														color="primary.dark"
+														onClick={
+															secondaryButtonAction
+														}
+													>
+														{secondaryButtonText}
+													</Button>
+													<Button
+														w="100%"
+														size="lg"
+														type="submit"
+														loading={isSubmitting}
+													>
+														{submitButtonText}
+													</Button>
+												</Flex>
 											</Flex>
-										</Flex>
-									</form>
+										</form>
+									)}
 								</Modal>
 							</React.Fragment>
 						)

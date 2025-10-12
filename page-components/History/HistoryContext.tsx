@@ -1,8 +1,9 @@
-import { useLocalStorage } from "hooks";
+import { useColumnVisibility } from "hooks/useColumnVisibility";
 import {
 	createContext,
 	FC,
 	ReactNode,
+	useCallback,
 	useContext,
 	useEffect,
 	useMemo,
@@ -44,6 +45,7 @@ interface HistoryProviderProps {
  * @param {Function} [props.onClearFilter] - External callback when filter is cleared
  * @param {Array} [props.historyParameterMetadata] - Metadata to compute table columns
  * @param {Array} [props.data] - Data to be displayed in the table
+ * @returns {JSX.Element} The provider component
  */
 export const HistoryProvider: FC<HistoryProviderProps> = ({
 	children,
@@ -60,22 +62,28 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 	const [isFiltered, setIsFiltered] = useState(initialIsFiltered);
 	const [visibleColumns] = useState(initialVisibleColumns);
 	const [processedData, setProcessedData] = useState([]); // Computed from data
-	const [hiddenColumns, setHiddenColumns] = useLocalStorage(
-		"infHistHidnCols",
-		{}
-	); // Track columns hidden by the user
 	const [aggregatedData, setAggregatedData] = useState([]); // Column data with aggregate values over all the rows
 
-	const toggleExpand = (index: number) => {
-		setExpandedRow(index === expandedRow ? null : index);
-	};
+	// Use generic column visibility hook
+	const { hiddenColumns, toggleColumnVisibility, resetColumnVisibility } =
+		useColumnVisibility({
+			storageKey: "infHistHidnCols",
+			columns: historyParameterMetadata,
+		});
 
-	const clearFilter = () => {
+	const toggleExpand = useCallback(
+		(index: number) => {
+			setExpandedRow(index === expandedRow ? null : index);
+		},
+		[expandedRow]
+	);
+
+	const clearFilter = useCallback(() => {
 		if (onClearFilter) {
 			onClearFilter();
 		}
 		setIsFiltered(false);
-	};
+	}, [onClearFilter]);
 
 	/**
 	 * useEffect: Partition the historyParameterMetadata into mainColumns and extraColumns.
@@ -176,26 +184,6 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 		setAggregatedData(aggregaredCols);
 	}, [mainColumns, hiddenColumns, processedData]);
 
-	/**
-	 * Toggle visibility of a main column in the History table.
-	 * Note: It does not impact the visibility of fields in the extra expanded section.
-	 * @param {string} name - The name of the column to toggle visibility for.
-	 * @param {boolean} isHidden - Should the column be hidden?
-	 */
-	const toggleColumnVisibility = (name: string, isHidden: boolean) => {
-		setHiddenColumns((prevHiddenColumns) => ({
-			...prevHiddenColumns,
-			[name]: isHidden,
-		}));
-	};
-
-	/**
-	 * Function to reset the columns visibility to default.
-	 */
-	const resetColumnVisibility = () => {
-		setHiddenColumns({});
-	};
-
 	// Memoize the context value to prevent unnecessary re-renders
 	const contextValue = useMemo(
 		() => ({
@@ -229,7 +217,8 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 			expandedRow,
 			isFiltered,
 			forNetwork,
-			onClearFilter,
+			clearFilter,
+			toggleExpand,
 		]
 	);
 
