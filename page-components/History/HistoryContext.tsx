@@ -13,7 +13,6 @@ import {
 interface HistoryContextType {
 	mainColumns: any[]; // Columns to show in the table
 	extraColumns: any[]; // Columns to show in the extra section after expanding  table row
-	visibleColumns: number; // (Deprecated) Number of columns to show in the table
 	expandedRow: number | null; // Index of the currently expanded row
 	setExpandedRow: (_index: number | null) => void;
 	toggleExpand: (_index: number) => void;
@@ -27,7 +26,6 @@ const HistoryContext = createContext<HistoryContextType | undefined>(undefined);
 
 interface HistoryProviderProps {
 	children: ReactNode;
-	initialVisibleColumns?: number;
 	initialIsFiltered?: boolean;
 	forNetwork?: boolean;
 	onClearFilter?: () => void;
@@ -39,7 +37,6 @@ interface HistoryProviderProps {
  * Provider component for history-related state management.
  * @param {object} props - Component props
  * @param {ReactNode} props.children - Child components
- * @param {number} [props.initialVisibleColumns] - Initial number of visible columns
  * @param {boolean} [props.initialIsFiltered] - Whether the table is currently filtered
  * @param {boolean} [props.forNetwork] - Whether this is for network history view
  * @param {Function} [props.onClearFilter] - External callback when filter is cleared
@@ -49,7 +46,6 @@ interface HistoryProviderProps {
  */
 export const HistoryProvider: FC<HistoryProviderProps> = ({
 	children,
-	initialVisibleColumns = 0,
 	initialIsFiltered = false,
 	forNetwork = false,
 	onClearFilter,
@@ -60,7 +56,6 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 	const [extraColumns, setExtraColumns] = useState([]);
 	const [expandedRow, setExpandedRow] = useState<number | null>(null);
 	const [isFiltered, setIsFiltered] = useState(initialIsFiltered);
-	const [visibleColumns] = useState(initialVisibleColumns);
 	const [processedData, setProcessedData] = useState([]); // Computed from data
 	const [aggregatedData, setAggregatedData] = useState([]); // Column data with aggregate values over all the rows
 
@@ -192,7 +187,6 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 			mainColumns,
 			extraColumns,
 			aggregatedData,
-			visibleColumns,
 			expandedRow,
 			hiddenColumns,
 			toggleColumnVisibility,
@@ -213,7 +207,6 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 			hiddenColumns,
 			toggleColumnVisibility,
 			resetColumnVisibility,
-			visibleColumns,
 			expandedRow,
 			isFiltered,
 			forNetwork,
