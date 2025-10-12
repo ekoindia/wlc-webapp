@@ -1,5 +1,5 @@
 import { ActionIcon } from "components/CommandBar";
-import { Endpoints, TransactionTypes } from "constants";
+import { Endpoints, TransactionIds, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useCopilotAction, useCopilotInfo } from "libs";
@@ -12,8 +12,8 @@ import {
 	useState,
 } from "react";
 import { formatCurrency } from "utils/numberFormat";
+import { useMenuContext, useSession } from ".";
 import { useBusinessSearchActions } from "./GlobalSearchContext";
-import { useSession } from "./UserContext";
 
 // Created a Wallet Context
 const WalletContext = createContext();
@@ -64,13 +64,18 @@ const useFetchBalance = (setBalance, accessToken) => {
 
 /**
  * Context Provider for fetching and managing wallet balance.
- * @param root0
- * @param root0.children
+ * @param {object} props - The props.
+ * @param {ReactNode} props.children - The children components that will have access to the wallet context.
  */
 const WalletProvider = ({ children }) => {
 	const { isLoggedIn, userId, accessToken } = useSession();
+	const { interactions } = useMenuContext();
+	const { role_tx_list } = interactions || {};
+
 	const [balance, _setBalance] = useState(null);
 	const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
+	const [isWalletVisible, setIsWalletVisible] = useState(true);
+	const [addBalanceTrxnId, setAddBalanceTrxnId] = useState(null);
 
 	// Function to set the balance and update the last updated date
 	const setBalance = useCallback((value) => {
@@ -84,11 +89,43 @@ const WalletProvider = ({ children }) => {
 	// const gsdata = useGlobalSearch();
 	// console.log("gsdata", gsdata);
 
+	// Fetch the transaction id for "Add Balance" screen from the allowed list of transactions
+	useEffect(() => {
+		let id = null;
+		for (
+			let i = 0;
+			i < TransactionIds.LOAD_WALLET_TRXN_ID_LIST.length;
+			i++
+		) {
+			let trxn_id = TransactionIds.LOAD_WALLET_TRXN_ID_LIST[i];
+			if (role_tx_list && role_tx_list[trxn_id]) {
+				id = trxn_id;
+				break;
+			}
+		}
+		setAddBalanceTrxnId(id);
+	}, [role_tx_list]);
+
+	// Fetch the balance when the user logs in or when the userId changes
 	useEffect(() => {
 		if (isLoggedIn) {
 			fetchBalance();
 		}
 	}, [isLoggedIn, userId, fetchBalance]);
+
+	// Hide the wallet:
+	// - if the user is not logged in or if there is no userId
+	// - if the user does not have permission to view the wallet (no transaction id found for loading wallet) and their balance is zero
+	useEffect(() => {
+		let _walletAllowed = true;
+		if (!isLoggedIn || !userId) {
+			_walletAllowed = false;
+		}
+		if (!(addBalanceTrxnId || balance > 0)) {
+			_walletAllowed = false;
+		}
+		setIsWalletVisible(_walletAllowed);
+	}, [isLoggedIn, userId, balance, addBalanceTrxnId]);
 
 	// Registering the wallet action in KBar
 	const walletAction = useMemo(() => {
@@ -135,7 +172,7 @@ const WalletProvider = ({ children }) => {
 	useCopilotAction({
 		name: "refresh-e-value-balance",
 		description:
-			"Refresh the current digital wallet (E-value) balance by fetching it again. Once refreshed, pleaase provide the updated balance to the user.",
+			"Refresh the current digital wallet (E-value) balance by fetching it again. Once refreshed, provide the updated balance to the user.",
 		handler: async () => {
 			fetchBalance();
 		},
@@ -188,8 +225,18 @@ const WalletProvider = ({ children }) => {
 			setBalance,
 			loading,
 			lastUpdatedDate,
+			isWalletVisible,
+			addBalanceTrxnId,
 		}),
-		[balance, loading, fetchBalance, setBalance, lastUpdatedDate]
+		[
+			balance,
+			loading,
+			fetchBalance,
+			setBalance,
+			lastUpdatedDate,
+			isWalletVisible,
+			addBalanceTrxnId,
+		]
 	);
 
 	return (

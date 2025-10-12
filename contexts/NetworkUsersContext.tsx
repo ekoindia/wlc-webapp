@@ -1,6 +1,6 @@
 import { Endpoints } from "constants/EndPoints";
 import { UserType } from "constants/UserTypes";
-import { useSession } from "contexts/UserContext";
+import { useUser } from "contexts/UserContext";
 import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useCopilotInfo } from "libs";
 import {
@@ -97,8 +97,10 @@ export const NetworkUsersProvider = ({
 		Record<number, number>
 	>({});
 
-	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId } =
-		useSession();
+	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId, userData } =
+		useUser();
+	const { userDetails } = userData ?? {};
+	const { code } = userDetails ?? {};
 
 	const { userTypeLabels } = useUserTypes();
 
@@ -109,7 +111,7 @@ export const NetworkUsersProvider = ({
 				setNetworkUsers({
 					networkUsersList: res.data.csp_list,
 					asof: Date.now(),
-					userId: userId,
+					userId,
 				});
 			}
 		},
@@ -131,11 +133,12 @@ export const NetworkUsersProvider = ({
 		generateTree(
 			networkUsers.networkUsersList,
 			userTypeLabels,
+			code,
 			setNetworkUsersTree,
 			setUserTypeIdList,
 			setActiveUserTypeCount
 		);
-	}, [networkUsers.networkUsersList, userTypeLabels]);
+	}, [networkUsers.networkUsersList, userTypeLabels, code]);
 
 	/**
 	 * Fetch the network users data from the server.
@@ -225,6 +228,7 @@ export const NetworkUsersProvider = ({
  * MARK: Get Tree
  * @param list - The list of users.
  * @param userTypeLabels
+ * @param code - The UserCode of the current user (to determine root nodes).
  * @param setNetworkUsersTree - The function to set the network users tree.
  * @param setUserTypeIdList - The function to set the available user-type-id list.
  * @param setActiveUserTypeCount
@@ -232,6 +236,7 @@ export const NetworkUsersProvider = ({
 const generateTree = (
 	list: NetworkUser[],
 	userTypeLabels: Record<number, string>,
+	code: string,
 	setNetworkUsersTree: (_tree: Record<string, TreeNode>) => void,
 	setUserTypeIdList: (_ids: number[]) => void,
 	setActiveUserTypeCount: (_count: Record<number, number>) => void
@@ -278,9 +283,23 @@ const generateTree = (
 	const _userTypeIds = new Set<number>();
 
 	list.forEach((user) => {
-		const { user_code, parent_user_code, user_type_id, name } = user;
+		const {
+			user_code,
+			parent_user_code,
+			user_type_id,
+			name,
+			fos_user_code,
+		} = user;
 		let parent = parent_user_code;
 		_userTypeIds.add(user_type_id);
+
+		// If the parent is the current user, set parent to "root"
+		if (parent === code) {
+			parent = "";
+		} else if (user_type_id == UserType.MERCHANT && fos_user_code) {
+			// If the user is a Merchant and has a FOS assigned, set the parent to FOS
+			parent = fos_user_code;
+		}
 
 		// Add user-type-wise count of active users
 		activeUserTypeCount[user_type_id] =
@@ -291,7 +310,10 @@ const generateTree = (
 			parent !== user_code &&
 			user_type_id !== UserType.SUPER_DISTRIBUTOR
 		) {
-			_children.push(user);
+			_children.push({
+				...user,
+				parent_user_code: parent,
+			});
 		} else {
 			switch (+user_type_id || 0) {
 				case UserType.SUPER_DISTRIBUTOR:
@@ -320,6 +342,7 @@ const generateTree = (
 			children: [],
 			meta: {
 				...user,
+				parent_user_code: parent,
 				user_type:
 					userTypeLabels[user_type_id] || `Type-${user_type_id || 0}`,
 			},

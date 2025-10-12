@@ -71,13 +71,13 @@ export const AdminBlacklistMenuItems: number[] = [
 export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 1,
-		label: "Dashboard",
+		label: "Home",
 		icon: "dashboard",
 		link: "/admin",
 		summary:
-			"View your dashboard with key metrics and insights about your business.",
+			"View your home page & dashboard with key metrics and insights about your business.",
 		fullDescription:
-			"The dashboard provides an overview of your business performance, including key metrics such as total transactions, revenue, and user engagement. It helps you monitor your product health at a glance. You also get insights about the onboarding status of your agents.",
+			"The home page provides multiple dashboard tabs with an overview of your business performance, including key metrics such as total transactions, revenue, and user engagement. It helps you monitor your product health at a glance. You also get insights about the onboarding status of your agents.",
 	},
 	{
 		id: 5,

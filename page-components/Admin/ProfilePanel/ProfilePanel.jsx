@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Button, Icon, Menus, PageTitle } from "components";
 import { ChangeRoleMenuList, Endpoints } from "constants";
 import { useSession } from "contexts";
@@ -186,7 +186,6 @@ const ProfilePanel = () => {
 				/>
 			),
 		},
-
 		{
 			id: 3,
 			comp: <DocPane documentData={agentDocuments} />,
@@ -249,9 +248,10 @@ const ProfilePanel = () => {
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
 					{agentData
-						? panes.map((item) => (
-								<GridItem key={item.id}>{item.comp}</GridItem>
-							))
+						? panes.map(({ id, comp }) => {
+								const GridComponent = () => comp;
+								return <GridComponent key={id} />;
+							})
 						: null}
 				</Grid>
 			)}

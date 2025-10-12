@@ -396,12 +396,12 @@ const generateTransactionActions = (
 	// Helper inner function to get the transaction action object
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
-		const desc = tx.description || tx.desc || "";
+		const desc = tx.description || tx.desc || tx.summary || "";
 
 		return {
 			id: "tx/" + _id,
 			name: tx.label,
-			subtitle: limitText(desc, 60),
+			subtitle: limitText(desc, 80),
 			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
 			icon: (
 				<ActionIcon
@@ -555,6 +555,10 @@ const generateMenuLinkActions = (menu_list, router) => {
 			menuLinkActions.push({
 				id: "menulnk/" + (menu.name || menu.label),
 				name: menu.name || menu.label,
+				subtitle: limitText(
+					menu.summary || menu.description || menu.desc || "",
+					80
+				),
 				icon: (
 					<ActionIcon
 						icon={menu.icon}

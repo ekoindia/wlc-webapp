@@ -1,10 +1,9 @@
 import { Circle, Flex, Text, Tooltip } from "@chakra-ui/react";
-import { TransactionIds } from "constants/EpsTransactions";
-import { useMenuContext, useSession } from "contexts";
+import { useSession } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { rotateAntiClockwise } from "libs/chakraKeyframes";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
 import { Icon } from "..";
 
@@ -30,38 +29,22 @@ const StatusCard = ({
 }: StatusCardProps): JSX.Element => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
-	const [addBalanceTrxnId, setAddBalanceTrxnId] = useState<number | null>(
-		null
-	);
 	const [isRefreshing, setIsRefreshing] = useState(false);
 	// const toast = useToast();
-	const { refreshWallet, balance, loading } = useWallet();
-	const { interactions } = useMenuContext();
-	const { role_tx_list } = interactions || {};
+	const {
+		refreshWallet,
+		balance,
+		loading,
+		isWalletVisible,
+		addBalanceTrxnId,
+	} = useWallet();
 	const { isLoggedIn, isOnboarding, isAdmin } = useSession();
-
-	// Fetch the transaction id for "Add Balance" from the allowed list of transactions
-	useEffect(() => {
-		let id = null;
-		for (
-			let i = 0;
-			i < TransactionIds.LOAD_WALLET_TRXN_ID_LIST.length;
-			i++
-		) {
-			let trxn_id = TransactionIds.LOAD_WALLET_TRXN_ID_LIST[i];
-			if (role_tx_list && role_tx_list[trxn_id]) {
-				id = trxn_id;
-				break;
-			}
-		}
-		setAddBalanceTrxnId(id);
-	}, [role_tx_list]);
 
 	// Hide the status card if the user is not logged in or is in onboarding stage
 	if (isOnboarding || isLoggedIn !== true) return null;
 
 	// Hide the status card if the balance is 0 and "Add Balance" transaction is also not allowed
-	if (!(addBalanceTrxnId || balance > 0)) return null;
+	if (!isWalletVisible) return null;
 
 	// Click handler for "Load Balance" button
 	const handleAddClick = () => {
