@@ -139,27 +139,10 @@ const NetworkTable = ({
 		});
 	};
 
-	// useEffect(() => {
-	// 	if (networkTableDataSize > 0) setLastPageWithData(pageNumber);
-	// }, [agentDetails]);
-
-	// let _pathname = router.pathname;
-
 	if (!isLoading && networkTableDataSize < 1) {
 		return (
 			<Flex direction="column" align="center" gap="2">
 				<Text color="light">Nothing Found</Text>
-				{/* <Button
-					onClick={() => {
-						router.push({
-							pathname: _pathname,
-							query: { page: lastPageWithData },
-						});
-						setPageNumber(lastPageWithData);
-					}}
-				>
-					Back
-				</Button> */}
 			</Flex>
 		);
 	}
