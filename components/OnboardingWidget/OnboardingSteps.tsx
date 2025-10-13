@@ -122,12 +122,8 @@ const OnboardingSteps = ({
 		state,
 		actions,
 		mobile,
-		onSuccess: async (_data, bodyData) => {
-			// Refresh API and handle step initialization for role selection
-			const refreshResult = await refreshAgentProfile();
-			if (bodyData.id === 0) {
-				initialStepSetter(refreshResult);
-			}
+		onSuccess: async () => {
+			await refreshAgentProfile();
 		},
 	});
 
