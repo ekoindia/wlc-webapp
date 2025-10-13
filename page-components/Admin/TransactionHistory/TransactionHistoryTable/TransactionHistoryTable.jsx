@@ -20,8 +20,7 @@ const trxnHistoryTableParameterList = [
 	{
 		name: "location",
 		label: "Location",
-		sorting: true,
-		show: "IconButton",
+		show: "Location",
 	},
 	{
 		name: "",

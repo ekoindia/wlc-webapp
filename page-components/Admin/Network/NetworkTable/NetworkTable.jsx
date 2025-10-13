@@ -74,9 +74,24 @@ export const networkTableParameterList = [
 	},
 	{
 		name: "location",
+		label: "Address",
+		sorting: true,
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+	{
+		name: "active_location",
 		label: "Location",
 		sorting: true,
-		show: "IconButton",
+		show: "Location",
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+	{
+		name: "onboarding_location",
+		label: "Onboarding\nLocation",
+		sorting: true,
+		show: "Location",
 		visible_in_table: true,
 		hide_by_default: true,
 	},
@@ -106,7 +121,6 @@ const NetworkTable = ({
 }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
-	// const [lastPageWithData, setLastPageWithData] = useState(1);
 
 	agentDetails?.forEach((agent) => {
 		const commission_type = agent?.commission_duration;
