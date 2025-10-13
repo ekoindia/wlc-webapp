@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
@@ -29,6 +29,7 @@ const AddAgentForm = ({
 	setStep,
 	setAgentMobile,
 }: AddAgentFormProps): JSX.Element => {
+	const toast = useToast();
 	const {
 		handleSubmit,
 		register,
@@ -133,6 +134,16 @@ const AddAgentForm = ({
 					responseTypeId ===
 					RESPONSE_TYPE_IDS.AGENT_NOT_EXISTS_NEED_OTP
 				) {
+					const _otp = response?.data?.otp;
+					// in case of dev, show otp toast
+					if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
+						toast({
+							title: `Demo OTP: ${_otp}`,
+							status: "success",
+							duration: 5000,
+							position: "top-right",
+						});
+					}
 					// Agent doesn't exist, needs OTP verification
 					setStep(ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION);
 					return;
