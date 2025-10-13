@@ -20,7 +20,7 @@ const trxnHistoryTableParameterList = [
 	{
 		name: "location",
 		label: "Location",
-		show: "Location",
+		show: "Address",
 	},
 	{
 		name: "",
