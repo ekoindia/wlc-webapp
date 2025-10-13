@@ -2,8 +2,8 @@ import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useSession } from "contexts";
 import dynamic from "next/dynamic";
-import { Home } from "page-components"; // Non-Admin Homepage
 import { useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 import { DashboardProvider } from ".";
 
 // Dynamically load dashboard components for better performance
@@ -38,7 +38,8 @@ const OnboardingDashboard = dynamic(
 );
 
 /**
- * The Dashboard page component
+ * The Dashboard page component.
+ * Originally used only for Admins, but now also for Non-Admins (if ADMIN_DASHBOARD_FOR_SUBNETWORK feature flag is enabled)
  */
 const Dashboard = () => {
 	const { isAdmin, isLoggedIn } = useSession();
@@ -46,17 +47,54 @@ const Dashboard = () => {
 
 	const list = isAdmin
 		? [
-				{ label: "Business", component: <BusinessDashboard /> },
-				{ label: "Onboarding", component: <OnboardingDashboard /> },
+				// Admin Homepage
+				{
+					label: "Business",
+					component: <BusinessDashboard />,
+					// disableEnv: "NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD", // Hide, if this env is `true`
+					visible: !parseEnvBoolean(
+						process?.env?.NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD
+					),
+				},
+				{
+					label: "Onboarding",
+					component: <OnboardingDashboard />,
+					// disableEnv: "NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD", // Hide, if this env is `true`
+					visible: !parseEnvBoolean(
+						process?.env
+							?.NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD
+					),
+				},
 			]
 		: [
+				// Non-Admin Homepage
 				{
 					label: "Home",
 					component: <Home mt={{ base: "12px", md: "30px" }} />,
+					// disableEnv: "NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD", // Hide, if this env is `true`
+					visible: !parseEnvBoolean(
+						process?.env?.NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD
+					),
 				},
-				{ label: "Business", component: <BusinessDashboard /> },
+				{
+					label: "Business",
+					component: <BusinessDashboard />,
+					// disableEnv: "NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD",
+					visible: !parseEnvBoolean(
+						process?.env?.NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD
+					),
+				},
+				{
+					label: "Onboarding",
+					component: <OnboardingDashboard />,
+					// disableEnv: "NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD", // Hide, if this env is `true`
+					visible: !parseEnvBoolean(
+						process?.env?.NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD
+					),
+				},
 			];
 
+	// Add Announcements tab for Admins only, if the embed URL is set in env variables
 	if (isAdmin && process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
 		list.push({
 			label: "Announcements",
