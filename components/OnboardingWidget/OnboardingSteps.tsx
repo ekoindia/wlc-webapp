@@ -18,6 +18,7 @@ import {
 	getAgreementIdFromData,
 	getMobileFromData,
 	getOnboardingStepsFromData,
+	getRoleListFromData,
 	getUserCodeFromData,
 	getUserTypeFromData,
 } from "./utils";
@@ -59,6 +60,13 @@ const OnboardingSteps = ({
 		"[AgentOnboarding] onboardingUserDetails",
 		onboardingUserDetails
 	);
+
+	const roleList = getRoleListFromData(
+		onboardingUserDetails,
+		isAssistedOnboarding
+	);
+
+	console.log("[AgentOnboarding] roleList", roleList);
 
 	const userType = useMemo(
 		() => getUserTypeFromData(onboardingUserDetails, isAssistedOnboarding),
@@ -296,16 +304,10 @@ const OnboardingSteps = ({
 			details: onboardingUserDetails,
 		});
 	}, [onboardingUserDetails]);
-
-	useEffect(() => {
-		// Based on the assisted onboarding prop, decide what to do.
-		// TODO: CHECK IF NEEDED
-		refreshAgentProfile();
-	}, []);
 	return (
 		<ExternalOnboardingWidget
 			{...({
-				defaultStep: userData?.userDetails?.role_list || "12400",
+				defaultStep: roleList || "12400",
 				isBranding: false,
 				userData: userData,
 				handleSubmit: handleStepDataSubmit,
