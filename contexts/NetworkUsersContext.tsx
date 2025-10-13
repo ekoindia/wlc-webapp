@@ -319,6 +319,7 @@ const generateTree = (
 	const _children: NetworkUser[] = [];
 	const _userTypeIds = new Set<number>();
 
+	// Generate tree from list...
 	list.forEach((user) => {
 		const {
 			user_code,
@@ -330,7 +331,11 @@ const generateTree = (
 		let parent = parent_user_code;
 		_userTypeIds.add(user_type_id);
 
-		if (user_type_id == UserType.MERCHANT && fos_user_code) {
+		if (
+			(user_type_id == UserType.MERCHANT ||
+				user_type_id == UserType.I_MERCHANT) &&
+			fos_user_code
+		) {
 			// If the user is a Merchant and has a FOS assigned, set the parent to FOS
 			parent = fos_user_code;
 		} else if (parent === code) {
