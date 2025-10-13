@@ -118,7 +118,7 @@ export const useOnboardingApiSubmission = ({
 			actions.setLastStepResponse(data);
 
 			// Call optional success callback
-			if (onSuccess) {
+			if (typeof onSuccess === "function") {
 				await onSuccess(data, bodyData);
 			}
 		},

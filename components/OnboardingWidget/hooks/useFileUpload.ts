@@ -45,7 +45,7 @@ interface UseFileUploadProps {
 	state: OnboardingState;
 	actions: OnboardingActions;
 	mobile: string;
-	refreshApiCall?: () => Promise<any>;
+	onSuccess?: () => Promise<any>;
 }
 
 /**
@@ -64,14 +64,14 @@ interface UseFileUploadReturn {
  * @param {OnboardingActions} props.actions - State management actions for API progress and responses
  * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
  * @param {string | null} props.assistedAgentMobile - Mobile number of the assisted agent
- * @param {() => Promise<any>} props.refreshApiCall - Function to refresh API data after upload
+ * @param {() => Promise<any>} props.onSuccess - Function to call on successful upload
  * @returns {UseFileUploadReturn} Object containing file upload methods
  */
 export const useFileUpload = ({
 	state,
 	actions,
 	mobile,
-	refreshApiCall,
+	onSuccess,
 }: UseFileUploadProps): UseFileUploadReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
@@ -225,11 +225,11 @@ export const useFileUpload = ({
 			});
 			actions.setLastStepResponse(response);
 			// Refresh API call if provided
-			if (refreshApiCall) {
-				await refreshApiCall();
+			if (typeof onSuccess === "function") {
+				await onSuccess();
 			}
 		},
-		[toast, actions, refreshApiCall]
+		[toast, actions, onSuccess]
 	);
 
 	/**

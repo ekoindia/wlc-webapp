@@ -131,7 +131,9 @@ const OnboardingSteps = ({
 		state,
 		actions,
 		mobile,
-		refreshApiCall: () => refreshAgentProfile(),
+		onSuccess: async () => {
+			await refreshAgentProfile();
+		},
 	});
 
 	const initialStepSetter = useCallback(
@@ -159,6 +161,12 @@ const OnboardingSteps = ({
 
 			if (data?.id === 3) {
 				actions.setLocation(data?.form_data?.latlong);
+
+				// Update state stepper data to mark location step as completed
+				const updatedStepperData = state.stepperData.map((step) =>
+					step.id === 3 ? { ...step, stepStatus: 3 } : step
+				);
+				actions.setStepperData(updatedStepperData);
 			}
 
 			// Route to appropriate handler based on form type
@@ -170,9 +178,11 @@ const OnboardingSteps = ({
 			) {
 				// File upload forms
 				fileUpload.uploadFile(data);
+				return;
 			} else {
 				// Regular form submission
 				formSubmission.submitForm(data);
+				return;
 			}
 		},
 		[actions]
@@ -276,7 +286,7 @@ const OnboardingSteps = ({
 		initialStepSetter({
 			details: onboardingUserDetails,
 		});
-	}, [onboardingUserDetails]);
+	}, []);
 
 	console.log("[AgentOnboarding] state data", state.stepperData);
 
