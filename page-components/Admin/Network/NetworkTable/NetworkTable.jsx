@@ -66,6 +66,13 @@ export const networkTableParameterList = [
 		hide_by_default: false,
 	},
 	{
+		name: "user_id",
+		label: "Employee ID",
+		sorting: true,
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+	{
 		name: "commission_type",
 		label: "Commission\nFrequency",
 		sorting: true,
