@@ -72,8 +72,8 @@ const Dashboard = () => {
 						component: <BusinessDashboard />,
 						// disableEnv: "NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD", // Hide, if this env is `true`
 						visible: !parseEnvBoolean(
-							process?.env
-								?.NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD
+							process.env
+								.NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD
 						),
 					},
 					{
@@ -81,8 +81,8 @@ const Dashboard = () => {
 						component: <OnboardingDashboard />,
 						// disableEnv: "NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD", // Hide, if this env is `true`
 						visible: !parseEnvBoolean(
-							process?.env
-								?.NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD
+							process.env
+								.NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD
 						),
 					},
 				]
@@ -93,7 +93,7 @@ const Dashboard = () => {
 						component: <Home mt={{ base: "12px", md: "30px" }} />,
 						// disableEnv: "NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD", // Hide, if this env is `true`
 						visible: !parseEnvBoolean(
-							process?.env?.NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD
+							process.env.NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD
 						),
 					},
 					{
@@ -101,8 +101,7 @@ const Dashboard = () => {
 						component: <BusinessDashboard />,
 						// disableEnv: "NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD",
 						visible: !parseEnvBoolean(
-							process?.env
-								?.NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD
+							process.env.NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD
 						),
 					},
 					{
@@ -110,8 +109,8 @@ const Dashboard = () => {
 						component: <OnboardingDashboard />,
 						// disableEnv: "NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD", // Hide, if this env is `true`
 						visible: !parseEnvBoolean(
-							process?.env
-								?.NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD
+							process.env
+								.NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD
 						),
 					},
 				];

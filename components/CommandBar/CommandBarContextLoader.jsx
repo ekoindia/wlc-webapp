@@ -27,7 +27,7 @@ export function KBarLazyProvider({ children, load }) {
 	useEffect(() => {
 		if (
 			load &&
-			parseEnvBoolean(process?.env?.NEXT_PUBLIC_HIDE_KBAR) !== true
+			parseEnvBoolean(process.env.NEXT_PUBLIC_HIDE_KBAR) !== true
 		) {
 			import("kbar").then((kbarModule) => {
 				setKBar(kbarModule);
