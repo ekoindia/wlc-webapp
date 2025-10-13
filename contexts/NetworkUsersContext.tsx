@@ -1,5 +1,5 @@
 import { Endpoints } from "constants/EndPoints";
-import { UserType } from "constants/UserTypes";
+import { UserType, UserTypeOrder } from "constants/UserTypes";
 import { useUser } from "contexts/UserContext";
 import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useCopilotInfo } from "libs";
@@ -55,7 +55,8 @@ const NetworkUsersContext = createContext<NetworkUsersContextValue | undefined>(
 );
 
 /**
- * Custom hook to use the NetworkUsers context.
+ * Custom hook to use the `NetworkUsersContext`.
+ * Provides a list of all users in the network, including a nested tree view for the same.
  */
 export const useNetworkUsers = (): NetworkUsersContextValue => {
 	const context = useContext(NetworkUsersContext);
@@ -145,7 +146,7 @@ export const NetworkUsersProvider = ({
 	 */
 	const refreshUserList = useCallback(() => {
 		if (!isLoggedIn || !accessToken || isOnboarding) return;
-		if (!isAdmin || loading) return;
+		if (loading) return;
 		if (isValid && networkUsers?.userId === userId) return;
 		fetchUsers({
 			headers: {
@@ -164,6 +165,39 @@ export const NetworkUsersProvider = ({
 		userId,
 	]);
 
+	/**
+	 * Return a list of (grand) parents for any user. Used in UserProfile to show the hierarchy.
+	 * @param userCode - The user code of the user whose parents are to be found.
+	 * @returns An array of NetworkUser objects representing the (grand) parents of the user.
+	 */
+	const getParents = useCallback(
+		(userCode: string): NetworkUser[] => {
+			// Get parents from the networkUsersTree data
+			if (!networkUsers?.networkUsersList?.length || !userCode) return [];
+
+			const parents: NetworkUser[] = [];
+			let user = networkUsersTree[userCode];
+
+			while (
+				user &&
+				user?.meta?.parent_user_code &&
+				user?.meta?.parent_user_code !== userCode &&
+				user?.meta?.parent_user_code !== "root"
+			) {
+				const parent = networkUsersTree[user.meta.parent_user_code];
+				if (parent && parent?.rootCategory !== true) {
+					parents.push(parent.meta as NetworkUser);
+					user = parent;
+				} else {
+					break;
+				}
+			}
+
+			return parents;
+		},
+		[networkUsers, networkUsersTree]
+	);
+
 	// MARK: Copilot...
 
 	// Define AI Copilot readable state for the total user count
@@ -172,15 +206,9 @@ export const NetworkUsersProvider = ({
 		value: networkCount,
 	});
 
-	// const test = Object.keys(activeUserTypeCount).map((key) => ({
-	// 	label: userTypeLabels[key] || `UserType-${key}`,
-	// 	count: activeUserTypeCount[key],
-	// }));
-	// console.log("Active User Type Count:", test);
-
 	// Define AI Copilot readable state for the network users count based on user type
 	useCopilotInfo({
-		description: "Count of active users by user type.",
+		description: "Count of active users by user-type.",
 		parentId: copilotReadableUserCountId,
 		value: Object.keys(activeUserTypeCount)
 			?.map((key) => ({
@@ -204,6 +232,7 @@ export const NetworkUsersProvider = ({
 			fetchedAt: networkUsers.asof,
 			loading,
 			refreshUserList,
+			getParents,
 		}),
 		[
 			networkCount,
@@ -213,6 +242,7 @@ export const NetworkUsersProvider = ({
 			activeUserTypeCount,
 			loading,
 			refreshUserList,
+			getParents,
 		]
 	);
 
@@ -222,6 +252,12 @@ export const NetworkUsersProvider = ({
 		</NetworkUsersContext.Provider>
 	);
 };
+
+/**
+ * Convert user-type-id to a slug for the tree node.
+ * @param id
+ */
+const userTypeIdToSlug = (id: number): string => `type-${id}`;
 
 /**
  * Generate a tree structure from the list of users.
@@ -243,33 +279,34 @@ const generateTree = (
 ): void => {
 	const activeUserTypeCount = {};
 
+	// Array of top-level user-type node slugs (for the Tree view) for all available UserTypes (eg: type-1, type-2, etc.)
+	const topUserTypeNodeIds = UserTypeOrder.map((type) =>
+		userTypeIdToSlug(type)
+	);
+
+	// Object of top-level user-type nodes (for the Tree view) for all available UserTypes
+	const topUserTypeNodes = UserTypeOrder.reduce(
+		(acc, type) => {
+			acc[userTypeIdToSlug(type)] = {
+				index: userTypeIdToSlug(type),
+				isFolder: true,
+				rootCategory: true,
+				children: [],
+				data: userTypeLabels[type],
+			};
+			return acc;
+		},
+		{} as Record<string, TreeNode>
+	);
+
+	// TODO: Ordering can be done based on the depth in the hierarchy (eg: Super-Distributor at top, as it will have max depth of children - distributors, FOS, Merchants, etc.)
 	const tree: Record<string, TreeNode> = {
 		root: {
 			index: "root",
 			isFolder: true,
-			children: ["superdists", "dists", "iretailers", "others"],
+			children: [...topUserTypeNodeIds, "others"],
 		},
-		superdists: {
-			index: "superdists",
-			isFolder: true,
-			rootCategory: true,
-			children: [],
-			data: userTypeLabels[UserType.SUPER_DISTRIBUTOR],
-		},
-		dists: {
-			index: "dists",
-			isFolder: true,
-			rootCategory: true,
-			children: [],
-			data: `Independent ${userTypeLabels[UserType.DISTRIBUTOR]}`,
-		},
-		iretailers: {
-			index: "iretailers",
-			isFolder: true,
-			rootCategory: true,
-			children: [],
-			data: userTypeLabels[UserType.I_MERCHANT],
-		},
+		...topUserTypeNodes,
 		others: {
 			index: "others",
 			isFolder: true,
@@ -293,12 +330,12 @@ const generateTree = (
 		let parent = parent_user_code;
 		_userTypeIds.add(user_type_id);
 
-		// If the parent is the current user, set parent to "root"
-		if (parent === code) {
-			parent = "";
-		} else if (user_type_id == UserType.MERCHANT && fos_user_code) {
+		if (user_type_id == UserType.MERCHANT && fos_user_code) {
 			// If the user is a Merchant and has a FOS assigned, set the parent to FOS
 			parent = fos_user_code;
+		} else if (parent === code) {
+			// If the parent is the current user, set parent to "root"
+			parent = "";
 		}
 
 		// Add user-type-wise count of active users
@@ -310,25 +347,19 @@ const generateTree = (
 			parent !== user_code &&
 			user_type_id !== UserType.SUPER_DISTRIBUTOR
 		) {
+			// This is a child node. Store it temporarily to link later
 			_children.push({
 				...user,
 				parent_user_code: parent,
 			});
 		} else {
-			switch (+user_type_id || 0) {
-				case UserType.SUPER_DISTRIBUTOR:
-					parent = "superdists";
-					break;
-				case UserType.DISTRIBUTOR:
-					parent = "dists";
-					break;
-				case UserType.I_MERCHANT:
-					parent = "iretailers";
-					break;
-				default:
-					parent = "others";
+			// This is a root node. Determine its category based on user_type_id
+			parent = userTypeIdToSlug(user_type_id);
+			if (!topUserTypeNodeIds.includes(parent)) {
+				parent = "others";
 			}
 
+			// Add this user as a child of the parent node
 			if (!tree[parent].children.includes(user_code)) {
 				tree[parent].children.push(user_code);
 				tree[parent].isFolder = true;
@@ -346,14 +377,14 @@ const generateTree = (
 				user_type:
 					userTypeLabels[user_type_id] || `Type-${user_type_id || 0}`,
 			},
-			data:
-				name +
-				(parent === "others"
-					? ` (${userTypeLabels[user_type_id] || `Type-${user_type_id || 0}`})`
-					: ""),
+			data: name, // +
+			// (parent === "others"
+			// 	? ` (${userTypeLabels[user_type_id] || `Type-${user_type_id || 0}`})`
+			// 	: ""),
 		};
 	});
 
+	// Now, link children to their parents
 	_children.forEach((user) => {
 		const { user_code, parent_user_code } = user;
 		if (tree[parent_user_code]) {
@@ -364,7 +395,8 @@ const generateTree = (
 		}
 	});
 
-	["superdists", "dists", "iretailers", "others"].forEach((key) => {
+	// Clean up any empty root categories
+	[...topUserTypeNodeIds, "others"].forEach((key) => {
 		if (tree[key]?.children.length === 0) {
 			delete tree[key];
 			tree.root.children = tree.root.children.filter(
