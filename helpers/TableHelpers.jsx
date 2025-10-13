@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Currency, DateView, IcoButton, Icon, Share } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
-import { capitalize, numberRemover } from "utils";
+import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 
 // convert status text to color
 const statusTextColor = {
@@ -449,5 +449,34 @@ export const getShareMobileButton = (mobile, meta) => {
 			text={meta?.text}
 			size="xs"
 		/>
+	);
+};
+
+export const getAddressWithTooltip = (address) => {
+	// Handle cases where address might be null or undefined
+	if (!address) return null;
+
+	// Clean the address using nullRemover to handle "null" text
+	const cleanAddress = nullRemover(address);
+	if (!cleanAddress) return null;
+
+	// Check if we need a tooltip (text longer than 25 chars)
+	const _needToolTip = cleanAddress.length > 25;
+	const _finalText = _needToolTip
+		? limitText(cleanAddress, 25)
+		: cleanAddress;
+
+	return (
+		<Flex align="center">
+			<Tooltip
+				hasArrow
+				label={_needToolTip ? cleanAddress : null}
+				fontSize="xs"
+				bg="primary.DEFAULT"
+				color="white"
+			>
+				<Text>{capitalize(_finalText)}</Text>
+			</Tooltip>
+		</Flex>
 	);
 };

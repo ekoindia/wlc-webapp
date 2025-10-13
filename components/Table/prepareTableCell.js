@@ -1,4 +1,5 @@
 import {
+	getAddressWithTooltip,
 	getAmountStyle,
 	getArrowStyle,
 	getDateTimeView,
@@ -51,6 +52,8 @@ export const prepareTableCell = (
 			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
+		case "Address":
+			return getAddressWithTooltip(item[column.name]);
 		case "Location":
 			return getLocationStyle(item[column.name]);
 		case "Avatar":

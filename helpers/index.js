@@ -11,6 +11,7 @@ export {
 	processTransactionData,
 } from "./processTransactionData";
 export {
+	getAddressWithTooltip,
 	getAmountStyle,
 	getArrowStyle,
 	getAvatar,

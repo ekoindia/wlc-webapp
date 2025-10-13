@@ -76,6 +76,7 @@ export const networkTableParameterList = [
 		name: "location",
 		label: "Address",
 		sorting: true,
+		show: "Address",
 		visible_in_table: true,
 		hide_by_default: true,
 	},
