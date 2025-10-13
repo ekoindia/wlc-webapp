@@ -19,7 +19,6 @@ import {
 	getMobileFromData,
 	getOnboardingStepsFromData,
 	getRoleListFromData,
-	getUserCodeFromData,
 	getUserTypeFromData,
 } from "./utils";
 
@@ -56,24 +55,15 @@ const OnboardingSteps = ({
 		[isAssistedOnboarding, assistedAgentDetails, userData]
 	);
 
-	console.log(
-		"[AgentOnboarding] onboardingUserDetails",
-		onboardingUserDetails
-	);
-
 	const roleList = getRoleListFromData(
 		onboardingUserDetails,
 		isAssistedOnboarding
 	);
 
-	console.log("[AgentOnboarding] roleList", roleList);
-
 	const userType = useMemo(
 		() => getUserTypeFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
-
-	console.log("[AgentOnboarding] userType", userType);
 
 	const onboardingSteps = useMemo(
 		() =>
@@ -84,29 +74,16 @@ const OnboardingSteps = ({
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	console.log("[AgentOnboarding] onboardingSteps", onboardingSteps);
-
 	const mobile = useMemo(
 		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
-
-	console.log("[AgentOnboarding] mobile", mobile);
 
 	const agreementId = useMemo(
 		() =>
 			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
-
-	console.log("[AgentOnboarding] agreementId", agreementId);
-
-	const userCode = useMemo(
-		() => getUserCodeFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
-	);
-
-	console.log("[AgentOnboarding] userCode", userCode);
 
 	// Initialize step configuration hook
 	const stepConfiguration = useStepConfiguration({
@@ -304,6 +281,9 @@ const OnboardingSteps = ({
 			details: onboardingUserDetails,
 		});
 	}, [onboardingUserDetails]);
+
+	console.log("[AgentOnboarding] state data", state.stepperData);
+
 	return (
 		<ExternalOnboardingWidget
 			{...({
