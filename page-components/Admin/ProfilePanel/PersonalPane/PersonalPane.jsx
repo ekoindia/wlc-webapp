@@ -28,7 +28,7 @@ const PersonalPane = ({ data }) => {
 	const [shopTypeLabel, setShopTypeLabel] = useState();
 	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 	const router = useRouter();
-	const { accessToken } = useSession();
+	const { accessToken, isAdmin } = useSession();
 
 	const fetchShopTypes = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -84,6 +84,13 @@ const PersonalPane = ({ data }) => {
 		},
 	];
 
+	const handleEditRoute = () => {
+		const pathname = isAdmin
+			? "/admin/my-network/profile/up-per-info"
+			: "/my-network/profile/up-per-info";
+		router.push(pathname);
+	};
+
 	return (
 		<Card h="auto">
 			<Flex justify="space-between">
@@ -91,9 +98,7 @@ const PersonalPane = ({ data }) => {
 					Personal information
 				</Text>
 				<IcoButton
-					onClick={() =>
-						router.push("/admin/my-network/profile/up-per-info")
-					}
+					onClick={handleEditRoute}
 					theme="accent"
 					title="Edit Detail"
 					iconName="mode-edit"

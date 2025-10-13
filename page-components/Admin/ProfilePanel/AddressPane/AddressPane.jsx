@@ -1,5 +1,6 @@
 import { Divider, Flex, Text } from "@chakra-ui/react";
 import { Button, Card, IcoButton } from "components";
+import { useSession } from "contexts/UserContext";
 import { openGoogleMap } from "helpers";
 import { MapView } from "libs";
 import { useRouter } from "next/router";
@@ -7,7 +8,15 @@ import { capitalize, nullRemover } from "utils";
 
 const AddressPane = ({ data }) => {
 	const router = useRouter();
+	const { isAdmin } = useSession();
 	const isLocationAvailable = +data?.lattitude && +data?.longitude;
+
+	const handleUpdateAddress = () => {
+		const pathname = isAdmin
+			? "/admin/my-network/profile/up-sell-add"
+			: "/my-network/profile/up-sell-add";
+		router.push(pathname);
+	};
 
 	return (
 		<Card h={{ base: "auto", md: "560px" }}>
@@ -54,9 +63,7 @@ const AddressPane = ({ data }) => {
 					gap="6"
 				>
 					<Button
-						onClick={() =>
-							router.push("/admin/my-network/profile/up-sell-add")
-						}
+						onClick={handleUpdateAddress}
 						w={{ base: "100%", lg: "240px" }}
 						h="60px"
 					>

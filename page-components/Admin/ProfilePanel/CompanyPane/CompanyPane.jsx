@@ -8,6 +8,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Button, Card, Currency, IcoButton, Icon } from "components";
+import { useSession } from "contexts/UserContext";
 import { useClipboard } from "hooks";
 import { useRouter } from "next/router";
 import { capitalize } from "utils/textFormat";
@@ -39,6 +40,7 @@ import { capitalize } from "utils/textFormat";
 const CompanyPane = ({ data }) => {
 	const router = useRouter();
 	const { mobile } = router.query ?? {};
+	const { isAdmin } = useSession();
 	const { agent_name, eko_code, src, agent_type, plan_name, wallet_balance } =
 		data ?? {};
 
@@ -172,19 +174,23 @@ const CompanyPane = ({ data }) => {
 						</div>
 					</Flex>
 				</Flex>
-				<Divider />
-				<Flex align="center" justify="center">
-					<Button
-						variant="link"
-						color="accent.DEFAULT"
-						gap="1"
-						_hover={{ textDecoration: "none" }}
-						onClick={onViewAllTrxnClick}
-					>
-						View All Transactions
-						<Icon name="arrow-forward" size="16px" />
-					</Button>
-				</Flex>
+				{isAdmin ? (
+					<>
+						<Divider />
+						<Flex align="center" justify="center">
+							<Button
+								variant="link"
+								color="accent.DEFAULT"
+								gap="1"
+								_hover={{ textDecoration: "none" }}
+								onClick={onViewAllTrxnClick}
+							>
+								View All Transactions
+								<Icon name="arrow-forward" size="16px" />
+							</Button>
+						</Flex>
+					</>
+				) : null}
 			</Flex>
 		</Card>
 	);
