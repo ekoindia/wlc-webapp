@@ -1,4 +1,4 @@
-import { parseOrgIds } from "utils/envUtils";
+import { parseEnvBoolean, parseOrgIds } from "utils/envUtils";
 
 // Few pre-defined org-ids for configuring feature flags on production
 // NOTE: The production org-ids must be read from environment variables
@@ -249,7 +249,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Feature to Raise Issues (Generic + Trxn History)...
 	RAISE_ISSUE: {
-		enabled: true,
+		enabled: !parseEnvBoolean(process.env.NEXT_PUBLIC_HIDE_RAISE_ISSUE),
 	},
 
 	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
