@@ -96,13 +96,17 @@ const RoleSelection = ({
 				accentColor={accentColor}
 				stepData={onboardingRoleStep}
 				handleSubmit={(value) => {
-					setSelectedRole(value);
+					const { form_data } = value ?? {};
+					const _applicantType = form_data?.applicant_type ?? "";
+
+					// Update selected role state
+					setSelectedRole(_applicantType);
 
 					// Submit role selection via API
 					roleSubmission.submitRole({
 						id: 0,
 						form_data: {
-							applicant_type: value - 1,
+							applicant_type: _applicantType,
 						},
 					});
 				}}

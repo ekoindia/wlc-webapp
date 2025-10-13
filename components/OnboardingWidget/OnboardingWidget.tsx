@@ -106,8 +106,8 @@ const OnboardingWidget = ({
 				);
 			default:
 				return (
-					<Center>
-						<Spinner size="md" />
+					<Center minH="200px">
+						<Spinner size="lg" color="primary.DEFAULT" />
 					</Center>
 				);
 		}
