@@ -1,4 +1,4 @@
-import { Box, Flex, Text /* Checkbox, Stack */ } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
 import useHslColor from "hooks/useHslColor";
@@ -67,6 +67,15 @@ const NetworkTreeView = () => {
 	// 		setUserTypeFilterList(_userTypeFilterList);
 	// 	}
 	// }, [userTypeIdList]);
+
+	// Show Chakra loader
+	if (loading) {
+		return (
+			<Flex justify="center" align="center" height="100%">
+				<Spinner />
+			</Flex>
+		);
+	}
 
 	return (
 		<>
@@ -138,36 +147,36 @@ const NetworkTreeView = () => {
 					>
 						{/* MARK: Filters */}
 						{/* <Box
-						w={{ base: "100%", lg: "unset" }}
-						minW="280px"
-						bg="white"
-						p={{ base: 3, md: 6 }}
-						borderRadius={6}
-						shadow="md"
-					>
-						<Stack spacing={2} direction="column">
-							{userTypeFilterList.map((userType, i) => (
-								<Checkbox
-									key={userType.value || i}
-									value={userType.value}
-									isChecked={filteredUserSet.has(
-										userType.value
-									)}
-									onChange={(e) => {
-										e.target.checked
-											? filteredUserSet.add(
-													+userType.value
-												)
-											: filteredUserSet.delete(
-													+userType.value
-												);
-									}}
-								>
-									{userType.label}
-								</Checkbox>
-							))}
-						</Stack>
-					</Box> */}
+							w={{ base: "100%", lg: "unset" }}
+							minW="280px"
+							bg="white"
+							p={{ base: 3, md: 6 }}
+							borderRadius={6}
+							shadow="md"
+						>
+							<Stack spacing={2} direction="column">
+								{userTypeFilterList.map((userType, i) => (
+									<Checkbox
+										key={userType.value || i}
+										value={userType.value}
+										isChecked={filteredUserSet.has(
+											userType.value
+										)}
+										onChange={(e) => {
+											e.target.checked
+												? filteredUserSet.add(
+														+userType.value
+													)
+												: filteredUserSet.delete(
+														+userType.value
+													);
+										}}
+									>
+										{userType.label}
+									</Checkbox>
+								))}
+							</Stack>
+						</Box> */}
 
 						{/* MARK: Info */}
 						<Box
@@ -291,9 +300,15 @@ const NetworkTreeItem = ({
 				user_type={meta?.user_type || data || "Others"}
 				user_type_id={meta?.user_type_id || 0}
 			/>
-			<Text textTransform="capitalize">
-				{(data || meta.mobile || "").toString().toLowerCase()}
-			</Text>
+			{rootCategory ? (
+				<Text fontWeight="600" fontSize="1.1em">
+					{data || meta.mobile || ""}
+				</Text>
+			) : (
+				<Text textTransform="capitalize">
+					{(data || meta.mobile || "").toString().toLowerCase()}
+				</Text>
+			)}
 			{meta.parent_user_code !== "root" && meta.user_type ? (
 				<Tag>{meta.user_type}</Tag>
 			) : null}
