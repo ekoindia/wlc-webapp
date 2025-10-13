@@ -120,8 +120,8 @@ const Home = ({ ...rest }) => {
 
 			<Grid
 				templateColumns={{
-					base: "repeat(auto-fit,minmax(280px,1fr))",
-					md: "repeat(auto-fit,minmax(340px,1fr))",
+					base: "repeat(auto-fill,minmax(280px,1fr))",
+					md: "repeat(auto-fill,minmax(340px,1fr))",
 					// xl: "repeat(auto-fit,minmax(440px,1fr))",
 				}}
 				justifyContent="center"
