@@ -136,7 +136,7 @@ const AddAgentForm = ({
 				) {
 					const _otp = response?.data?.otp;
 					// in case of dev, show otp toast
-					if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
+					if (process.env.NEXT_PUBLIC_ENV !== "production") {
 						toast({
 							title: `Demo OTP: ${_otp}`,
 							status: "success",
