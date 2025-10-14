@@ -17,6 +17,10 @@ export {
 	RESPONSE_TYPE_IDS,
 } from "./AssistedOnboarding";
 export {
+	default as OnboardingCompleted,
+	type OnboardingCompletedProps,
+} from "./OnboardingCompleted";
+export {
 	default as OtpVerificationForm,
 	type OtpVerificationFormProps,
 } from "./OtpVerificationForm";

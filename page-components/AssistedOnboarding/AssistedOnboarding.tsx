@@ -9,6 +9,7 @@ import {
 	AddAgentForm,
 	type AgentAlreadyExistsScreenProps,
 	type AgentOnboardingProps,
+	type OnboardingCompletedProps,
 	type OtpVerificationFormProps,
 } from ".";
 
@@ -21,6 +22,7 @@ export const ASSISTED_ONBOARDING_STEPS = {
 	AGENT_ALREADY_EXISTS: "AGENT_ALREADY_EXISTS",
 	OTP_VERIFICATION: "OTP_VERIFICATION",
 	ONBOARDING_WIDGET: "ONBOARDING_WIDGET",
+	ONBOARDING_COMPLETED: "ONBOARDING_COMPLETED",
 } as const;
 
 /**
@@ -50,6 +52,10 @@ const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
 const AgentOnboarding = dynamic(() => import("./AgentOnboarding"), {
 	ssr: false,
 }) as React.ComponentType<AgentOnboardingProps>;
+
+const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
+	ssr: false,
+}) as React.ComponentType<OnboardingCompletedProps>;
 
 /**
  * AssistedOnboarding component that manages the multi-step agent onboarding flow
@@ -98,6 +104,10 @@ const AssistedOnboarding = (): JSX.Element => {
 					"[AssistedOnboarding] Agent details fetched:",
 					response.data
 				);
+				// check if response.data.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
+				if (response?.data?.user_detail?.onboarding === 0) {
+					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
+				}
 				return response.data;
 			}
 			return null;
@@ -153,6 +163,14 @@ const AssistedOnboarding = (): JSX.Element => {
 						agentMobile={agentMobile}
 						agentDetails={agentDetails}
 						fetchAgentDetails={fetchAgentDetails}
+					/>
+				);
+
+			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED:
+				return (
+					<OnboardingCompleted
+						setStep={setStep}
+						agentMobile={agentMobile}
 					/>
 				);
 
