@@ -1,3 +1,4 @@
+import { Flex } from "@chakra-ui/react";
 import { OnboardingWidget } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
@@ -56,15 +57,25 @@ const Onboarding = () => {
 	}, []);
 	// MARK: JSX
 	return (
-		<OnboardingWidget
-			logo={logo}
-			appName={app_name}
-			orgName={org_name}
-			userData={userData}
-			updateUserInfo={updateUserInfo}
-			isAssistedOnboarding={false}
-			refreshAgentProfile={refreshAgentProfile}
-		/>
+		<Flex
+			direction="column"
+			align="center"
+			justify="center"
+			bg="bg"
+			h="100%"
+			minH="100%"
+			w="100%"
+		>
+			<OnboardingWidget
+				logo={logo}
+				appName={app_name}
+				orgName={org_name}
+				userData={userData}
+				updateUserInfo={updateUserInfo}
+				isAssistedOnboarding={false}
+				refreshAgentProfile={refreshAgentProfile}
+			/>
+		</Flex>
 	);
 };
 
