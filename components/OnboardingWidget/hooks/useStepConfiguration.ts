@@ -37,6 +37,7 @@ interface UseStepConfigurationProps {
 	actions: OnboardingActions;
 	userType: number;
 	onboardingSteps: Array<{ role: number; label?: string }>;
+	roleList?: Array<number> | string;
 }
 
 /**
@@ -57,6 +58,7 @@ export const useStepConfiguration = ({
 	actions,
 	userType,
 	onboardingSteps,
+	roleList,
 }: UseStepConfigurationProps): UseStepConfigurationReturn => {
 	/**
 	 * Initializes onboarding steps based on user data
@@ -77,6 +79,11 @@ export const useStepConfiguration = ({
 				return;
 			}
 
+			console.log(
+				"[AgentOnboarding] useStepCOnfiguration roleList",
+				roleList
+			);
+
 			const baseStepData = getStepsForUserType(userType);
 			if (baseStepData.length === 0) {
 				console.warn(
@@ -85,8 +92,6 @@ export const useStepConfiguration = ({
 				);
 				return;
 			}
-
-			// Get onboarding steps using utility function
 
 			if (!onboardingSteps || onboardingSteps.length === 0) {
 				console.warn("[StepConfiguration] No onboarding steps found");
@@ -99,13 +104,56 @@ export const useStepConfiguration = ({
 				onboardingSteps
 			);
 
-			console.log("[StepConfiguration] Filtered steps:", filteredSteps);
+			// Logic:
+			// 1. Find the first step in filteredSteps whose role appears in roleList → this is the current active (pending) step.
+			// 2. All steps before the current step → mark as completed (3).
+			// 3. The current step → mark as pending (1).
+			// 4. All steps after the current step → mark as not started (0).
+			//
+			// Steps:
+			// - Convert roleList (string or array) into an array of numeric role IDs.
+			// - Find the first step whose role matches any in roleList.
+			// - Assign stepStatus to each step based on its position relative to the current role index.
+
+			if (roleList) {
+				let _currentRoleIndex = -1;
+
+				for (let i = 0; i < filteredSteps.length; i++) {
+					const step = filteredSteps[i];
+					// roleList is comma separated string
+					const roleArray = Array.isArray(roleList)
+						? roleList
+						: roleList.split(",").map(Number);
+					if (roleArray.includes(step.role)) {
+						_currentRoleIndex = i;
+						break;
+					}
+				}
+
+				// now mark every step before _currentRoleIndex as completed (3)
+				// mark the step at _currentRoleIndex as pending (1)
+				// mark every step after _currentRoleIndex as not started (0)
+				filteredSteps.forEach((step, index) => {
+					if (index < _currentRoleIndex) {
+						step.stepStatus = 3; // completed
+					} else if (index === _currentRoleIndex) {
+						step.stepStatus = 1; // pending
+					} else {
+						step.stepStatus = 0; // not started
+					}
+				});
+			}
+
+			console.log(
+				"[AgentOnboarding] useStepConfig Filtered steps:",
+				filteredSteps
+			);
 
 			// Set the stepper data with filtered steps
 			// Create a new array to prevent reference issues
 			actions.setStepperData([...filteredSteps]);
 		},
-		[actions, userType, onboardingSteps]
+		[actions, userType, onboardingSteps, roleList]
 	);
 
 	return {

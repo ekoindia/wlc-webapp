@@ -102,6 +102,7 @@ const OnboardingSteps = ({
 		actions,
 		userType,
 		onboardingSteps,
+		roleList,
 	});
 
 	// Initialize specialized hooks
