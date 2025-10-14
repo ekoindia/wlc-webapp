@@ -132,6 +132,8 @@ export const useKycFormSubmission = ({
 	const processFormData = useCallback(
 		(data: FormSubmissionData): FormSubmissionData => {
 			const bodyData = { ...data };
+			bodyData.form_data.csp_id = mobile;
+			bodyData.form_data.user_id = mobile;
 			console.log("[AgentOnboarding] processFormData data", bodyData);
 
 			switch (data.id) {
@@ -155,7 +157,6 @@ export const useKycFormSubmission = ({
 
 				case 9: // Business details
 					bodyData.form_data.latlong = state.latLong;
-					bodyData.form_data.csp_id = mobile;
 					bodyData.form_data.communication = 1;
 					break;
 
@@ -198,8 +199,9 @@ export const useKycFormSubmission = ({
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
-				case 16: // PAN verification
-					bodyData.form_data.csp_id = mobile;
+				case 12: // Agreement signing
+					bodyData.form_data.agreement_id = agreementId || "";
+					bodyData.form_data.latlong = state.latLong;
 					break;
 
 				case 20: // Digilocker OTP confirmation
@@ -215,14 +217,12 @@ export const useKycFormSubmission = ({
 
 			return bodyData;
 		},
-		[state, mobile, actions]
+		[state, mobile, agreementId, actions]
 	);
 
 	const baseSubmission = useOnboardingApiSubmission({
 		state,
 		actions,
-		mobile,
-		agreementId,
 		getInteractionTypeId,
 		processFormData,
 		onSuccess,

@@ -56,8 +56,6 @@ interface OnboardingActions {
 interface UseOnboardingApiSubmissionProps {
 	state?: OnboardingState;
 	actions: OnboardingActions;
-	mobile: string;
-	agreementId?: string | number;
 	getInteractionTypeId: (_data: FormSubmissionData) => number;
 	processFormData: (_data: FormSubmissionData) => FormSubmissionData;
 	onSuccess?: (
@@ -83,8 +81,6 @@ interface UseOnboardingApiSubmissionReturn {
  */
 export const useOnboardingApiSubmission = ({
 	actions,
-	mobile,
-	agreementId,
 	getInteractionTypeId,
 	processFormData,
 	onSuccess,
@@ -168,9 +164,6 @@ export const useOnboardingApiSubmission = ({
 						token: accessToken,
 						body: {
 							interaction_type_id: interactionTypeId,
-							user_id: mobile,
-							csp_id: mobile,
-							agreement_id: agreementId || 5,
 							...processedData.form_data,
 						},
 						timeout: 30000,
@@ -208,8 +201,6 @@ export const useOnboardingApiSubmission = ({
 			getInteractionTypeId,
 			actions,
 			accessToken,
-			mobile,
-			agreementId,
 			generateNewToken,
 			handleSubmissionSuccess,
 			handleSubmissionError,
