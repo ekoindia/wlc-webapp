@@ -85,6 +85,18 @@ const OnboardingSteps = ({
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
+	/**
+	 * Update the status of a specific onboarding step
+	 * @param {number} id - The ID of the step to update
+	 * @param {number} status - The new status to set (default is 3)
+	 */
+	const updateStepStatus = (id, status = 3) => {
+		const updatedStepperData = state.stepperData.map((step) =>
+			step.id === id ? { ...step, stepStatus: status } : step
+		);
+		actions.setStepperData(updatedStepperData);
+	};
+
 	// Initialize step configuration hook
 	const stepConfiguration = useStepConfiguration({
 		actions,
@@ -118,22 +130,29 @@ const OnboardingSteps = ({
 		mobile,
 	});
 
-	const formSubmission = useKycFormSubmission({
+	const { submitForm } = useKycFormSubmission({
 		state,
 		actions,
 		mobile,
-		onSuccess: async () => {
-			await refreshAgentProfile();
-		},
+		// onSuccess: async () => {
+		// 	await refreshAgentProfile();
+		// },
 	});
 
-	const fileUpload = useFileUpload({
+	const { uploadFile } = useFileUpload({
 		state,
 		actions,
 		mobile,
-		onSuccess: async () => {
+		onSuccess: async (_response, data) => {
+			// Update step status
+			updateStepStatus(data.id, 3);
+
+			// Refresh user profile
 			await refreshAgentProfile();
 		},
+		// onError: (error) => {
+		// 	console.error("File upload error:", error);
+		// },
 	});
 
 	const initialStepSetter = useCallback(
@@ -148,7 +167,7 @@ const OnboardingSteps = ({
 	);
 
 	const handleStepDataSubmit = useCallback(
-		(data) => {
+		async (data) => {
 			console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 
 			// Skip role selection (ID 0) as it's handled in RoleSelection component
@@ -161,27 +180,16 @@ const OnboardingSteps = ({
 
 			if (data?.id === 3) {
 				actions.setLocation(data?.form_data?.latlong);
-
-				// Update state stepper data to mark location step as completed
-				const updatedStepperData = state.stepperData.map((step) =>
-					step.id === 3 ? { ...step, stepStatus: 3 } : step
-				);
-				actions.setStepperData(updatedStepperData);
+				updateStepStatus(3);
 			}
 
 			// Route to appropriate handler based on form type
-			if (
-				data?.id === 1 ||
-				data?.id === 4 ||
-				data?.id === 8 ||
-				data?.id === 11
-			) {
-				// File upload forms
-				fileUpload.uploadFile(data);
+			if ([1, 4, 8, 11].includes(data?.id)) {
+				await uploadFile(data);
 				return;
 			} else {
 				// Regular form submission
-				formSubmission.submitForm(data);
+				await submitForm(data);
 				return;
 			}
 		},

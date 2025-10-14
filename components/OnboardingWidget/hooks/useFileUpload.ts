@@ -45,7 +45,7 @@ interface UseFileUploadProps {
 	state: OnboardingState;
 	actions: OnboardingActions;
 	mobile: string;
-	onSuccess?: () => Promise<any>;
+	onSuccess?: (_response: any, _data: FileUploadData) => Promise<any> | void;
 }
 
 /**
@@ -217,7 +217,7 @@ export const useFileUpload = ({
 	 * Handles successful upload response
 	 */
 	const handleUploadSuccess = useCallback(
-		async (response: any) => {
+		async (response: any, data: FileUploadData) => {
 			toast({
 				title: response.message,
 				status: "success",
@@ -226,7 +226,7 @@ export const useFileUpload = ({
 			actions.setLastStepResponse(response);
 			// Refresh API call if provided
 			if (typeof onSuccess === "function") {
-				await onSuccess();
+				await onSuccess(response, data);
 			}
 		},
 		[toast, actions, onSuccess]
@@ -302,7 +302,7 @@ export const useFileUpload = ({
 					!(Object.keys(response?.invalid_params || {}).length > 0);
 
 				if (success) {
-					await handleUploadSuccess(response);
+					await handleUploadSuccess(response, data);
 				} else {
 					handleUploadError(response);
 				}
