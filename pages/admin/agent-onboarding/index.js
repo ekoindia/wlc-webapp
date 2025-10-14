@@ -20,7 +20,7 @@ const AgentOnboardingPage = () => {
 
 AgentOnboardingPage.pageMeta = {
 	title: "Agent Onboarding",
-	isSubPage: false,
+	isSubPage: true,
 };
 
 export default AgentOnboardingPage;

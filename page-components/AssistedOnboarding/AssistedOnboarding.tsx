@@ -5,6 +5,7 @@ import { useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import {
 	AddAgentForm,
@@ -79,6 +80,7 @@ const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
  * ```
  */
 const AssistedOnboarding = (): JSX.Element => {
+	const router = useRouter();
 	const { userData } = useUser();
 	const { accessToken } = useSession();
 
@@ -87,6 +89,8 @@ const AssistedOnboarding = (): JSX.Element => {
 	);
 	const [agentMobile, setAgentMobile] = useState<string>("");
 	const [agentDetails, setAgentDetails] = useState<any>(null);
+
+	const isAdmin = userData?.userType === "Admin";
 
 	/**
 	 * Fetches agent details using interaction_type_id: 151
@@ -192,6 +196,37 @@ const AssistedOnboarding = (): JSX.Element => {
 		}
 	};
 
+	/**
+	 * Handle back navigation based on current step
+	 * ADD_AGENT → Navigate to home/admin (exit flow)
+	 * OTP_VERIFICATION → ADD_AGENT (re-enter mobile)
+	 * All other steps → ADD_AGENT (start fresh)
+	 */
+	const handleBackNavigation = (): void => {
+		switch (step) {
+			case ASSISTED_ONBOARDING_STEPS.ADD_AGENT:
+				// From Add Agent step, navigate to home or admin based on user type
+				router.push(isAdmin ? "/admin" : "/home");
+				break;
+
+			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
+				// From OTP, go back to add agent to re-enter mobile
+				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
+				break;
+
+			case ASSISTED_ONBOARDING_STEPS.AGENT_ALREADY_EXISTS:
+			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
+			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED:
+				// From any other step, go back to start (doesn't make sense to go to intermediate steps)
+				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
+				break;
+
+			default:
+				// Fallback to ADD_AGENT
+				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
+		}
+	};
+
 	// MARK: JSX
 	return (
 		<Flex
@@ -200,7 +235,11 @@ const AssistedOnboarding = (): JSX.Element => {
 			maxW="100%"
 			// p={{ base: "0", md: "4" }}
 		>
-			<PageTitle title={stepBasedTitleMap[step]} hideBackIcon />
+			{/* Back button navigates based on current step - exits flow from Add Agent, goes to previous step otherwise */}
+			<PageTitle
+				title={stepBasedTitleMap[step]}
+				onBack={handleBackNavigation}
+			/>
 			<Flex direction="column" align="center" px="4">
 				{renderCurrentStep()}
 			</Flex>
