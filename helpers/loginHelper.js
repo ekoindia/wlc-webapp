@@ -190,6 +190,7 @@ function setUserDetails(data) {
 				type: user_login_type,
 				name: data.userDetails.name,
 				mobile: data.userDetails.mobile,
+				user_id: data.userDetails.user_id,
 			};
 			localStorage.setItem("inf-last-login", JSON.stringify(lastLogin));
 		}

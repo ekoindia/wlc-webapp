@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LoginWidget } from "./LoginWidget";
+import { useRestoreLastLoginOrRoute } from "./useRestoreLastLoginOrRoute";
 
 const WelcomeCard = dynamic(
 	() => import("./WelcomeCard").then((pkg) => pkg.WelcomeCard),
@@ -40,18 +41,6 @@ const Render = dynamic(
 // 	}
 // );
 
-// Time in milliseconds to persist the OTP screen, if the user comes back to the app within this time.
-const PERSIST_OTP_SCREEN_TIMEOUT_MS = 240000; // 4 mins
-
-/**
- * Format mobile number in the following format: 123 456 7890
- * @param {number} mobile
- * @returns {string} Formatted mobile number
- */
-const formatMobileNumber = (mobile) => {
-	return mobile.toString().replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
-};
-
 /**
  * This is the main component where all the Login related components are rendered.
  * @param {*} props
@@ -82,34 +71,12 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 		return () => clearTimeout(timer);
 	}, [number?.formatted]);
 
-	// Get last login mobile number from local storage and set it as default value
-	useEffect(() => {
-		if (number?.formatted?.length > 0) return;
-
-		const lastLogin = JSON.parse(localStorage.getItem("inf-last-login"));
-		const lastRoute = JSON.parse(localStorage.getItem("inf-last-route"));
-
-		if (
-			lastRoute?.path === "/" &&
-			lastRoute?.meta?.step === "VERIFY_OTP" &&
-			lastRoute?.meta?.type === "Mobile" &&
-			lastRoute?.meta?.mobile?.formatted &&
-			lastRoute?.at > Date.now() - PERSIST_OTP_SCREEN_TIMEOUT_MS
-		) {
-			// Was the user on enter-OTP screen in the last 4 mins?
-			// Take them back there without resending OTP...
-			setNumber(lastRoute.meta.mobile);
-			setShowWelcomeCard(false);
-		} else if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
-			// Format mobile number in the following format: +91 123 456 7890
-			// TODO: Fix Input component so that this is not required
-			const formatted_mobile = formatMobileNumber(lastLogin.mobile);
-			setNumber({
-				original: lastLogin.mobile,
-				formatted: formatted_mobile,
-			});
-		}
-	}, []);
+	// Restore last login or OTP route from localStorage
+	useRestoreLastLoginOrRoute({
+		number,
+		setNumber,
+		setShowWelcomeCard,
+	});
 
 	// Hide login panel if user is already logged in
 	if (isLoggedIn) return null;

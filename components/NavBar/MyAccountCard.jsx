@@ -187,10 +187,12 @@ const MyAccountCard = ({ onClose }) => {
 	const { orgDetail } = useOrgDetailContext();
 
 	const { userDetails } = userData ?? {};
-	const { name, code, email, mobile } = userDetails ?? {};
+	const { name, code, email, mobile, user_id } = userDetails ?? {};
 	const router = useRouter();
 	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
+
+	const effective_user_id = user_id || code;
 
 	const gptAgentUrl = isChatGptAgentAllowed
 		? getChatGptAgentUrl({
@@ -346,7 +348,7 @@ const MyAccountCard = ({ onClose }) => {
 									</Text>
 								) : null}
 
-								{code && code > 1 ? (
+								{effective_user_id && effective_user_id > 1 ? (
 									<Flex
 										align="center"
 										gap="2"
@@ -366,7 +368,7 @@ const MyAccountCard = ({ onClose }) => {
 											boxShadow:
 												"0 6px 16px rgba(0, 0, 0, 0.25)",
 										}}
-										onClick={() => copy(code)}
+										onClick={() => copy(effective_user_id)}
 									>
 										<Text
 											fontSize="11px"
@@ -374,11 +376,11 @@ const MyAccountCard = ({ onClose }) => {
 											fontWeight="semibold"
 											textShadow="0 1px 2px rgba(0, 0, 0, 0.3)"
 										>
-											ID: {code}
+											ID: {effective_user_id}
 										</Text>
 										<Icon
 											name={
-												state[code]
+												state[effective_user_id]
 													? "check"
 													: "content-copy"
 											}
@@ -391,7 +393,7 @@ const MyAccountCard = ({ onClose }) => {
 							</Flex>
 						</Flex>
 
-						{/* Contact Information - Below dual-tone overlay */}
+						{/* Contact Information — Below dual-tone overlay */}
 						<Flex
 							direction="column"
 							gap="3"
