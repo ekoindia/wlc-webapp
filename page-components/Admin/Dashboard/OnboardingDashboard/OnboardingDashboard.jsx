@@ -18,7 +18,7 @@ const getModifiedFilterList = (data) => {
 	let filterList = [
 		{
 			id: 0,
-			label: "All Onboarding Agents",
+			label: "All Onboarding Users",
 			value: data?.onboardingFunnelTotal ?? 0,
 			status_ids: "*", // Using wildcard to represent all filters
 		},
@@ -252,7 +252,7 @@ const OnboardingDashboard = () => {
 					gap="0.4em"
 				>
 					<LuHeartHandshake color="#7c3bed" />
-					All Onboarding Agents
+					All Onboarding Users
 				</Flex>
 
 				<Flex
