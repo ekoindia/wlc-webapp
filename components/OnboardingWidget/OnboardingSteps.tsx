@@ -134,9 +134,11 @@ const OnboardingSteps = ({
 		state,
 		actions,
 		mobile,
-		// onSuccess: async () => {
-		// 	await refreshAgentProfile();
-		// },
+		onSuccess: async (_response, data) => {
+			updateStepStatus(data.id, 3);
+
+			await refreshAgentProfile();
+		},
 	});
 
 	const { uploadFile } = useFileUpload({
