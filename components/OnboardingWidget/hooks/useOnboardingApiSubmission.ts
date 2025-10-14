@@ -209,10 +209,10 @@ export const useOnboardingApiSubmission = ({
 			actions,
 			accessToken,
 			mobile,
+			agreementId,
 			generateNewToken,
 			handleSubmissionSuccess,
 			handleSubmissionError,
-			toast,
 		]
 	);
 
