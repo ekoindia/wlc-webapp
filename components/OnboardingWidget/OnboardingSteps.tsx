@@ -136,8 +136,23 @@ const OnboardingSteps = ({
 		actions,
 		mobile,
 		onSuccess: async (_response, data) => {
+			// Update step status
 			updateStepStatus(data.id, 3);
 
+			// Refresh user profile
+			await refreshAgentProfile();
+		},
+		onError: async (_error, data) => {
+			// Update step status to failed
+			updateStepStatus(data.id, 2);
+
+			console.log(
+				"[AgentOnboarding] File upload error for step",
+				data.id
+			);
+			console.log("[AgentOnboarding] REFRESHING PROFILE >>>>>>");
+
+			// Refresh user profile
 			await refreshAgentProfile();
 		},
 	});
@@ -153,9 +168,19 @@ const OnboardingSteps = ({
 			// Refresh user profile
 			await refreshAgentProfile();
 		},
-		// onError: (error) => {
-		// 	console.error("File upload error:", error);
-		// },
+
+		onError: async (_error, data) => {
+			// Update step status to failed
+			updateStepStatus(data.id, 2);
+
+			console.log(
+				"[AgentOnboarding] File upload error for step",
+				data.id
+			);
+			console.log("[AgentOnboarding] REFRESHING PROFILE >>>>>>");
+			// Refresh user profile
+			await refreshAgentProfile();
+		},
 	});
 
 	const initialStepSetter = useCallback(

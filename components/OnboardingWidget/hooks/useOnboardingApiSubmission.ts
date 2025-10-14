@@ -63,7 +63,7 @@ interface UseOnboardingApiSubmissionProps {
 		_response: any,
 		_data: FormSubmissionData
 	) => Promise<void> | void;
-	onError?: (_error: any) => void;
+	onError?: (_error: any, _data: FormSubmissionData) => Promise<void> | void;
 }
 
 /**
@@ -127,7 +127,7 @@ export const useOnboardingApiSubmission = ({
 	 * Handles API submission errors
 	 */
 	const handleSubmissionError = useCallback(
-		(error: any) => {
+		async (error: any, data: FormSubmissionData) => {
 			const errorMessage =
 				error.message ||
 				"Something went wrong, please try again later!";
@@ -141,8 +141,8 @@ export const useOnboardingApiSubmission = ({
 			actions.setLastStepResponse(error);
 
 			// Call optional error callback
-			if (onError) {
-				onError(error);
+			if (typeof onError === "function") {
+				await onError(error, data);
 			}
 		},
 		[toast, actions, onError]
@@ -175,22 +175,27 @@ export const useOnboardingApiSubmission = ({
 					generateNewToken
 				);
 
+				// Check for success: status/response_status_id/response_type_id should be 0
 				const success =
-					response?.status === 0 &&
+					(response?.status === 0 ||
+						response?.response_type_id === 0) &&
 					!(Object.keys(response?.invalid_params || {}).length > 0);
 
 				if (success) {
 					await handleSubmissionSuccess(response, processedData);
 				} else {
 					toast({
-						title: response.message,
+						title:
+							response.message ||
+							"Something went wrong, please try again later!",
 						status: "error",
 						duration: 2000,
 					});
 					actions.setLastStepResponse(response);
+					await handleSubmissionError(response, processedData);
 				}
 			} catch (error: any) {
-				handleSubmissionError(error);
+				await handleSubmissionError(error, processedData);
 			} finally {
 				actions.setApiInProgress(false);
 			}

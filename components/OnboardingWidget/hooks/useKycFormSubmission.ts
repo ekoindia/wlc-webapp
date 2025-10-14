@@ -90,7 +90,7 @@ interface UseKycFormSubmissionProps {
 		_response: any,
 		_data: FormSubmissionData
 	) => Promise<void> | void;
-	onError?: (_error: any) => void;
+	onError?: (_error: any, _data: FormSubmissionData) => Promise<void> | void;
 }
 
 /**
