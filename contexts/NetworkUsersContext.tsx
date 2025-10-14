@@ -338,7 +338,9 @@ const generateTree = (
 		) {
 			// If the user is a Merchant and has a FOS assigned, set the parent to FOS
 			parent = fos_user_code;
-		} else if (parent === code) {
+		}
+
+		if (parent === code) {
 			// If the parent is the current user, set parent to "root"
 			parent = "";
 		}
