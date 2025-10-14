@@ -134,6 +134,7 @@ const OnboardingSteps = ({
 	const { submitForm } = useKycFormSubmission({
 		state,
 		actions,
+		agreementId,
 		mobile,
 		onSuccess: async (_response, data) => {
 			// Update step status

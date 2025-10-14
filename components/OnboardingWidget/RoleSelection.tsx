@@ -49,7 +49,10 @@ const RoleSelection = ({
 		? assistedAgentDetails?.user_detail?.mobile
 		: userData?.userDetails?.signup_mobile;
 
+	console.log("[AgentOnboarding] mobile", mobile);
+
 	const { state, actions } = useOnboardingState();
+
 	console.log("[AgentOnboarding] userData", userData);
 
 	const roleSubmission = useRoleFormSubmission({

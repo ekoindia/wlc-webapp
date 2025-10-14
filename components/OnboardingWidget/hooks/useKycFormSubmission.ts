@@ -86,6 +86,7 @@ interface UseKycFormSubmissionProps {
 	actions: OnboardingActions;
 	mobile: string;
 	selectedRole?: string | number;
+	agreementId?: string | number;
 	onSuccess?: (
 		_response: any,
 		_data: FormSubmissionData
@@ -111,6 +112,7 @@ export const useKycFormSubmission = ({
 	state,
 	actions,
 	mobile,
+	agreementId,
 	onSuccess,
 	onError,
 }: UseKycFormSubmissionProps): UseKycFormSubmissionReturn => {
@@ -220,6 +222,7 @@ export const useKycFormSubmission = ({
 		state,
 		actions,
 		mobile,
+		agreementId,
 		getInteractionTypeId,
 		processFormData,
 		onSuccess,
