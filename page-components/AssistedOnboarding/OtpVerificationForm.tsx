@@ -73,16 +73,23 @@ const OtpVerificationForm = ({
 		{
 			type: "submit" as const,
 			size: "lg",
-			label: "Verify OTP",
+			label: "Verify",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
-			type: "button" as const,
+			variant: "link",
 			size: "lg",
 			label: "Back",
-			variant: "outline",
 			onClick: () => setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
 		},
 	];
 
@@ -158,27 +165,29 @@ const OtpVerificationForm = ({
 		<Flex
 			direction="column"
 			bg="white"
-			p="8"
-			borderRadius="md"
-			shadow="md"
-			maxW="500px"
+			p={{ base: 6, md: 10 }}
+			borderRadius="15px"
+			boxShadow="0px 5px 20px rgba(0, 0, 0, 0.08)"
+			border="1px solid"
+			borderColor="divider"
+			maxW="600px"
 			w="100%"
 		>
-			{/* Form Title */}
-			<Text fontSize="xl" fontWeight="semibold" mb="4" textAlign="center">
-				Verify OTP
-			</Text>
-
 			{/* Agent Mobile Display */}
-			<Text fontSize="md" color="gray.600" mb="6" textAlign="center">
+			<Text
+				fontSize={{ base: "md", md: "lg" }}
+				color="light"
+				mb="8"
+				textAlign="center"
+			>
 				Enter the OTP sent to{" "}
-				<Text as="span" fontWeight="semibold">
+				<Text as="span" fontWeight="semibold" color="primary.DEFAULT">
 					{agentMobile}
 				</Text>
 			</Text>
 
 			<form onSubmit={handleSubmit(handleFormSubmit)}>
-				<Flex direction="column" gap="8">
+				<Flex direction="column" gap="6">
 					<Form
 						{...{
 							parameter_list: otp_verification_parameter_list,
@@ -189,7 +198,7 @@ const OtpVerificationForm = ({
 						}}
 					/>
 
-					<ActionButtonGroup {...{ buttonConfigList, w: "full" }} />
+					<ActionButtonGroup {...{ buttonConfigList }} />
 				</Flex>
 			</form>
 		</Flex>

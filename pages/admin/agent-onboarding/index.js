@@ -1,3 +1,4 @@
+import { PaddingBox } from "components";
 import { AssistedOnboarding } from "page-components";
 
 /**
@@ -10,7 +11,11 @@ import { AssistedOnboarding } from "page-components";
  * ```
  */
 const AgentOnboardingPage = () => {
-	return <AssistedOnboarding />;
+	return (
+		<PaddingBox>
+			<AssistedOnboarding />
+		</PaddingBox>
+	);
 };
 
 AgentOnboardingPage.pageMeta = {

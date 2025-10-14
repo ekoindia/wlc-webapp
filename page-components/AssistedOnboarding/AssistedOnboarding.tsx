@@ -1,4 +1,5 @@
 import { Flex } from "@chakra-ui/react";
+import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
@@ -24,6 +25,18 @@ export const ASSISTED_ONBOARDING_STEPS = {
 	ONBOARDING_WIDGET: "ONBOARDING_WIDGET",
 	ONBOARDING_COMPLETED: "ONBOARDING_COMPLETED",
 } as const;
+
+const stepBasedTitleMap: Record<
+	keyof typeof ASSISTED_ONBOARDING_STEPS,
+	string
+> = {
+	ADD_AGENT: "Add Agent",
+	AGENT_STATUS_CHECK: "Checking Agent Status",
+	AGENT_ALREADY_EXISTS: "Agent Already Exists",
+	OTP_VERIFICATION: "Verify OTP",
+	ONBOARDING_WIDGET: "Agent Onboarding",
+	ONBOARDING_COMPLETED: "Onboarding Completed",
+};
 
 /**
  * API Response type IDs for different scenarios
@@ -105,7 +118,7 @@ const AssistedOnboarding = (): JSX.Element => {
 					response.data
 				);
 				// check if response.data.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
-				if (response?.data?.user_detail?.onboarding === 0) {
+				if (response?.data?.user_detail?.onboarding === 1) {
 					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
 				}
 				return response.data;
@@ -181,8 +194,16 @@ const AssistedOnboarding = (): JSX.Element => {
 
 	// MARK: JSX
 	return (
-		<Flex w="100%" maxW="100%" align="center" justify="center" p="6">
-			{renderCurrentStep()}
+		<Flex
+			direction="column"
+			w="100%"
+			maxW="100%"
+			// p={{ base: "0", md: "4" }}
+		>
+			<PageTitle title={stepBasedTitleMap[step]} hideBackIcon />
+			<Flex direction="column" align="center" px="4">
+				{renderCurrentStep()}
+			</Flex>
 		</Flex>
 	);
 };

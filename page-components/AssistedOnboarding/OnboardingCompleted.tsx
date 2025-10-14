@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { Button } from "components";
 import { useUser } from "contexts/UserContext";
 import { useRouter } from "next/router";
@@ -52,15 +52,10 @@ const OnboardingCompleted = ({
 	};
 
 	return (
-		<Flex
-			w="100%"
-			maxW="600px"
-			align="center"
-			justify="center"
-			p={{ base: 4, md: 6 }}
-		>
+		<Flex w="100%" justify="center" align="center" p={{ base: 4, md: 6 }}>
 			<Box
 				w="100%"
+				maxW="600px"
 				bg="white"
 				borderRadius="15px"
 				boxShadow="0px 5px 20px rgba(0, 0, 0, 0.08)"
@@ -76,14 +71,6 @@ const OnboardingCompleted = ({
 
 					{/* Success Message */}
 					<VStack spacing={3} w="100%">
-						<Heading
-							as="h2"
-							fontSize={{ base: "2xl", md: "3xl" }}
-							fontWeight="bold"
-							color="dark"
-						>
-							Onboarding Completed!
-						</Heading>
 						<Text
 							fontSize={{ base: "md", md: "lg" }}
 							color="light"
@@ -110,8 +97,6 @@ const OnboardingCompleted = ({
 							variant="primary"
 							size="lg"
 							w="100%"
-							icon="user-plus"
-							iconPosition="left"
 							onClick={handleOnboardAnother}
 						>
 							Onboard Another Agent
@@ -120,8 +105,6 @@ const OnboardingCompleted = ({
 							variant="outline"
 							size="lg"
 							w="100%"
-							icon="home"
-							iconPosition="left"
 							onClick={handleGoHome}
 						>
 							Go to Home

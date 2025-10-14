@@ -1,5 +1,5 @@
 import { AssistedOnboarding } from "page-components/AssistedOnboarding";
-import { render } from "test-utils";
+import { adminRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("AssistedOnboarding", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<AssistedOnboarding />);
+		const { container } = adminRender(<AssistedOnboarding />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
