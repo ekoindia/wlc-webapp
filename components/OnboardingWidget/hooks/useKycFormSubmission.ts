@@ -87,8 +87,8 @@ interface UseKycFormSubmissionProps {
 	mobile: string;
 	selectedRole?: string | number;
 	onSuccess?: (
-		_data: any,
-		_bodyData: FormSubmissionData
+		_response: any,
+		_data: FormSubmissionData
 	) => Promise<void> | void;
 	onError?: (_error: any) => void;
 }

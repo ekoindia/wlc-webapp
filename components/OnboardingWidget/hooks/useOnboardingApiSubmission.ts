@@ -60,8 +60,8 @@ interface UseOnboardingApiSubmissionProps {
 	getInteractionTypeId: (_data: FormSubmissionData) => number;
 	processFormData: (_data: FormSubmissionData) => FormSubmissionData;
 	onSuccess?: (
-		_data: any,
-		_bodyData: FormSubmissionData
+		_response: any,
+		_data: FormSubmissionData
 	) => Promise<void> | void;
 	onError?: (_error: any) => void;
 }
@@ -96,30 +96,28 @@ export const useOnboardingApiSubmission = ({
 	 * Handles successful API submission
 	 */
 	const handleSubmissionSuccess = useCallback(
-		async (data: any, bodyData: FormSubmissionData) => {
+		async (response: any, data: FormSubmissionData) => {
 			toast({
-				title: bodyData.success_message || "Success",
+				title: data.success_message || "Success",
 				status: "success",
 				duration: 2000,
 			});
 
 			// Handle specific form responses
-			if (bodyData.id === 5) {
-				actions.setAadhaarAccessKey(data?.data?.access_key);
-				actions.setAadhaarUserCode(data?.data?.user_code);
+			if (data.id === 5) {
+				actions.setAadhaarAccessKey(response?.data?.access_key);
+				actions.setAadhaarUserCode(response?.data?.user_code);
 			}
 
-			if (bodyData.id === 2) {
-				actions.setRole(
-					parseInt(bodyData?.form_data?.merchant_type) || 0
-				);
+			if (data.id === 2) {
+				actions.setRole(parseInt(data?.form_data?.merchant_type) || 0);
 			}
 
-			actions.setLastStepResponse(data);
+			actions.setLastStepResponse(response);
 
 			// Call optional success callback
 			if (typeof onSuccess === "function") {
-				await onSuccess(data, bodyData);
+				await onSuccess(response, data);
 			}
 		},
 		[toast, actions, onSuccess]
