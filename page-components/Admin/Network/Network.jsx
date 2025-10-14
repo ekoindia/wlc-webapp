@@ -255,6 +255,13 @@ const Network = () => {
 			required: false,
 		},
 		{
+			name: "parent_user_code",
+			label: "Sub-Network Filter by User Code",
+			parameter_type_id: ParamType.TEXT,
+			placeholder: "Enter User Code",
+			required: false,
+		},
+		{
 			name: "onBoardingDateFrom",
 			label: "From",
 			parameter_type_id: ParamType.FROM_DATE,
