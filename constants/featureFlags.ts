@@ -44,6 +44,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					...ORG_ID.DASHBOARD_V2,
 				],
 			},
+			staging: {
+				forOrgId: [1, 2, 3],
+			},
 		},
 	},
 
