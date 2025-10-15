@@ -115,7 +115,6 @@ export const useRoleFormSubmission = ({
 	const baseSubmission = useOnboardingApiSubmission({
 		state,
 		actions,
-		mobile,
 		getInteractionTypeId,
 		processFormData,
 		onSuccess,
