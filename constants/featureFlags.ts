@@ -57,8 +57,10 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 			staging: {
 				forOrgId: [3],
 			},
+			production: {
+				forOrgId: [3],
+			},
 		},
-		forEnv: ["development", "staging"],
 	},
 
 	// Inventory Management for (Super)Distributors
