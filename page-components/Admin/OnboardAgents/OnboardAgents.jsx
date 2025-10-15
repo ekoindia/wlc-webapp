@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
 import { useSession } from "contexts";
-import { useUserType } from "hooks";
+import { useUserTypes } from "hooks";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
 import { getOnboardingPermissions } from "./OnboardingPermissions";
@@ -24,7 +24,7 @@ const agentTypeValueToApi = {
  */
 const OnboardAgents = () => {
 	const { isAdmin, userType } = useSession();
-	const { getUserTypeLabel } = useUserType();
+	const { getUserTypeLabel } = useUserTypes();
 
 	// Get permissions based on user role - determines which agent types the user can onboard
 	const permissions = useMemo(() => {
