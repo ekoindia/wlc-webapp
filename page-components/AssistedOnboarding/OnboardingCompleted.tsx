@@ -76,8 +76,7 @@ const OnboardingCompleted = ({
 							color="light"
 							maxW="450px"
 						>
-							The agent has been successfully onboarded and
-							verified. All steps have been completed.
+							Successfully verified and onboarded.
 						</Text>
 						{agentMobile ? (
 							<Text
@@ -86,7 +85,7 @@ const OnboardingCompleted = ({
 								fontWeight="semibold"
 								mt={2}
 							>
-								Agent Mobile: {agentMobile}
+								Registered Mobile: {agentMobile}
 							</Text>
 						) : null}
 					</VStack>
