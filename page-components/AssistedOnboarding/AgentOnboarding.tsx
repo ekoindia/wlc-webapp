@@ -31,7 +31,7 @@ const AgentOnboarding = ({
 	fetchAgentDetails: fetchAgentDetailsProp,
 }: AgentOnboardingProps) => {
 	const { userData, updateUserInfo } = useUser();
-	console.log("[AgentOnboarding] userData", userData);
+	// console.log("[AgentOnboarding] userData", userData);
 	const { orgDetail } = useOrgDetailContext();
 	const { logo, app_name, org_name } = orgDetail ?? {};
 	const [agentDetails, setAgentDetails] = useState(initialAgentDetails ?? {});
@@ -40,8 +40,8 @@ const AgentOnboarding = ({
 
 	const { accessToken } = useSession();
 
-	console.log("[AgentOnboarding] userData", userData);
-	console.log("[AgentOnboarding] initialAgentDetails", initialAgentDetails);
+	// console.log("[AgentOnboarding] userData", userData);
+	// console.log("[AgentOnboarding] initialAgentDetails", initialAgentDetails);
 
 	/**
 	 * Wrapper function to fetch agent details
@@ -75,10 +75,10 @@ const AgentOnboarding = ({
 			);
 
 			if (response?.data) {
-				console.log(
-					"[AgentOnboarding] Agent details fetched:",
-					response.data
-				);
+				// console.log(
+				// 	"[AgentOnboarding] Agent details fetched:",
+				// 	response.data
+				// );
 				setAgentDetails(response.data);
 				return response.data;
 			}
@@ -113,10 +113,10 @@ const AgentOnboarding = ({
 			);
 
 			if (response?.data) {
-				console.log(
-					"[AgentOnboarding] Partial account created:",
-					response.data
-				);
+				// console.log(
+				// 	"[AgentOnboarding] Partial account created:",
+				// 	response.data
+				// );
 				return response.data;
 			} else {
 				console.error(
@@ -146,16 +146,16 @@ const AgentOnboarding = ({
 		try {
 			// If agent details already provided, skip fetching
 			if (initialAgentDetails) {
-				console.log(
-					"[AgentOnboarding] Using pre-fetched agent details, only creating partial account..."
-				);
+				// console.log(
+				// 	"[AgentOnboarding] Using pre-fetched agent details, only creating partial account..."
+				// );
 				await createPartialAccount();
 				setIsLoading(false);
 				return;
 			}
 
 			// Otherwise, perform full initialization
-			console.log("[AgentOnboarding] Starting sequential API calls...");
+			// console.log("[AgentOnboarding] Starting sequential API calls...");
 
 			// Step 1: Create partial account
 			await createPartialAccount();
