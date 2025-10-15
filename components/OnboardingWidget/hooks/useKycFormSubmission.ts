@@ -134,7 +134,7 @@ export const useKycFormSubmission = ({
 			const bodyData = { ...data };
 			bodyData.form_data.csp_id = mobile;
 			bodyData.form_data.user_id = mobile;
-			console.log("[AgentOnboarding] processFormData data", bodyData);
+			// console.log("[AgentOnboarding] processFormData data", bodyData);
 
 			switch (data.id) {
 				case 5: // Aadhaar consent
