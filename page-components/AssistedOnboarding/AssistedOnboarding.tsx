@@ -122,7 +122,7 @@ const AssistedOnboarding = (): JSX.Element => {
 					response.data
 				);
 				// check if response.data.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
-				if (response?.data?.user_detail?.onboarding === 1) {
+				if (response?.data?.user_detail?.onboarding === 0) {
 					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
 				}
 				return response.data;
