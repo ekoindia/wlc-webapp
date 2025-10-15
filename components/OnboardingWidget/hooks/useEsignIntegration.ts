@@ -46,7 +46,6 @@ export const useEsignIntegration = ({
 	mobile,
 	onStepSubmit,
 }: UseEsignIntegrationProps): UseEsignIntegrationReturn => {
-	console.log("[AgentOnboarding] agreementId", agreementId);
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
