@@ -149,7 +149,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
 		const onChangeHandler = useCallback(
 			(e) => {
-				let val = e.target.value;
+				let val = e?.target?.value;
 				if (isNumInput) {
 					if (
 						// TODO: FIX
@@ -161,7 +161,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 						let formatted = formatNum(value, val);
 						onChange(formatted);
 					}
-				} else onChange(val);
+				} else onChange(e);
 			},
 			[isNumInput, onChange]
 		);
