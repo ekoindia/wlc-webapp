@@ -44,9 +44,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					...ORG_ID.DASHBOARD_V2,
 				],
 			},
-			staging: {
-				forOrgId: [1, 2, 3],
-			},
 		},
 	},
 
@@ -98,7 +95,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
 		envConstraints: {
 			production: {
 				forOrgId: [
