@@ -147,12 +147,6 @@ const OnboardingSteps = ({
 			// Update step status to failed
 			updateStepStatus(data.id, 2);
 
-			console.log(
-				"[AgentOnboarding] File upload error for step",
-				data.id
-			);
-			console.log("[AgentOnboarding] REFRESHING PROFILE >>>>>>");
-
 			// Refresh user profile
 			await refreshAgentProfile();
 		},
@@ -174,11 +168,6 @@ const OnboardingSteps = ({
 			// Update step status to failed
 			updateStepStatus(data.id, 2);
 
-			console.log(
-				"[AgentOnboarding] File upload error for step",
-				data.id
-			);
-			console.log("[AgentOnboarding] REFRESHING PROFILE >>>>>>");
 			// Refresh user profile
 			await refreshAgentProfile();
 		},
@@ -186,10 +175,6 @@ const OnboardingSteps = ({
 
 	const initialStepSetter = useCallback(
 		(user_data) => {
-			console.log(
-				"[AgentOnboarding] initialStepSetter user_data",
-				user_data
-			);
 			stepConfiguration.initializeSteps(user_data);
 		},
 		[stepConfiguration]
@@ -197,13 +182,13 @@ const OnboardingSteps = ({
 
 	const handleStepDataSubmit = useCallback(
 		async (data) => {
-			console.log("[AgentOnboarding] handleStepDataSubmit data", data);
+			// console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 
 			// Skip role selection (ID 0) as it's handled in RoleSelection component
 			if (data?.id === 0) {
-				console.log(
-					"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
-				);
+				// console.log(
+				// 	"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
+				// );
 				return;
 			}
 
@@ -325,7 +310,7 @@ const OnboardingSteps = ({
 		});
 	}, []);
 
-	console.log("[AgentOnboarding] state data", state.stepperData);
+	// console.log("[AgentOnboarding] state data", state.stepperData);
 
 	return (
 		<ExternalOnboardingWidget
