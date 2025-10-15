@@ -45,7 +45,8 @@ interface UseFileUploadProps {
 	state: OnboardingState;
 	actions: OnboardingActions;
 	mobile: string;
-	refreshApiCall?: () => Promise<any>;
+	onSuccess?: (_response: any, _data: FileUploadData) => Promise<any> | void;
+	onError?: (_error: any, _data: FileUploadData) => Promise<any> | void;
 }
 
 /**
@@ -64,14 +65,15 @@ interface UseFileUploadReturn {
  * @param {OnboardingActions} props.actions - State management actions for API progress and responses
  * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
  * @param {string | null} props.assistedAgentMobile - Mobile number of the assisted agent
- * @param {() => Promise<any>} props.refreshApiCall - Function to refresh API data after upload
+ * @param {() => Promise<any>} props.onSuccess - Function to call on successful upload
  * @returns {UseFileUploadReturn} Object containing file upload methods
  */
 export const useFileUpload = ({
 	state,
 	actions,
 	mobile,
-	refreshApiCall,
+	onSuccess,
+	onError,
 }: UseFileUploadProps): UseFileUploadReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
@@ -217,36 +219,42 @@ export const useFileUpload = ({
 	 * Handles successful upload response
 	 */
 	const handleUploadSuccess = useCallback(
-		async (response: any) => {
+		async (response: any, data: FileUploadData) => {
 			toast({
-				title: response.message,
+				title: response.message || "Upload successful",
 				status: "success",
 				duration: 2000,
 			});
 			actions.setLastStepResponse(response);
-			// Refresh API call if provided
-			if (refreshApiCall) {
-				await refreshApiCall();
+
+			// Call onSuccess callback if provided
+			if (typeof onSuccess === "function") {
+				await onSuccess(response, data);
 			}
 		},
-		[toast, actions, refreshApiCall]
+		[toast, actions, onSuccess]
 	);
 
 	/**
 	 * Handles upload error response
 	 */
 	const handleUploadError = useCallback(
-		(response: any) => {
+		async (error: any, data: FileUploadData) => {
 			toast({
 				title:
-					response.message ||
+					error.message ||
 					"Something went wrong, please try again later!",
 				status: "error",
 				duration: 2000,
 			});
-			actions.setLastStepResponse(response);
+			actions.setLastStepResponse(error);
+
+			// Call onError callback if provided
+			if (typeof onError === "function") {
+				await onError(error, data);
+			}
 		},
-		[toast, actions]
+		[toast, actions, onError]
 	);
 
 	/**
@@ -297,14 +305,16 @@ export const useFileUpload = ({
 						return err;
 					});
 
+				// Check for success: status/response_status_id/response_type_id should be 0
 				const success =
-					response?.status === 0 &&
+					(response?.status === 0 ||
+						response?.response_type_id === 0) &&
 					!(Object.keys(response?.invalid_params || {}).length > 0);
 
 				if (success) {
-					await handleUploadSuccess(response);
+					await handleUploadSuccess(response, data);
 				} else {
-					handleUploadError(response);
+					await handleUploadError(response, data);
 				}
 			} catch (error: any) {
 				toast({
@@ -315,11 +325,20 @@ export const useFileUpload = ({
 					duration: 2000,
 				});
 				actions.setLastStepResponse(error);
+				await handleUploadError(error, data);
 			} finally {
 				actions.setApiInProgress(false);
 			}
 		},
-		[actions]
+		[
+			actions,
+			processFileUpload,
+			accessToken,
+			generateNewToken,
+			toast,
+			handleUploadSuccess,
+			handleUploadError,
+		]
 	);
 
 	return {

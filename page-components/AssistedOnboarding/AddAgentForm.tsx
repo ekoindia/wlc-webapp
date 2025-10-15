@@ -1,10 +1,11 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { ParamType } from "constants/trxnFramework";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import router from "next/router";
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
@@ -29,6 +30,7 @@ const AddAgentForm = ({
 	setStep,
 	setAgentMobile,
 }: AddAgentFormProps): JSX.Element => {
+	const toast = useToast();
 	const {
 		handleSubmit,
 		register,
@@ -75,6 +77,20 @@ const AddAgentForm = ({
 			label: "Proceed",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			size: "lg",
+			label: "Back",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
 		},
 	];
 
@@ -115,8 +131,8 @@ const AddAgentForm = ({
 					responseTypeId ===
 					RESPONSE_TYPE_IDS.AGENT_COMPLETED_ONBOARDING
 				) {
-					// Agent already exists and completed onboarding
-					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_ALREADY_EXISTS);
+					// Agent already exists - check status to determine if onboarding is complete
+					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK);
 					return;
 				}
 
@@ -133,6 +149,16 @@ const AddAgentForm = ({
 					responseTypeId ===
 					RESPONSE_TYPE_IDS.AGENT_NOT_EXISTS_NEED_OTP
 				) {
+					const _otp = response?.data?.otp;
+					// in case of dev, show otp toast
+					if (process.env.NEXT_PUBLIC_ENV !== "production") {
+						toast({
+							title: `Demo OTP: ${_otp}`,
+							status: "success",
+							duration: 5000,
+							position: "top-right",
+						});
+					}
 					// Agent doesn't exist, needs OTP verification
 					setStep(ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION);
 					return;
@@ -148,19 +174,16 @@ const AddAgentForm = ({
 		<Flex
 			direction="column"
 			bg="white"
-			p="8"
-			borderRadius="md"
-			shadow="md"
-			maxW="500px"
+			p={{ base: 6, md: 10 }}
+			borderRadius="15px"
+			boxShadow="0px 5px 20px rgba(0, 0, 0, 0.08)"
+			border="1px solid"
+			borderColor="divider"
+			maxW="600px"
 			w="100%"
 		>
-			{/* Form Title */}
-			<Text fontSize="xl" fontWeight="semibold" mb="6" textAlign="center">
-				Add New Agent
-			</Text>
-
 			<form onSubmit={handleSubmit(handleFormSubmit)}>
-				<Flex direction="column" gap="8">
+				<Flex direction="column" gap="6">
 					<Form
 						{...{
 							parameter_list: add_agent_parameter_list,
@@ -171,7 +194,7 @@ const AddAgentForm = ({
 						}}
 					/>
 
-					<ActionButtonGroup {...{ buttonConfigList, w: "full" }} />
+					<ActionButtonGroup {...{ buttonConfigList }} />
 				</Flex>
 			</form>
 		</Flex>

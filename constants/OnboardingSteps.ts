@@ -2,9 +2,9 @@ import { UserTypeLabel } from "./UserTypes";
 
 // MerchantTypes as defined in the OaaS Widget configuration. Note, it is not the same as EPS's user-type-id
 const MERCHANT_TYPES = {
-	RETAILER: 1,
-	ENTERPRISE: 2,
-	DISTRIBUTOR: 3,
+	RETAILER: 0,
+	DISTRIBUTOR: 2,
+	ENTERPRISE: 3,
 };
 
 // Configuration for which user types are visible in different onboarding contexts
@@ -20,8 +20,6 @@ export const visibleAgentTypes = {
 export interface Role {
 	/** Unique identifier for the role */
 	id: number;
-	/** Type of merchant (1: retailer, 2: enterprise, 3: distributor) */
-	merchant_type: number;
 	/** Type of applicant (0: retailer, 1: enterprise, 2: distributor) */
 	applicant_type: number;
 	/** Display label for the role */
@@ -97,8 +95,7 @@ const getBaseRoleData = (
 ): Role[] => [
 	{
 		id: 1,
-		merchant_type: MERCHANT_TYPES.RETAILER,
-		applicant_type: 0,
+		applicant_type: MERCHANT_TYPES.RETAILER,
 		label: `I'm a ${userTypeLabel[2] || "Retailer"}`,
 		description: "I serve customers from my shop",
 		icon: "../assets/icons/user_merchant.png",
@@ -110,8 +107,7 @@ const getBaseRoleData = (
 	},
 	{
 		id: 2,
-		merchant_type: MERCHANT_TYPES.DISTRIBUTOR,
-		applicant_type: 2,
+		applicant_type: MERCHANT_TYPES.DISTRIBUTOR,
 		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
 		description: "I have a network of retailer and i want to serve them",
 		icon: "../assets/icons/user_distributor.png",
@@ -120,8 +116,7 @@ const getBaseRoleData = (
 	},
 	{
 		id: 3,
-		merchant_type: MERCHANT_TYPES.ENTERPRISE,
-		applicant_type: 1,
+		applicant_type: MERCHANT_TYPES.ENTERPRISE,
 		label: `I'm an ${userTypeLabel[23] || "Enterprise Partner"}`,
 		description:
 			"I want to use API and other solutions to make my own service",
@@ -148,16 +143,16 @@ export const generateRoleData = (config: RoleConfig = {}): Role[] => {
 		.filter((role) => {
 			// If visibleAgentTypes is specified, only show those merchant types
 			if (visibleAgentTypes && visibleAgentTypes.length > 0) {
-				return visibleAgentTypes.includes(role.merchant_type);
+				return visibleAgentTypes.includes(role.applicant_type);
 			}
 			// Otherwise, show all roles that are marked as visible
 			return role.isVisible;
 		})
 		.map((role) => ({
 			...role,
-			label: labelMap?.[role.merchant_type] || role.label,
+			label: labelMap?.[role.applicant_type] || role.label,
 			description:
-				descriptionMap?.[role.merchant_type] || role.description,
+				descriptionMap?.[role.applicant_type] || role.description,
 			isVisible: true, // All filtered roles should be visible
 		}));
 };
@@ -476,20 +471,20 @@ export const retailerStepsData: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
 	},
-	{
-		id: 5,
-		name: "Aadhaar Consent",
-		label: "Aadhaar Consent",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Verify Consent",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar consent taken.",
-	},
+	// {
+	// 	id: 5,
+	// 	name: "Aadhaar Consent",
+	// 	label: "Aadhaar Consent",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: true,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	primaryCTAText: "Verify Consent",
+	// 	description: "",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar consent taken.",
+	// },
 	{
 		id: 20,
 		name: "Digilocker Verification",
@@ -504,34 +499,62 @@ export const retailerStepsData: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Digilocker verification successful.",
 	},
+	// {
+	// 	id: 6,
+	// 	name: "Confirm Aadhaar Number",
+	// 	label: "Confirm Aadhaar Number",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	primaryCTAText: "Proceed",
+	// 	description: "",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar number confirmed.",
+	// },
+	// {
+	// 	id: 7,
+	// 	name: "ConfirmAadhaarOTP",
+	// 	label: "Confirm Aadhaar OTP",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	primaryCTAText: "Confirm",
+	// 	description: "",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar confirmed successfully.",
+	// },
 	{
-		id: 6,
-		name: "Confirm Aadhaar Number",
-		label: "Confirm Aadhaar Number",
+		id: 8,
+		name: "PanVerification",
+		label: "PAN Verification",
 		isSkipable: false,
 		isRequired: true,
-		isVisible: false,
+		isVisible: true,
 		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Proceed",
-		description: "",
+		role: 12300,
+		primaryCTAText: "Verify PAN",
+		description:
+			"Upload your PAN copy to verify your business. Accepted formats are",
 		form_data: {},
-		success_message: "Aadhaar number confirmed.",
+		success_message: "PAN verified successfully.",
 	},
-	{
-		id: 7,
-		name: "ConfirmAadhaarOTP",
-		label: "Confirm Aadhaar OTP",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Confirm",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar confirmed successfully.",
-	},
+	// {
+	// 	id: 10,
+	// 	name: "SecretPin",
+	// 	label: "Secret Pin",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: true,
+	// 	stepStatus: 0,
+	// 	role: 12600,
+	// 	primaryCTAText: "Next",
+	// 	description: "Set Your 4-Digit Secret Pin",
+	// 	form_data: {},
+	// },
 	{
 		id: 11,
 		name: "SelfieKYC",
@@ -546,19 +569,6 @@ export const retailerStepsData: OnboardingStep[] = [
 			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
 		form_data: {},
 		success_message: "KYC completed.",
-	},
-	{
-		id: 10,
-		name: "SecretPin",
-		label: "Secret Pin",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12600,
-		primaryCTAText: "Next",
-		description: "Set Your 4-Digit Secret Pin",
-		form_data: {},
 	},
 	{
 		id: 25,
@@ -587,57 +597,42 @@ export const retailerStepsData: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Agreement signed successfully.",
 	},
-	{
-		id: 8,
-		name: "PanVerification",
-		label: "PAN Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12300,
-		primaryCTAText: "Verify PAN",
-		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-	{
-		id: 13,
-		name: "Activation Plans",
-		label: "Activation Plans",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 13400,
-		primaryCTAText: "Sign Agreement",
-		description: "Select Plans To See Details",
-		form_data: {},
-		success_message: "Agreement signed successfully.",
-	},
-	{
-		id: 14,
-		name: "OnboardingStatus",
-		label: "Onboarding Status",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Submit",
-		description: "",
-		form_data: {},
-	},
-	{
-		id: 15,
-		name: "PANAadhaarMatching",
-		label: "PAN - Aadhaar Matching",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Start Matching",
-		description: "",
-		form_data: {},
-	},
+	// {
+	// 	id: 13,
+	// 	name: "Activation Plans",
+	// 	label: "Activation Plans",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 13400,
+	// 	primaryCTAText: "Sign Agreement",
+	// 	description: "Select Plans To See Details",
+	// 	form_data: {},
+	// 	success_message: "Agreement signed successfully.",
+	// },
+	// {
+	// 	id: 14,
+	// 	name: "OnboardingStatus",
+	// 	label: "Onboarding Status",
+	// 	isSkipable: false,
+	// 	isRequired: false,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	primaryCTAText: "Submit",
+	// 	description: "",
+	// 	form_data: {},
+	// },
+	// {
+	// 	id: 15,
+	// 	name: "PANAadhaarMatching",
+	// 	label: "PAN - Aadhaar Matching",
+	// 	isSkipable: false,
+	// 	isRequired: false,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	primaryCTAText: "Start Matching",
+	// 	description: "",
+	// 	form_data: {},
+	// },
 ];

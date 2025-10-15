@@ -26,20 +26,18 @@ const ExternalSelectionScreen = dynamic(
  * @param {Function} props.setSelectedRole - Function to set the selected role
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
+ * @param props.refreshAgentProfile
  * @returns {JSX.Element} The rendered RoleSelection component
  */
 const RoleSelection = ({
 	setStep,
-	logo,
-	appName,
-	orgName,
 	userData,
-	updateUserInfo,
 	isAssistedOnboarding,
 	selectedRole,
 	setSelectedRole,
 	assistedAgentDetails,
 	allowedMerchantTypes,
+	refreshAgentProfile,
 }) => {
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
@@ -51,8 +49,11 @@ const RoleSelection = ({
 		? assistedAgentDetails?.user_detail?.mobile
 		: userData?.userDetails?.signup_mobile;
 
+	// console.log("[AgentOnboarding] mobile", mobile);
+
 	const { state, actions } = useOnboardingState();
-	console.log("[AgentOnboarding] userData", userData);
+
+	// console.log("[AgentOnboarding] userData", userData);
 
 	const roleSubmission = useRoleFormSubmission({
 		state,
@@ -62,7 +63,9 @@ const RoleSelection = ({
 		onSuccess: (data, _bodyData) => {
 			// Check if role selection was successful and transition to KYC
 			if (data?.response_type_id === 1566) {
-				setStep("KYC_FLOW");
+				refreshAgentProfile().then(() => {
+					setStep("KYC_FLOW");
+				});
 			}
 		},
 	});
@@ -87,7 +90,7 @@ const RoleSelection = ({
 	const onboardingRoleStep = createRoleSelectionStep(forAgentTypes, {
 		userTypeLabel: userTypeLabels,
 	});
-	console.log("[AgentOnboarding] onboardingRoleStep", onboardingRoleStep);
+	// console.log("[AgentOnboarding] onboardingRoleStep", onboardingRoleStep);
 
 	return (
 		<Center>
@@ -96,21 +99,20 @@ const RoleSelection = ({
 				accentColor={accentColor}
 				stepData={onboardingRoleStep}
 				handleSubmit={(value) => {
-					setSelectedRole(value);
+					const { form_data } = value ?? {};
+					const _applicantType = form_data?.applicant_type ?? "";
+
+					// Update selected role state
+					setSelectedRole(_applicantType);
 
 					// Submit role selection via API
 					roleSubmission.submitRole({
 						id: 0,
 						form_data: {
-							applicant_type: value - 1,
+							applicant_type: _applicantType,
 						},
 					});
 				}}
-				logo={logo} // check if needed
-				appName={appName} // check if needed
-				orgName={orgName} // check if needed
-				userData={userData} // check if needed
-				updateUserInfo={updateUserInfo} // check if needed
 			/>
 		</Center>
 	);

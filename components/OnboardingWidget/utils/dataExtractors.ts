@@ -17,6 +17,7 @@ export interface AssistedUserData {
 	agreement_id: number;
 	code: string;
 	onboarding_steps: OnboardingStep[];
+	role_list: Array<number> | string;
 }
 
 /**
@@ -26,6 +27,7 @@ export interface UnifiedUserData {
 	userDetails?: UserDataDetails;
 	onboarding_steps?: OnboardingStep[];
 	user_detail?: AssistedUserData;
+	role_list?: Array<number> | string;
 }
 
 /**
@@ -109,4 +111,25 @@ export const getUserCodeFromData = (
 		: data?.userDetails?.code;
 
 	return _userCode;
+};
+
+export const getRoleListFromData = (
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
+): string => {
+	const _roleList = isAssistedOnboarding
+		? data?.user_detail?.role_list
+		: data?.role_list;
+
+	// Ensure we return string
+	if (typeof _roleList === "string") {
+		return _roleList;
+	}
+	// If it's an array, join it into a comma-separated string
+	if (Array.isArray(_roleList)) {
+		return _roleList.join(",");
+	}
+
+	// Default to empty array if undefined or not in expected format
+	return "";
 };

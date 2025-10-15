@@ -1,4 +1,5 @@
 import {
+	getAddressWithTooltip,
 	getAmountStyle,
 	getArrowStyle,
 	getDateTimeView,
@@ -36,8 +37,6 @@ export const prepareTableCell = (
 	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
-	const lat = item?.latitude || item?.address_details?.lattitude;
-	const long = item?.longitude || item?.address_details?.longitude;
 
 	switch (column?.show) {
 		case "#":
@@ -53,8 +52,10 @@ export const prepareTableCell = (
 			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
-		case "IconButton":
-			return getLocationStyle(item[column.name], lat, long);
+		case "Address":
+			return getAddressWithTooltip(item[column.name]);
+		case "Location":
+			return getLocationStyle(item[column.name]);
 		case "Avatar":
 			return getNameStyle(item[column.name]);
 		case "Arrow":

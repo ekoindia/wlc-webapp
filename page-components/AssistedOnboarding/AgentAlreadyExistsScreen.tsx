@@ -26,6 +26,22 @@ const AgentAlreadyExistsScreen = ({
 			size: "lg",
 			label: "Add Another Agent",
 			onClick: () => setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT),
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			size: "lg",
+			label: "Back",
+			onClick: () => {
+				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
+			},
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
 		},
 	];
 
@@ -33,28 +49,25 @@ const AgentAlreadyExistsScreen = ({
 		<Flex
 			direction="column"
 			bg="white"
-			p="8"
-			borderRadius="md"
-			shadow="md"
-			maxW="500px"
+			p={{ base: 8, md: 10 }}
+			borderRadius="15px"
+			boxShadow="0px 5px 20px rgba(0, 0, 0, 0.08)"
+			border="1px solid"
+			borderColor="divider"
+			maxW="600px"
 			w="100%"
 			textAlign="center"
 		>
-			{/* Title */}
-			<Text fontSize="xl" fontWeight="semibold" mb="4">
-				Agent Already Exists
-			</Text>
-
 			{/* Message */}
-			<Text fontSize="md" color="gray.600" mb="6">
+			<Text fontSize={{ base: "md", md: "lg" }} color="light" mb="8">
 				The agent with mobile number{" "}
-				<Text as="span" fontWeight="semibold">
+				<Text as="span" fontWeight="semibold" color="primary.DEFAULT">
 					{agentMobile}
 				</Text>{" "}
 				has already completed onboarding and exists in the system.
 			</Text>
 
-			<ActionButtonGroup {...{ buttonConfigList, w: "full" }} />
+			<ActionButtonGroup {...{ buttonConfigList }} />
 		</Flex>
 	);
 };

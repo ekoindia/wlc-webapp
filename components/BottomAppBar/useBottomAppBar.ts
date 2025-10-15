@@ -48,7 +48,7 @@ export const useBottomAppBarItems = ({
 			// Admin home page & dashboard
 			name: "dashboard",
 			label: "Home",
-			icon: "dashboard",
+			icon: "menu-home",
 			path: "/admin",
 			visible: isAdmin ? !isAdminAgentMode : isAdminAgentMode,
 		},

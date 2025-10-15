@@ -56,14 +56,13 @@ interface OnboardingActions {
 interface UseOnboardingApiSubmissionProps {
 	state?: OnboardingState;
 	actions: OnboardingActions;
-	mobile: string;
 	getInteractionTypeId: (_data: FormSubmissionData) => number;
 	processFormData: (_data: FormSubmissionData) => FormSubmissionData;
 	onSuccess?: (
-		_data: any,
-		_bodyData: FormSubmissionData
+		_response: any,
+		_data: FormSubmissionData
 	) => Promise<void> | void;
-	onError?: (_error: any) => void;
+	onError?: (_error: any, _data: FormSubmissionData) => Promise<void> | void;
 }
 
 /**
@@ -82,7 +81,6 @@ interface UseOnboardingApiSubmissionReturn {
  */
 export const useOnboardingApiSubmission = ({
 	actions,
-	mobile,
 	getInteractionTypeId,
 	processFormData,
 	onSuccess,
@@ -96,30 +94,28 @@ export const useOnboardingApiSubmission = ({
 	 * Handles successful API submission
 	 */
 	const handleSubmissionSuccess = useCallback(
-		async (data: any, bodyData: FormSubmissionData) => {
+		async (response: any, data: FormSubmissionData) => {
 			toast({
-				title: bodyData.success_message || "Success",
+				title: data.success_message || "Success",
 				status: "success",
 				duration: 2000,
 			});
 
 			// Handle specific form responses
-			if (bodyData.id === 5) {
-				actions.setAadhaarAccessKey(data?.data?.access_key);
-				actions.setAadhaarUserCode(data?.data?.user_code);
+			if (data.id === 5) {
+				actions.setAadhaarAccessKey(response?.data?.access_key);
+				actions.setAadhaarUserCode(response?.data?.user_code);
 			}
 
-			if (bodyData.id === 2) {
-				actions.setRole(
-					parseInt(bodyData?.form_data?.merchant_type) || 0
-				);
+			if (data.id === 2) {
+				actions.setRole(parseInt(data?.form_data?.merchant_type) || 0);
 			}
 
-			actions.setLastStepResponse(data);
+			actions.setLastStepResponse(response);
 
 			// Call optional success callback
-			if (onSuccess) {
-				await onSuccess(data, bodyData);
+			if (typeof onSuccess === "function") {
+				await onSuccess(response, data);
 			}
 		},
 		[toast, actions, onSuccess]
@@ -129,7 +125,7 @@ export const useOnboardingApiSubmission = ({
 	 * Handles API submission errors
 	 */
 	const handleSubmissionError = useCallback(
-		(error: any) => {
+		async (error: any, data: FormSubmissionData) => {
 			const errorMessage =
 				error.message ||
 				"Something went wrong, please try again later!";
@@ -143,8 +139,8 @@ export const useOnboardingApiSubmission = ({
 			actions.setLastStepResponse(error);
 
 			// Call optional error callback
-			if (onError) {
-				onError(error);
+			if (typeof onError === "function") {
+				await onError(error, data);
 			}
 		},
 		[toast, actions, onError]
@@ -168,8 +164,6 @@ export const useOnboardingApiSubmission = ({
 						token: accessToken,
 						body: {
 							interaction_type_id: interactionTypeId,
-							user_id: mobile,
-							csp_id: mobile,
 							...processedData.form_data,
 						},
 						timeout: 30000,
@@ -177,22 +171,27 @@ export const useOnboardingApiSubmission = ({
 					generateNewToken
 				);
 
+				// Check for success: status/response_status_id/response_type_id should be 0
 				const success =
-					response?.status === 0 &&
+					(response?.status === 0 ||
+						response?.response_type_id === 0) &&
 					!(Object.keys(response?.invalid_params || {}).length > 0);
 
 				if (success) {
 					await handleSubmissionSuccess(response, processedData);
 				} else {
 					toast({
-						title: response.message,
+						title:
+							response.message ||
+							"Something went wrong, please try again later!",
 						status: "error",
 						duration: 2000,
 					});
 					actions.setLastStepResponse(response);
+					await handleSubmissionError(response, processedData);
 				}
 			} catch (error: any) {
-				handleSubmissionError(error);
+				await handleSubmissionError(error, processedData);
 			} finally {
 				actions.setApiInProgress(false);
 			}
@@ -202,11 +201,9 @@ export const useOnboardingApiSubmission = ({
 			getInteractionTypeId,
 			actions,
 			accessToken,
-			mobile,
 			generateNewToken,
 			handleSubmissionSuccess,
 			handleSubmissionError,
-			toast,
 		]
 	);
 

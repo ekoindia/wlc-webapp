@@ -3,7 +3,7 @@ import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRefreshToken } from ".";
 
 // Types
@@ -91,19 +91,23 @@ const useBankList = (): UseBankListReturn => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [accessToken, generateNewToken, toast]);
+	}, [accessToken, generateNewToken]);
 
 	// Auto-fetch on mount
 	useEffect(() => {
 		fetchBankList();
-	}, [fetchBankList]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-	return {
-		banks,
-		isLoading,
-		error,
-		refetch: fetchBankList,
-	};
+	return useMemo(
+		() => ({
+			banks,
+			isLoading,
+			error,
+			refetch: fetchBankList,
+		}),
+		[banks, isLoading, error, fetchBankList]
+	);
 };
 
 export default useBankList;

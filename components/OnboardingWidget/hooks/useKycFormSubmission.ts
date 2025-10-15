@@ -86,11 +86,12 @@ interface UseKycFormSubmissionProps {
 	actions: OnboardingActions;
 	mobile: string;
 	selectedRole?: string | number;
+	agreementId?: string | number;
 	onSuccess?: (
-		_data: any,
-		_bodyData: FormSubmissionData
+		_response: any,
+		_data: FormSubmissionData
 	) => Promise<void> | void;
-	onError?: (_error: any) => void;
+	onError?: (_error: any, _data: FormSubmissionData) => Promise<void> | void;
 }
 
 /**
@@ -111,6 +112,7 @@ export const useKycFormSubmission = ({
 	state,
 	actions,
 	mobile,
+	agreementId,
 	onSuccess,
 	onError,
 }: UseKycFormSubmissionProps): UseKycFormSubmissionReturn => {
@@ -130,7 +132,9 @@ export const useKycFormSubmission = ({
 	const processFormData = useCallback(
 		(data: FormSubmissionData): FormSubmissionData => {
 			const bodyData = { ...data };
-			console.log("[AgentOnboarding] processFormData data", bodyData);
+			bodyData.form_data.csp_id = mobile;
+			bodyData.form_data.user_id = mobile;
+			// console.log("[AgentOnboarding] processFormData data", bodyData);
 
 			switch (data.id) {
 				case 5: // Aadhaar consent
@@ -153,7 +157,6 @@ export const useKycFormSubmission = ({
 
 				case 9: // Business details
 					bodyData.form_data.latlong = state.latLong;
-					bodyData.form_data.csp_id = mobile;
 					bodyData.form_data.communication = 1;
 					break;
 
@@ -196,8 +199,9 @@ export const useKycFormSubmission = ({
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
-				case 16: // PAN verification
-					bodyData.form_data.csp_id = mobile;
+				case 12: // Agreement signing
+					bodyData.form_data.agreement_id = agreementId || "";
+					bodyData.form_data.latlong = state.latLong;
 					break;
 
 				case 20: // Digilocker OTP confirmation
@@ -213,13 +217,12 @@ export const useKycFormSubmission = ({
 
 			return bodyData;
 		},
-		[state, mobile, actions]
+		[state, mobile, agreementId, actions]
 	);
 
 	const baseSubmission = useOnboardingApiSubmission({
 		state,
 		actions,
-		mobile,
 		getInteractionTypeId,
 		processFormData,
 		onSuccess,

@@ -89,7 +89,7 @@ const NetworkMenuWrapper = ({
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
 	const [accountStatusId, setAccountStatusId] = useState();
-	const { accessToken } = useSession();
+	const { accessToken, isAdmin } = useSession();
 	const router = useRouter();
 	const toast = useToast();
 
@@ -154,9 +154,10 @@ const NetworkMenuWrapper = ({
 			label: "View Details",
 			visible: true,
 			onClick: () => {
-				router.push(
-					`/admin/my-network/profile?mobile=${mobile_number}`
-				);
+				const pathname = isAdmin
+					? "/admin/my-network/profile"
+					: "/my-network/profile";
+				router.push(`${pathname}?mobile=${mobile_number}`);
 			},
 		},
 		{
@@ -171,7 +172,7 @@ const NetworkMenuWrapper = ({
 	let _includeChangeRole = false;
 
 	for (let { global, visibleString } of ChangeRoleMenuList) {
-		if (!global && visibleString.includes(agent_type)) {
+		if (isAdmin && !global && visibleString.includes(agent_type)) {
 			_includeChangeRole = true;
 			break;
 		}

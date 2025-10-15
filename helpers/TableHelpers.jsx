@@ -255,60 +255,32 @@ export const getStatusStyle = (status = "", tableName) => {
 	}
 };
 
-export const getLocationStyle = (location, lat, long) => {
-	let _showIcoButton = false;
+export const getLocationStyle = (location) => {
+	if (!location) return;
 
-	let _nullRemovedText = nullRemover(location);
+	const [latitude, longitude] = location
+		?.split(",")
+		?.map((coord) => coord.trim());
 
-	const _needToolTip = _nullRemovedText?.length > 25;
+	const isLocationAvailable = !!(+latitude && +longitude);
 
-	let _limitedText = "";
-
-	if (lat != null || long != null || lat != undefined || long != undefined) {
-		_showIcoButton = true;
-
-		if (!_nullRemovedText) {
-			_nullRemovedText = "View on Map";
-		}
-	}
-
-	if (_needToolTip) {
-		_limitedText = limitText(_nullRemovedText, 25);
-	}
-
-	const _finalText = _needToolTip ? _limitedText : _nullRemovedText;
-
-	return (
-		<Flex align="center">
-			{_showIcoButton && (
-				<IcoButton
-					size="xs"
-					iconName="near-me"
-					theme="accent"
-					mr={1}
-					onClick={(e) => {
-						openGoogleMap(lat, long);
-						e.stopPropagation();
-					}}
-					sx={{
-						"@media print": {
-							display: "none !important",
-						},
-					}}
-				/>
-			)}
-
-			<Tooltip
-				hasArrow
-				label={_needToolTip ? _nullRemovedText : null}
-				fontSize="xs"
-				bg="primary.DEFAULT"
-				color="white"
-			>
-				<Text>{capitalize(_finalText)}</Text>
-			</Tooltip>
-		</Flex>
-	);
+	return isLocationAvailable ? (
+		<IcoButton
+			size="xs"
+			iconName="near-me"
+			theme="accent"
+			mr={1}
+			onClick={(e) => {
+				e.stopPropagation();
+				openGoogleMap(latitude, longitude);
+			}}
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
+		/>
+	) : null;
 };
 
 export const getArrowStyle = () => {
@@ -477,5 +449,34 @@ export const getShareMobileButton = (mobile, meta) => {
 			text={meta?.text}
 			size="xs"
 		/>
+	);
+};
+
+export const getAddressWithTooltip = (address) => {
+	// Handle cases where address might be null or undefined
+	if (!address) return null;
+
+	// Clean the address using nullRemover to handle "null" text
+	const cleanAddress = nullRemover(address);
+	if (!cleanAddress) return null;
+
+	// Check if we need a tooltip (text longer than 25 chars)
+	const _needToolTip = cleanAddress.length > 25;
+	const _finalText = _needToolTip
+		? limitText(cleanAddress, 25)
+		: cleanAddress;
+
+	return (
+		<Flex align="center">
+			<Tooltip
+				hasArrow
+				label={_needToolTip ? cleanAddress : null}
+				fontSize="xs"
+				bg="primary.DEFAULT"
+				color="white"
+			>
+				<Text>{capitalize(_finalText)}</Text>
+			</Tooltip>
+		</Flex>
 	);
 };

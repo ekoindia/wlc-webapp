@@ -20,50 +20,103 @@ const getCommissionType = (commission_type) => {
 };
 
 /**
- * Network table parameter list
+ * Network table parameter list with column visibility metadata
  */
-const networkTableParameterList = [
-	{ label: "#", show: "#" },
-	{ name: "agent_name", label: "Name", show: "Avatar", sorting: true },
-	{ name: "agent_mobile", label: "Mobile", sorting: true },
-	{ name: "agent_type", label: "Type", sorting: true },
+export const networkTableParameterList = [
+	{ label: "#", show: "#", visible_in_table: true },
+	{
+		name: "agent_name",
+		label: "Name",
+		show: "Avatar",
+		sorting: true,
+		visible_in_table: true,
+	},
+	{
+		name: "agent_mobile",
+		label: "Mobile",
+		sorting: true,
+		visible_in_table: true,
+	},
+	{
+		name: "agent_type",
+		label: "Type",
+		sorting: true,
+		visible_in_table: true,
+	},
 	{
 		name: "onboarded_on",
 		label: "Onboarded\nOn",
 		sorting: true,
 		show: "Date",
+		visible_in_table: true,
+		hide_by_default: false,
 	},
 	{
 		name: "account_status",
 		label: "Account\nStatus",
 		sorting: true,
 		show: "Tag",
+		visible_in_table: true,
 	},
-	{ name: "eko_code", label: "User Code", sorting: true },
+	{
+		name: "eko_code",
+		label: "User Code",
+		sorting: true,
+		visible_in_table: true,
+		hide_by_default: false,
+	},
+	{
+		name: "user_id",
+		label: "Employee ID",
+		sorting: true,
+		visible_in_table: true,
+		hide_by_default: true,
+	},
 	{
 		name: "commission_type",
 		label: "Commission\nFrequency",
 		sorting: true,
+		visible_in_table: true,
+		hide_by_default: true,
 	},
 	{
 		name: "location",
+		label: "Address",
+		sorting: true,
+		show: "Address",
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+	{
+		name: "active_location",
 		label: "Location",
 		sorting: true,
-		show: "IconButton",
+		show: "Location",
+		visible_in_table: true,
+		hide_by_default: true,
 	},
-	{ name: "", label: "", show: "Modal" },
-	{ name: "", label: "", show: "Arrow" },
+	{
+		name: "onboarding_location",
+		label: "Onboarding\nLocation",
+		sorting: true,
+		show: "Location",
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+	{ name: "", label: "", show: "Modal", visible_in_table: true },
+	{ name: "", label: "", show: "Arrow", visible_in_table: true },
 ];
 
 /**
  * A NetworkTable page-component which will redirect to Retailer details on row click
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.isLoading
- * @param prop.pageNumber
- * @param prop.totalRecords
- * @param prop.agentDetails
- * @param prop.setPageNumber
+ * @param {object} prop - Properties passed to the component
+ * @param {boolean} prop.isLoading - Loading state
+ * @param {number} prop.pageNumber - Current page number
+ * @param {number} prop.totalRecords - Total number of records
+ * @param {Array} prop.agentDetails - Array of agent data
+ * @param {Function} prop.setPageNumber - Function to set page number
+ * @param {Array} [prop.visibleColumns] - Optional array of visible columns
+ * @returns {JSX.Element} The rendered NetworkTable component
  * @example	`<NetworkTable></NetworkTable>`
  */
 const NetworkTable = ({
@@ -72,10 +125,10 @@ const NetworkTable = ({
 	totalRecords,
 	agentDetails,
 	setPageNumber,
+	visibleColumns,
 }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
-	// const [lastPageWithData, setLastPageWithData] = useState(1);
 
 	agentDetails?.forEach((agent) => {
 		const commission_type = agent?.commission_duration;
@@ -84,46 +137,34 @@ const NetworkTable = ({
 
 	const networkTableDataSize = agentDetails?.length ?? 0;
 
+	// Use visible columns if provided, otherwise use full list
+	const columnsToRender = visibleColumns || networkTableParameterList;
+
 	/**
 	 * Table row click handler
-	 * @param {*} rowData
+	 * @param {object} rowData - Row data object
 	 */
 	const onRowClick = (rowData) => {
-		// TODO: Enable Agent Profile view for non-Admins
-		if (!isAdmin) return;
-
 		const mobile = rowData?.agent_mobile;
 		localStorage.setItem(
 			"oth_last_selected_agent",
 			JSON.stringify(rowData)
 		);
+
+		let _pathname = isAdmin
+			? `/admin/my-network/profile`
+			: `/my-network/profile`;
+
 		router.push({
-			pathname: `/admin/my-network/profile`,
+			pathname: _pathname,
 			query: { mobile },
 		});
 	};
-
-	// useEffect(() => {
-	// 	if (networkTableDataSize > 0) setLastPageWithData(pageNumber);
-	// }, [agentDetails]);
-
-	// let _pathname = router.pathname;
 
 	if (!isLoading && networkTableDataSize < 1) {
 		return (
 			<Flex direction="column" align="center" gap="2">
 				<Text color="light">Nothing Found</Text>
-				{/* <Button
-					onClick={() => {
-						router.push({
-							pathname: _pathname,
-							query: { page: lastPageWithData },
-						});
-						setPageNumber(lastPageWithData);
-					}}
-				>
-					Back
-				</Button> */}
 			</Flex>
 		);
 	}
@@ -139,10 +180,7 @@ const NetworkTable = ({
 				data: agentDetails,
 				ResponsiveCard: NetworkCard,
 				variant: "stripedActionRedirect",
-				// For non-admins, remove last table column (menu-dropdown)
-				renderer: isAdmin
-					? networkTableParameterList
-					: networkTableParameterList.slice(0, -2),
+				renderer: columnsToRender,
 			}}
 		/>
 	);

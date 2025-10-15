@@ -72,7 +72,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 1,
 		label: "Home",
-		icon: "dashboard",
+		icon: "menu-home",
 		link: "/admin",
 		summary:
 			"View your home page & dashboard with key metrics and insights about your business.",

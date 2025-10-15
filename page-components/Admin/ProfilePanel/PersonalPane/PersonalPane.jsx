@@ -1,9 +1,7 @@
 import { Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
 import { Card, IcoButton } from "components";
-import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
-import { fetcher } from "helpers";
-import { useLocalStorage } from "hooks";
+import { useShopTypes } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -17,41 +15,18 @@ const getLabel = (list, id) => {
 };
 
 /**
- * A <PersonalPane> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
- * @example	`<PersonalPane></PersonalPane>`
+ * A <PersonalPane> component that displays personal information of a user
+ * @param {object} prop - Properties passed to the component
+ * @param {object} prop.data - User's personal data including dob, gender, shop_name, etc.
+ * @returns {JSX.Element} - The PersonalPane component
+ * @example	`<PersonalPane data={userData} />`
  */
 const PersonalPane = ({ data }) => {
-	const [shopTypeLabel, setShopTypeLabel] = useState();
-	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 	const router = useRouter();
-	const { accessToken } = useSession();
-
-	const fetchShopTypes = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: TransactionIds.SHOP_TYPE,
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				if (res.status === 0) {
-					setShopTypes(res?.param_attributes.list_elements);
-				}
-			})
-			.catch((err) => {
-				console.error("err", err);
-			});
-	};
-
-	useEffect(() => {
-		if (!shopTypes?.length) {
-			fetchShopTypes();
-		}
-	}, []);
+	const { mobile } = router.query;
+	const [shopTypeLabel, setShopTypeLabel] = useState();
+	const { isAdmin } = useSession();
+	const { shopTypes } = useShopTypes();
 
 	useEffect(() => {
 		if (shopTypes?.length > 0) {
@@ -74,15 +49,22 @@ const PersonalPane = ({ data }) => {
 			label: "Marital Status",
 			value: data?.marital_status,
 		},
-		// {
-		// 	label: "Monthly Income",
-		// 	value: data?.monthly_income,
-		// },
 		{
 			label: "Shop Type",
 			value: shopTypeLabel,
 		},
 	];
+
+	const handleEditRoute = () => {
+		const pathname = isAdmin
+			? "/admin/my-network/profile/up-per-info"
+			: "/my-network/profile/up-per-info";
+
+		router.push({
+			pathname: pathname,
+			query: { mobile },
+		});
+	};
 
 	return (
 		<Card h="auto">
@@ -91,9 +73,7 @@ const PersonalPane = ({ data }) => {
 					Personal information
 				</Text>
 				<IcoButton
-					onClick={() =>
-						router.push("/admin/my-network/profile/up-per-info")
-					}
+					onClick={handleEditRoute}
 					theme="accent"
 					title="Edit Detail"
 					iconName="mode-edit"

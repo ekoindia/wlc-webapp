@@ -81,7 +81,7 @@ export const useDigilockerApi = ({
 		} finally {
 			actions.setDigilockerLoading(false);
 		}
-	}, [accessToken, generateNewToken, actions, toast]);
+	}, [accessToken, generateNewToken, actions]);
 
 	return {
 		getDigilockerUrl,

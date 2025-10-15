@@ -100,7 +100,7 @@ export const useRoleFormSubmission = ({
 	const processFormData = useCallback(
 		(data: FormSubmissionData): FormSubmissionData => {
 			const bodyData = { ...data };
-			console.log("[AgentOnboarding] bodyData", bodyData);
+			// console.log("[AgentOnboarding] bodyData", bodyData);
 
 			// Role selection specific processing
 			bodyData.form_data.applicant_type =
@@ -115,7 +115,6 @@ export const useRoleFormSubmission = ({
 	const baseSubmission = useOnboardingApiSubmission({
 		state,
 		actions,
-		mobile,
 		getInteractionTypeId,
 		processFormData,
 		onSuccess,

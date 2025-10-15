@@ -79,7 +79,7 @@ const ProfilePanel = () => {
 	const [agentDocuments, setAgentDocuments] = useState({});
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
-	const { accessToken } = useSession();
+	const { accessToken, isAdmin } = useSession();
 	const { mobile } = router.query;
 
 	const fetchAgentDetails = () => {
@@ -223,17 +223,17 @@ const ProfilePanel = () => {
 			<PageTitle
 				title={isMenuVisible ? "Change Role" : "Agent Details"}
 				toolComponent={
-					changeRoleMenuList.length > 0 && (
+					isAdmin && changeRoleMenuList.length > 0 ? (
 						<ChangeRoleDesktop
 							changeRoleMenuList={changeRoleMenuList}
 							menuHandler={menuHandler}
 						/>
-					)
+					) : null
 				}
 				onBack={isMenuVisible ? menuHandler : null}
 				hideToolComponent={isMenuVisible}
 			/>
-			{isMenuVisible ? (
+			{isAdmin && isMenuVisible ? (
 				<ChangeRoleMobile changeRoleMenuList={changeRoleMenuList} />
 			) : (
 				<Grid

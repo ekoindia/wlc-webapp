@@ -1,21 +1,9 @@
 import { useToken } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
-import { useAppSource } from "contexts/AppSourceContext";
-import { usePubSub } from "contexts/PubSubContext";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
-import useBankList from "hooks/useBankList";
-import useCountryStates from "hooks/useCountryStates";
-import useRefreshToken from "hooks/useRefreshToken";
-import useShopTypes from "hooks/useShopTypes";
+import { useAppSource, usePubSub } from "contexts";
+import { useBankList, useCountryStates, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
-import router from "next/router";
-import { useCallback, useEffect } from "react";
-import {
-	ANDROID_ACTION,
-	ANDROID_PERMISSION,
-	doAndroidAction,
-} from "utils/AndroidUtils";
+import { useCallback, useEffect, useMemo } from "react";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
 	useAndroidIntegration,
 	useDigilockerApi,
@@ -30,7 +18,7 @@ import {
 	getAgreementIdFromData,
 	getMobileFromData,
 	getOnboardingStepsFromData,
-	getUserCodeFromData,
+	getRoleListFromData,
 	getUserTypeFromData,
 } from "./utils";
 
@@ -40,23 +28,21 @@ const ExternalOnboardingWidget = dynamic(
 );
 
 const OnboardingSteps = ({
-	// setStep,
 	isAssistedOnboarding,
 	logo,
 	appName,
 	orgName,
 	userData,
-	updateUserInfo,
 	assistedAgentDetails,
+	refreshAgentProfile,
 }) => {
 	const { state, actions } = useOnboardingState();
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
-	const { generateNewToken } = useRefreshToken();
 	const { banks: bankList } = useBankList();
 	const { shopTypes: shopTypesData } = useShopTypes();
 	const { states: stateTypesData } = useCountryStates();
-	const { accessToken } = useSession();
+
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
 		"primary.DEFAULT",
@@ -64,55 +50,59 @@ const OnboardingSteps = ({
 	]);
 
 	// Determine the user details to use for onboarding
-	const onboardingUserDetails = isAssistedOnboarding
-		? assistedAgentDetails
-		: userData;
-
-	console.log(
-		"[AgentOnboarding] onboardingUserDetails",
-		onboardingUserDetails
+	const onboardingUserDetails = useMemo(
+		() => (isAssistedOnboarding ? assistedAgentDetails : userData),
+		[isAssistedOnboarding, assistedAgentDetails, userData]
 	);
 
-	const userType = getUserTypeFromData(
+	const roleList = getRoleListFromData(
 		onboardingUserDetails,
 		isAssistedOnboarding
 	);
 
-	console.log("[AgentOnboarding] userType", userType);
-
-	const onboardingSteps = getOnboardingStepsFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const userType = useMemo(
+		() => getUserTypeFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	console.log("[AgentOnboarding] onboardingSteps", onboardingSteps);
-
-	const mobile = getMobileFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const onboardingSteps = useMemo(
+		() =>
+			getOnboardingStepsFromData(
+				onboardingUserDetails,
+				isAssistedOnboarding
+			),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	console.log("[AgentOnboarding] mobile", mobile);
-
-	const agreementId = getAgreementIdFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const mobile = useMemo(
+		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	console.log("[AgentOnboarding] agreementId", agreementId);
-
-	const userCode = getUserCodeFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
+	const agreementId = useMemo(
+		() =>
+			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	console.log("[AgentOnboarding] userCode", userCode);
+	/**
+	 * Update the status of a specific onboarding step
+	 * @param {number} id - The ID of the step to update
+	 * @param {number} status - The new status to set (default is 3)
+	 */
+	const updateStepStatus = (id, status = 3) => {
+		const updatedStepperData = state.stepperData.map((step) =>
+			step.id === id ? { ...step, stepStatus: status } : step
+		);
+		actions.setStepperData(updatedStepperData);
+	};
 
 	// Initialize step configuration hook
 	const stepConfiguration = useStepConfiguration({
 		actions,
 		userType,
 		onboardingSteps,
+		roleList,
 	});
 
 	// Initialize specialized hooks
@@ -141,69 +131,80 @@ const OnboardingSteps = ({
 		mobile,
 	});
 
-	const formSubmission = useKycFormSubmission({
+	const { submitForm } = useKycFormSubmission({
 		state,
 		actions,
+		agreementId,
 		mobile,
-		onSuccess: !isAssistedOnboarding
-			? async (_data, bodyData) => {
-					// Refresh API and handle step initialization for role selection
-					const refreshResult = await refreshApiCall();
-					if (bodyData.id === 0) {
-						initialStepSetter(refreshResult);
-					}
-				}
-			: undefined,
+		onSuccess: async (_response, data) => {
+			// Update step status
+			updateStepStatus(data.id, 3);
+
+			// Refresh user profile
+			await refreshAgentProfile();
+		},
+		onError: async (_error, data) => {
+			// Update step status to failed
+			updateStepStatus(data.id, 2);
+
+			// Refresh user profile
+			await refreshAgentProfile();
+		},
 	});
 
-	const fileUpload = useFileUpload({
+	const { uploadFile } = useFileUpload({
 		state,
 		actions,
 		mobile,
-		refreshApiCall: !isAssistedOnboarding
-			? () => refreshApiCall()
-			: undefined,
+		onSuccess: async (_response, data) => {
+			// Update step status
+			updateStepStatus(data.id, 3);
+
+			// Refresh user profile
+			await refreshAgentProfile();
+		},
+
+		onError: async (_error, data) => {
+			// Update step status to failed
+			updateStepStatus(data.id, 2);
+
+			// Refresh user profile
+			await refreshAgentProfile();
+		},
 	});
 
 	const initialStepSetter = useCallback(
 		(user_data) => {
-			console.log(
-				"[AgentOnboarding] initialStepSetter user_data",
-				user_data
-			);
 			stepConfiguration.initializeSteps(user_data);
 		},
 		[stepConfiguration]
 	);
 
 	const handleStepDataSubmit = useCallback(
-		(data) => {
-			console.log("[AgentOnboarding] handleStepDataSubmit data", data);
+		async (data) => {
+			// console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 
 			// Skip role selection (ID 0) as it's handled in RoleSelection component
 			if (data?.id === 0) {
-				console.log(
-					"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
-				);
+				// console.log(
+				// 	"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
+				// );
 				return;
 			}
 
 			if (data?.id === 3) {
 				actions.setLocation(data?.form_data?.latlong);
+				updateStepStatus(3);
 			}
 
 			// Route to appropriate handler based on form type
-			if (
-				data?.id === 1 ||
-				data?.id === 4 ||
-				data?.id === 8 ||
-				data?.id === 11
-			) {
-				// File upload forms
-				fileUpload.uploadFile(data);
+			if ([1, 4, 8, 11].includes(data?.id)) {
+				await uploadFile(data);
+				return;
 			} else {
 				// Regular form submission
-				formSubmission.submitForm(data);
+				await submitForm(data);
+				return;
 			}
 		},
 		[actions]
@@ -257,45 +258,6 @@ const OnboardingSteps = ({
 		}
 	};
 
-	// Method to refresh user profile and update states
-	const refreshApiCall = useCallback(async () => {
-		actions.setApiInProgress(true);
-		try {
-			const res = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL +
-					Endpoints.REFRESH_PROFILE,
-				{
-					token: accessToken,
-					body: {
-						last_refresh_token: userData?.refresh_token,
-					},
-				},
-				generateNewToken
-			);
-
-			// Check if states list needs to be captured on refresh
-			updateUserInfo(res);
-			actions.setIsLoading(false);
-
-			if (
-				res?.details?.onboarding !== 1 &&
-				res?.details?.onboarding !== undefined &&
-				res?.details?.onboarding !== null &&
-				!isAssistedOnboarding
-			) {
-				router.push("/home");
-			}
-
-			actions.setApiInProgress(false);
-			return res;
-		} catch (error) {
-			actions.setIsLoading(false);
-			actions.setApiInProgress(false);
-
-			console.log("inside initial api error", error);
-		}
-	}, []);
-
 	useEffect(() => {
 		const handleMessage = (event) => {
 			if (event.data.type === "STATUS_UPDATE") {
@@ -346,16 +308,14 @@ const OnboardingSteps = ({
 		initialStepSetter({
 			details: onboardingUserDetails,
 		});
-	}, [onboardingUserDetails]);
-
-	useEffect(() => {
-		// Based on the assisted onboarding prop, decide what to do.
-		refreshApiCall();
 	}, []);
+
+	// console.log("[AgentOnboarding] state data", state.stepperData);
+
 	return (
 		<ExternalOnboardingWidget
 			{...({
-				defaultStep: userData?.userDetails?.role_list || "12400",
+				defaultStep: roleList || "12400",
 				isBranding: false,
 				userData: userData,
 				handleSubmit: handleStepDataSubmit,
