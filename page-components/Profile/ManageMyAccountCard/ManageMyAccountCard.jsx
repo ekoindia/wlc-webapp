@@ -54,6 +54,10 @@ const ManageMyAccountCard = () => {
 		);
 	};
 
+	if (process.env.NEXT_PUBLIC_DISABLE_OTHERS === "true") {
+		return null;
+	}
+
 	return (
 		<WidgetBase title="Manage My Account" noPadding>
 			<Flex
