@@ -71,7 +71,6 @@ export const useStepConfiguration = ({
 			);
 
 			// Get user type using utility function
-			console.log("[StepConfiguration] userType", userType);
 			if (!userType) {
 				console.warn(
 					"[StepConfiguration] No user type found in userData"
@@ -79,10 +78,10 @@ export const useStepConfiguration = ({
 				return;
 			}
 
-			console.log(
-				"[AgentOnboarding] useStepCOnfiguration roleList",
-				roleList
-			);
+			// console.log(
+			// 	"[AgentOnboarding] useStepCOnfiguration roleList",
+			// 	roleList
+			// );
 
 			const baseStepData = getStepsForUserType(userType);
 			if (baseStepData.length === 0) {
@@ -144,10 +143,10 @@ export const useStepConfiguration = ({
 				});
 			}
 
-			console.log(
-				"[AgentOnboarding] useStepConfig Filtered steps:",
-				filteredSteps
-			);
+			// console.log(
+			// 	"[AgentOnboarding] useStepConfig Filtered steps:",
+			// 	filteredSteps
+			// );
 
 			// Set the stepper data with filtered steps
 			// Create a new array to prevent reference issues
