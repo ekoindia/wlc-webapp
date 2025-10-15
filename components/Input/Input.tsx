@@ -161,7 +161,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 						let formatted = formatNum(value, val);
 						onChange(formatted);
 					}
-				} else onChange(e);
+				} else onChange(val);
 			},
 			[isNumInput, onChange]
 		);
