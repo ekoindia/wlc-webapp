@@ -205,7 +205,7 @@ const Login = ({
 				maxW="100%"
 				onChange={onChangeHandler}
 				maxLength={12}
-				isNumInput={isMobileMappedUserId ? false : true}
+				isNumInput={true}
 				labelStyle={{
 					color: "light",
 				}}
