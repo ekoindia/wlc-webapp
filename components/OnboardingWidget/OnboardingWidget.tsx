@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Center, Spinner } from "@chakra-ui/react";
+import { Center, Flex, Spinner } from "@chakra-ui/react";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
 import { getOnboardingStepsFromData } from "./utils";
@@ -113,7 +113,11 @@ const OnboardingWidget = ({
 		}
 	};
 	// MARK: JSX
-	return <>{renderCurrentStep()}</>;
+	return (
+		<Flex h="100vh" w="100%" justify="center">
+			{renderCurrentStep()}
+		</Flex>
+	);
 };
 
 export default OnboardingWidget;
