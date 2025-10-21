@@ -315,15 +315,16 @@ const OnboardingSteps = ({
 	return (
 		<ExternalOnboardingWidget
 			{...({
-				defaultStep: roleList || "12400",
-				isBranding: false,
-				userData: userData,
-				handleSubmit: handleStepDataSubmit,
-				stepResponse: state.lastStepResponse,
-				selectedMerchantType: state.selectedRole,
+				appName: appName,
+				orgName: orgName,
+				primaryColor: primaryColor,
+				accentColor: accentColor,
 				shopTypes: shopTypesData,
 				stateTypes: stateTypesData,
 				bankList: bankList,
+				userData: userData,
+				handleSubmit: handleStepDataSubmit,
+				stepResponse: state.lastStepResponse,
 				stepsData: state.stepperData,
 				handleStepCallBack: handleStepCallBack,
 				esignStatus:
@@ -332,10 +333,6 @@ const OnboardingSteps = ({
 						: state.esign.status === "failed"
 							? 2
 							: 0,
-				primaryColor: primaryColor,
-				accentColor: accentColor,
-				appName: appName,
-				orgName: orgName,
 				digilockerData: state.digilocker.data,
 			} as any)}
 		/>
