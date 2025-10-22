@@ -3,7 +3,7 @@ import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useFeatureFlag } from "hooks";
+import { useFeatureFlag, useUserTypes } from "hooks";
 import { useColumnVisibility } from "hooks/useColumnVisibility";
 import { formatDate } from "libs/dateFormat";
 import dynamic from "next/dynamic";
@@ -31,9 +31,10 @@ const action = {
 };
 
 const operation_type_list = [
-	{ label: "Independent Retailer", value: "3" },
-	{ label: "Retailer", value: "2" },
 	{ label: "Distributor", value: "1" },
+	{ label: "Field Agent", value: "4" },
+	{ label: "Retailer", value: "2" },
+	{ label: "Independent Retailer", value: "3" },
 ];
 
 const status_list = [
@@ -63,6 +64,8 @@ const Network = () => {
 	};
 	const router = useRouter();
 	const { accessToken, isAdmin, userType } = useSession();
+	const { getUserTypeLabel } = useUserTypes();
+
 	const [pageNumber, setPageNumber] = useState(1);
 	const [isLoading, setIsLoading] = useState(true);
 	const [networkData, setNetworkData] = useState([]);
@@ -224,27 +227,41 @@ const Network = () => {
 	const network_filter_parameter_list = [
 		{
 			name: "agentType",
-			label: "Agent Type",
+			label: "User Type",
 			parameter_type_id: ParamType.LIST,
-			list_elements: operation_type_list.filter((item) => {
-				// Based on current user-type, show selected network-user-types
-				if (userType === 1) {
-					// For distributors, hide following agent-types: (Super)Distributor, Indipendent Retailer
-					if (
-						item.value === "1" ||
-						item.value === "3" ||
-						item.value === "7"
-					) {
-						return false;
+			list_elements: operation_type_list
+				.filter((item) => {
+					// Show all user-types for admins
+					if (isAdmin) return true;
+
+					// Based on current user-type, show selected network-user-types
+					if (userType === 1) {
+						// For distributors, show only the following user types: FOS (4) and Retailer (2)
+						if (item.value !== "2" && item.value !== "4") {
+							return false;
+						}
+					} else if (userType === 7) {
+						// For Super-Distributor, show only the following agent-types: Distributor, FOS, Retailer & Indipendent Retailer
+						if (
+							item.value !== "1" &&
+							item.value !== "4" &&
+							item.value !== "2" &&
+							item.value !== "3"
+						) {
+							return false;
+						}
+					} else if (userType === 4) {
+						// For Field Agent, show only the following agent-types: Retailer
+						if (item.value !== "2") {
+							return false;
+						}
 					}
-				} else if (userType === 7) {
-					// For Super-Distributor, hide following agent-types: (Independent Retailer & Super-Distributor)
-					if (item.value === "3" || item.value === "7") {
-						return false;
-					}
-				}
-				return true;
-			}),
+					return true;
+				})
+				.map((type) => {
+					// Convert default user-type labels to the custom labels, where applicable
+					return { ...type, label: getUserTypeLabel(type.value) };
+				}),
 			required: false,
 		},
 		{
@@ -256,7 +273,7 @@ const Network = () => {
 		},
 		{
 			name: "parent_user_code",
-			label: "Sub-Network Filter by User Code",
+			label: "Show Sub-Network of a User",
 			parameter_type_id: ParamType.TEXT,
 			placeholder: "Enter User Code",
 			required: false,
