@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Center, Flex, Spinner } from "@chakra-ui/react";
+import { Button } from "components";
+import { useRouter } from "next/router";
+import { parseEnvBoolean } from "utils/envUtils";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
 import { getOnboardingStepsFromData } from "./utils";
@@ -58,6 +61,8 @@ const OnboardingWidget = ({
 		ONBOARDING_STEPS.LOADING
 	);
 
+	const router = useRouter();
+
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = isAssistedOnboarding
 		? assistedAgentDetails
@@ -76,6 +81,30 @@ const OnboardingWidget = ({
 			setStep(ONBOARDING_STEPS.ROLE_SELECTION);
 		}
 	}, []);
+
+	if (
+		isAssistedOnboarding !== true &&
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING)
+	) {
+		// Self-onboarding is disabled for this app instance.
+		return (
+			<Flex
+				direction="column"
+				align="center"
+				justify="center"
+				h="100%"
+				minH="100%"
+				w="100%"
+				gap="2em"
+				p="2em 1em"
+				bg="white"
+			>
+				<p>User not found</p>
+				{/* Go back to home page */}
+				<Button onClick={() => router.replace("/")}>Back</Button>
+			</Flex>
+		);
+	}
 
 	const renderCurrentStep = () => {
 		switch (step) {

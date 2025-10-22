@@ -15,6 +15,7 @@ import { useAppLink, useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import { useCopilotAction, useCopilotInfo } from "libs";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 import { limitText } from "utils/textFormat";
 import { useSession } from ".";
 
@@ -216,10 +217,12 @@ const MenuProvider = ({ children }) => {
 		const { trxnList: _trxnList, otherList: _otherList } =
 			filterTransactionLists(interactionList, isAdmin, isAdminAgentMode);
 
-		const isDisableAllTxns =
-			process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS === "true";
-		const isDisableAllOthers =
-			process.env.NEXT_PUBLIC_DISABLE_OTHERS === "true";
+		const isDisableAllTxns = parseEnvBoolean(
+			process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS
+		);
+		const isDisableAllOthers = parseEnvBoolean(
+			process.env.NEXT_PUBLIC_DISABLE_OTHERS
+		);
 
 		// Set the final lists
 
