@@ -5,6 +5,7 @@ import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
 import { WidgetBase } from "page-components/Home";
 import { Fragment, useEffect, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 
 /**
  * A <ManageMyAccountCard> component
@@ -54,7 +55,7 @@ const ManageMyAccountCard = () => {
 		);
 	};
 
-	if (process.env.NEXT_PUBLIC_DISABLE_OTHERS === "true") {
+	if (parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_OTHERS)) {
 		return null;
 	}
 
