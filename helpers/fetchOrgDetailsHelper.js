@@ -64,6 +64,11 @@ export const MockOrgDetails = {
 			4: { en: "CSO" },
 			24: { en: "Head Office Admin" },
 		},
+		login_meta: {
+			mobile_mapped_user_id:
+				process.env.LOGIN_MOBILE_MAPPED_USER_ID === "1" ? 1 : 0,
+			user_id_label: process.env.LOGIN_USER_ID_LABEL || "User ID",
+		},
 	},
 	login_types: {
 		google: {
