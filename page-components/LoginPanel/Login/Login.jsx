@@ -75,10 +75,10 @@ const Login = ({
 		if (previewMode === true) return;
 
 		// check based on the isMobileMappedUserId,
-		// if isMobileMappedUserId is true, then allow digits 7 to 12
+		// if isMobileMappedUserId is true, then allow digits 5 to 12
 		// else exactly 12 digits are required
 		if (
-			(isMobileMappedUserId && value.length >= 7 && value.length <= 12) ||
+			(isMobileMappedUserId && value.length >= 5 && value.length <= 12) ||
 			(!isMobileMappedUserId && value.length === 12)
 		) {
 			let originalNum = RemoveFormatted(value);

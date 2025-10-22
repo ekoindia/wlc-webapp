@@ -149,12 +149,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
 		const onChangeHandler = useCallback(
 			(e) => {
-				let val = e.target.value;
+				let val = e?.target?.value;
 				if (isNumInput) {
 					if (
 						// TODO: FIX
 						val == "" ||
-						/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
+						/^[1-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
 							val
 						)
 					) {

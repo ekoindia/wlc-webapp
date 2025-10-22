@@ -5,6 +5,7 @@ import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
 import { WidgetBase } from "page-components/Home";
 import { Fragment, useEffect, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 
 /**
  * A <ManageMyAccountCard> component
@@ -53,6 +54,10 @@ const ManageMyAccountCard = () => {
 				(id ? `${id}` : "")
 		);
 	};
+
+	if (parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_OTHERS)) {
+		return null;
+	}
 
 	return (
 		<WidgetBase title="Manage My Account" noPadding>
