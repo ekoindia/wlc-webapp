@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Endpoints, UserTypeIcon } from "constants";
+import { Endpoints, UserType, UserTypeIcon } from "constants";
 import { useSession } from "contexts";
 import { useApiFetch, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -55,7 +55,7 @@ const getCacheKey = (prevDate, currDate) => {
 const OnboardingDashboard = () => {
 	const [filterData, setFilterData] = useState([]);
 	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
-	const { accessToken } = useSession();
+	const { accessToken, userType } = useSession();
 	const [pageNumber, setPageNumber] = useState(1);
 	const [onboardingAgentsTopPanelData, setOnboardingAgentsTopPanelData] =
 		useState([]);
@@ -252,7 +252,10 @@ const OnboardingDashboard = () => {
 					gap="0.4em"
 				>
 					<LuHeartHandshake color="#7c3bed" />
-					All Onboarding Users
+					All Onboarding{" "}
+					{userType == UserType.FOS
+						? getUserTypeLabel(UserType.MERCHANT) + "(s)"
+						: "Users"}
 				</Flex>
 
 				<Flex

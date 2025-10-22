@@ -31,14 +31,21 @@ export const useUserTypes = () => {
 		const mergedLabels = { ...UserTypeLabel };
 		if (userTypeLabelsFromOrg) {
 			Object.keys(userTypeLabelsFromOrg).forEach((key) => {
-				mergedLabels[key] = userTypeLabelsFromOrg[key].en;
+				mergedLabels[+key] = userTypeLabelsFromOrg[key].en; // TODO: Localize (fallback to `en`)
 			});
 		}
 		return mergedLabels;
 	}, [userTypeLabelsFromOrg]);
 
+	/**
+	 * Get the label for a specific user type ID. It returns the custom label if defined, otherwise falls back to the default label. If no label is found, it returns the user type ID itself.
+	 * @param {number|string} user_type_id - The user type ID.
+	 * @returns {string} - The label for the user type.
+	 */
 	const getUserTypeLabel = (user_type_id) =>
-		userTypeLabels[user_type_id] || user_type_id;
+		userTypeLabels[+user_type_id] ||
+		userTypeLabels[user_type_id] ||
+		user_type_id;
 
 	return { userTypeLabels, getUserTypeLabel };
 };
