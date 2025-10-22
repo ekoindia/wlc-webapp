@@ -22,7 +22,7 @@ export const saveDataToFile = (
 		processedData = b64toByteArrays(data);
 	}
 
-	const file = new Blob([processedData] as BlobPart[], { type });
+	const file = new Blob(processedData as BlobPart[], { type });
 
 	// IE10+ compatibility
 	if ((window.navigator as any).msSaveOrOpenBlob) {
@@ -52,7 +52,7 @@ export const saveDataToFile = (
  */
 export const b64toByteArrays = (
 	b64Data: string,
-	sliceSize: number = 512
+	sliceSize: number = 16384
 ): Uint8Array[] => {
 	const byteCharacters = atob(b64Data);
 	const byteArrays: Uint8Array[] = [];
