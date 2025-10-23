@@ -22,7 +22,7 @@ export const saveDataToFile = (
 		processedData = b64toByteArrays(data);
 	}
 
-	const file = new Blob(processedData as BlobPart[], { type });
+const file = new Blob(Array.isArray(processedData) ? processedData : [processedData] as BlobPart[], { type });
 
 	// IE10+ compatibility
 	if ((window.navigator as any).msSaveOrOpenBlob) {
