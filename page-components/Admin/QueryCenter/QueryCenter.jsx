@@ -350,7 +350,7 @@ const QueryDetails = ({
 								<Val label="Status" value={ticket.status} />
 								{/* <Val label="Priority" value={ticket.priority} /> */}
 								<Val
-									label="UserCode"
+									label="User Code"
 									value={ticket["CSP Code"]}
 								/>
 								<Val
