@@ -3,9 +3,14 @@ import { TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import { getChatGptAgentUrl } from "helpers";
-import { useClipboard, useFeatureFlag, useRaiseIssue } from "hooks";
+import {
+	useClipboard,
+	useFeatureFlag,
+	useRaiseIssue,
+	useUserTypes,
+} from "hooks";
 import { useRouter } from "next/router";
-import { clearCacheAndReload } from "utils";
+import { clearCacheAndReload, formatMobile } from "utils";
 import { AdminViewToggleCard, IcoButton, Icon } from "..";
 
 /**
@@ -174,6 +179,7 @@ const MyAccountCard = ({ onClose }) => {
 		isAdmin,
 		logout,
 		isOnboarding,
+		userType,
 		userTypeLabel,
 		userData,
 		isLoggedIn,
@@ -192,7 +198,15 @@ const MyAccountCard = ({ onClose }) => {
 	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
 
-	const effective_user_id = user_id || code;
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
+	const userIdLabel = login_meta?.user_id_label ?? "User ID";
+
+	const { getUserCodeLabel } = useUserTypes();
+	const userCodeLabel = getUserCodeLabel(userType);
+
+	// const effective_user_id = user_id || code;
 
 	const gptAgentUrl = isChatGptAgentAllowed
 		? getChatGptAgentUrl({
@@ -348,7 +362,8 @@ const MyAccountCard = ({ onClose }) => {
 									</Text>
 								) : null}
 
-								{effective_user_id && effective_user_id > 1 ? (
+								{/* Custom User-ID (Employee Code, etc) */}
+								{isMobileMappedUserId && user_id ? (
 									<Flex
 										align="center"
 										gap="2"
@@ -368,7 +383,7 @@ const MyAccountCard = ({ onClose }) => {
 											boxShadow:
 												"0 6px 16px rgba(0, 0, 0, 0.25)",
 										}}
-										onClick={() => copy(effective_user_id)}
+										onClick={() => copy(user_id)}
 									>
 										<Text
 											fontSize="11px"
@@ -376,11 +391,57 @@ const MyAccountCard = ({ onClose }) => {
 											fontWeight="semibold"
 											textShadow="0 1px 2px rgba(0, 0, 0, 0.3)"
 										>
-											ID: {effective_user_id}
+											{userIdLabel}: {user_id}
 										</Text>
 										<Icon
 											name={
-												state[effective_user_id]
+												state[user_id]
+													? "check"
+													: "content-copy"
+											}
+											size="12px"
+											color="rgba(255, 255, 255, 0.95)"
+											filter="drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
+										/>
+									</Flex>
+								) : null}
+
+								{/* User Code (Show only when a custom User-ID is not available) */}
+								{isMobileMappedUserId !== true &&
+								code &&
+								("" + code).length > 2 ? (
+									<Flex
+										align="center"
+										gap="2"
+										bg="rgba(255, 255, 255, 0.2)"
+										px="3"
+										py="1.5"
+										borderRadius="full"
+										cursor="pointer"
+										transition="all 0.2s ease"
+										border="1px solid rgba(255, 255, 255, 0.2)"
+										backdropFilter="blur(10px)"
+										boxShadow="0 4px 12px rgba(0, 0, 0, 0.2)"
+										w="fit-content"
+										_hover={{
+											bg: "rgba(255, 255, 255, 0.3)",
+											transform: "translateY(-2px)",
+											boxShadow:
+												"0 6px 16px rgba(0, 0, 0, 0.25)",
+										}}
+										onClick={() => copy(code)}
+									>
+										<Text
+											fontSize="11px"
+											color="rgba(255, 255, 255, 0.95)"
+											fontWeight="semibold"
+											textShadow="0 1px 2px rgba(0, 0, 0, 0.3)"
+										>
+											{userCodeLabel}: {code}
+										</Text>
+										<Icon
+											name={
+												state[code]
 													? "check"
 													: "content-copy"
 											}
@@ -404,7 +465,7 @@ const MyAccountCard = ({ onClose }) => {
 							{mobile && mobile > 1 ? (
 								<ContactItem
 									iconName="phone"
-									value={`+91 ${mobile.slice(0, 5)} ${mobile.slice(5)}`}
+									value={formatMobile(mobile)}
 									onCopy={() => copy(mobile)}
 									isCopied={state[mobile]}
 									actionButton={

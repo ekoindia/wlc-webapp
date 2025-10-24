@@ -7,14 +7,23 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Card, Currency, IcoButton, Icon } from "components";
-import { useSession } from "contexts/UserContext";
-import { useClipboard } from "hooks";
+import {
+	Button,
+	Card,
+	CopyButton,
+	Currency,
+	IcoButton,
+	Icon,
+} from "components";
+import { useOrgDetailContext, useSession } from "contexts";
+import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { capitalize } from "utils/textFormat";
 
 /**
  * A <CompanyPane> component that displays user/company details.
+ * For example, used to show user details of My Network page in Admin panel.
+ * TODO: Update misleading component name.
  *
  * This component receives a data object as a prop and displays the company's avatar, name, user code, account type, plan name, and wallet balance. It also provides a button to view all transactions.
  * @param {object} props - Properties passed to the component
@@ -44,17 +53,36 @@ const CompanyPane = ({ data }) => {
 	const { agent_name, eko_code, src, agent_type, plan_name, wallet_balance } =
 		data ?? {};
 
-	const { copy, state } = useClipboard();
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
+	const userIdLabel = login_meta?.user_id_label ?? "User ID";
+
+	const { getUserCodeLabel, getUserTypeLabel } = useUserTypes();
+	const userCodeLabel = getUserCodeLabel(data?.user_type_id ?? 0);
+	const userTypeLabel = data?.user_type_id
+		? getUserTypeLabel(data?.user_type_id)
+		: agent_type;
 
 	const onViewAllTrxnClick = () => {
 		router.push(`/admin/network-statement?agent_mobile=${mobile}`);
 	};
 
 	const companyDataList = [
-		{ id: 1, label: "Account Type", value: agent_type },
-		{ id: 2, label: "Plan name", value: plan_name },
+		{ id: 1, label: "Type", value: userTypeLabel },
+		{ id: 2, label: "Plan", value: plan_name },
 		// { id: 3, label: "KYC status", value: "KYC Compliant" },
 	];
+
+	if (isMobileMappedUserId) {
+		companyDataList.push({
+			id: 4,
+			label: userIdLabel,
+			value: data?.user_id,
+			enableCopy: true,
+		});
+	}
 
 	return (
 		<Card h={{ base: "auto", md: "560px" }} gap="8">
@@ -71,32 +99,17 @@ const CompanyPane = ({ data }) => {
 						<Text as="b" fontSize="xl">
 							{capitalize(agent_name)}
 						</Text>
-						<Flex color="light" fontSize="sm" gap="1">
-							User Code:
-							<Flex
-								align="center"
-								gap="0.5"
-								cursor="pointer"
-								transition="opacity 0.3s ease-out"
-								_hover={{ opacity: 0.9 }}
-								onClick={() => copy(eko_code)}
-							>
-								<Text
-									fontWeight="medium"
-									color="accent.DEFAULT"
-								>
-									{eko_code}
-								</Text>
-								<Icon
-									title="Copy"
-									name={
-										state[eko_code]
-											? "check"
-											: "content-copy"
-									}
-									size="xs"
-								/>
-							</Flex>
+						<Flex
+							align="center"
+							color="light"
+							fontSize="sm"
+							gap="1"
+						>
+							<Text>{userCodeLabel}:</Text>
+							<Text fontWeight="medium" color="accent.DEFAULT">
+								{eko_code}
+							</Text>
+							<CopyButton text={eko_code} size="xs" />
 						</Flex>
 					</div>
 				</Flex>
@@ -134,13 +147,25 @@ const CompanyPane = ({ data }) => {
 											&#58;&nbsp;
 										</Box>
 									</Text>
-									<Text
-										color="dark"
-										fontSize="sm"
-										fontWeight="medium"
+									<Flex
+										direction="row"
+										align="center"
+										gap="2"
 									>
-										{item.value}
-									</Text>
+										<Text
+											color="dark"
+											fontSize="sm"
+											fontWeight="medium"
+										>
+											{item.value}
+										</Text>
+										{item.enableCopy ? (
+											<CopyButton
+												text={item.value}
+												size="xs"
+											/>
+										) : null}
+									</Flex>
 								</Flex>
 							)
 					)}
