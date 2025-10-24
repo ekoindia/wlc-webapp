@@ -30,7 +30,11 @@ export { getFormErrorMessage } from "./errorMessages";
 export { parse } from "./exprParser";
 export { b64toByteArrays, dataUrlToBlob, saveDataToFile } from "./fileUtils";
 export { numericHash } from "./hash";
-export { formatCurrency, getCurrencySymbol } from "./numberFormat";
+export {
+	formatCurrency,
+	formatMobile,
+	getCurrencySymbol,
+} from "./numberFormat";
 export { printPage } from "./print";
 export { obj2queryparams } from "./queryBuilder";
 export {
