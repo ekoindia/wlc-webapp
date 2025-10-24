@@ -25,7 +25,9 @@ export const useUserTypes = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const { metadata } = orgDetail || {};
 	const userTypeLabelsFromOrg = metadata?.user_type_labels;
+	const userCodeLabelsFromOrg = metadata?.user_code_labels;
 
+	// Memoized user type labels (default labels overridden by org-specific custom labels)
 	const userTypeLabels = useMemo(() => {
 		// Merge default labels with org-specific labels (while picking only the 'en' field)
 		const mergedLabels = { ...UserTypeLabel };
@@ -47,6 +49,20 @@ export const useUserTypes = () => {
 		userTypeLabels[user_type_id] ||
 		user_type_id;
 
-	return { userTypeLabels, getUserTypeLabel };
+	/**
+	 * Get the custom label for User Code based on user type ID. If no custom label is defined, it returns the default "User Code".
+	 * @param {number|string} user_type_id - The user type ID.
+	 * @returns {string} - The label for User Code.
+	 */
+	const getUserCodeLabel = (user_type_id) => {
+		if (!user_type_id || !userCodeLabelsFromOrg) return "User Code";
+		return (
+			userCodeLabelsFromOrg[+user_type_id] ||
+			userCodeLabelsFromOrg[user_type_id] ||
+			"User Code"
+		);
+	};
+
+	return { userTypeLabels, getUserTypeLabel, getUserCodeLabel };
 };
 export default useUserTypes;
