@@ -47,10 +47,15 @@ const Login = ({
 	const { metadata } = orgDetail ?? {};
 	const { login_meta } = metadata ?? {};
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
+	const mobileMappedUserIdLabel = login_meta?.user_id_label || "User ID";
 
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
+
+	const UserIdType = isMobileMappedUserId
+		? mobileMappedUserIdLabel
+		: "mobile number";
 
 	useEffect(() => {
 		if (lastMobileFormatted && !value) {
@@ -194,7 +199,7 @@ const Login = ({
 			<Box flex="0.5 1 40px" />
 
 			<Input
-				label={`Login with your ${isMobileMappedUserId ? "User ID" : "mobile number"}`} // "Enter mobile number"
+				label={`Login with your ${UserIdType}`} // "Enter mobile number"
 				placeholder={isMobileMappedUserId ? "" : "XXX XXX XXXX"}
 				required
 				leftAddon={isMobileMappedUserId ? undefined : "+91"}
