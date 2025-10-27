@@ -1,7 +1,7 @@
 import { useToken } from "@chakra-ui/react";
+import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
 import { useAppSource, usePubSub } from "contexts";
 import { useBankList, useCountryStates, useShopTypes } from "hooks";
-import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
@@ -22,10 +22,9 @@ import {
 	getUserTypeFromData,
 } from "./utils";
 
-const ExternalOnboardingWidget = dynamic(
-	() => import("@ekoindia/oaas-widget").then((mod) => mod.OnboardingWidget),
-	{ ssr: false }
-);
+// Type assertion to fix external component type mismatch
+const ExternalOnboardingWidget =
+	ExternalOnboardingWidgetBase as unknown as React.FC<any>;
 
 const OnboardingSteps = ({
 	isAssistedOnboarding,
