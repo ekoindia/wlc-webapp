@@ -155,8 +155,8 @@ export const createSupportTicket = ({
 			device_time: new Date().toISOString(),
 			appsource: appSource,
 			android_app_version: androidAppVersion,
-			web_app_version: process.env.NEXT_PUBLIC_APP_VERSION,
 			// TODO: Add the following details...
+			// web_app_version: process.env.NEXT_PUBLIC_APP_VERSION,
 			// last_unhandled_error: window._lastConnectGlobalError || "No Error",
 			// db_cache_ver: this.db_cache_ver,
 		}),
