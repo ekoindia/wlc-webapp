@@ -1,0 +1,44 @@
+name: "Ensure package.json version bumped on main merge"
+
+on:
+	pull_request:
+		branches:
+			- main
+
+jobs:
+	version-check:
+		runs-on: ubuntu-latest
+		steps:
+			- name: Checkout code
+				uses: actions/checkout@v4
+				with:
+					fetch-depth: 2
+
+			- name: Setup Node.js
+				uses: actions/setup-node@v4
+				with:
+					node-version: "18"
+
+			- name: Get old version from main branch
+				id: old
+				run: |
+					OLD_VER=$(jq -r .version <<< "$(git show origin/main:package.json)")
+					echo "OLD_VERSION=$OLD_VER" >> $GITHUB_OUTPUT
+
+			- name: Get new version from current PR
+				id: new
+				run: |
+					NEW_VER=$(jq -r .version package.json)
+					echo "NEW_VERSION=$NEW_VER" >> $GITHUB_OUTPUT
+
+			- name: Compare versions
+				run: |
+					echo "Old version: ${{ steps.old.outputs.OLD_VERSION }}"
+					echo "New version: ${{ steps.new.outputs.NEW_VERSION }}"
+					if [ "${{ steps.old.outputs.OLD_VERSION }}" = "${{ steps.new.outputs.NEW_VERSION }}" ]; then
+						echo "❌ package.json version must be bumped when merging into main."
+						exit 1
+					fi
+
+		permissions:
+			contents: read
