@@ -37,21 +37,21 @@ const PersonalPane = ({ data }) => {
 
 	const personalDataList = [
 		{
-			label: "Date of birth",
+			label: "Date of Birth",
 			value: data?.dob ?? data?.date_of_birth,
 		},
 		{ label: "Gender", value: data?.gender },
-		{
-			label: "Shop name",
-			value: data?.shop_name,
-		},
 		{
 			label: "Marital Status",
 			value: data?.marital_status,
 		},
 		{
+			label: "Shop Name",
+			value: data?.shop_name,
+		},
+		{
 			label: "Shop Type",
-			value: shopTypeLabel,
+			value: shopTypeLabel || data?.shop_type,
 		},
 	];
 

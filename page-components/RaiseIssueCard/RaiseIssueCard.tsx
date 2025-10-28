@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
-import { useUser } from "contexts";
+import { useAppSource, useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
 import {
 	useDebouncedState,
@@ -121,6 +121,8 @@ const RaiseIssueCard = ({
 	const [isTextClassifierEnabled] = useFeatureFlag("TEXT_CLASSIFIER");
 	const [textClassifier, setTextClassifier] = useState<any>(null);
 	const [classifierResult, setClassifierResult] = useState("");
+
+	const { appSource, nativeVersion } = useAppSource();
 
 	// Init Text Classifier...
 	useEffect(() => {
@@ -535,6 +537,8 @@ const RaiseIssueCard = ({
 			tid,
 			tx_typeid,
 			transaction_metadata: metadata,
+			appSource,
+			androidAppVersion: nativeVersion,
 			controller,
 			generateNewToken,
 		})

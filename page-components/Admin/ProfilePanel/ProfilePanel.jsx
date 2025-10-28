@@ -163,6 +163,8 @@ const ProfilePanel = () => {
 						...agentData?.profile,
 						agent_name: agentData?.agent_name,
 						agent_type: agentData?.agent_type,
+						user_id: agentData?.user_id,
+						user_type_id: agentData?.user_type_id,
 					}}
 				/>
 			),

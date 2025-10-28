@@ -92,7 +92,7 @@ export const useCopilotInfo = (config: any) => {
 	try {
 		return useCopilotReadable(config);
 	} catch (error) {
-		console.error("Error occurred while using Copilot:", error);
+		console.warn("Error using Copilot (Info):", error);
 		return null;
 	}
 };
@@ -106,7 +106,7 @@ export const useCopilotAction = (config: any) => {
 	try {
 		return useCopilotActionHook(config);
 	} catch (error) {
-		console.error("Error occurred while using Copilot:", error);
+		console.error("Error using Copilot (Action):", error);
 		return null;
 	}
 };
