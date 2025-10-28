@@ -157,6 +157,7 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 							md: "block",
 						}}
 						flex={1}
+						minH="450px"
 					/>
 				</Flex>
 			</Flex>
