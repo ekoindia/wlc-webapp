@@ -67,7 +67,7 @@
 		"@copilotkit/react-core": "^1.10.3",
 		"@copilotkit/react-textarea": "^1.10.3",
 		"@copilotkit/react-ui": "^1.10.3",
-		"@ekoindia/oaas-widget": "^4.1.0",
+		"@ekoindia/oaas-widget": "^4.2.0",
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",
 		"@measured/puck": "^0.15.0",
