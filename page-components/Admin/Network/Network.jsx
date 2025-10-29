@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NetworkTable, NetworkToggleColumns, NetworkToolbar } from ".";
-import { networkTableParameterList } from "./NetworkTable/NetworkTable";
+import { useNetworkTableParameterList } from "./NetworkTable/NetworkTable";
 
 const NetworkTreeView = dynamic(
 	() => import(".").then((pkg) => pkg.NetworkTreeView),
@@ -114,6 +114,7 @@ const Network = () => {
 	});
 
 	// Column visibility management
+	const networkTableParameterList = useNetworkTableParameterList();
 	const {
 		hiddenColumns,
 		toggleColumnVisibility,

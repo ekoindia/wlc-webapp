@@ -13,6 +13,7 @@ import {
 	getShareMobileButton,
 	getStatusStyle,
 } from "helpers";
+import { formatMobile } from "utils";
 
 /**
  *
@@ -64,6 +65,8 @@ export const prepareTableCell = (
 			return getAmountStyle(item[column.name]);
 		case "Payment":
 			return getPaymentStyle(item[column.name], trx_type);
+		case "Mobile":
+			return formatMobile(item[column.name]);
 		case "Description":
 			return getDescriptionStyle(item[column.name]);
 		case "Date":

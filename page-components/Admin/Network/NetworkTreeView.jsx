@@ -13,6 +13,7 @@ import { FaRegUser } from "react-icons/fa6";
 import { FcBusinessman, FcManager } from "react-icons/fc";
 import { MdFolderShared } from "react-icons/md";
 import { RiEBike2Fill } from "react-icons/ri";
+import { formatMobile } from "utils";
 import { getInitials } from "utils/textFormat";
 import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
 // import { useSet } from "hooks";
@@ -236,7 +237,9 @@ const NetworkTreeView = () => {
 										</Tag>
 										<Box>
 											<strong>Mobile: </strong>
-											{selectedItem?.meta?.mobile}
+											{formatMobile(
+												selectedItem?.meta?.mobile
+											)}
 										</Box>
 										{/* <Box>
 											<strong>User Code: </strong>

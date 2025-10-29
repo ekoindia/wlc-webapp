@@ -152,7 +152,7 @@ const OnboardingDashboardFilters = ({
 									color="primary.DEFAULT"
 									fontSize="lg"
 								>
-									<span>{item.value}</span>
+									<span>{item.value ?? 0}</span>
 								</Text>
 							</Skeleton>
 						</Flex>

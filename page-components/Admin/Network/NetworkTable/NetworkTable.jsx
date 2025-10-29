@@ -1,6 +1,8 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
-import { useSession } from "contexts";
+import { UserType } from "constants";
+import { useOrgDetailContext, useSession } from "contexts";
+import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { NetworkCard } from "..";
 
@@ -20,92 +22,113 @@ const getCommissionType = (commission_type) => {
 };
 
 /**
- * Network table parameter list with column visibility metadata
+ * Custom hook to generate a list of columns for the Network Table with dynamic labels and conditional columns
+ * @returns {Array} Table parameter (columns) list
  */
-export const networkTableParameterList = [
-	{ label: "#", show: "#", visible_in_table: true },
-	{
-		name: "agent_name",
-		label: "Name",
-		show: "Avatar",
-		sorting: true,
-		visible_in_table: true,
-	},
-	{
-		name: "agent_mobile",
-		label: "Mobile",
-		sorting: true,
-		visible_in_table: true,
-	},
-	{
-		name: "agent_type",
-		label: "Type",
-		sorting: true,
-		visible_in_table: true,
-	},
-	{
-		name: "onboarded_on",
-		label: "Onboarded\nOn",
-		sorting: true,
-		show: "Date",
-		visible_in_table: true,
-		hide_by_default: false,
-	},
-	{
-		name: "account_status",
-		label: "Account\nStatus",
-		sorting: true,
-		show: "Tag",
-		visible_in_table: true,
-	},
-	{
-		name: "eko_code",
-		label: "User Code",
-		sorting: true,
-		visible_in_table: true,
-		hide_by_default: false,
-	},
-	{
-		name: "user_id",
-		label: "Employee ID",
-		sorting: true,
-		visible_in_table: true,
-		hide_by_default: true,
-	},
-	{
-		name: "commission_type",
-		label: "Commission\nFrequency",
-		sorting: true,
-		visible_in_table: true,
-		hide_by_default: true,
-	},
-	{
-		name: "location",
-		label: "Address",
-		sorting: true,
-		show: "Address",
-		visible_in_table: true,
-		hide_by_default: true,
-	},
-	{
-		name: "active_location",
-		label: "Location",
-		sorting: true,
-		show: "Location",
-		visible_in_table: true,
-		hide_by_default: true,
-	},
-	{
-		name: "onboarding_location",
-		label: "Onboarding\nLocation",
-		sorting: true,
-		show: "Location",
-		visible_in_table: true,
-		hide_by_default: true,
-	},
-	{ name: "", label: "", show: "Modal", visible_in_table: true },
-	{ name: "", label: "", show: "Arrow", visible_in_table: true },
-];
+export const useNetworkTableParameterList = () => {
+	const { getUserCodeLabel } = useUserTypes();
+	const { userType } = useSession();
+	const userCodeLabel = getUserCodeLabel(
+		userType == UserType.FOS ? UserType.MERCHANT : 0
+	);
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
+	const userIdLabel = login_meta?.user_id_label ?? "User ID";
+
+	const baseList = [
+		{ label: "#", show: "#", visible_in_table: true },
+		{
+			name: "agent_name",
+			label: "Name",
+			show: "Avatar",
+			sorting: true,
+			visible_in_table: true,
+		},
+		{
+			name: "agent_type",
+			label: "Type",
+			sorting: true,
+			visible_in_table: true,
+		},
+		{
+			name: "agent_mobile",
+			label: "Mobile",
+			show: "Mobile",
+			sorting: true,
+			visible_in_table: true,
+		},
+		{
+			name: "onboarded_on",
+			label: "Onboarded\nOn",
+			sorting: true,
+			show: "Date",
+			visible_in_table: true,
+		},
+		{
+			name: "account_status",
+			label: "Account\nStatus",
+			sorting: true,
+			show: "Tag",
+			visible_in_table: true,
+		},
+		{
+			name: "eko_code",
+			label: userCodeLabel,
+			sorting: true,
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{
+			name: "commission_type",
+			label: "Commission\nFrequency",
+			sorting: true,
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{
+			name: "location",
+			label: "Address",
+			sorting: true,
+			show: "Address",
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{
+			name: "active_location",
+			label: "Location",
+			sorting: true,
+			show: "Location",
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{
+			name: "onboarding_location",
+			label: "Onboarding\nLocation",
+			sorting: true,
+			show: "Location",
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{ name: "", label: "", show: "Modal", visible_in_table: true },
+		{ name: "", label: "", show: "Arrow", visible_in_table: true },
+	];
+
+	// Conditionally add Employee ID column if orgDetail.user_id exists
+	if (isMobileMappedUserId) {
+		baseList.splice(7, 0, {
+			name: "user_id",
+			label: userIdLabel,
+			sorting: true,
+			visible_in_table: true,
+			hide_by_default: true,
+		});
+	}
+
+	return baseList;
+};
 
 /**
  * A NetworkTable page-component which will redirect to Retailer details on row click
@@ -137,8 +160,9 @@ const NetworkTable = ({
 
 	const networkTableDataSize = agentDetails?.length ?? 0;
 
-	// Use visible columns if provided, otherwise use full list
-	const columnsToRender = visibleColumns || networkTableParameterList;
+	// Use visible columns if provided, otherwise use dynamically generated list
+	const defaultColumns = useNetworkTableParameterList();
+	const columnsToRender = visibleColumns || defaultColumns;
 
 	/**
 	 * Table row click handler

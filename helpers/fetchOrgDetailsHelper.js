@@ -64,6 +64,11 @@ export const MockOrgDetails = {
 			4: { en: "CSO" },
 			24: { en: "Head Office Admin" },
 		},
+		// Custom labels for User Code (per user type). Defaults to "User Code"
+		user_code_labels: {
+			2: "Agent Code",
+			3: "Agent Code",
+		},
 		login_meta: {
 			mobile_mapped_user_id:
 				process.env.LOGIN_MOBILE_MAPPED_USER_ID === "1" ? 1 : 0,

@@ -283,7 +283,7 @@ const OnboardingDashboard = () => {
 							mt={{ base: "2", md: "0" }}
 							mb={{ base: "2", md: "8" }}
 						>
-							<Text color="light">Nothing Found</Text>
+							<Text color="light">No onboarding in progress</Text>
 						</Flex>
 					) : (
 						<OnboardedMerchants

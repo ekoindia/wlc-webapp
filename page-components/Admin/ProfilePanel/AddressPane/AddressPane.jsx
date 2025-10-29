@@ -38,7 +38,7 @@ const AddressPane = ({ data }) => {
 					<Divider />
 
 					<Flex direction="column" color="light">
-						Ownership type
+						Ownership Type
 						<Text fontWeight="medium" color="dark">
 							{data?.ownership_type}
 						</Text>

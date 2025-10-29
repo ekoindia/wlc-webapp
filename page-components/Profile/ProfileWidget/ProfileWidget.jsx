@@ -1,6 +1,7 @@
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { useUser } from "contexts/UserContext";
+import { useOrgDetailContext, useUser } from "contexts";
+import { useUserTypes } from "hooks";
 import { useEffect, useState } from "react";
 
 const profile_percent_parameter_list = [
@@ -49,11 +50,20 @@ const formatToCommaSeparated = (numberList) => {
  * A ProfileWidget page-component
  */
 const ProfileWidget = () => {
-	const { userData, userTypeLabel } = useUser();
+	const { userData, userType, userTypeLabel } = useUser();
 	const [percent, setPercent] = useState(0);
 	const data = userData.userDetails;
 
-	let _alternateMobile = formatToCommaSeparated(data?.alternate_mobiles);
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
+	const userIdLabel = login_meta?.user_id_label ?? "User ID";
+
+	const { getUserCodeLabel } = useUserTypes();
+	const userCodeLabel = getUserCodeLabel(userType);
+
+	const _alternateMobile = formatToCommaSeparated(data?.alternate_mobiles);
 
 	useEffect(() => {
 		const { shopDetails, personalDetails } = userData;
@@ -99,7 +109,7 @@ const ProfileWidget = () => {
 				boxShadow="basic"
 				rowGap="14"
 			>
-				<Flex justify="space-between" align="flex-start" gap={2}>
+				<Flex align="flex-start" gap={4}>
 					<Avatar
 						size={{ base: "md", md: "lg" }}
 						name={data.name ? data.name[0] : ""}
@@ -114,11 +124,19 @@ const ProfileWidget = () => {
 							{data.name}
 						</Text>
 						<Flex gap="2" fontSize="14px">
-							<Text>{userTypeLabel}</Text>
-							<Text opacity={0.5}>&#124;</Text>
+							<strong>{userTypeLabel}</strong>
+						</Flex>
+						{isMobileMappedUserId ? (
+							<Flex gap="2" fontSize="14px">
+								<Text>
+									{userIdLabel}:{" "}
+									<strong>{data.user_id}</strong>
+								</Text>
+							</Flex>
+						) : null}
+						<Flex gap="2" fontSize="14px">
 							<Text>
-								User Code:
-								<strong> {data.code}</strong>
+								{userCodeLabel}: <strong>{data.code}</strong>
 							</Text>
 						</Flex>
 						<Flex align="center" gap="2" mt="2">
