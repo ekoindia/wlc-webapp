@@ -196,7 +196,11 @@ const Network = () => {
 		const filteredData = Object.entries(data)?.reduce(
 			(acc, [key, value]) => {
 				if (value) {
-					acc[key] = value;
+					// Extract value property from object values (for select/list fields)
+					acc[key] =
+						typeof value === "object" && value?.value !== undefined
+							? value.value
+							: value;
 				}
 				return acc;
 			},
