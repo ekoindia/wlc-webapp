@@ -1,4 +1,4 @@
-import { Center, useToken } from "@chakra-ui/react";
+import { useToken } from "@chakra-ui/react";
 import {
 	createRoleSelectionStep,
 	visibleAgentTypes,
@@ -93,28 +93,26 @@ const RoleSelection = ({
 	// console.log("[AgentOnboarding] onboardingRoleStep", onboardingRoleStep);
 
 	return (
-		<Center>
-			<ExternalSelectionScreen
-				primaryColor={primaryColor}
-				accentColor={accentColor}
-				stepData={onboardingRoleStep}
-				handleSubmit={(value) => {
-					const { form_data } = value ?? {};
-					const _applicantType = form_data?.applicant_type ?? "";
+		<ExternalSelectionScreen
+			primaryColor={primaryColor}
+			accentColor={accentColor}
+			stepData={onboardingRoleStep}
+			handleSubmit={(value) => {
+				const { form_data } = value ?? {};
+				const _applicantType = form_data?.applicant_type ?? "";
 
-					// Update selected role state
-					setSelectedRole(_applicantType);
+				// Update selected role state
+				setSelectedRole(_applicantType);
 
-					// Submit role selection via API
-					roleSubmission.submitRole({
-						id: 0,
-						form_data: {
-							applicant_type: _applicantType,
-						},
-					});
-				}}
-			/>
-		</Center>
+				// Submit role selection via API
+				roleSubmission.submitRole({
+					id: 0,
+					form_data: {
+						applicant_type: _applicantType,
+					},
+				});
+			}}
+		/>
 	);
 };
 

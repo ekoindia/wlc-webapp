@@ -451,7 +451,7 @@ export const retailerStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 12400,
-		primaryCTAText: "Start Location Capture",
+		primaryCTAText: "Capture Location",
 		description: "",
 		form_data: {},
 		success_message: "Location captured successfully.",

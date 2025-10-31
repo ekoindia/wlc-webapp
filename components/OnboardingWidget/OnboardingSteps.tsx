@@ -1,7 +1,7 @@
 import { useToken } from "@chakra-ui/react";
+import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
 import { useAppSource, usePubSub } from "contexts";
 import { useBankList, useCountryStates, useShopTypes } from "hooks";
-import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
@@ -22,10 +22,24 @@ import {
 	getUserTypeFromData,
 } from "./utils";
 
-const ExternalOnboardingWidget = dynamic(
-	() => import("@ekoindia/oaas-widget").then((mod) => mod.OnboardingWidget),
-	{ ssr: false }
-);
+// Type assertion to fix external component type mismatch
+const ExternalOnboardingWidget =
+	ExternalOnboardingWidgetBase as unknown as React.FC<{
+		appName: string;
+		orgName: string;
+		primaryColor: string;
+		accentColor: string;
+		shopTypes: any;
+		stateTypes: any;
+		bankList: any;
+		userData: any;
+		handleSubmit: (_data: any) => void;
+		stepResponse: any;
+		stepsData: any[];
+		handleStepCallBack: (_callType: any) => void;
+		esignStatus: number;
+		digilockerData: any;
+	}>;
 
 const OnboardingSteps = ({
 	isAssistedOnboarding,
@@ -315,15 +329,16 @@ const OnboardingSteps = ({
 	return (
 		<ExternalOnboardingWidget
 			{...({
-				defaultStep: roleList || "12400",
-				isBranding: false,
-				userData: userData,
-				handleSubmit: handleStepDataSubmit,
-				stepResponse: state.lastStepResponse,
-				selectedMerchantType: state.selectedRole,
+				appName: appName,
+				orgName: orgName,
+				primaryColor: primaryColor,
+				accentColor: accentColor,
 				shopTypes: shopTypesData,
 				stateTypes: stateTypesData,
 				bankList: bankList,
+				userData: userData,
+				handleSubmit: handleStepDataSubmit,
+				stepResponse: state.lastStepResponse,
 				stepsData: state.stepperData,
 				handleStepCallBack: handleStepCallBack,
 				esignStatus:
@@ -332,10 +347,6 @@ const OnboardingSteps = ({
 						: state.esign.status === "failed"
 							? 2
 							: 0,
-				primaryColor: primaryColor,
-				accentColor: accentColor,
-				appName: appName,
-				orgName: orgName,
 				digilockerData: state.digilocker.data,
 			} as any)}
 		/>
