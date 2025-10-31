@@ -1,7 +1,7 @@
 import { Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
-import { Card, IcoButton, Icon } from "components";
-import { useClipboard } from "hooks";
+import { Card, CopyButton, IcoButton } from "components";
 import { useRouter } from "next/router";
+import { formatMobile } from "utils";
 
 /**
  * A <ContactPane> component that displays contact information.
@@ -23,12 +23,12 @@ import { useRouter } from "next/router";
 const ContactPane = ({ data }) => {
 	const router = useRouter();
 	const { agent_mobile, email } = data ?? {};
-	const { copy, state } = useClipboard();
 
 	const contactDataList = [
 		{
 			label: "Mobile",
 			value: agent_mobile,
+			formattedValue: formatMobile(agent_mobile),
 			iconName: "phone",
 			onClick: () => {
 				router.push(`tel:${agent_mobile}`);
@@ -57,36 +57,25 @@ const ContactPane = ({ data }) => {
 				fontSize="sm"
 			>
 				{contactDataList.map(
-					({ label, value, iconName, onClick }) =>
+					({ label, value, formattedValue, iconName, onClick }) =>
 						value && (
 							<Flex
 								key={label}
 								justify="space-between"
 								align="center"
 							>
-								<Flex gap="1" color="light">
+								<Flex
+									direction="row"
+									align="center"
+									gap="2"
+									color="light"
+								>
 									{label}:
-									<Flex
-										align="center"
-										gap="0.5"
-										cursor="pointer"
-										transition="opacity 0.3s ease-out"
-										_hover={{ opacity: 0.9 }}
-										onClick={() => copy(value)}
-									>
+									<Flex align="center" gap="1">
 										<Text fontWeight="medium" color="dark">
-											{value}
+											{formattedValue ?? value}
 										</Text>
-										<Icon
-											title="Copy"
-											name={
-												state[value]
-													? "check"
-													: "content-copy"
-											}
-											size="xs"
-											color="light"
-										/>
+										<CopyButton text={value} size="xs" />
 									</Flex>
 								</Flex>
 								<IcoButton

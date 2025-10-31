@@ -14,6 +14,7 @@ const EKO_RESPONSE_TYPE_ID = {
  * @param {Function} toast		Function to show toast messages
  * @param {string} sendState	"send" or "resend" for showing proper toast message
  * @param {boolean} isAndroid	Is the user using the Android wrapper app?
+ * @param {boolean} isMobileMappedUserId Is the user mobile mapped?
  * @returns {boolean} Is SEND-OTP request successful?
  */
 async function sendOtpRequest(
@@ -21,11 +22,13 @@ async function sendOtpRequest(
 	number,
 	toast,
 	sendState = "send",
-	isAndroid = false
+	isAndroid = false,
+	isMobileMappedUserId = false
 ) {
 	let success = false;
 	let errMsg = "";
 	let _otp = ""; // Only for UAT
+	let _verifiedMobileNumber = "";
 	let _sendOtpLimitExhausted = false;
 	let _retryAfter = null;
 
@@ -39,6 +42,7 @@ async function sendOtpRequest(
 		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Eloka",
 		org_id: org_id,
+		...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
 	};
 
 	try {
@@ -52,6 +56,7 @@ async function sendOtpRequest(
 		if (data?.status == 0) {
 			success = true;
 			_otp = data?.data?.otp; // Only for UAT
+			_verifiedMobileNumber = data?.data?.mobile; // Verified mobile number
 		} else {
 			errMsg = data?.message || data?.invalid_params?.csp_id;
 			_sendOtpLimitExhausted =
@@ -99,7 +104,7 @@ async function sendOtpRequest(
 		}
 	}
 
-	return success;
+	return { otp_sent: success, verifiedMobileNumber: _verifiedMobileNumber };
 }
 
 /**
@@ -185,6 +190,7 @@ function setUserDetails(data) {
 				type: user_login_type,
 				name: data.userDetails.name,
 				mobile: data.userDetails.mobile,
+				user_id: data.userDetails.user_id,
 			};
 			localStorage.setItem("inf-last-login", JSON.stringify(lastLogin));
 		}

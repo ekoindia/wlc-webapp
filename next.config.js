@@ -1,4 +1,6 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
+// import packageJson from "./package.json" assert { type: "json" };
+// const { version } = packageJson;
 
 // Extract domain from URL (remove protocol and path)
 const getDomainFromUrl = (url) => {
@@ -216,6 +218,9 @@ const bundleAnalyzer = withBundleAnalyzer({
  */
 const nextConfig = {
 	/* config options here */
+	// env: {
+	// 	NEXT_PUBLIC_APP_VERSION: version, // Expose app version from package.json to the client
+	// },
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
 	swcMinify: true,

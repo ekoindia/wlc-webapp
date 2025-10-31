@@ -44,7 +44,12 @@ export {
 	ParamMeta,
 	ParamType,
 } from "./trxnFramework";
-export { UserType, UserTypeIcon, UserTypeLabel } from "./UserTypes";
+export {
+	UserType,
+	UserTypeIcon,
+	UserTypeLabel,
+	UserTypeOrder,
+} from "./UserTypes";
 export {
 	aadhaarValidation,
 	addressValidation,

@@ -1,5 +1,8 @@
 import { LoginWidget } from "page-components/LoginPanel";
 
+/**
+ * Login Widget component configuration for page builder
+ */
 export const LoginWidgetConf = {
 	label: "Login Widget",
 	fields: {

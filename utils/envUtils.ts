@@ -22,3 +22,25 @@ export const parseOrgIds = (envVar: string | undefined): number[] => {
 		.map((id) => parseInt(id.trim(), 10)) // Parse as base-10 integer, handles empty strings as NaN
 		.filter((num) => !isNaN(num)); // Remove invalid number conversions
 };
+
+/**
+ * Parses environment variable to boolean. Converts "true", "1", "yes" (case-insensitive) to true, else false.
+ * @param envVar - Environment variable value (string or number)
+ * @returns {boolean} Parsed boolean value
+ * @example
+ * 	parseEnvBoolean("true") // true
+ * 	parseEnvBoolean("TRUE") // true
+ * 	parseEnvBoolean("1") // true
+ */
+export const parseEnvBoolean = (
+	envVar: number | string | undefined
+): boolean => {
+	if (!envVar) {
+		return false;
+	}
+	const val = envVar.toString().toLowerCase();
+	if (val === "true" || val === "1" || val === "yes") {
+		return true;
+	}
+	return false;
+};

@@ -4,6 +4,7 @@
 
 import { useSession } from "contexts";
 import { createContext, useContext, useEffect, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 import { getDefaultActions } from ".";
 
 // Create a context for our provider
@@ -20,9 +21,14 @@ export function KBarLazyProvider({ children, load }) {
 	const [loaded, setLoaded] = useState(false);
 	const { logout } = useSession();
 
-	// Use useEffect to asynchronously import the kbar library and set the state
+	// Use useEffect to asynchronously import the kbar library and set the state.
+	// - Only if `load` is true
+	// - Only if `NEXT_PUBLIC_HIDE_KBAR` env variable is not true
 	useEffect(() => {
-		if (load) {
+		if (
+			load &&
+			parseEnvBoolean(process.env.NEXT_PUBLIC_HIDE_KBAR) !== true
+		) {
 			import("kbar").then((kbarModule) => {
 				setKBar(kbarModule);
 				setLoaded(true); // set loaded to true after kbar is successfully imported

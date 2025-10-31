@@ -15,6 +15,7 @@ import { useAppLink, useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import { useCopilotAction, useCopilotInfo } from "libs";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 import { limitText } from "utils/textFormat";
 import { useSession } from ".";
 
@@ -216,18 +217,30 @@ const MenuProvider = ({ children }) => {
 		const { trxnList: _trxnList, otherList: _otherList } =
 			filterTransactionLists(interactionList, isAdmin, isAdminAgentMode);
 
+		const isDisableAllTxns = parseEnvBoolean(
+			process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS
+		);
+		const isDisableAllOthers = parseEnvBoolean(
+			process.env.NEXT_PUBLIC_DISABLE_OTHERS
+		);
+
+		// Set the final lists
+
 		setAppLists({
 			menuList: _filteredMenuList,
-			trxnList: _trxnList,
-			otherList: [
-				{
-					icon: "transaction-history",
-					label: "Transaction History",
-					description: "Statement of your previous transactions",
-					link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
-				},
-				..._otherList,
-			],
+			trxnList: isDisableAllTxns ? [] : _trxnList,
+			otherList: isDisableAllOthers
+				? []
+				: [
+						{
+							icon: "transaction-history",
+							label: "Transaction History",
+							description:
+								"Statement of your previous transactions",
+							link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
+						},
+						..._otherList,
+					],
 		});
 		// setIsLoading(false);
 
@@ -386,12 +399,12 @@ const generateTransactionActions = (
 	// Helper inner function to get the transaction action object
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
-		const desc = tx.description || tx.desc || "";
+		const desc = tx.description || tx.desc || tx.summary || "";
 
 		return {
 			id: "tx/" + _id,
 			name: tx.label,
-			subtitle: limitText(desc, 60),
+			subtitle: limitText(desc, 80),
 			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
 			icon: (
 				<ActionIcon
@@ -545,6 +558,10 @@ const generateMenuLinkActions = (menu_list, router) => {
 			menuLinkActions.push({
 				id: "menulnk/" + (menu.name || menu.label),
 				name: menu.name || menu.label,
+				subtitle: limitText(
+					menu.summary || menu.description || menu.desc || "",
+					80
+				),
 				icon: (
 					<ActionIcon
 						icon={menu.icon}

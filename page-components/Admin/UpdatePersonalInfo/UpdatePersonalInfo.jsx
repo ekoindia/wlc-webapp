@@ -7,11 +7,11 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
-import { Endpoints, ParamType, TransactionIds } from "constants";
+import { Endpoints, ParamType } from "constants";
 import { nameValidation, shopNameValidation } from "constants/validation";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import useLocalStorage from "hooks/useLocalStorage";
+import { useLocalStorage, useShopTypes } from "hooks";
 import { formatDate } from "libs";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -89,12 +89,12 @@ const UpdatePersonalInfo = () => {
 	const [agentData, setAgentData] = useLocalStorage(
 		"oth_last_selected_agent"
 	);
-	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
 	const [maxDate] = useState(formatDate(thirteenYearsAgo, "yyyy-MM-dd"));
 	const { accessToken } = useSession();
+	const { shopTypes } = useShopTypes();
 	const toast = useToast();
 	const router = useRouter();
 	const { query } = router;
@@ -114,22 +114,11 @@ const UpdatePersonalInfo = () => {
 		control,
 	});
 
-	const fetchShopTypes = useCallback(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: TransactionIds.SHOP_TYPE,
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				if (res.status === 0) {
-					setShopTypes(res?.param_attributes.list_elements);
-				}
-			})
-			.catch((err) => {
-				console.error("err", err);
-			});
-	}, [accessToken, setShopTypes]);
+	// Check if shop_name should be visible based on selected shop_type
+	const isShopNameVisible =
+		watcher?.shop_type?.dependent_params?.find(
+			(param) => param.name === "shop_name"
+		)?.is_visible === 1;
 
 	const fetchAgentDataViaCellNumber = useCallback(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -149,21 +138,11 @@ const UpdatePersonalInfo = () => {
 	}, [accessToken, mobile, setAgentData]);
 
 	useEffect(() => {
-		// if shopTypes is not available, fetch it
-		if (!shopTypes?.length) {
-			fetchShopTypes();
-		}
-
 		// if agentData is not available, fetch it using the cell number
 		if (!agentData) {
 			fetchAgentDataViaCellNumber();
 		}
-	}, [
-		agentData,
-		shopTypes?.length,
-		fetchShopTypes,
-		fetchAgentDataViaCellNumber,
-	]);
+	}, [agentData, fetchAgentDataViaCellNumber]);
 
 	useEffect(() => {
 		if (agentData !== undefined) {
@@ -286,6 +265,7 @@ const UpdatePersonalInfo = () => {
 
 	/**
 	 * Parameter list for the Form component following tf-components pattern
+	 * Conditionally includes shop_name based on shop_type selection
 	 */
 	const parameter_list = [
 		{
@@ -343,23 +323,27 @@ const UpdatePersonalInfo = () => {
 			list_elements: marital_status_list,
 		},
 		{
-			name: "shop_name",
-			label: "Shop Name",
-			parameter_type_id: ParamType.TEXT,
-			required: true,
-			validations: {
-				pattern: shopNameValidation.regex,
-				minLength: shopNameValidation.minLength,
-				maxLength: shopNameValidation.maxLength,
-			},
-		},
-		{
 			name: "shop_type",
 			label: "Shop Type",
 			parameter_type_id: ParamType.LIST,
 			required: true,
 			list_elements: shopTypes,
 		},
+		...(isShopNameVisible
+			? [
+					{
+						name: "shop_name",
+						label: "Shop Name",
+						parameter_type_id: ParamType.TEXT,
+						required: true,
+						validations: {
+							pattern: shopNameValidation.regex,
+							minLength: shopNameValidation.minLength,
+							maxLength: shopNameValidation.maxLength,
+						},
+					},
+				]
+			: []),
 	];
 
 	const previewButtonConfigList = [

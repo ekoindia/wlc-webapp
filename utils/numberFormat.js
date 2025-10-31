@@ -113,3 +113,19 @@ export const formatCurrency = (
 	}
 	return formatter.format(amount);
 };
+
+/**
+ * Format a mobile number with country code and spacing
+ * @param {string|number} mobile - Mobile number to format
+ * @param {number|string} [countryCode] - Country code, defaults to 91
+ * @returns {string} - Formatted mobile number (e.g. '+91 876 543 2345')
+ */
+export function formatMobile(mobile, countryCode = 91) {
+	if (!mobile) return "";
+	const numStr = String(mobile).replace(/\D/g, "");
+	const cc = countryCode == null ? "91" : String(countryCode);
+	if (numStr.length < 10) return `+${cc} ${numStr}`;
+	const main = numStr.slice(-10);
+	const parts = [main.slice(0, 3), main.slice(3, 6), main.slice(6)];
+	return `+${cc} ${parts.join(" ")}`;
+}

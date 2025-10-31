@@ -1,4 +1,5 @@
 import {
+	getAddressWithTooltip,
 	getAmountStyle,
 	getArrowStyle,
 	getDateTimeView,
@@ -12,6 +13,7 @@ import {
 	getShareMobileButton,
 	getStatusStyle,
 } from "helpers";
+import { formatMobile } from "utils";
 
 /**
  *
@@ -36,8 +38,6 @@ export const prepareTableCell = (
 	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
-	const lat = item?.latitude || item?.address_details?.lattitude;
-	const long = item?.longitude || item?.address_details?.longitude;
 
 	switch (column?.show) {
 		case "#":
@@ -53,8 +53,10 @@ export const prepareTableCell = (
 			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
-		case "IconButton":
-			return getLocationStyle(item[column.name], lat, long);
+		case "Address":
+			return getAddressWithTooltip(item[column.name]);
+		case "Location":
+			return getLocationStyle(item[column.name]);
 		case "Avatar":
 			return getNameStyle(item[column.name]);
 		case "Arrow":
@@ -63,6 +65,8 @@ export const prepareTableCell = (
 			return getAmountStyle(item[column.name]);
 		case "Payment":
 			return getPaymentStyle(item[column.name], trx_type);
+		case "Mobile":
+			return formatMobile(item[column.name]);
 		case "Description":
 			return getDescriptionStyle(item[column.name]);
 		case "Date":

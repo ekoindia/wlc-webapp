@@ -2,13 +2,15 @@ import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useSession } from "contexts";
 import dynamic from "next/dynamic";
-import { Home } from "page-components"; // Non-Admin Homepage
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 import { DashboardProvider } from ".";
 
-// Dynamically load dashboard components for better performance
-const AnnouncementsDashboard = dynamic(
-	() => import("./AnnouncementsDashboard"),
+const Home = dynamic(
+	() =>
+		import("page-components/Home").then((mod) => ({
+			default: mod.Home,
+		})),
 	{
 		ssr: false,
 		loading: () => <DashboardSkeleton />,
@@ -37,36 +39,101 @@ const OnboardingDashboard = dynamic(
 	}
 );
 
+// Dynamically load dashboard components for better performance
+const AnnouncementsDashboard = dynamic(
+	() => import("./AnnouncementsDashboard"),
+	{
+		ssr: false,
+		loading: () => <DashboardSkeleton />,
+	}
+);
+
 /**
- * The Dashboard page component
+ * The Dashboard page component.
+ * Originally used only for Admins, but now also for Non-Admins (if ADMIN_DASHBOARD_FOR_SUBNETWORK feature flag is enabled)
  */
 const Dashboard = () => {
 	const { isAdmin, isLoggedIn } = useSession();
-	const [currTab, setCurrTab] = useState(0);
+	const [currTab, setCurrTab] = useState(0); // Current active tab index
+	const [list, setList] = useState([]); // List of tabs/pages
 
-	const list = isAdmin
-		? [
-				{ label: "Business", component: <BusinessDashboard /> },
-				{ label: "Onboarding", component: <OnboardingDashboard /> },
-			]
-		: [
-				{
-					label: "Home",
-					component: <Home mt={{ base: "12px", md: "30px" }} />,
-				},
-				{ label: "Business", component: <BusinessDashboard /> },
-			];
+	// Define the list of tabs/pages based on user role (Admin or Non-Admin)
+	// and environment variable settings to hide/show specific dashboards
+	// Note: We use `parseEnvBoolean` to convert env string values to boolean
+	// (i.e. "true" -> true, "false" -> false, undefined -> false)
+	// This allows us to control the visibility of each dashboard tab via env variables
+	// For example, setting NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD=true will hide the Business tab for Admins
+	useEffect(() => {
+		const _list = isAdmin
+			? [
+					// Admin Homepage
+					{
+						label: "Business",
+						component: <BusinessDashboard />,
+						// disableEnv: "NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD", // Hide, if this env is `true`
+						visible: !parseEnvBoolean(
+							process.env
+								.NEXT_PUBLIC_HIDE_ADMIN_BUSINESS_DASHBOARD
+						),
+					},
+					{
+						label: "Onboarding",
+						component: <OnboardingDashboard />,
+						// disableEnv: "NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD", // Hide, if this env is `true`
+						visible: !parseEnvBoolean(
+							process.env
+								.NEXT_PUBLIC_HIDE_ADMIN_ONBOARDING_DASHBOARD
+						),
+					},
+				]
+			: [
+					// Non-Admin Homepage
+					{
+						label: "Home",
+						component: <Home mt={{ base: "12px", md: "30px" }} />,
+						// disableEnv: "NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD", // Hide, if this env is `true`
+						visible: !parseEnvBoolean(
+							process.env.NEXT_PUBLIC_HIDE_USER_HOME_DASHBOARD
+						),
+					},
+					{
+						label: "Business",
+						component: <BusinessDashboard />,
+						// disableEnv: "NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD",
+						visible: !parseEnvBoolean(
+							process.env.NEXT_PUBLIC_HIDE_USER_BUSINESS_DASHBOARD
+						),
+					},
+					{
+						label: "Onboarding",
+						component: <OnboardingDashboard />,
+						// disableEnv: "NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD", // Hide, if this env is `true`
+						visible: !parseEnvBoolean(
+							process.env
+								.NEXT_PUBLIC_HIDE_USER_ONBOARDING_DASHBOARD
+						),
+					},
+				];
 
-	if (isAdmin && process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
-		list.push({
-			label: "Announcements",
-			component: <AnnouncementsDashboard />,
-		});
-	}
+		// Add Announcements tab for Admins only, if the embed URL is set in env variables
+		if (isAdmin && process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
+			list.push({
+				label: "Announcements",
+				component: <AnnouncementsDashboard />,
+			});
+		}
+
+		setList(_list.filter((item) => item.visible));
+		setCurrTab(0); // Reset to first tab whenever the list changes
+	}, [isAdmin]);
 
 	const onClick = (idx) => setCurrTab(idx);
 
-	const getComp = (idx) => list[idx].component;
+	const getComp = useCallback((idx) => list[idx].component, [list]);
+
+	if (!list?.length) {
+		return null;
+	}
 
 	if (!isLoggedIn) {
 		return null;

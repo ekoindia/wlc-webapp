@@ -1,7 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Endpoints, UserTypeIcon, UserTypeLabel } from "constants";
+import { Endpoints, UserType, UserTypeIcon } from "constants";
 import { useSession } from "contexts";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { LuHeartHandshake } from "react-icons/lu";
 import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
@@ -18,7 +18,7 @@ const getModifiedFilterList = (data) => {
 	let filterList = [
 		{
 			id: 0,
-			label: "All Onboarding Agents",
+			label: "All Onboarding Users",
 			value: data?.onboardingFunnelTotal ?? 0,
 			status_ids: "*", // Using wildcard to represent all filters
 		},
@@ -55,7 +55,7 @@ const getCacheKey = (prevDate, currDate) => {
 const OnboardingDashboard = () => {
 	const [filterData, setFilterData] = useState([]);
 	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
-	const { accessToken } = useSession();
+	const { accessToken, userType } = useSession();
 	const [pageNumber, setPageNumber] = useState(1);
 	const [onboardingAgentsTopPanelData, setOnboardingAgentsTopPanelData] =
 		useState([]);
@@ -90,6 +90,8 @@ const OnboardingDashboard = () => {
 		[prevDate, currDate]
 	);
 
+	const { getUserTypeLabel } = useUserTypes();
+
 	const [fetchOnboardingAgentsTopPanelData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
@@ -109,8 +111,10 @@ const OnboardingDashboard = () => {
 				};
 
 				const _data = res?.data?.onboarding_funnel?.[0] || defaultData;
-				const onboardedAgentsList =
-					transformOnboardingAgentsData(_data);
+				const onboardedAgentsList = transformOnboardingAgentsData(
+					_data,
+					getUserTypeLabel
+				);
 
 				setOnboardingDashboardData((prev) => ({
 					...prev,
@@ -248,7 +252,10 @@ const OnboardingDashboard = () => {
 					gap="0.4em"
 				>
 					<LuHeartHandshake color="#7c3bed" />
-					All Onboarding Agents
+					All Onboarding{" "}
+					{userType == UserType.FOS
+						? getUserTypeLabel(UserType.MERCHANT) + "(s)"
+						: "Users"}
 				</Flex>
 
 				<Flex
@@ -276,7 +283,7 @@ const OnboardingDashboard = () => {
 							mt={{ base: "2", md: "0" }}
 							mb={{ base: "2", md: "8" }}
 						>
-							<Text color="light">Nothing Found</Text>
+							<Text color="light">No onboarding in progress</Text>
 						</Flex>
 					) : (
 						<OnboardedMerchants
@@ -299,14 +306,15 @@ export default OnboardingDashboard;
 /**
  * Transforms API response into a format compatible with the component.
  * @param {object} apiData - The raw data from the API response.
+ * @param {Function} getUserTypeLabel - Function to get user type label by ID.
  * @returns {Array} A formatted array of objects for rendering.
  */
-const transformOnboardingAgentsData = (apiData) => {
+const transformOnboardingAgentsData = (apiData, getUserTypeLabel) => {
 	if (!apiData || typeof apiData !== "object") return [];
 
 	return Object.entries(apiData)
 		.map(([key, data]) => {
-			const userType = UserTypeLabel[key]; // Get label from mapping
+			const userType = getUserTypeLabel(key); // Get label from mapping
 			const userTypeIcon = UserTypeIcon[key];
 			if (!userType) return null; // Ignore unknown user types
 

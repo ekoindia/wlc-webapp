@@ -3,6 +3,7 @@ import { useSession } from "contexts";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Login } from "../Login";
+import { useRestoreLastLoginOrRoute } from "../useRestoreLastLoginOrRoute";
 
 // Lazy load the LoginPanel components...
 // const Login = dynamic(() => import("./Login").then((pkg) => pkg.Login), {
@@ -23,9 +24,6 @@ const SocialVerify = dynamic(
 		ssr: false,
 	}
 );
-
-// Time in milliseconds to persist the OTP screen, if the user comes back to the app within this time.
-const PERSIST_OTP_SCREEN_TIMEOUT_MS = 240000; // 4 mins
 
 // Declare the props interface
 interface LoginWidgetProps {
@@ -65,41 +63,14 @@ const LoginWidget = ({
 	const { isLoggedIn } = useSession();
 
 	// Get last login mobile number from local storage and set it as default value
-	useEffect(() => {
-		if (number?.formatted?.length > 0) return;
-
-		const lastLogin = JSON.parse(localStorage.getItem("inf-last-login"));
-		const lastRoute = JSON.parse(localStorage.getItem("inf-last-route"));
-
-		if (
-			lastRoute?.path === "/" &&
-			lastRoute?.meta?.step === "VERIFY_OTP" &&
-			lastRoute?.meta?.type === "Mobile" &&
-			lastRoute?.meta?.mobile?.formatted &&
-			lastRoute?.at > Date.now() - PERSIST_OTP_SCREEN_TIMEOUT_MS
-		) {
-			// Was the user on enter-OTP screen in the last 4 mins?
-			// Take them back there without resending OTP...
-			setNumber(lastRoute.meta.mobile);
-			setLastMobileFormatted(lastRoute.meta.mobile.formatted);
-			setLoginType("Mobile");
-			setStep("VERIFY_OTP");
-		} else if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
-			// Format mobile number in the following format: +91 123 456 7890
-			// TODO: Fix Input component so that this is not required
-			const formatted_mobile = formatMobileNumber(lastLogin.mobile);
-			setNumber({
-				original: lastLogin.mobile,
-				formatted: formatted_mobile,
-			});
-			setLastMobileFormatted(formatted_mobile);
-		}
-
-		// Check if lastLogin.name exists and is not a mobile number
-		if (lastLogin?.name && lastLogin.name.match(/^[a-zA-Z]/)) {
-			setLastUserName(lastLogin.name.split(" ")[0]);
-		}
-	}, []);
+	useRestoreLastLoginOrRoute({
+		number,
+		setNumber,
+		setLastUserName,
+		setLastMobileFormatted,
+		setLoginType,
+		setStep,
+	});
 
 	// Cache current OTP-Verification step in local storage,
 	// so that OTP Verification can be continued when app is closed on mobile.
@@ -169,15 +140,6 @@ const LoginWidget = ({
 			)}
 		</Flex>
 	);
-};
-
-/**
- * Format mobile number in the following format: 123 456 7890
- * @param {number} mobile
- * @returns {string} Formatted mobile number
- */
-const formatMobileNumber = (mobile) => {
-	return mobile.toString().replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
 };
 
 export default LoginWidget;

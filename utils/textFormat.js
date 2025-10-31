@@ -45,26 +45,34 @@ export const capitalize = (str, lower = true) => {
 export const toKebabCase = (label) => label.toLowerCase().replace(/\s+/g, "-"); // Convert spaces to '-'
 
 /**
- * Removes null from a text representing comma-separated values
- * @param {*} text Text from which null needs to be removed
- * @returns {string} Text without null values
+ * Removes all instances of the word "null" from text, preserving list structure
+ * @param {string} text - Text from which null needs to be removed
+ * @returns {string} Text without null values, properly formatted with commas
+ * @example
+ * nullRemover("null, text, null, text") // returns "text, text"
+ * nullRemover("text null text") // returns "text text"
  */
 export const nullRemover = (text) => {
 	if (!text) return "";
 
-	const _filteredText = text
-		.split(/\s*,\s*/)
-		.filter((item) => !/^null$/i.test(item.trim()));
+	// Split by commas, clean each part, and filter out empty/null parts
+	const cleanParts = text
+		.split(",")
+		.map((part) =>
+			part
+				.replace(/\b(null)\b/gi, "") // Remove the word "null" (case insensitive)
+				.trim()
+		)
+		.filter((part) => part.length > 0);
 
-	const res = _filteredText.join(", ");
-
-	return res;
+	// Join parts back with commas and clean any extra spaces
+	return cleanParts.join(", ").trim();
 };
 
 /**
  * Removes numbers from a given text
  * @param {*} text Text from which numbers need to be removed
- * @returns Text without numbers
+ * @returns {string} Text without numbers
  */
 export const numberRemover = (text) => {
 	const regex = /\b\d+\b/g;
@@ -76,7 +84,7 @@ export const numberRemover = (text) => {
  * Get initials from a given text in upper-case
  * @param {string} text Text from which initials need to be extracted
  * @param {number} len Number of characters to extract
- * @returns Initials of length `len` characters
+ * @returns {string} Initials of length `len` characters
  */
 export const getInitials = (text, len = 2) => {
 	if (!text || typeof text !== "string") return "";

@@ -3,13 +3,15 @@ import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useFeatureFlag } from "hooks";
+import { useFeatureFlag, useUserTypes } from "hooks";
+import { useColumnVisibility } from "hooks/useColumnVisibility";
 import { formatDate } from "libs/dateFormat";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { NetworkTable, NetworkToolbar } from ".";
+import { NetworkTable, NetworkToggleColumns, NetworkToolbar } from ".";
+import { useNetworkTableParameterList } from "./NetworkTable/NetworkTable";
 
 const NetworkTreeView = dynamic(
 	() => import(".").then((pkg) => pkg.NetworkTreeView),
@@ -25,12 +27,14 @@ const PAGE_LIMIT = 10;
 const action = {
 	FILTER: 0,
 	// EXPORT: 1,
+	TOGGLE_COLUMNS: 2,
 };
 
 const operation_type_list = [
-	{ label: "Independent Retailer", value: "3" },
-	{ label: "Retailer", value: "2" },
 	{ label: "Distributor", value: "1" },
+	{ label: "Field Agent", value: "4" },
+	{ label: "Retailer", value: "2" },
+	{ label: "Independent Retailer", value: "3" },
 ];
 
 const status_list = [
@@ -60,6 +64,8 @@ const Network = () => {
 	};
 	const router = useRouter();
 	const { accessToken, isAdmin, userType } = useSession();
+	const { getUserTypeLabel } = useUserTypes();
+
 	const [pageNumber, setPageNumber] = useState(1);
 	const [isLoading, setIsLoading] = useState(true);
 	const [networkData, setNetworkData] = useState([]);
@@ -106,6 +112,22 @@ const Network = () => {
 	const watcherFilter = useWatch({
 		control: controlFilter,
 	});
+
+	// Column visibility management
+	const networkTableParameterList = useNetworkTableParameterList();
+	const {
+		hiddenColumns,
+		toggleColumnVisibility,
+		resetColumnVisibility,
+		getVisibleColumns,
+	} = useColumnVisibility({
+		storageKey: "networkHidnCols",
+		columns: networkTableParameterList,
+	});
+
+	// Recalculate visible columns when hiddenColumns changes
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const visibleColumns = useMemo(() => getVisibleColumns(), [hiddenColumns]);
 
 	const hitQuery = () => {
 		let tf_req_uri = queryParam
@@ -174,7 +196,11 @@ const Network = () => {
 		const filteredData = Object.entries(data)?.reduce(
 			(acc, [key, value]) => {
 				if (value) {
-					acc[key] = value;
+					// Extract value property from object values (for select/list fields)
+					acc[key] =
+						typeof value === "object" && value?.value !== undefined
+							? value.value
+							: value;
 				}
 				return acc;
 			},
@@ -206,27 +232,41 @@ const Network = () => {
 	const network_filter_parameter_list = [
 		{
 			name: "agentType",
-			label: "Agent Type",
+			label: "User Type",
 			parameter_type_id: ParamType.LIST,
-			list_elements: operation_type_list.filter((item) => {
-				// Based on current user-type, show selected network-user-types
-				if (userType === 1) {
-					// For distributors, hide following agent-types: (Super)Distributor, Indipendent Retailer
-					if (
-						item.value === "1" ||
-						item.value === "3" ||
-						item.value === "7"
-					) {
-						return false;
+			list_elements: operation_type_list
+				.filter((item) => {
+					// Show all user-types for admins
+					if (isAdmin) return true;
+
+					// Based on current user-type, show selected network-user-types
+					if (userType === 1) {
+						// For distributors, show only the following user types: FOS (4) and Retailer (2)
+						if (item.value !== "2" && item.value !== "4") {
+							return false;
+						}
+					} else if (userType === 7) {
+						// For Super-Distributor, show only the following agent-types: Distributor, FOS, Retailer & Indipendent Retailer
+						if (
+							item.value !== "1" &&
+							item.value !== "4" &&
+							item.value !== "2" &&
+							item.value !== "3"
+						) {
+							return false;
+						}
+					} else if (userType === 4) {
+						// For Field Agent, show only the following agent-types: Retailer
+						if (item.value !== "2") {
+							return false;
+						}
 					}
-				} else if (userType === 7) {
-					// For Super-Distributor, hide following agent-types: (Independent Retailer & Super-Distributor)
-					if (item.value === "3" || item.value === "7") {
-						return false;
-					}
-				}
-				return true;
-			}),
+					return true;
+				})
+				.map((type) => {
+					// Convert default user-type labels to the custom labels, where applicable
+					return { ...type, label: getUserTypeLabel(type.value) };
+				}),
 			required: false,
 		},
 		{
@@ -234,6 +274,13 @@ const Network = () => {
 			label: "Account Status",
 			parameter_type_id: ParamType.LIST,
 			list_elements: status_list,
+			required: false,
+		},
+		{
+			name: "parent_user_code",
+			label: "Show Sub-Network of a User",
+			parameter_type_id: ParamType.TEXT,
+			placeholder: "Enter User Code",
 			required: false,
 		},
 		{
@@ -327,6 +374,17 @@ const Network = () => {
 						},
 					}
 				: null,
+		},
+		{
+			id: action.TOGGLE_COLUMNS,
+			label: "Columns",
+			icon: "visibility",
+			Component: NetworkToggleColumns,
+			columns: networkTableParameterList,
+			hiddenColumns,
+			onToggle: toggleColumnVisibility,
+			onReset: resetColumnVisibility,
+			desktopOnly: true,
 		},
 	];
 
@@ -441,6 +499,7 @@ const Network = () => {
 							agentDetails,
 							pageNumber,
 							setPageNumber,
+							visibleColumns,
 						}}
 					/>
 				) : null}
