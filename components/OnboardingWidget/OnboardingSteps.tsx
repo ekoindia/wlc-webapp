@@ -24,7 +24,22 @@ import {
 
 // Type assertion to fix external component type mismatch
 const ExternalOnboardingWidget =
-	ExternalOnboardingWidgetBase as unknown as React.FC<any>;
+	ExternalOnboardingWidgetBase as unknown as React.FC<{
+		appName: string;
+		orgName: string;
+		primaryColor: string;
+		accentColor: string;
+		shopTypes: any;
+		stateTypes: any;
+		bankList: any;
+		userData: any;
+		handleSubmit: (_data: any) => void;
+		stepResponse: any;
+		stepsData: any[];
+		handleStepCallBack: (_callType: any) => void;
+		esignStatus: number;
+		digilockerData: any;
+	}>;
 
 const OnboardingSteps = ({
 	isAssistedOnboarding,
