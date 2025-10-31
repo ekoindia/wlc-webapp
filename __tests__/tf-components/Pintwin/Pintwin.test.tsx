@@ -1,388 +1,346 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import "@testing-library/jest-dom";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import React from "react";
-import Pintwin, { PinTwinResponse } from "tf-components/Pintwin/Pintwin";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "test-utils";
+import Pintwin from "tf-components/Pintwin/Pintwin";
 
-// Mock useToast hook
-const mockToast = jest.fn();
-jest.mock("@chakra-ui/react", () => ({
-	...jest.requireActual("@chakra-ui/react"),
-	useToast: () => mockToast,
+// Mock the usePinTwin hook
+const mockUsePinTwin = jest.fn();
+jest.mock("hooks/usePinTwin", () => ({
+	usePinTwin: () => mockUsePinTwin(),
 }));
 
-// Mock API helper
-const mockFetcher = jest.fn();
-jest.mock("helpers/apiHelper", () => ({
-	fetcher: mockFetcher,
-}));
-
-// Mock sessionStorage
-const mockSessionStorage = {
-	getItem: jest.fn(),
-	setItem: jest.fn(),
-	removeItem: jest.fn(),
-	clear: jest.fn(),
-};
-Object.defineProperty(window, "sessionStorage", {
-	value: mockSessionStorage,
-	writable: true,
-});
-
-// Mock PinTwin API response
-const mockPinTwinResponse: PinTwinResponse = {
-	response_status_id: 0,
-	data: {
-		customer_id_type: "mobile_number",
-		key_id: 39,
-		pintwin_key: "1974856302",
-		id_type: "mobile_number",
-		customer_id: "9002333333",
+// Mock the OtpInput component
+const MockOtpInput = jest.fn();
+jest.mock("components/OtpInput", () => ({
+	OtpInput: (props: any) => {
+		MockOtpInput(props);
+		return (
+			<div data-testid="otp-input">
+				<input
+					data-testid="pin-input"
+					type="text"
+					placeholder="Enter PIN"
+					disabled={props.isDisabled}
+					onChange={(e) => {
+						if (props.onChange) props.onChange(e.target.value);
+					}}
+				/>
+			</div>
+		);
 	},
-	response_type_id: 2,
-	message: "Success!",
-	status: 0,
-};
+}));
 
-// Test wrapper with ChakraProvider
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-	<ChakraProvider>{children}</ChakraProvider>
-);
+// Mock IcoButton component
+const MockIcoButton = jest.fn();
+jest.mock("components/IcoButton", () => ({
+	IcoButton: (props: any) => {
+		MockIcoButton(props);
+		return (
+			<button
+				data-testid="ico-button"
+				onClick={props.onClick}
+				disabled={props.isDisabled}
+			>
+				{props.iconName}
+			</button>
+		);
+	},
+}));
+
+// Mock InputLabel component
+jest.mock("components/InputLabel", () => ({
+	InputLabel: ({ children, ...props }: any) => (
+		<label data-testid="input-label" {...props}>
+			{children}
+		</label>
+	),
+}));
 
 describe("Pintwin Component", () => {
+	const defaultMockHookReturn = {
+		pintwinKey: ["1", "9", "7", "4", "8", "5", "6", "3", "0", "2"],
+		loading: false,
+		reloadKey: jest.fn(),
+		encodePinTwin: jest.fn((pin: string) => `encoded_${pin}`),
+		keyLoadError: false,
+	};
+
 	beforeEach(() => {
 		jest.clearAllMocks();
-		mockSessionStorage.getItem.mockReturnValue("mock-access-token");
+		mockUsePinTwin.mockReturnValue(defaultMockHookReturn);
 	});
 
-	afterEach(() => {
-		// Clear any global window modifications
-		delete (window as any).encodePinTwin;
+	it("renders successfully with default props", () => {
+		const { container } = render(<Pintwin />);
+		expect(container).not.toBeEmptyDOMElement();
 	});
 
-	/**
-	 * Test basic rendering in secure mode
-	 */
-	it("renders in secure mode when noLookup is true and key is loaded", () => {
-		render(
-			<TestWrapper>
-				<Pintwin
-					noLookup={true}
-					keyLoaded={true}
-					keyLoadError={false}
-				/>
-			</TestWrapper>
+	it("renders with custom label", () => {
+		render(<Pintwin label="Custom PIN" />);
+		expect(screen.getByText("Custom PIN")).toBeInTheDocument();
+	});
+
+	it("renders with default label when not provided", () => {
+		render(<Pintwin />);
+		expect(screen.getByText("Secret PIN")).toBeInTheDocument();
+	});
+
+	it("renders OtpInput with correct props", () => {
+		render(<Pintwin maxLength={6} />);
+
+		expect(MockOtpInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				length: 6,
+				isDisabled: false,
+			})
 		);
-
-		expect(screen.getByText("SECURE")).toBeInTheDocument();
-		expect(
-			screen.getByTestId("shield-icon") || screen.getByRole("img")
-		).toBeInTheDocument();
 	});
 
-	/**
-	 * Test loading state in secure mode
-	 */
-	it("shows loading state in secure mode", () => {
-		render(
-			<TestWrapper>
-				<Pintwin
-					noLookup={true}
-					keyLoaded={false}
-					keyLoadError={false}
-				/>
-			</TestWrapper>
-		);
+	it("passes disabled state to OtpInput", () => {
+		render(<Pintwin disabled={true} />);
 
-		expect(screen.getByText(/Wait! Loading security/)).toBeInTheDocument();
+		expect(MockOtpInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				isDisabled: true,
+			})
+		);
 	});
 
-	/**
-	 * Test error state in secure mode
-	 */
-	it("shows error state in secure mode when key load fails", () => {
-		const mockOnKeyReload = jest.fn();
+	it("passes loading state to OtpInput", () => {
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			loading: true,
+		});
 
-		render(
-			<TestWrapper>
-				<Pintwin
-					noLookup={true}
-					keyLoaded={false}
-					keyLoadError={true}
-					onKeyReloaded={mockOnKeyReload}
-				/>
-			</TestWrapper>
+		render(<Pintwin />);
+
+		expect(MockOtpInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				isDisabled: true,
+			})
 		);
-
-		expect(screen.getByText(/Failed! Click to/)).toBeInTheDocument();
-		expect(screen.getByText(/reload security/)).toBeInTheDocument();
 	});
 
-	/**
-	 * Test lookup grid rendering with mock data
-	 */
-	it("renders lookup grid when noLookup is false and uses mock data", async () => {
-		render(
-			<TestWrapper>
-				<Pintwin noLookup={false} useMockData={true} />
-			</TestWrapper>
-		);
+	it("calls onPinChange when PIN is entered", async () => {
+		const user = userEvent.setup();
+		const onPinChange = jest.fn();
+		render(<Pintwin onPinChange={onPinChange} />);
 
-		// Wait for the component to load the key
-		await waitFor(() => {
-			// Check if digit grid is rendered
-			const digits = mockPinTwinResponse.data.pintwin_key.split("");
-			digits.forEach((digit, index) => {
-				expect(screen.getByText(digit)).toBeInTheDocument();
-				expect(screen.getByText(index.toString())).toBeInTheDocument();
-			});
+		const pinInput = screen.getByTestId("pin-input");
+		await user.type(pinInput, "1234");
+
+		// Simulate onComplete callback
+		const otpInputProps = MockOtpInput.mock.calls[0][0];
+		otpInputProps.onComplete("1234");
+
+		expect(onPinChange).toHaveBeenCalledWith("1234", "encoded_1234");
+	});
+
+	it("handles PIN change without onPinChange callback", () => {
+		render(<Pintwin />);
+
+		const otpInputProps = MockOtpInput.mock.calls[0][0];
+		expect(() => otpInputProps.onComplete("1234")).not.toThrow();
+	});
+
+	it("renders IcoButton with correct icon based on state", () => {
+		render(<Pintwin />);
+
+		expect(MockIcoButton).toHaveBeenCalledWith(
+			expect.objectContaining({
+				iconName: "insurance",
+				iconStyle: expect.objectContaining({
+					color: "success",
+				}),
+			})
+		);
+	});
+
+	it("renders IcoButton with retry icon when loading", () => {
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			loading: true,
+		});
+
+		render(<Pintwin />);
+
+		expect(MockIcoButton).toHaveBeenCalledWith(
+			expect.objectContaining({
+				iconName: "retry",
+				iconStyle: expect.objectContaining({
+					color: "highlight",
+				}),
+			})
+		);
+	});
+
+	it("renders IcoButton with replay icon when there's an error", () => {
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			keyLoadError: true,
+		});
+
+		render(<Pintwin />);
+
+		expect(MockIcoButton).toHaveBeenCalledWith(
+			expect.objectContaining({
+				iconName: "replay",
+				iconStyle: expect.objectContaining({
+					color: "error",
+				}),
+			})
+		);
+	});
+
+	it("calls reloadKey when IcoButton is clicked and there's an error", async () => {
+		const user = userEvent.setup();
+		const reloadKey = jest.fn();
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			keyLoadError: true,
+			reloadKey,
+		});
+
+		render(<Pintwin />);
+
+		const icoButton = screen.getByTestId("ico-button");
+		await user.click(icoButton);
+
+		expect(reloadKey).toHaveBeenCalled();
+	});
+
+	it("does not call reloadKey when IcoButton is clicked and there's no error", async () => {
+		const user = userEvent.setup();
+		const reloadKey = jest.fn();
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			reloadKey,
+		});
+
+		render(<Pintwin />);
+
+		const icoButton = screen.getByTestId("ico-button");
+		await user.click(icoButton);
+
+		expect(reloadKey).not.toHaveBeenCalled();
+	});
+
+	it("renders lookup table when noLookup is false", () => {
+		render(<Pintwin noLookup={false} />);
+
+		// Should render the lookup table with digits
+		expect(screen.getByText("0")).toBeInTheDocument();
+		expect(screen.getByText("1")).toBeInTheDocument();
+		expect(screen.getByText("2")).toBeInTheDocument();
+		expect(screen.getByText("3")).toBeInTheDocument();
+		expect(screen.getByText("4")).toBeInTheDocument();
+		expect(screen.getByText("5")).toBeInTheDocument();
+		expect(screen.getByText("6")).toBeInTheDocument();
+		expect(screen.getByText("7")).toBeInTheDocument();
+		expect(screen.getByText("8")).toBeInTheDocument();
+		expect(screen.getByText("9")).toBeInTheDocument();
+	});
+
+	it("does not render lookup table when noLookup is true", () => {
+		render(<Pintwin noLookup={true} />);
+
+		// Should not render the lookup table
+		expect(screen.queryByText("0")).not.toBeInTheDocument();
+		expect(screen.queryByText("1")).not.toBeInTheDocument();
+	});
+
+	it("applies loading opacity to lookup table when loading", () => {
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			loading: true,
+		});
+
+		render(<Pintwin noLookup={false} />);
+
+		const lookupContainer = screen.getByText("0").closest("div");
+		expect(lookupContainer).toHaveStyle("opacity: 0.4");
+	});
+
+	it("uses mock data when useMockData is true", () => {
+		render(<Pintwin useMockData={true} />);
+
+		expect(mockUsePinTwin).toHaveBeenCalledWith({
+			useMockData: true,
+			autoLoad: true,
 		});
 	});
 
-	/**
-	 * Test lookup grid rendering with API call
-	 */
-	it("renders lookup grid when noLookup is false and calls API", async () => {
-		mockFetcher.mockResolvedValue(mockPinTwinResponse);
+	it("uses real data when useMockData is false", () => {
+		render(<Pintwin useMockData={false} />);
 
-		render(
-			<TestWrapper>
-				<Pintwin noLookup={false} useMockData={false} />
-			</TestWrapper>
-		);
-
-		// Wait for the component to load the key
-		await waitFor(() => {
-			expect(mockFetcher).toHaveBeenCalled();
-		});
-
-		// Check if digit grid is rendered
-		await waitFor(() => {
-			const digits = mockPinTwinResponse.data.pintwin_key.split("");
-			digits.forEach((digit, index) => {
-				expect(screen.getByText(digit)).toBeInTheDocument();
-				expect(screen.getByText(index.toString())).toBeInTheDocument();
-			});
+		expect(mockUsePinTwin).toHaveBeenCalledWith({
+			useMockData: false,
+			autoLoad: true,
 		});
 	});
 
-	/**
-	 * Test refresh functionality with API call
-	 */
-	it("refreshes key when refresh button is clicked and calls API", async () => {
-		mockFetcher.mockResolvedValue(mockPinTwinResponse);
-		const mockOnKeyReloaded = jest.fn();
-
-		render(
-			<TestWrapper>
-				<Pintwin
-					noLookup={false}
-					useMockData={false}
-					onKeyReloaded={mockOnKeyReloaded}
-				/>
-			</TestWrapper>
-		);
-
-		// Find and click refresh button
-		const refreshButton = screen.getByRole("button");
-		fireEvent.click(refreshButton);
-
-		await waitFor(() => {
-			expect(mockFetcher).toHaveBeenCalledTimes(2); // Once on mount, once on click
+	it("handles PIN encoding correctly", () => {
+		const encodePinTwin = jest.fn((pin: string) => `encoded_${pin}`);
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			encodePinTwin,
 		});
+
+		render(<Pintwin />);
+
+		const otpInputProps = MockOtpInput.mock.calls[0][0];
+		otpInputProps.onComplete("5678");
+
+		expect(encodePinTwin).toHaveBeenCalledWith("5678");
 	});
 
-	/**
-	 * Test refresh functionality with mock data
-	 */
-	it("refreshes key when refresh button is clicked and uses mock data", async () => {
-		const mockOnKeyReloaded = jest.fn();
-
-		render(
-			<TestWrapper>
-				<Pintwin
-					noLookup={false}
-					useMockData={true}
-					onKeyReloaded={mockOnKeyReloaded}
-				/>
-			</TestWrapper>
-		);
-
-		// Find and click refresh button
-		const refreshButton = screen.getByRole("button");
-		fireEvent.click(refreshButton);
-
-		await waitFor(() => {
-			// Mock data should not trigger API calls
-			expect(mockFetcher).not.toHaveBeenCalled();
-			expect(mockOnKeyReloaded).toHaveBeenCalled();
+	it("handles case when encodePinTwin is not available", () => {
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			encodePinTwin: undefined,
 		});
+
+		const onPinChange = jest.fn();
+		render(<Pintwin onPinChange={onPinChange} />);
+
+		const otpInputProps = MockOtpInput.mock.calls[0][0];
+		otpInputProps.onComplete("1234");
+
+		expect(onPinChange).toHaveBeenCalledWith("1234", "1234");
 	});
 
-	/**
-	 * Test PIN encoding functionality
-	 */
-	it("encodes PIN correctly using PinTwin key", async () => {
-		render(
-			<TestWrapper>
-				<Pintwin noLookup={false} useMockData={true} />
-			</TestWrapper>
+	it("renders with custom maxLength", () => {
+		render(<Pintwin maxLength={6} />);
+
+		expect(MockOtpInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				length: 6,
+			})
 		);
-
-		// Wait for encodePinTwin to be available on window
-		await waitFor(() => {
-			expect((window as any).encodePinTwin).toBeDefined();
-		});
-
-		// Test PIN encoding
-		const encodePinTwin = (window as any).encodePinTwin;
-		const testPin = "1234";
-		const expectedEncoding = "9748"; // Based on mock key "1974856302"
-
-		expect(encodePinTwin(testPin)).toBe(expectedEncoding);
 	});
 
-	/**
-	 * Test error handling during API key fetch
-	 */
-	it("handles API errors gracefully", async () => {
-		mockFetcher.mockRejectedValue(new Error("Network error"));
-		const mockOnKeyLoadStateChange = jest.fn();
+	it("renders with default maxLength when not provided", () => {
+		render(<Pintwin />);
 
-		render(
-			<TestWrapper>
-				<Pintwin
-					useMockData={false}
-					onKeyLoadStateChange={mockOnKeyLoadStateChange}
-				/>
-			</TestWrapper>
+		expect(MockOtpInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				length: 4,
+			})
 		);
-
-		await waitFor(() => {
-			expect(mockFetcher).toHaveBeenCalled();
-		});
-
-		// Check if error state is triggered
-		await waitFor(() => {
-			expect(mockOnKeyLoadStateChange).toHaveBeenCalledWith(false, true);
-		});
 	});
 
-	/**
-	 * Test disabled state
-	 */
-	it("does not allow interactions when disabled", async () => {
-		render(
-			<TestWrapper>
-				<Pintwin disabled={true} useMockData={true} />
-			</TestWrapper>
+	it("handles disabled state correctly", () => {
+		render(<Pintwin disabled={true} />);
+
+		expect(MockOtpInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				isDisabled: true,
+			})
 		);
 
-		const refreshButton = screen.getByRole("button");
-		expect(refreshButton).toBeDisabled();
-	});
-
-	/**
-	 * Test callback functions
-	 */
-	it("calls callback functions correctly", async () => {
-		const mockOnKeyReloaded = jest.fn();
-		const mockOnKeyLoadStateChange = jest.fn();
-
-		render(
-			<TestWrapper>
-				<Pintwin
-					useMockData={true}
-					onKeyReloaded={mockOnKeyReloaded}
-					onKeyLoadStateChange={mockOnKeyLoadStateChange}
-				/>
-			</TestWrapper>
+		expect(MockIcoButton).toHaveBeenCalledWith(
+			expect.objectContaining({
+				onClick: undefined,
+			})
 		);
-
-		await waitFor(() => {
-			expect(mockOnKeyLoadStateChange).toHaveBeenCalledWith(true, false);
-			expect(mockOnKeyReloaded).toHaveBeenCalledWith("39");
-		});
-	});
-
-	/**
-	 * Test color scheme for keys
-	 */
-	it("applies correct color scheme to keys", async () => {
-		render(
-			<TestWrapper>
-				<Pintwin noLookup={false} useMockData={true} />
-			</TestWrapper>
-		);
-
-		await waitFor(() => {
-			const keyElements = screen.getAllByText(/[0-9]/);
-			expect(keyElements.length).toBeGreaterThan(0);
-		});
-	});
-
-	/**
-	 * Test component unmounting
-	 */
-	it("cleans up properly on unmount", async () => {
-		const { unmount } = render(
-			<TestWrapper>
-				<Pintwin useMockData={true} />
-			</TestWrapper>
-		);
-
-		await waitFor(() => {
-			expect((window as any).encodePinTwin).toBeDefined();
-		});
-
-		unmount();
-
-		// encodePinTwin should still be available after unmount for other components
-		expect((window as any).encodePinTwin).toBeDefined();
-	});
-
-	/**
-	 * Test useMockData prop functionality
-	 */
-	it("uses mock data when useMockData is true", async () => {
-		render(
-			<TestWrapper>
-				<Pintwin useMockData={true} noLookup={false} />
-			</TestWrapper>
-		);
-
-		await waitFor(() => {
-			// Should not call the API when using mock data
-			expect(mockFetcher).not.toHaveBeenCalled();
-			// Should still render the pintwin key
-			expect(screen.getByText("1")).toBeInTheDocument();
-		});
-	});
-
-	/**
-	 * Test API call when useMockData is false
-	 */
-	it("calls API when useMockData is false", async () => {
-		mockFetcher.mockResolvedValue(mockPinTwinResponse);
-
-		render(
-			<TestWrapper>
-				<Pintwin useMockData={false} noLookup={false} />
-			</TestWrapper>
-		);
-
-		await waitFor(() => {
-			// Should call the API when not using mock data
-			expect(mockFetcher).toHaveBeenCalled();
-			expect(mockFetcher).toHaveBeenCalledWith(
-				expect.stringContaining("/transactions/do"),
-				expect.objectContaining({
-					body: expect.objectContaining({
-						transaction_type_id: 241, // TransactionTypes.GET_PINTWIN_KEY
-					}),
-					token: "mock-access-token",
-				})
-			);
-		});
 	});
 });

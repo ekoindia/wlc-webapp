@@ -10,8 +10,10 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle } from "components";
+import { ParamType } from "constants/trxnFramework";
 import { useContext, useEffect, useState } from "react";
-import { InputPintwin } from "tf-components";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
@@ -42,10 +44,17 @@ export const Payment = () => {
 		searchFormData,
 	} = state;
 	const [isProcessing, setIsProcessing] = useState(false);
-	// Store encoded PinTwin value (e.g. "4040|87") returned from InputPintwin
-	const [pintwinEncoded, setPintwinEncoded] = useState<string>("");
-	// Track if PIN has 4 digits entered
-	const [pinLength, setPinLength] = useState(0);
+
+	const {
+		control,
+		register,
+		formState: { errors, isValid },
+	} = useForm({
+		mode: "onChange",
+	});
+
+	const watcher = useWatch({ control });
+	const pintwinValue = watcher.pintwin ?? "";
 
 	// Get API functions
 	const { makePayment } = useBbpsApi(selectedProduct);
@@ -129,15 +138,8 @@ export const Payment = () => {
 				billid: bill.billid,
 				bill_payment_amount: bill.amount,
 			})),
-			pintwin: pintwinEncoded, // Encoded PIN with key id (e.g. "4040|87")
-			// Add other required fields here based on API specification
+			pintwin: pintwinValue,
 		};
-
-		// Log the payload only when using mock data (for debugging)
-		if (useMockData) {
-			// console.log("[BBPS MOCK] Final payment payload:", paymentRequest);
-			// console.log("[BBPS MOCK] Response type:", mockResponseType);
-		}
 
 		// Validate that the sum of bill amounts equals total amount
 		const sumOfBillAmounts = paymentRequest.paymentamountbreakup.reduce(
@@ -212,13 +214,23 @@ export const Payment = () => {
 		}
 	};
 
+	// Define parameter list for the form
+	const paymentParameterList = [
+		{
+			name: "pintwin",
+			label: "Secret PIN",
+			parameter_type_id: ParamType.PINTWIN,
+			required: true,
+		},
+	];
+
 	const buttonConfigList = [
 		{
 			type: "submit",
 			size: "lg",
 			label: "Pay",
 			loading: isProcessing,
-			disabled: pinLength < 4 || isProcessing,
+			disabled: !isValid || isProcessing,
 			onClick: handlePayment,
 			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
@@ -323,30 +335,12 @@ export const Payment = () => {
 					<Text fontSize="sm" color="gray.600">
 						Payment will be processed from your default wallet
 					</Text>
-					<InputPintwin
-						label="Secret PIN"
-						lengthMin={4}
-						lengthMax={4}
-						required={true}
-						pintwinApp={true}
-						// useMockData={true}
-						onChange={(value, masked) => {
-							if (value.includes("|")) {
-								setPintwinEncoded(value);
-							}
-							// Track PIN length based on masked value (which shows actual digit count)
-							setPinLength(masked.length);
-							if (useMockData) {
-								// console.log(
-								// 	"[BBPS MOCK] Pintwin encoded:",
-								// 	value,
-								// 	"masked:",
-								// 	masked,
-								// 	"length:",
-								// 	masked.length
-								// );
-							}
-						}}
+					<Form
+						parameter_list={paymentParameterList}
+						register={register}
+						control={control}
+						formValues={watcher}
+						errors={errors}
 					/>
 				</Flex>
 
@@ -399,6 +393,7 @@ export const Payment = () => {
 				<ActionButtonGroup
 					buttonConfigList={buttonConfigList}
 					bg={{ base: "white", md: "transparent" }}
+					marginBottom={{ base: "0", md: "12" }}
 				/>
 			</Flex>
 		</>

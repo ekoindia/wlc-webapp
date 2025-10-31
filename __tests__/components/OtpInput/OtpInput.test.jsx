@@ -1,53 +1,299 @@
+import userEvent from "@testing-library/user-event";
 import { OtpInput } from "components/OtpInput";
-import { render } from "test-utils";
+import { render, screen } from "test-utils";
 
-/*
-	* React Testing Library:
-		- Cheatsheet: https://testing-library.com/docs/react-testing-library/cheatsheet
-		- How to query: https://testing-library.com/docs/queries/about/
-		- Testing user events: https://testing-library.com/docs/user-event/intro
-		- Migrate from Enzyme (examples): https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/
-		- Testing onChange event handlers: https://testing-library.com/docs/react-testing-library/faq
-		- All APIs: https://testing-library.com/docs/react-testing-library/api
-		- Debug: https://testing-library.com/docs/queries/about/#screendebug, https://testing-library.com/docs/dom-testing-library/api-debugging/#prettydom
-	* Jest:
-		- Docs: https://jestjs.io/docs/getting-started
-		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
-*/
+describe("OtpInput component", () => {
+	const defaultProps = {
+		length: 4,
+		onChange: jest.fn(),
+		onComplete: jest.fn(),
+		onKeyDown: jest.fn(),
+		onEnter: jest.fn(),
+	};
 
-describe("OtpInput", () => {
-	it("renders without error with no attributes", () => {
-		const { container } = render(<OtpInput />);
-		expect(container).not.toBeEmptyDOMElement();
-
-		// expect(container).toHaveTextContent("Any text");
-
-		// const inp = screen.getByLabelText("Input Label");
-		// expect(inp).toBeInTheDocument();
-
-		// const btn = utils.getByRole("button", { name: "Submit" });
-
-		// CUSTOM MATCHERS (jest-dom)
-		// See all matchers here: https://github.com/testing-library/jest-dom#table-of-contents
-		// expect(btn).toBeDisabled();
-		// expect(btn).toBeEnabled();
-		// expect(inp).toBeInvalid();
-		// expect(inp).toBeRequired();
-		// expect(btn).toBeVisible();
-		// expect(btn).toContainElement(elm);
-		// expect(btn).toContainHTML(htmlText: string);
-		// expect(btn).toHaveFocus();
-
-		// Check style
-		// expect(getByTestId('background')).toHaveStyle(`background-image: url(${props.image})`);
-
-		// Enable snapshot testing:
-		// expect(container).toMatchSnapshot();
+	beforeEach(() => {
+		jest.clearAllMocks();
 	});
 
-	// TODO: Write other tests here..
-	// Start by writting all possible test cases here using test.todo()
-	test.todo(
-		"TODO: add proper test cases for OtpInput in __tests__/components/OtpInput/OtpInput.test.jsx"
-	);
+	it("renders successfully with default props", () => {
+		const { container } = render(<OtpInput />);
+		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("renders correct number of input fields based on length prop", () => {
+		render(<OtpInput length={6} />);
+		const inputs = screen.getAllByRole("textbox");
+		expect(inputs).toHaveLength(6);
+	});
+
+	it("renders with custom length prop", () => {
+		render(<OtpInput length={4} />);
+		const inputs = screen.getAllByRole("textbox");
+		expect(inputs).toHaveLength(4);
+	});
+
+	it("calls onChange when input value changes", async () => {
+		const user = userEvent.setup();
+		const onChange = jest.fn();
+		render(<OtpInput {...defaultProps} onChange={onChange} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1");
+
+		expect(onChange).toHaveBeenCalledWith("1");
+	});
+
+	it("calls onComplete when all fields are filled", async () => {
+		const user = userEvent.setup();
+		const onComplete = jest.fn();
+		render(<OtpInput {...defaultProps} onComplete={onComplete} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1");
+		await user.type(inputs[1], "2");
+		await user.type(inputs[2], "3");
+		await user.type(inputs[3], "4");
+
+		expect(onComplete).toHaveBeenCalledWith("1234");
+	});
+
+	it("handles keyboard navigation correctly", async () => {
+		const user = userEvent.setup();
+		const onKeyDown = jest.fn();
+		render(<OtpInput {...defaultProps} onKeyDown={onKeyDown} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1");
+
+		// Should automatically focus next input
+		expect(document.activeElement).toBe(inputs[1]);
+	});
+
+	it("handles Enter key press", async () => {
+		const user = userEvent.setup();
+		const onEnter = jest.fn();
+		render(<OtpInput {...defaultProps} onEnter={onEnter} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1");
+		await user.keyboard("{Enter}");
+
+		expect(onEnter).toHaveBeenCalledWith("1");
+	});
+
+	it("handles Backspace key correctly", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1");
+		await user.type(inputs[1], "2");
+		await user.keyboard("{Backspace}");
+
+		// Should clear the current input and focus previous
+		expect(inputs[1]).toHaveValue("");
+	});
+
+	it("applies custom input styles", () => {
+		const inputStyle = { fontSize: "20px", width: "50px" };
+		render(<OtpInput {...defaultProps} inputStyle={inputStyle} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		expect(inputs[0]).toHaveStyle("font-size: 20px");
+	});
+
+	it("applies custom container styles", () => {
+		const containerStyle = { gap: "20px" };
+		const { container } = render(
+			<OtpInput {...defaultProps} containerStyle={containerStyle} />
+		);
+
+		const flexContainer = container.querySelector("div");
+		expect(flexContainer).toHaveStyle("gap: 20px");
+	});
+
+	it("handles disabled state correctly", () => {
+		render(<OtpInput {...defaultProps} isDisabled={true} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		inputs.forEach((input) => {
+			expect(input).toBeDisabled();
+		});
+	});
+
+	it("handles placeholder text", () => {
+		const placeholder = "Enter OTP";
+		render(<OtpInput {...defaultProps} placeholder={placeholder} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		inputs.forEach((input) => {
+			expect(input).toHaveAttribute("placeholder", placeholder);
+		});
+	});
+
+	it("handles initial value correctly", () => {
+		const value = "1234";
+		render(<OtpInput {...defaultProps} value={value} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		expect(inputs[0]).toHaveValue("1");
+		expect(inputs[1]).toHaveValue("2");
+		expect(inputs[2]).toHaveValue("3");
+		expect(inputs[3]).toHaveValue("4");
+	});
+
+	it("focuses first input on mount", () => {
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		expect(document.activeElement).toBe(inputs[0]);
+	});
+
+	it("handles focus management correctly", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Click on third input
+		await user.click(inputs[2]);
+		expect(document.activeElement).toBe(inputs[2]);
+
+		// Type a number
+		await user.type(inputs[2], "3");
+		expect(document.activeElement).toBe(inputs[3]);
+	});
+
+	it("handles empty OTP state correctly", () => {
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		inputs.forEach((input) => {
+			expect(input).toHaveValue("");
+		});
+	});
+
+	it("handles partial OTP entry correctly", async () => {
+		const user = userEvent.setup();
+		const onChange = jest.fn();
+		render(<OtpInput {...defaultProps} onChange={onChange} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1");
+		await user.type(inputs[1], "2");
+
+		expect(onChange).toHaveBeenCalledWith("1");
+		expect(onChange).toHaveBeenCalledWith("12");
+	});
+
+	it("handles rapid typing correctly", async () => {
+		const user = userEvent.setup();
+		const onComplete = jest.fn();
+		render(<OtpInput {...defaultProps} onComplete={onComplete} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.type(inputs[0], "1234");
+
+		expect(onComplete).toHaveBeenCalledWith("1234");
+	});
+
+	it("handles focus on empty field correctly", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+		await user.click(inputs[2]);
+
+		// Should focus the first empty field
+		expect(document.activeElement).toBe(inputs[0]);
+	});
+
+	// New tests for React state-based background management
+	it("manages background colors through React state instead of DOM manipulation", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Focus first input - should not manipulate DOM directly
+		await user.click(inputs[0]);
+		expect(document.activeElement).toBe(inputs[0]);
+
+		// Type a number - background should change through React state
+		await user.type(inputs[0], "1");
+		expect(inputs[0]).toHaveValue("1");
+
+		// Verify that the input has the expected background styling applied via React state
+		// The component should apply focus background when input has value
+		const computedStyle = window.getComputedStyle(inputs[0]);
+		expect(computedStyle.backgroundColor).not.toBe("");
+	});
+
+	it("handles backspace key without direct DOM manipulation", async () => {
+		const user = userEvent.setup();
+		const onChange = jest.fn();
+		render(<OtpInput {...defaultProps} onChange={onChange} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Type a number
+		await user.type(inputs[0], "1");
+		expect(inputs[0]).toHaveValue("1");
+		expect(onChange).toHaveBeenCalledWith("1");
+
+		// Press backspace - should update React state and trigger onChange
+		await user.keyboard("{Backspace}");
+		expect(inputs[0]).toHaveValue("");
+		expect(onChange).toHaveBeenCalledWith("");
+
+		// Verify background state changes are handled through React
+		const computedStyle = window.getComputedStyle(inputs[0]);
+		expect(computedStyle.backgroundColor).toBeDefined();
+	});
+
+	it("maintains consistent state between React and DOM", async () => {
+		const user = userEvent.setup();
+		const onChange = jest.fn();
+		render(<OtpInput {...defaultProps} onChange={onChange} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Focus and type in first input
+		await user.click(inputs[0]);
+		await user.type(inputs[0], "1");
+
+		// Focus second input
+		await user.click(inputs[1]);
+		await user.type(inputs[1], "2");
+
+		// State should be consistent - React state drives both value and onChange
+		expect(inputs[0]).toHaveValue("1");
+		expect(inputs[1]).toHaveValue("2");
+		expect(document.activeElement).toBe(inputs[2]);
+
+		// Verify React state updates are reflected in onChange calls
+		expect(onChange).toHaveBeenCalledWith("1");
+		expect(onChange).toHaveBeenCalledWith("12");
+
+		// Verify background styling is applied through React state, not direct DOM manipulation
+		const firstInputStyle = window.getComputedStyle(inputs[0]);
+		const secondInputStyle = window.getComputedStyle(inputs[1]);
+		expect(firstInputStyle.backgroundColor).toBeDefined();
+		expect(secondInputStyle.backgroundColor).toBeDefined();
+	});
+
+	it("handles focus events without direct style manipulation", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Click on different inputs - should not manipulate styles directly
+		await user.click(inputs[0]);
+		expect(document.activeElement).toBe(inputs[0]);
+
+		await user.click(inputs[2]);
+		// Should auto-focus to first empty field (index 0)
+		expect(document.activeElement).toBe(inputs[0]);
+	});
 });

@@ -22,13 +22,13 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
  * @param {string} [props.bg] - Background color of the control
  * @param {string} [props.activeTextColor] - Text color of the active segment
  * @param {string} [props.inactiveTextColor] - Text color of the inactive segments
- * @param {boolean} [props.showDividers=false] - Show subtle vertical dividers between segments
- * @param {string} [props.dividerColor="gray.200"] - Color of the dividers
+ * @param {boolean} [props.showDividers] - Show subtle vertical dividers between segments
+ * @param {string} [props.dividerColor] - Color of the dividers
  * @param {string} [props.radius] - Border radius of the control (overrides size-based radius)
  * @param {string} [props.innerRadius] - Border radius of the inner part of the control (overrides size-based inner radius)
- * @param {boolean} [props.hideLabelsOnMobile=false] - Hide segment labels on mobile devices
- * @param {Object} [props.segmentProps={}] - Additional props to pass to each segment
- * @param {Object} [props.activeProps={}] - Additional props to pass to the active segment highlight
+ * @param {boolean} [props.hideLabelsOnMobile] - Hide segment labels on mobile devices
+ * @param {object} [props.segmentProps] - Additional props to pass to each segment
+ * @param {object} [props.activeProps] - Additional props to pass to the active segment highlight
  * @returns {JSX.Element} Segmented control component
  */
 export default function SegmentedControl({
