@@ -7,7 +7,7 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { Button, Modal } from "components";
-import { Endpoints, ParamType, TransactionIds } from "constants";
+import { Endpoints, ParamType, TransactionIds, UserType } from "constants";
 import { useUser } from "contexts";
 import { fetcher } from "helpers";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -24,7 +24,7 @@ const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
  * @example	`<ShopCard></ShopCard>` TODO: Fix example
  */
 const ShopCard = () => {
-	const { userData, refreshUser, accessToken } = useUser();
+	const { userData, refreshUser, accessToken, userType, isAdmin } = useUser();
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { generateNewToken } = useRefreshToken();
@@ -50,7 +50,7 @@ const ShopCard = () => {
 		{
 			key: "shop_name", //using this key to show data on UI
 			name: "shop_name",
-			label: "Shop Name",
+			label: "Shop/Office Name",
 			validations: { pattern: /^[-\.a-zA-Z0-9\s]+$/ },
 		},
 		{
@@ -214,9 +214,27 @@ const ShopCard = () => {
 			});
 	};
 
+	// Hide this component for Admins:
+	if (isAdmin) return null;
+
+	// Hide the component for the following user types:
+	// Field Executive, Sales Executive, Sub-Retailer, Customer, ORG_ADMIN, ORG_EMPLOYEE
+	if (
+		![
+			UserType.FOS,
+			UserType.SALES_EXECUTIVE,
+			UserType.SUB_MERCHANT,
+			UserType.CUSTOMER,
+			UserType.ORG_ADMIN,
+			UserType.ORG_EMPLOYEE,
+		].includes(userType)
+	) {
+		return null;
+	}
+
 	return (
 		<WidgetBase
-			title="My Shop"
+			title="My Shop/Office Details"
 			iconName="mode-edit"
 			linkOnClick={() => onOpen()}
 		>

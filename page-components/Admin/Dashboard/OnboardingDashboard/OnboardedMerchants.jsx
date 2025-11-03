@@ -15,7 +15,7 @@ const onboarded_merchants_parameter_list = [
 	},
 	{
 		name: "agent_type",
-		label: "Agent Type",
+		label: "User Type",
 		sorting: true,
 	},
 	{

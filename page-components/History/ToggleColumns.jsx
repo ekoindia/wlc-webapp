@@ -1,9 +1,11 @@
-import { Flex, FormControl, FormLabel, Switch, Text } from "@chakra-ui/react";
-import { Button } from "components";
+import { ToggleColumns as GenericToggleColumns } from "components";
 import { useHistory } from "./HistoryContext";
 
 /**
  * Component to toggle the visibility of columns in the Transaction History table.
+ * This is a wrapper around the generic ToggleColumns component that connects
+ * to the HistoryContext for state management.
+ * @returns {JSX.Element} The rendered ToggleColumns component
  */
 const ToggleColumns = () => {
 	// Get context values from HistoryContext
@@ -19,45 +21,13 @@ const ToggleColumns = () => {
 		(column) => column.visible_in_table && column.label
 	);
 
-	console.log("ToggleColumns: ", historyParameterMetadata, columns);
-
 	return (
-		<Flex
-			direction="column"
-			align="flex-start"
-			justify="center"
-			gap="0.6em"
-			p="4"
-			w="100%"
-		>
-			<Text fontSize="md">Show or hide columns in the table:</Text>
-			{columns?.map((column, index) => {
-				const isHidden =
-					column.name in hiddenColumns
-						? hiddenColumns[column.name]
-						: column.hide_by_default;
-
-				return (
-					<FormControl
-						key={column.label + index}
-						display="flex"
-						alignItems="center"
-						gap="0.8em"
-					>
-						<Switch
-							isChecked={!isHidden}
-							onChange={() =>
-								toggleColumnVisibility(column.name, !isHidden)
-							}
-						/>
-						<FormLabel mb="0">{column.label}</FormLabel>
-					</FormControl>
-				);
-			})}
-			<Button mt="4" colorScheme="blue" onClick={resetColumnVisibility}>
-				Reset Columns
-			</Button>
-		</Flex>
+		<GenericToggleColumns
+			columns={columns}
+			hiddenColumns={hiddenColumns}
+			onToggle={toggleColumnVisibility}
+			onReset={resetColumnVisibility}
+		/>
 	);
 };
 

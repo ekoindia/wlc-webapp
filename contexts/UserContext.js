@@ -1,7 +1,7 @@
 import { Endpoints } from "constants";
-import { UserTypeLabel } from "constants/UserTypes";
 import { fetcher } from "helpers/apiHelper";
 import { createUserState, getSessions } from "helpers/loginHelper";
+import { useUserTypes } from "hooks";
 import {
 	createContext,
 	useCallback,
@@ -29,6 +29,8 @@ const UserProvider = ({ userMockData, children }) => {
 	const [loading, setLoading] = useState(true);
 
 	const { isAndroid } = useAppSource();
+
+	const { getUserTypeLabel } = useUserTypes();
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
@@ -181,7 +183,7 @@ const UserProvider = ({ userMockData, children }) => {
 	 */
 	const userTypeLabel = isAdmin
 		? "Organization Admin"
-		: UserTypeLabel[state?.userDetails?.user_type] || "";
+		: getUserTypeLabel(state?.userDetails?.user_type) || "";
 
 	// MARK: useUser()
 	const userContextValue = useMemo(() => {
@@ -191,7 +193,7 @@ const UserProvider = ({ userMockData, children }) => {
 			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
-			UserTypeLabel: userTypeLabel,
+			userTypeLabel: userTypeLabel,
 			accessToken: state?.access_token || "",
 			accessTokenLite:
 				state?.access_token_lite || state?.access_token || "",
@@ -221,7 +223,7 @@ const UserProvider = ({ userMockData, children }) => {
 			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
-			UserTypeLabel: userTypeLabel,
+			userTypeLabel: userTypeLabel,
 			accessToken: state?.access_token || "",
 			accessTokenLite:
 				state?.access_token_lite || state?.access_token || "",
@@ -258,12 +260,13 @@ const UserProvider = ({ userMockData, children }) => {
 };
 
 /**
- * Get user profile details.
+ * Get the currently logged-in user's profile details (from the `UserContext`)
  * @returns {object} An object with the following properties:
  * @property {boolean} isLoggedIn - If true, user is logged in
  * @property {boolean} isAdmin - If true, user is an admin
  * @property {number} userId - User ID
- * @property {string} userType - User type
+ * @property {string} userType - User type ID
+ * @property {string} userTypeLabel - User type label
  * @property {string} accessToken - Access token
  * @property {object} userData - Detailed user profile data object
  * @property {Function} login - Login function
@@ -288,12 +291,14 @@ const useUser = () => {
 };
 
 /**
- * Get user session details.
+ * Get limited session details for the logged-in user (from the `UserContext`).
+ * For detailed user profile, use the `useUser()` hook.
  * @returns {object} An object with the following properties:
  * @property {boolean} isLoggedIn - If true, user is logged in
  * @property {boolean} isAdmin - If true, user is an admin
  * @property {number} userId - User ID
- * @property {string} userType - User type
+ * @property {string} userType - User type ID
+ * @property {string} userTypeLabel - User type label
  * @property {string} accessToken - Access token
  * @property {boolean} loading - If true, user data is being loaded
  * @property {Function} setLoading - Set loading state (used by RouteProtector)

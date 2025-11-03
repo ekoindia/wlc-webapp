@@ -1,4 +1,4 @@
-import { parseOrgIds } from "utils/envUtils";
+import { parseEnvBoolean, parseOrgIds } from "utils/envUtils";
 
 // Few pre-defined org-ids for configuring feature flags on production
 // NOTE: The production org-ids must be read from environment variables
@@ -34,7 +34,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin Network pages to (Super)Distributors
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1, 7], // 7 = (SuperDistributor)
+		forUserType: [1, 4, 7], // 4 = (FOS), 7 = (SuperDistributor)
 		// forEnv: ["development", "staging"],
 		envConstraints: {
 			production: {
@@ -43,6 +43,22 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					...ORG_ID.EKOTESTS,
 					...ORG_ID.DASHBOARD_V2,
 				],
+			},
+		},
+	},
+
+	// Assisted Full Onboarding
+	ASSISTED_FULL_ONBOARDING: {
+		enabled: true,
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [3],
 			},
 		},
 	},
@@ -81,7 +97,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
 		envConstraints: {
 			production: {
 				forOrgId: [
@@ -235,7 +251,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Feature to Raise Issues (Generic + Trxn History)...
 	RAISE_ISSUE: {
-		enabled: true,
+		enabled: !parseEnvBoolean(process.env.NEXT_PUBLIC_HIDE_RAISE_ISSUE),
 	},
 
 	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_

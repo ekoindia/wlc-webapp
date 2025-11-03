@@ -1,20 +1,21 @@
-import { Box, Flex, Text /* Checkbox, Stack */ } from "@chakra-ui/react";
-import { UserType /*, UserTypeLabel */ } from "constants";
+import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
+import useHslColor from "hooks/useHslColor";
 import { useEffect, useMemo, useState } from "react";
 import {
-	UncontrolledTreeEnvironment,
-	Tree,
 	StaticTreeDataProvider,
+	Tree,
+	UncontrolledTreeEnvironment,
 } from "react-complex-tree";
-import useHslColor from "hooks/useHslColor";
+import "react-complex-tree/lib/style-modern.css";
 import { FaRegUser } from "react-icons/fa6";
 import { FcBusinessman, FcManager } from "react-icons/fc";
 import { MdFolderShared } from "react-icons/md";
 import { RiEBike2Fill } from "react-icons/ri";
+import { formatMobile } from "utils";
 import { getInitials } from "utils/textFormat";
 import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
-import "react-complex-tree/lib/style-modern.css";
 // import { useSet } from "hooks";
 
 /**
@@ -62,11 +63,20 @@ const NetworkTreeView = () => {
 	// 		// Create list of options for the filter checkboxes
 	// 		const _userTypeFilterList = userTypeIdList.map((userTypeId) => ({
 	// 			value: userTypeId,
-	// 			label: UserTypeLabel[userTypeId] || "Type " + userTypeId,
+	// 			label: getUserTypeLabel(userTypeId) || "Type " + userTypeId,	// from useUserTypes()
 	// 		}));
 	// 		setUserTypeFilterList(_userTypeFilterList);
 	// 	}
 	// }, [userTypeIdList]);
+
+	// Show Chakra loader
+	if (loading) {
+		return (
+			<Flex justify="center" align="center" height="100%">
+				<Spinner />
+			</Flex>
+		);
+	}
 
 	return (
 		<>
@@ -138,36 +148,36 @@ const NetworkTreeView = () => {
 					>
 						{/* MARK: Filters */}
 						{/* <Box
-						w={{ base: "100%", lg: "unset" }}
-						minW="280px"
-						bg="white"
-						p={{ base: 3, md: 6 }}
-						borderRadius={6}
-						shadow="md"
-					>
-						<Stack spacing={2} direction="column">
-							{userTypeFilterList.map((userType, i) => (
-								<Checkbox
-									key={userType.value || i}
-									value={userType.value}
-									isChecked={filteredUserSet.has(
-										userType.value
-									)}
-									onChange={(e) => {
-										e.target.checked
-											? filteredUserSet.add(
-													+userType.value
-												)
-											: filteredUserSet.delete(
-													+userType.value
-												);
-									}}
-								>
-									{userType.label}
-								</Checkbox>
-							))}
-						</Stack>
-					</Box> */}
+							w={{ base: "100%", lg: "unset" }}
+							minW="280px"
+							bg="white"
+							p={{ base: 3, md: 6 }}
+							borderRadius={6}
+							shadow="md"
+						>
+							<Stack spacing={2} direction="column">
+								{userTypeFilterList.map((userType, i) => (
+									<Checkbox
+										key={userType.value || i}
+										value={userType.value}
+										isChecked={filteredUserSet.has(
+											userType.value
+										)}
+										onChange={(e) => {
+											e.target.checked
+												? filteredUserSet.add(
+														+userType.value
+													)
+												: filteredUserSet.delete(
+														+userType.value
+													);
+										}}
+									>
+										{userType.label}
+									</Checkbox>
+								))}
+							</Stack>
+						</Box> */}
 
 						{/* MARK: Info */}
 						<Box
@@ -218,18 +228,23 @@ const NetworkTreeView = () => {
 												/>
 											) : null}
 										</Flex>
-										<Box>
-											<strong>Type: </strong>
+										<Tag
+											w="fit-content"
+											fontSize="0.9em"
+											fontWeight="500"
+										>
 											{selectedItem?.meta?.user_type}
-										</Box>
+										</Tag>
 										<Box>
 											<strong>Mobile: </strong>
-											{selectedItem?.meta?.mobile}
+											{formatMobile(
+												selectedItem?.meta?.mobile
+											)}
 										</Box>
-										<Box>
+										{/* <Box>
 											<strong>User Code: </strong>
 											{selectedItem?.meta?.user_code}
-										</Box>
+										</Box> */}
 									</Flex>
 								)
 							) : (
@@ -263,6 +278,7 @@ const NetworkTreeView = () => {
 
 /**
  * Network Tree Item (Title) component
+ * MARK: Tree Item
  * @param {object} props
  * @param {object} props.user User object (tree item)
  * @param props.data
@@ -287,30 +303,50 @@ const NetworkTreeItem = ({
 				user_type={meta?.user_type || data || "Others"}
 				user_type_id={meta?.user_type_id || 0}
 			/>
-			<Text textTransform="capitalize">
-				{(data || meta.mobile || "").toString().toLowerCase()}
-			</Text>
-			{isFolder && count ? (
-				<Flex
-					align="center"
-					justify="center"
-					borderRadius="full"
-					bg="#DDD"
-					color="#666"
-					fontSize="0.7em"
-					px="0.4em"
-					minW="15px"
-					minH="15px"
-				>
-					{count}
-				</Flex>
+			{rootCategory ? (
+				<Text fontWeight="600" fontSize="1.1em">
+					{data || meta.mobile || ""}
+				</Text>
+			) : (
+				<Text textTransform="capitalize">
+					{(data || meta.mobile || "").toString().toLowerCase()}
+				</Text>
+			)}
+			{meta.parent_user_code !== "root" && meta.user_type ? (
+				<Tag>{meta.user_type}</Tag>
 			) : null}
+			{isFolder && count ? <Tag borderRadius="full">{count}</Tag> : null}
+		</Flex>
+	);
+};
+
+/**
+ * Tag component to show user-type, user count, etc
+ * @param {object} props - Props for the Tag component
+ * @param {ReactNode} props.children - Child elements to be displayed inside the tag
+ */
+const Tag = ({ children, ...rest }) => {
+	return (
+		<Flex
+			align="center"
+			justify="center"
+			borderRadius="5px"
+			bg="#DDD"
+			color="#666"
+			fontSize="0.7em"
+			px="0.4em"
+			minW="15px"
+			minH="15px"
+			{...rest}
+		>
+			{children}
 		</Flex>
 	);
 };
 
 /**
  * Tree item logo: show a folder icon for root folders or an avatar based on the user-type
+ * MARK: Type Icon
  * @param {object} props
  * @param {boolean} props.rootCategory - Whether the item is a root category folder
  * @param {string} props.user_type - Type of the user

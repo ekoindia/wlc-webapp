@@ -4,8 +4,6 @@
  * - It caches invalid (sub)domains for 24 hours or until the cache size is more than 1000
  */
 
-import { Endpoints } from "constants/EndPoints";
-
 // The `response_type_id` if the organization is not found on the server
 const ORG_NOT_FOUND_RESPONSE_TYPE_ID = 1829;
 
@@ -48,11 +46,33 @@ export const MockOrgDetails = {
 			accent_dark: stripQuotes(process.env.THEME_ACCENT_DARK) || "",
 			accent_light: stripQuotes(process.env.THEME_ACCENT_LIGHT) || "",
 		},
+		// Change Landing Page Design.
 		cms_meta: {
+			// CMS type ("default" | "card" | "page" | "image")
 			type: process.env.CMS_TYPE || undefined,
 		},
+		// img, img_small,
 		cms_data: {
 			img: process.env.CMS_IMG || undefined,
+		},
+		// Disable Admin's left menu items. It's an array of item IDS from Sidebar.
+		disabled_features: undefined,
+		user_type_labels: {
+			1: { en: "Branch Manager" },
+			2: { en: "Agent" },
+			3: { en: "Independent Agent" },
+			4: { en: "CSO" },
+			24: { en: "Head Office Admin" },
+		},
+		// Custom labels for User Code (per user type). Defaults to "User Code"
+		user_code_labels: {
+			2: "Agent Code",
+			3: "Agent Code",
+		},
+		login_meta: {
+			mobile_mapped_user_id:
+				process.env.LOGIN_MOBILE_MAPPED_USER_ID === "1" ? 1 : 0,
+			user_id_label: process.env.LOGIN_USER_ID_LABEL || "User ID",
 		},
 	},
 	login_types: {
@@ -282,31 +302,28 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 		return null;
 	}
 
+	const ORG_META_SERVICE_URL = process.env.ORG_META_SERVICE || "";
+
 	try {
-		const res = await fetch(
-			process.env.NEXT_PUBLIC_API_BASE_URL +
-				Endpoints.GET_ORG_FROM_DOMAIN,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(
-					domain
-						? { domain: encodeURIComponent(domain) }
-						: { sub_domain: encodeURIComponent(subdomain) }
-				),
-			}
-		);
+		const res = await fetch(ORG_META_SERVICE_URL, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				...(domain
+					? { domain: encodeURIComponent(domain) }
+					: { sub_domain: encodeURIComponent(subdomain) }),
+				secret: process.env.ORG_META_SERVICE_SECRET || undefined,
+			}),
+		});
 
 		if (!res.ok) {
 			console.debug(
 				"Org details not found on server: ",
 				JSON.stringify(
 					{
-						url:
-							process.env.NEXT_PUBLIC_API_BASE_URL +
-							Endpoints.GET_ORG_FROM_DOMAIN,
+						url: ORG_META_SERVICE_URL,
 						status: res.status,
 						domain: domain,
 						sub_domain: subdomain,
@@ -331,9 +348,7 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 				"Org details not found on server: ",
 				JSON.stringify(
 					{
-						url:
-							process.env.NEXT_PUBLIC_API_BASE_URL +
-							Endpoints.GET_ORG_FROM_DOMAIN,
+						url: ORG_META_SERVICE_URL,
 						status: res.status,
 						domain: domain,
 						sub_domain: subdomain,

@@ -1,7 +1,7 @@
 import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
-import { useMenuContext, useSession, useUser } from "contexts";
+import { useMenuContext, useSession, useUser, useWallet } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
@@ -22,6 +22,8 @@ const RecentTrxnWidget = () => {
 	});
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions || {};
+
+	const { isWalletVisible } = useWallet();
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
@@ -66,6 +68,10 @@ const RecentTrxnWidget = () => {
 	};
 
 	if (!isLoggedIn) return null;
+
+	if (!isWalletVisible) {
+		return null;
+	}
 
 	if (!data.length) {
 		return null;

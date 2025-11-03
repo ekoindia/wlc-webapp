@@ -19,6 +19,8 @@ interface SupportTicketType {
 	tx_typeid?: string;
 	transaction_metadata?: any;
 	technicalNotes?: any;
+	appSource?: string;
+	androidAppVersion?: string;
 	controller?: AbortController;
 	generateNewToken?: Function;
 }
@@ -42,6 +44,8 @@ interface SupportTicketType {
  * @param {string} [options.tx_typeid] - The transaction type ID
  * @param {object} [options.transaction_metadata] - The transaction metadata
  * @param {object} [options.technicalNotes] - Any additional technical notes
+ * @param {string} [options.appSource] - The source of the app (e.g., androidwebview, pwa, etc.)
+ * @param {string} [options.androidAppVersion] - The version of the android wrapper app (if applicable)
  * @param {AbortController} [options.controller] - The abort controller for the request
  * @param {Function} [options.generateNewToken] - The function to generate a new token
  * @returns {Promise} - The promise object representing the feedback submission
@@ -64,6 +68,8 @@ export const createSupportTicket = ({
 	tx_typeid = "",
 	transaction_metadata = {},
 	technicalNotes = {},
+	appSource = "",
+	androidAppVersion = "",
 	controller = null,
 	generateNewToken = null,
 }: SupportTicketType) => {
@@ -147,10 +153,11 @@ export const createSupportTicket = ({
 				"x" +
 				screen.height,
 			device_time: new Date().toISOString(),
+			appsource: appSource,
+			android_app_version: androidAppVersion,
 			// TODO: Add the following details...
+			// web_app_version: process.env.NEXT_PUBLIC_APP_VERSION,
 			// last_unhandled_error: window._lastConnectGlobalError || "No Error",
-			// appsource: this.appsource,
-			// android_app_version: this.nativeVersion,
 			// db_cache_ver: this.db_cache_ver,
 		}),
 	};

@@ -1,8 +1,10 @@
+import { useSession } from "contexts";
 import { useLocalStorage } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 
 /**
- * Hook for caching data for one day. After one day, the isValid status is returned as false.
+ * Hook for caching data for one day.
+ * After one day (or, for a different user), the `isValid` status is returned as false.
  * @param {string} defaultValue
  * @param key
  * @param initialValue
@@ -10,6 +12,7 @@ import { useEffect, useMemo, useState } from "react";
  */
 const useDailyCacheState = (key, initialValue) => {
 	const [dt, setDt] = useState(new Date());
+	const { userId } = useSession();
 
 	// Set a timer to update the date/time every day at midnight.
 	// The timer triggers after the amount time left for the day to end.
@@ -33,21 +36,29 @@ const useDailyCacheState = (key, initialValue) => {
 
 	const [cachedValue, setCachedValue] = useLocalStorage(key, {
 		cachedAt: today,
+		id: userId,
 		data: initialValue,
 	});
 
+	/**
+	 * Set the cached value with today's date and current user-id.
+	 * @param {*} value - New value to be cached
+	 */
 	const setValue = (value) => {
 		setCachedValue({
 			cachedAt: today,
+			id: userId,
 			data: value,
 		});
 	};
 
-	// If the cached value is from today, it is valid.
+	// If the cached value is valid, if it was stored today and for the current user.
 	return [
 		cachedValue.data,
 		setValue,
-		cachedValue?.cachedAt === today ? true : false,
+		cachedValue?.cachedAt === today && cachedValue?.id === userId
+			? true
+			: false,
 	];
 };
 

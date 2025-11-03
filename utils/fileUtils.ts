@@ -22,7 +22,12 @@ export const saveDataToFile = (
 		processedData = b64toByteArrays(data);
 	}
 
-	const file = new Blob([processedData] as BlobPart[], { type });
+	const file = new Blob(
+		(Array.isArray(processedData)
+			? processedData
+			: [processedData]) as BlobPart[],
+		{ type }
+	);
 
 	// IE10+ compatibility
 	if ((window.navigator as any).msSaveOrOpenBlob) {
@@ -52,8 +57,22 @@ export const saveDataToFile = (
  */
 export const b64toByteArrays = (
 	b64Data: string,
-	sliceSize: number = 512
+	sliceSize?: number
 ): Uint8Array[] => {
+	// Approximate decoded bytes
+	const approxBytes = (b64Data.length * 3) / 4;
+
+	// Adaptive slice size if not provided, based on the size of data
+	// to optimize memory usage and performance.
+	// For smaller files, smaller slices will be more optimal for memory.
+	// For larger files, larger slices reduce the number of iterations.
+	if (!sliceSize) {
+		if (approxBytes < 1_000_000) sliceSize = 8 * 1024;
+		else if (approxBytes < 10_000_000) sliceSize = 32 * 1024;
+		else if (approxBytes < 50_000_000) sliceSize = 64 * 1024;
+		else sliceSize = 128 * 1024;
+	}
+
 	const byteCharacters = atob(b64Data);
 	const byteArrays: Uint8Array[] = [];
 
@@ -106,4 +125,28 @@ export const dataUrlToBlob = (dataUrl: string): Blob => {
 	}
 
 	return new Blob([u8arr], { type: mime });
+};
+
+/**
+ * Converts blob data to image source URL for document preview
+ * @param {string} blobData - Base64 blob data from API response
+ * @param {string} [mimeType] - MIME type of the image (default: "image/jpeg")
+ * @returns {string} Data URL that can be used as image src
+ * @example
+ * ```typescript
+ * const imageSrc = blobToImageSrc(blobData);
+ * <img src={imageSrc} alt="Document" />
+ * ```
+ */
+export const blobToImageSrc = (
+	blobData: string,
+	mimeType: string = "image/jpeg"
+): string => {
+	// Handle case where blob data might already be a data URL
+	if (blobData.startsWith("data:")) {
+		return blobData;
+	}
+
+	// Create data URL from base64 blob data
+	return `data:${mimeType};base64,${blobData}`;
 };

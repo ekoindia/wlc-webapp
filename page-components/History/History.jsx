@@ -724,10 +724,6 @@ const History = ({ forNetwork = false }) => {
 		watcherExport.tx_date,
 	]);
 
-	// How many columns to show in the table (for self or network history)
-	// TODO: REDUNDANT. Calculate visible columns in HistoryCard (mobile view) directly from history_parameter_metadata
-	const visibleColumns = forNetwork ? 7 : 11;
-
 	const processedData = useMemo(
 		() => getHistoryTableProcessedData(transactionList),
 		[transactionList]
@@ -756,7 +752,6 @@ const History = ({ forNetwork = false }) => {
 			<HistoryProvider
 				historyParameterMetadata={history_parameter_metadata}
 				data={trxn_data}
-				initialVisibleColumns={visibleColumns}
 				initialIsFiltered={isFiltered}
 				forNetwork={forNetwork}
 				onClearFilter={clearFilter}

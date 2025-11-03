@@ -1,5 +1,6 @@
 import { Divider, Flex, Text } from "@chakra-ui/react";
 import { Button, Card, IcoButton } from "components";
+import { useSession } from "contexts/UserContext";
 import { openGoogleMap } from "helpers";
 import { MapView } from "libs";
 import { useRouter } from "next/router";
@@ -7,6 +8,16 @@ import { capitalize, nullRemover } from "utils";
 
 const AddressPane = ({ data }) => {
 	const router = useRouter();
+	const { isAdmin } = useSession();
+	const isLocationAvailable = +data?.lattitude && +data?.longitude;
+
+	const handleUpdateAddress = () => {
+		const pathname = isAdmin
+			? "/admin/my-network/profile/up-sell-add"
+			: "/my-network/profile/up-sell-add";
+		router.push(pathname);
+	};
+
 	return (
 		<Card h={{ base: "auto", md: "560px" }}>
 			<Flex
@@ -27,21 +38,23 @@ const AddressPane = ({ data }) => {
 					<Divider />
 
 					<Flex direction="column" color="light">
-						Ownership type
+						Ownership Type
 						<Text fontWeight="medium" color="dark">
 							{data?.ownership_type}
 						</Text>
 					</Flex>
 				</Flex>
 
-				<Flex justify="center" w="100%" h="180px">
-					<MapView
-						h="180"
-						w="560"
-						lat={data?.lattitude}
-						lng={data?.longitude}
-					/>
-				</Flex>
+				{isLocationAvailable ? (
+					<Flex justify="center" w="100%" h="180px">
+						<MapView
+							h="180"
+							w="560"
+							lat={data?.lattitude}
+							lng={data?.longitude}
+						/>
+					</Flex>
+				) : null}
 
 				<Flex
 					direction={{ base: "column", lg: "row" }}
@@ -50,34 +63,35 @@ const AddressPane = ({ data }) => {
 					gap="6"
 				>
 					<Button
-						onClick={() =>
-							router.push("/admin/my-network/profile/up-sell-add")
-						}
+						onClick={handleUpdateAddress}
 						w={{ base: "100%", lg: "240px" }}
 						h="60px"
 					>
 						Update Address
 					</Button>
-					<Flex
-						gap="2"
-						align="center"
-						color="primary.DEFAULT"
-						onClick={() =>
-							openGoogleMap(data?.lattitude, data?.longitude)
-						}
-						cursor="pointer"
-					>
-						<IcoButton
-							title="View on Google Maps"
-							theme="primary"
-							iconName="near-me"
+
+					{isLocationAvailable ? (
+						<Flex
+							gap="2"
+							align="center"
+							color="primary.DEFAULT"
+							onClick={() =>
+								openGoogleMap(data?.lattitude, data?.longitude)
+							}
 							cursor="pointer"
-							size="sm"
-						/>
-						<Text fontWeight="semibold" whiteSpace="nowrap">
-							View on Google Maps
-						</Text>
-					</Flex>
+						>
+							<IcoButton
+								title="View on Google Maps"
+								theme="primary"
+								iconName="near-me"
+								cursor="pointer"
+								size="sm"
+							/>
+							<Text fontWeight="semibold" whiteSpace="nowrap">
+								View on Google Maps
+							</Text>
+						</Flex>
+					) : null}
 				</Flex>
 			</Flex>
 		</Card>

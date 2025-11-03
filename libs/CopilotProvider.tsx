@@ -14,7 +14,7 @@ import { CopilotPopup, useCopilotChatSuggestions } from "@copilotkit/react-ui";
 import "@copilotkit/react-ui/styles.css";
 import { UserTypeLabel } from "constants/UserTypes";
 import { useOrgDetailContext, useUser } from "contexts";
-import { useFeatureFlag } from "hooks";
+import { useFeatureFlag, useUserTypes } from "hooks";
 import { ReactNode } from "react";
 
 interface CopilotProviderProps {
@@ -92,7 +92,7 @@ export const useCopilotInfo = (config: any) => {
 	try {
 		return useCopilotReadable(config);
 	} catch (error) {
-		console.error("Error occurred while using Copilot:", error);
+		console.warn("Error using Copilot (Info):", error);
 		return null;
 	}
 };
@@ -106,7 +106,7 @@ export const useCopilotAction = (config: any) => {
 	try {
 		return useCopilotActionHook(config);
 	} catch (error) {
-		console.error("Error occurred while using Copilot:", error);
+		console.error("Error using Copilot (Action):", error);
 		return null;
 	}
 };
@@ -123,7 +123,10 @@ const CopilotHydrate = ({ showPopup }: { showPopup: boolean }) => {
 	const { isAdmin, userData, userType } = useUser();
 	const [isAiCopilotAllowed] = useFeatureFlag("AI_COPILOT");
 
+	const { getUserTypeLabel } = useUserTypes();
+
 	const _role = isAdmin ? "Admin" : UserTypeLabel[userType || 0] || "User";
+	const _roleLabel = isAdmin ? "Admin" : getUserTypeLabel(userType) || "User";
 
 	// Define AI Copilot readable state for the organization details
 	// MARK: Org Details
@@ -140,16 +143,16 @@ Role hierarchy:
 	- Admin
 		- SuperDistributor
 		- Distributor
-		- Field Executive (or, Field Agent)
-		- Retailer (or, Agent)
+			- Field Executive (or, Field Agent)
+		- Agent (or, Retailer, etc.)
 			- Sub-Retailer
-		- Independent Retailer
-		- Sub-Retailer`,
+		- Independent Retailer`,
 
 		value: {
 			name: userData?.userDetails?.name || undefined,
 			gender: userData?.userDetails?.gender || undefined,
 			role: _role,
+			role_label: _roleLabel,
 		},
 	});
 

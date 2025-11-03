@@ -71,13 +71,13 @@ export const AdminBlacklistMenuItems: number[] = [
 export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 1,
-		label: "Dashboard",
-		icon: "dashboard",
+		label: "Home",
+		icon: "menu-home",
 		link: "/admin",
 		summary:
-			"View your dashboard with key metrics and insights about your business.",
+			"View your home page & dashboard with key metrics and insights about your business.",
 		fullDescription:
-			"The dashboard provides an overview of your business performance, including key metrics such as total transactions, revenue, and user engagement. It helps you monitor your product health at a glance. You also get insights about the onboarding status of your agents.",
+			"The home page provides multiple dashboard tabs with an overview of your business performance, including key metrics such as total transactions, revenue, and user engagement. It helps you monitor your product health at a glance. You also get insights about the onboarding status of your agents.",
 	},
 	{
 		id: 5,
@@ -110,6 +110,17 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	icon: "invoice",
 	// 	link: "/admin/invoicing",
 	// },
+	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/admin/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		featureFlag: "ASSISTED_FULL_ONBOARDING",
+	},
 	{
 		id: 20,
 		label: "Business Settings",
@@ -230,6 +241,17 @@ export const sidebarMenu: sidebarMenuType[] = [
 		summary: "View transactions of agents in your network.",
 		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
 		beta: true,
+	},
+	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		featureFlag: "ASSISTED_FULL_ONBOARDING",
 	},
 	{
 		id: 215,
