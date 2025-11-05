@@ -3,11 +3,27 @@
  * @see https://puckeditor.com/docs/integrating-puck/component-configuration
  */
 
-import { Center as ChCenter, Flex as ChFlex } from "@chakra-ui/react";
-import { DropZone, type Config } from "@measured/puck";
+import { Flex as ChFlex } from "@chakra-ui/react";
+import { type Config } from "@measured/puck";
 import { OrgLogo } from "components";
 // import dynamic from "next/dynamic";
 import { createContext, useEffect, useState } from "react";
+import { BiGridHorizontal } from "react-icons/bi";
+import { FaCompressArrowsAlt } from "react-icons/fa";
+import { FiSmartphone } from "react-icons/fi";
+import {
+	LuRectangleHorizontal,
+	LuSquareDashed,
+	LuTextSelect,
+} from "react-icons/lu";
+import {
+	MdOutlineCalendarViewMonth,
+	MdOutlinePhoto,
+	MdOutlineWidthNormal,
+	MdPassword,
+	MdPhotoSizeSelectActual,
+	MdShortText,
+} from "react-icons/md";
 import {
 	ButtonGroup,
 	Columns,
@@ -30,7 +46,7 @@ import { Section } from "./Section";
 /**
  * Context for managing common values across components
  */
-export const context = createContext({
+const context = createContext({
 	paddingX: "" as string,
 	setPaddingX: (_value: string) => {},
 	commonSectionBg: "" as string,
@@ -113,18 +129,35 @@ const components: any = {
 	},
 	Center: {
 		fields: {
+			item: {
+				type: "slot",
+			},
 			w: { type: "text", label: "Width" },
 			h: { type: "text", label: "Height" },
 		},
 		defaultProps: {
+			item: [],
 			w: "100%",
-			h: "100%",
+			h: "",
 		},
-		render: ({ w, h }) => {
+		// inline: true,
+		render: ({ item: Item, w, h }) => {
 			return (
-				<ChCenter w={w} h={h}>
-					<DropZone zone="content" />
-				</ChCenter>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						width: w,
+						height: h,
+					}}
+				>
+					<Item minEmptyHeight={256} />
+				</div>
+				// <ChCenter w={w} h={h} opacity="1 !important">
+				// 	{/* <DropZone zone="centercontent" /> */}
+				// 	<Item minEmptyHeight={256} />
+				// </ChCenter>
 			);
 		},
 	},
@@ -200,6 +233,7 @@ const editorRoot: any = {
 			setPaddingX(padding);
 		}, [pad]);
 
+		// MARK: Page Render
 		return (
 			<context.Provider
 				value={{
@@ -210,17 +244,28 @@ const editorRoot: any = {
 				}}
 			>
 				<ChFlex
-					className="puckRoot"
-					position="relative"
-					direction="column"
-					align="flex-start"
 					w="100%"
 					h="100%"
-					bg={bg}
-					color={clr}
-					// padding={padding}
+					sx={{
+						".puckRoot > div": {
+							width: "100%",
+							// height: "100%",
+						},
+					}}
 				>
-					{children}
+					<ChFlex
+						className="puckRoot"
+						position="relative"
+						direction="column"
+						align="flex-start"
+						w="100%"
+						h="100%"
+						bg={bg}
+						color={clr}
+						// padding={padding}
+					>
+						{children}
+					</ChFlex>
 				</ChFlex>
 			</context.Provider>
 		);
@@ -238,4 +283,23 @@ const cmsConfig: Config<{}> = {
 	root: editorRoot,
 };
 
-export { cmsConfig };
+/**
+ * Map components to an Icon fo preview in the drawer
+ * MARK: Component Icons
+ */
+const componentIcons = {
+	Columns: MdOutlineCalendarViewMonth,
+	Flex: MdOutlineWidthNormal,
+	Center: FaCompressArrowsAlt,
+	VerticalSpace: LuSquareDashed,
+	Hero: MdPhotoSizeSelectActual,
+	FeatureList: BiGridHorizontal,
+	ButtonGroup: LuRectangleHorizontal,
+	Stats: MdShortText,
+	Heading: FiSmartphone,
+	Text: LuTextSelect,
+	Logo: MdOutlinePhoto,
+	LoginWidgetConf: MdPassword,
+};
+
+export { cmsConfig, componentIcons, context };

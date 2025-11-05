@@ -20,7 +20,7 @@ import {
 import { colorThemes, Endpoints, TransactionIds } from "constants";
 import { OrgDetailSessionStorageKey, useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useFeatureFlag, useSessionStorage, useRaiseIssue } from "hooks";
+import { useFeatureFlag, useRaiseIssue, useSessionStorage } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
@@ -313,9 +313,8 @@ const ThemeConfig = () => {
 							pt="1"
 						>
 							{colorThemes.map((theme, i) => (
-								<GridItem>
+								<GridItem key={i + theme.name}>
 									<ColorSelector
-										key={i + theme.name}
 										theme={theme}
 										i={i}
 										isSelected={selectedThemeIdx === i}

@@ -305,7 +305,7 @@ const OnboardingSteps = ({
 		if (state.pintwin.bookletNumber) {
 			pintwin.getBookletKey();
 		}
-	}, [state.pintwin.bookletNumber, pintwin]);
+	}, [state.pintwin.bookletNumber]);
 
 	// Subscribe to the Android responses
 	useEffect(() => {
