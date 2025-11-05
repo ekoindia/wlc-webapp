@@ -142,7 +142,11 @@ const OnboardingWidget = ({
 		}
 	};
 	// MARK: JSX
-	return <>{renderCurrentStep()}</>;
+	return (
+		<Flex h="100vh" w="100%" justify="center">
+			{renderCurrentStep()}
+		</Flex>
+	);
 };
 
 export default OnboardingWidget;
