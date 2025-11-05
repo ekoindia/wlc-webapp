@@ -130,12 +130,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Manage your business settings, including enabling or disabling services, make account verification mandatory or optional, setup agreement signing with your users, setup frequency of commission payment, manage cash-eposit charges for your agents, setup how refunds to the end-customers work, etc.",
 	},
-	// {
-	// 	id: 25,
-	// 	label: "Pricing & Commissions",
-	// 	icon: "commission-percent",
-	// 	link: "/admin/pricing",
-	// },
 	{
 		id: 30,
 		label: "Pricing & Commissions",
