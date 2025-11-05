@@ -7,9 +7,6 @@ const ORG_ID = {
 	EKOTESTS: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_EKOTESTS),
 	SBIKIOSK: Number(process.env.NEXT_PUBLIC_ORG_IDS_SBIKIOSK),
 	AI_TEST: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_AI_TEST),
-	DYNAMIC_PRICING: parseOrgIds(
-		process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
-	),
 	DASHBOARD_V2: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_DASHBOARD_V2),
 };
 
@@ -173,21 +170,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		forEnv: ["development"],
 		requiredFeatures: ["AI_MASTER_FLAG"],
-	},
-
-	// Config-driven Pricing & Commission.
-	DYNAMIC_PRICING_COMMISSION: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					...ORG_ID.EKOTESTS,
-					...ORG_ID.DYNAMIC_PRICING,
-				],
-			},
-		},
 	},
 
 	// ------------------------------------------------------------------------
