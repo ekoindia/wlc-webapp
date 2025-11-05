@@ -131,12 +131,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 			"Manage your business settings, including enabling or disabling services, make account verification mandatory or optional, setup agreement signing with your users, setup frequency of commission payment, manage cash-eposit charges for your agents, setup how refunds to the end-customers work, etc.",
 	},
 	{
-		id: 25,
-		label: "Pricing & Commissions",
-		icon: "commission-percent",
-		link: "/admin/pricing",
-	},
-	{
 		id: 30,
 		label: "Pricing & Commissions",
 		icon: "commission-percent",
@@ -144,8 +138,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		summary: "Configure dynamic pricing and commissions for your products.",
 		fullDescription:
 			"Set up and manage dynamic pricing rules and commission structures for your products. This includes defining pricing tiers, setting commission rates for different user roles, etc.",
-		featureFlag: "DYNAMIC_PRICING_COMMISSION",
-		beta: true,
 	},
 	// {
 	// 	id: 30,
