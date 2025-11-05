@@ -178,23 +178,32 @@ export const generateShades = (color, degree = 10) => {
  * @returns {string} The contrasting color (either "black" or "white").
  */
 export const getContrastColor = (hex) => {
-	if (hex === "transparent") {
-		return "black";
+	if (!hex) {
+		return "#000000";
 	}
+
+	hex = hex.toLowerCase();
+
+	if (hex === "transparent" || hex === "white") {
+		return "#000000";
+	}
+
 	if (
+		hex === "black" ||
 		hex.startsWith("primary") ||
 		hex.startsWith("accent") ||
 		hex.startsWith("linear-gradient")
 	) {
-		return "white";
+		return "#ffffff";
 	}
 
 	let rgba = hexToRgba(hex);
 	if (!rgba) {
-		throw new Error(
-			'Invalid color format. Expected "#RRGGBB" or "#RRGGBBAA" format. Found: ' +
+		console.error(
+			'[getContrastColor] Invalid color format. Expected "#RRGGBB" or "#RRGGBBAA" format. Found: ' +
 				hex
 		);
+		return "#000000";
 	}
 
 	// Calculate the relative luminance of the color.

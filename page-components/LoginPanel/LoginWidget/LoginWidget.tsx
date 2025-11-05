@@ -107,6 +107,7 @@ const LoginWidget = ({
 			py={{ base: 7, "2xl": 10 }}
 			bg="white"
 			color="#333"
+			pointerEvents={isLoggedIn ? "none" : "auto"}
 			{...rest}
 		>
 			{step === "LOGIN" && (
