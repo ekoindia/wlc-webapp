@@ -242,7 +242,7 @@ export const distributorStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 13000,
-		primaryCTAText: "Capture Location ",
+		primaryCTAText: "Capture Location",
 		description: "",
 		form_data: {},
 		success_message: "Location captured successfully.",
