@@ -60,8 +60,6 @@ const LandingPageEditor = () => {
 
 		// Override the default drawer items to show icons
 		drawerItem: ({ name }) => {
-			console.log("RENDERING:::: ", name, cmsConfig.components[name]);
-
 			const component = cmsConfig.components[name];
 			if (!component) {
 				return <p>Unknown: {name}</p>;
