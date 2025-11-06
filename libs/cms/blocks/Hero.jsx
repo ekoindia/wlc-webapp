@@ -28,8 +28,8 @@ export const Hero = {
 		// 	},
 		// 	getItemSummary: (item) => item.content,
 		// },
-		title: { type: "text" },
-		description: { type: "textarea" },
+		title: { type: "text", contentEditable: true },
+		description: { type: "textarea", contentEditable: true },
 		buttons: {
 			type: "array",
 			getItemSummary: (item) => item.label || "Button",

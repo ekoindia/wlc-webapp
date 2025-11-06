@@ -49,8 +49,8 @@ export const Stats = {
 				stat: "100%",
 			},
 			arrayFields: {
-				title: { type: "text" },
-				stat: { type: "text" },
+				title: { type: "text", contentEditable: true },
+				stat: { type: "text", contentEditable: true },
 				ico: iconField,
 			},
 		},
@@ -65,10 +65,12 @@ export const Stats = {
 		head: {
 			type: "text",
 			label: "Heading",
+			contentEditable: true,
 		},
 		desc: {
 			type: "textarea",
 			label: "Description",
+			contentEditable: true,
 		},
 		s: {
 			type: "select",

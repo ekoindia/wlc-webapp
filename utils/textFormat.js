@@ -96,3 +96,41 @@ export const getInitials = (text, len = 2) => {
 		.join("")
 		.toUpperCase();
 };
+
+/**
+ * Extract text content from a React node, element, or primitive value
+ * @param {React.ReactNode} node - A React node (element, string, number, array, etc.)
+ * @returns {string} - Extracted text content
+ */
+export const extractTextContent = (node) => {
+	if (typeof node === "string") {
+		return node;
+	}
+
+	if (typeof node === "number") {
+		return String(node);
+	}
+
+	if (!node) {
+		return "";
+	}
+
+	// Handle arrays of children
+	if (Array.isArray(node)) {
+		return node.map(extractTextContent).join(" ");
+	}
+
+	// Handle React elements
+	if (typeof node === "object" && node.props) {
+		// Check for value prop first (for editable components)
+		if (node.props.value !== undefined && node.props.value !== null) {
+			return extractTextContent(node.props.value);
+		}
+		// Fall back to children
+		if (node.props.children !== undefined) {
+			return extractTextContent(node.props.children);
+		}
+	}
+
+	return "";
+};

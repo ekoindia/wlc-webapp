@@ -1,11 +1,11 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { CSSProperties, ReactNode, useContext } from "react";
-import { getContrastColor } from "utils";
+import { extractTextContent, getContrastColor } from "utils";
 import { context } from ".";
 
 export type SectionProps = {
-	title?: string;
-	desc?: string;
+	title?: ReactNode;
+	desc?: ReactNode;
 	titleBottomPadding?: string;
 	titleDivider?: boolean;
 	direction?: "row" | "column" | "row-reverse" | "column-reverse";
@@ -23,8 +23,8 @@ export type SectionProps = {
 /**
  * Section component for wrapping content in a section with padding and max-width.
  * @param {object} props - Component props
- * @param {string} [props.title] - Section title
- * @param {string} [props.desc] - Section subtitle or decription
+ * @param {ReactNode} [props.title] - Section title (can be string or ReactNode)
+ * @param {ReactNode} [props.desc] - Section subtitle or decription (can be string or ReactNode)
  * @param {boolean} [props.titleDivider] - Show a divider after the title
  * @param {string} [props.titleBottomPadding] - Bottom padding after the title & desc
  * @param {string} [props.direction] - Flex direction
@@ -57,12 +57,11 @@ export const Section = ({
 	...rest
 }: SectionProps) => {
 	const { paddingX, commonSectionBg } = useContext(context);
-
 	const actualSectionBg = sectionBg || commonSectionBg || "#FFF";
-
 	const isGradient = actualSectionBg?.includes("gradient");
-
 	const contrastColor = getContrastColor(actualSectionBg);
+	const titleText = extractTextContent(title || "");
+	const descText = extractTextContent(desc || "");
 
 	return (
 		<Flex
@@ -88,24 +87,24 @@ export const Section = ({
 				bgGradient={isGradient ? actualSectionBg : undefined}
 				color={contrastColor}
 			>
-				{title || desc ? (
+				{titleText || descText ? (
 					<Flex
 						pb={titleBottomPadding}
 						direction="column"
 						align="center"
 						opacity="0.8"
 					>
-						{title ? (
+						{titleText ? (
 							<Text as="h2" fontSize="2xl" fontWeight="semibold">
 								{title}
 							</Text>
 						) : null}
-						{desc ? (
+						{descText ? (
 							<Text as="p" fontSize="md">
 								{desc}
 							</Text>
 						) : null}
-						{titleDivider && (title || desc) ? (
+						{titleDivider && (titleText || descText) ? (
 							<Flex
 								w="60px"
 								h="5px"
