@@ -1,7 +1,6 @@
 import {
-	distributorStepsData,
 	filterOnboardingStepsByRoles,
-	retailerStepsData,
+	masterOnboardingSteps,
 	type OnboardingStep,
 } from "constants/OnboardingSteps";
 import { useCallback } from "react";
@@ -9,18 +8,18 @@ import { type UnifiedUserData } from "../utils";
 
 /**
  * Gets the appropriate step data based on user type
- * @param userType
+ * Returns the master list of all steps - filtering happens via API roles
+ * @param {number} userType - The user type identifier (not used in new implementation, kept for backward compatibility)
+ * @returns {OnboardingStep[]} Master list of all onboarding steps
  */
 const getStepsForUserType = (userType: number): OnboardingStep[] => {
-	switch (userType) {
-		case 1: // Distributor
-			return distributorStepsData;
-		case 3: // Retailer
-			return retailerStepsData;
-		default:
-			console.warn(`Unknown user type: ${userType}`);
-			return [];
+	// Return master list for all user types
+	// API-driven filtering happens in filterOnboardingStepsByRoles
+	if (!userType) {
+		console.warn(`No user type provided`);
+		return [];
 	}
+	return masterOnboardingSteps;
 };
 
 /**

@@ -66,8 +66,10 @@ export interface OnboardingStep {
 	isVisible: boolean;
 	/** Current status of the step (0: not started, 1: in progress, 2: completed) */
 	stepStatus: number;
-	/** Optional role identifier associated with this step */
+	/** Optional role identifier associated with this step (primary role for backward compatibility) */
 	role?: number;
+	/** Optional array of all role IDs this step applies to (for steps used across multiple user types) */
+	applicableRoles?: number[];
 	/** Text for the primary call-to-action button */
 	primaryCTAText: string;
 	/** Description or instructions for the step */
@@ -84,7 +86,7 @@ export interface OnboardingStep {
 }
 
 /**
- * TODO: THIS IS NOT A CONSTANT
+ * NOTE: This function is not a constant - it generates data dynamically.
  * Base role data containing all possible roles with default labels
  * Labels will be dynamically replaced based on organization configuration
  * @param {Record<number, string>} userTypeLabel - User type labels mapping
@@ -191,23 +193,27 @@ export const createRoleSelectionStep = (
 /**
  * Filters step data based on onboarding step roles
  * @param {OnboardingStep[]} stepData - Array of all possible onboarding steps
- * @param {Array<{ role: number; label?: string }>} onboardingSteps - Array of onboarding step configurations with roles
+ * @param {Array<{ role: number; label?: string }>} onboardingSteps - Array of onboarding step configurations with roles from API
  * @returns {OnboardingStep[]} Filtered array of onboarding steps relevant to the user's roles
  */
 export const filterOnboardingStepsByRoles = (
 	stepData: OnboardingStep[],
 	onboardingSteps: Array<{ role: number; label?: string }>
 ): OnboardingStep[] => {
-	const filteredSteps: OnboardingStep[] = [];
+	// Extract role IDs from API response
+	const apiRoles = onboardingSteps?.map((step) => step.role) ?? [];
 
-	onboardingSteps?.forEach((step) => {
-		const matchingSteps = stepData?.filter(
-			(singleStep) => singleStep.role === step.role
+	// Filter steps where either:
+	// 1. The step's applicableRoles array contains any of the API roles, OR
+	// 2. The step's role field matches any of the API roles (backward compatibility)
+	return stepData.filter((step) => {
+		const matchesApplicableRoles = step.applicableRoles?.some((role) =>
+			apiRoles.includes(role)
 		);
-		filteredSteps.push(...matchingSteps);
-	});
+		const matchesLegacyRole = step.role && apiRoles.includes(step.role);
 
-	return filteredSteps;
+		return matchesApplicableRoles || matchesLegacyRole;
+	});
 };
 
 /**
@@ -221,18 +227,18 @@ export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
 );
 
 /**
- * Onboarding steps data for distributor.
- * Some steps are disabled by marking `isVisible` as `false`.
- * Key steps include:
- * - LocationCapture: Initial step to capture user's location (role: 13000)
- * - AadhaarVerification: Upload Aadhaar documents for identity verification (role: 12400)
- * - Aadhaar Consent: User consent for Aadhaar verification (role: 24000)
- * - BusinessDetails: Business information collection (role: 13300)
- * - SecretPin: 4-digit PIN setup for security (role: 12600)
- * - Sign Agreement: Legal agreement signing (role: 12800)
- * - PanVerification: PAN document verification (role: 12300/13000)
+ * Master list of all possible onboarding steps across all user types.
+ * Steps are filtered at runtime based on the API response (onboarding_steps).
+ * Each step can have multiple applicable roles via the applicableRoles array.
+ *
+ * Key concepts:
+ * - `id`: Unique step identifier used for API routing logic (handlers check this)
+ * - `role`: Primary role ID for backward compatibility
+ * - `applicableRoles`: Array of all role IDs this step applies to (for multi-user-type steps)
+ *
+ * The filtering logic matches steps where ANY role in applicableRoles appears in the API response.
  */
-export const distributorStepsData: OnboardingStep[] = [
+export const masterOnboardingSteps: OnboardingStep[] = [
 	{
 		id: 3,
 		name: "LocationCapture",
@@ -241,7 +247,8 @@ export const distributorStepsData: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 13000,
+		role: 12400, // Primary role (used by retailer)
+		applicableRoles: [13000, 12400], // Both distributor (13000) and retailer (12400)
 		primaryCTAText: "Capture Location",
 		description: "",
 		form_data: {},
@@ -256,54 +263,88 @@ export const distributorStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 12400,
+		applicableRoles: [12400],
 		primaryCTAText: "Verify Aadhaar",
 		description:
 			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
 	},
+	// {
+	// 	id: 5,
+	// 	name: "Aadhaar Consent",
+	// 	label: "Aadhaar Consent",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: true,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	applicableRoles: [24000],
+	// 	primaryCTAText: "Verify Consent",
+	// 	description: "",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar consent taken.",
+	// },
+	// {
+	// 	id: 6,
+	// 	name: "Confirm Aadhaar Number",
+	// 	label: "Confirm Aadhaar Number",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: true,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	applicableRoles: [24000],
+	// 	primaryCTAText: "Proceed",
+	// 	description: "",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar number confirmed.",
+	// },
+	// {
+	// 	id: 7,
+	// 	name: "ConfirmAadhaarOTP",
+	// 	label: "Confirm Aadhaar OTP",
+	// 	isSkipable: false,
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	applicableRoles: [24000],
+	// 	primaryCTAText: "Confirm",
+	// 	description: "",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar confirmed successfully.",
+	// },
 	{
-		id: 5,
-		name: "Aadhaar Consent",
-		label: "Aadhaar Consent",
+		id: 20,
+		name: "Digilocker Verification",
+		label: "Digilocker Verification",
 		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
 		role: 24000,
-		primaryCTAText: "Verify Consent",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar consent taken.",
-	},
-	{
-		id: 6,
-		name: "Confirm Aadhaar Number",
-		label: "Confirm Aadhaar Number",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
+		applicableRoles: [24000],
 		primaryCTAText: "Proceed",
-		description: "",
+		description: "Verify your Aadhaar using your Digilocker account.",
 		form_data: {},
-		success_message: "Aadhaar number confirmed.",
+		success_message: "Digilocker verification successful.",
 	},
-
 	{
-		id: 7,
-		name: "ConfirmAadhaarOTP",
-		label: "Confirm Aadhaar OTP",
+		id: 8,
+		name: "PanVerification",
+		label: "PAN Verification",
 		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Confirm",
-		description: "",
+		role: 12300,
+		applicableRoles: [12300, 13000], // Shared step with multiple role variants
+		primaryCTAText: "Verify PAN",
+		description:
+			"Upload your PAN copy to verify your business. Accepted formats are",
 		form_data: {},
-		success_message: "Aadhaar confirmed successfully.",
+		success_message: "PAN verified successfully.",
 	},
 	{
 		id: 11,
@@ -314,6 +355,7 @@ export const distributorStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 12500,
+		applicableRoles: [12500],
 		primaryCTAText: "Next",
 		description:
 			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
@@ -329,8 +371,23 @@ export const distributorStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 13300,
+		applicableRoles: [13300], // Distributor only
 		primaryCTAText: "Next",
 		description: "",
+		form_data: {},
+	},
+	{
+		id: 25,
+		name: "addBankAccount",
+		label: "Add Bank Account",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 51700,
+		applicableRoles: [51700], // Retailer only
+		primaryCTAText: "Next",
+		description: "Add your bank account",
 		form_data: {},
 	},
 	{
@@ -342,6 +399,7 @@ export const distributorStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 12600,
+		applicableRoles: [12600],
 		primaryCTAText: "Next",
 		description: "Set Your 4-Digit Secret Pin",
 		form_data: {},
@@ -355,149 +413,7 @@ export const distributorStepsData: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 12800,
-		primaryCTAText: "Sign Agreement",
-		description: "",
-		form_data: {},
-		success_message: "Agreement signed successfully.",
-	},
-	{
-		id: 8,
-		name: "PanVerification",
-		label: "PAN Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12300,
-		primaryCTAText: "Verify PAN",
-		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-
-	{
-		id: 16,
-		name: "PanVerification",
-		label: "PAN Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 13000,
-		primaryCTAText: "Verify PAN",
-		description: "Enter your PAN Number to verify your business.",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-];
-
-/**
- * Onboarding steps data for retailers.
- * Similar to distributor steps but with specific role configurations for retailers.
- * Key differences from distributor onboarding:
- * - LocationCapture uses role 12400 instead of 13000
- * - Does not include Business Details step (removed for retailers)
- * - Includes all KYC verification steps (Aadhaar, PAN, Selfie)
- * - Secret PIN setup and agreement signing are included
- * Some steps are disabled by marking `isVisible` as `false`.
- */
-export const retailerStepsData: OnboardingStep[] = [
-	{
-		id: 3,
-		name: "LocationCapture",
-		label: "Location Capturing",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12400,
-		primaryCTAText: "Capture Location",
-		description: "",
-		form_data: {},
-		success_message: "Location captured successfully.",
-	},
-	{
-		id: 4,
-		name: "AadhaarVerification",
-		label: "Aadhaar Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12400,
-		primaryCTAText: "Verify Aadhaar",
-		description:
-			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
-		form_data: {},
-		success_message: "Aadhaar uploaded successfully.",
-	},
-	{
-		id: 20,
-		name: "Digilocker Verification",
-		label: "Digilocker Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Proceed",
-		description: "Verify your Aadhaar using your Digilocker account.",
-		form_data: {},
-		success_message: "Digilocker verification successful.",
-	},
-	{
-		id: 8,
-		name: "PanVerification",
-		label: "PAN Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12300,
-		primaryCTAText: "Verify PAN",
-		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-	{
-		id: 11,
-		name: "SelfieKYC",
-		label: "Selfie KYC",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12500,
-		primaryCTAText: "Next",
-		description:
-			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
-		form_data: {},
-		success_message: "KYC completed.",
-	},
-	{
-		id: 25,
-		name: "addBankAccount",
-		label: "Add Bank Account",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 51700,
-		primaryCTAText: "Next",
-		description: "Add your bank account",
-		form_data: {},
-	},
-	{
-		id: 12,
-		name: "Sign Agreement",
-		label: "Sign Agreement",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12800,
+		applicableRoles: [12800],
 		primaryCTAText: "Sign Agreement",
 		description: "",
 		form_data: {},
