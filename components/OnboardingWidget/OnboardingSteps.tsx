@@ -5,7 +5,7 @@ import {
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
 } from "constants/OnboardingSteps";
-import { useAppSource, usePubSub } from "contexts";
+import { useAppSource, useOrgDetailContext, usePubSub } from "contexts";
 import { useBankList, useCountryStates, useShopTypes } from "hooks";
 import { useCallback, useEffect, useMemo } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
@@ -66,6 +66,7 @@ const OnboardingSteps = ({
 	const { banks: bankList } = useBankList();
 	const { shopTypes: shopTypesData } = useShopTypes();
 	const { states: stateTypesData } = useCountryStates();
+	const { orgDetail } = useOrgDetailContext();
 
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
@@ -73,6 +74,37 @@ const OnboardingSteps = ({
 		"accent.DEFAULT",
 	]);
 
+	// Extract disabled_steps from org metadata
+	const disabledSteps = useMemo(() => {
+		const metadata = orgDetail?.metadata;
+
+		if (!metadata?.disabled_steps) {
+			return undefined;
+		}
+		// Ensure it's an array of numbers
+		return Array.isArray(metadata.disabled_steps)
+			? metadata.disabled_steps.filter((id) => typeof id === "number")
+			: undefined;
+	}, [orgDetail?.metadata]);
+
+	// Extract skippable_steps from org metadata
+	const skippableSteps = useMemo(() => {
+		const metadata = orgDetail?.metadata;
+		if (!metadata?.skippable_steps) {
+			return undefined;
+		}
+		// Ensure it's an array of numbers
+		return Array.isArray(metadata.skippable_steps)
+			? metadata.skippable_steps.filter((id) => typeof id === "number")
+			: undefined;
+	}, [orgDetail?.metadata]);
+
+	console.log(
+		"[Onboarding] Disabled Steps:",
+		disabledSteps,
+		"[Onboarding] Skippable Steps:",
+		skippableSteps
+	);
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = useMemo(
 		() => (isAssistedOnboarding ? assistedAgentDetails : userData),
@@ -127,6 +159,8 @@ const OnboardingSteps = ({
 		userType,
 		onboardingSteps,
 		roleList,
+		disabledSteps,
+		skippableSteps,
 	});
 
 	// Initialize specialized hooks

@@ -112,8 +112,6 @@ export interface OnboardingStep {
 	name: string;
 	/** Display label for the step */
 	label: string;
-	/** Whether this step can be skipped */
-	isSkipable: boolean;
 	/** Whether this step is required to complete onboarding */
 	isRequired: boolean;
 	/** Whether this step is visible in the UI */
@@ -232,7 +230,6 @@ export const createRoleSelectionStep = (
 		id: 0,
 		name: "RoleCapture",
 		label: "Tell us who you are?",
-		isSkipable: false,
 		isRequired: false,
 		isVisible: false,
 		stepStatus: 0,
@@ -288,9 +285,8 @@ export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
 export const masterOnboardingSteps: OnboardingStep[] = [
 	{
 		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
-		name: "LocationCapture",
+		name: "locationCapture",
 		label: "Location Capturing",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -303,9 +299,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
-		name: "AadhaarVerification",
+		name: "aadhaarVerification",
 		label: "Aadhaar Verification",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -319,9 +314,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	// {
 	// 	id: 5,
-	// 	name: "Aadhaar Consent",
+	// 	name: "aadhaarConsent",
 	// 	label: "Aadhaar Consent",
-	// 	isSkipable: false,
 	// 	isRequired: true,
 	// 	isVisible: true,
 	// 	stepStatus: 0,
@@ -334,9 +328,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	// },
 	// {
 	// 	id: 6,
-	// 	name: "Confirm Aadhaar Number",
+	// 	name: "confirmAadhaarNumber",
 	// 	label: "Confirm Aadhaar Number",
-	// 	isSkipable: false,
 	// 	isRequired: true,
 	// 	isVisible: true,
 	// 	stepStatus: 0,
@@ -349,9 +342,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	// },
 	// {
 	// 	id: 7,
-	// 	name: "ConfirmAadhaarOTP",
+	// 	name: "confirmAadhaarOTP",
 	// 	label: "Confirm Aadhaar OTP",
-	// 	isSkipable: false,
 	// 	isRequired: true,
 	// 	isVisible: false,
 	// 	stepStatus: 0,
@@ -364,9 +356,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	// },
 	{
 		id: ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION,
-		name: "Digilocker Verification",
+		name: "digilockerVerification",
 		label: "Digilocker Verification",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -379,9 +370,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.PAN_VERIFICATION,
-		name: "PanVerification",
+		name: "panVerification",
 		label: "PAN Verification",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -395,9 +385,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.VIDEO_KYC,
-		name: "SelfieKYC",
+		name: "selfieKYC",
 		label: "Selfie KYC",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -411,9 +400,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.BUSINESS,
-		name: "BusinessDetails",
+		name: "businessDetails",
 		label: "Business Details",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -427,7 +415,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		id: ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
 		name: "addBankAccount",
 		label: "Add Bank Account",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -439,9 +426,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.SECRET_PIN,
-		name: "SecretPin",
+		name: "secretPin",
 		label: "Secret Pin",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
@@ -453,9 +439,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
-		name: "Sign Agreement",
+		name: "signAgreement",
 		label: "Sign Agreement",
-		isSkipable: false,
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,

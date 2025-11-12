@@ -23,6 +23,141 @@ const getStepsForUserType = (userType: number): OnboardingStep[] => {
 };
 
 /**
+ * Filters out disabled steps based on org metadata configuration
+ * @param {OnboardingStep[]} steps - Steps to filter
+ * @param {number[]} [disabledSteps] - Array of step IDs to exclude
+ * @returns {OnboardingStep[]} Steps with disabled ones removed
+ */
+const filterDisabledSteps = (
+	steps: OnboardingStep[],
+	disabledSteps?: number[]
+): OnboardingStep[] => {
+	if (!disabledSteps || disabledSteps.length === 0) {
+		return steps;
+	}
+
+	const filteredSteps = steps.filter((step) => {
+		const isDisabled = disabledSteps.includes(step.id);
+		if (isDisabled) {
+			console.log(
+				`[StepConfiguration] Filtering out disabled step: ${step.name} (ID: ${step.id})`
+			);
+		}
+		return !isDisabled;
+	});
+
+	return filteredSteps;
+};
+
+/**
+ * Marks steps as skippable (isRequired = false) based on org metadata configuration
+ * @param {OnboardingStep[]} steps - Steps to process
+ * @param {number[]} [skippableSteps] - Array of step IDs that should be marked as skippable
+ * @returns {OnboardingStep[]} Steps with isRequired updated for skippable ones
+ */
+const applySkippableSteps = (
+	steps: OnboardingStep[],
+	skippableSteps?: number[]
+): OnboardingStep[] => {
+	if (!skippableSteps || skippableSteps.length === 0) {
+		return steps;
+	}
+
+	return steps.map((step) => {
+		const isSkippable = skippableSteps.includes(step.id);
+		if (isSkippable) {
+			console.log(
+				`[StepConfiguration] Marking step as skippable: ${step.name} (ID: ${step.id})`
+			);
+			return {
+				...step,
+				isRequired: false,
+			};
+		}
+		return step;
+	});
+};
+
+/**
+ * Applies the filter chain to onboarding steps
+ * Filter order: 1) Role-based filtering, 2) Disabled steps filtering, 3) Skippable steps marking
+ * @param {OnboardingStep[]} baseStepData - Master list of all steps
+ * @param {Array<{ role: number; label?: string }>} onboardingSteps - API onboarding steps with roles
+ * @param {number[]} [disabledSteps] - Array of step IDs to exclude from org metadata
+ * @param {number[]} [skippableSteps] - Array of step IDs to mark as skippable (isRequired=false)
+ * @returns {OnboardingStep[]} Filtered and configured steps (without status assignment)
+ */
+const applyStepFilters = (
+	baseStepData: OnboardingStep[],
+	onboardingSteps: Array<{ role: number; label?: string }>,
+	disabledSteps?: number[],
+	skippableSteps?: number[]
+): OnboardingStep[] => {
+	// Filter 1: Role-based filtering (API-driven)
+	let filteredSteps = filterOnboardingStepsByRoles(
+		baseStepData,
+		onboardingSteps
+	);
+
+	// Filter 2: Disabled steps filtering (org metadata-driven)
+	filteredSteps = filterDisabledSteps(filteredSteps, disabledSteps);
+
+	// Filter 3: Skippable steps marking (org metadata-driven)
+	filteredSteps = applySkippableSteps(filteredSteps, skippableSteps);
+
+	return filteredSteps;
+};
+
+/**
+ * Applies resume logic to set step completion status based on roleList
+ * Logic:
+ * - Find the first step whose role appears in roleList (current pending step)
+ * - Mark all steps before as completed (3)
+ * - Mark the current step as pending (1)
+ * - Mark all steps after as not started (0)
+ * @param {OnboardingStep[]} steps - Filtered steps to apply status to
+ * @param {Array<number> | string} [roleList] - Comma-separated string or array of completed role IDs
+ * @returns {OnboardingStep[]} Steps with status assigned
+ */
+const applyResumeLogic = (
+	steps: OnboardingStep[],
+	roleList?: Array<number> | string
+): OnboardingStep[] => {
+	if (!roleList) {
+		return steps;
+	}
+
+	let _currentRoleIndex = -1;
+
+	// Convert roleList to array of numbers
+	const roleArray = Array.isArray(roleList)
+		? roleList
+		: roleList.split(",").map(Number);
+
+	// Find the first step whose role matches any in roleList
+	for (let i = 0; i < steps.length; i++) {
+		const step = steps[i];
+		if (roleArray.includes(step.role)) {
+			_currentRoleIndex = i;
+			break;
+		}
+	}
+
+	// Assign step status based on current role index
+	steps.forEach((step, index) => {
+		if (index < _currentRoleIndex) {
+			step.stepStatus = 3; // completed
+		} else if (index === _currentRoleIndex) {
+			step.stepStatus = 1; // pending
+		} else {
+			step.stepStatus = 0; // not started
+		}
+	});
+
+	return steps;
+};
+
+/**
  * Onboarding actions interface for step configuration
  */
 interface OnboardingActions {
@@ -37,6 +172,8 @@ interface UseStepConfigurationProps {
 	userType: number;
 	onboardingSteps: Array<{ role: number; label?: string }>;
 	roleList?: Array<number> | string;
+	disabledSteps?: number[];
+	skippableSteps?: number[];
 }
 
 /**
@@ -58,9 +195,12 @@ export const useStepConfiguration = ({
 	userType,
 	onboardingSteps,
 	roleList,
+	disabledSteps,
+	skippableSteps,
 }: UseStepConfigurationProps): UseStepConfigurationReturn => {
 	/**
 	 * Initializes onboarding steps based on user data
+	 * Applies filter chain: 1) Role-based, 2) Disabled steps, 3) Skippable steps, 4) Resume logic
 	 */
 	const initializeSteps = useCallback(
 		(userData) => {
@@ -69,7 +209,7 @@ export const useStepConfiguration = ({
 				userData
 			);
 
-			// Get user type using utility function
+			// Validate user type
 			if (!userType) {
 				console.warn(
 					"[StepConfiguration] No user type found in userData"
@@ -77,11 +217,7 @@ export const useStepConfiguration = ({
 				return;
 			}
 
-			// console.log(
-			// 	"[AgentOnboarding] useStepCOnfiguration roleList",
-			// 	roleList
-			// );
-
+			// Get base step data (master list)
 			const baseStepData = getStepsForUserType(userType);
 			if (baseStepData.length === 0) {
 				console.warn(
@@ -91,67 +227,48 @@ export const useStepConfiguration = ({
 				return;
 			}
 
+			// Validate onboarding steps from API
 			if (!onboardingSteps || onboardingSteps.length === 0) {
 				console.warn("[StepConfiguration] No onboarding steps found");
 				return;
 			}
 
-			// Filter steps based on roles
-			const filteredSteps = filterOnboardingStepsByRoles(
+			// Apply filter chain:
+			// 1. Role-based filtering (API-driven)
+			// 2. Disabled steps filtering (org metadata-driven)
+			// 3. Skippable steps marking (org metadata-driven)
+			let filteredSteps = applyStepFilters(
 				baseStepData,
-				onboardingSteps
+				onboardingSteps,
+				disabledSteps,
+				skippableSteps
 			);
 
-			// Logic:
-			// 1. Find the first step in filteredSteps whose role appears in roleList → this is the current active (pending) step.
-			// 2. All steps before the current step → mark as completed (3).
-			// 3. The current step → mark as pending (1).
-			// 4. All steps after the current step → mark as not started (0).
-			//
-			// Steps:
-			// - Convert roleList (string or array) into an array of numeric role IDs.
-			// - Find the first step whose role matches any in roleList.
-			// - Assign stepStatus to each step based on its position relative to the current role index.
+			// Apply resume logic: Set step completion status based on roleList
+			filteredSteps = applyResumeLogic(filteredSteps, roleList);
 
-			if (roleList) {
-				let _currentRoleIndex = -1;
-
-				for (let i = 0; i < filteredSteps.length; i++) {
-					const step = filteredSteps[i];
-					// roleList is comma separated string
-					const roleArray = Array.isArray(roleList)
-						? roleList
-						: roleList.split(",").map(Number);
-					if (roleArray.includes(step.role)) {
-						_currentRoleIndex = i;
-						break;
-					}
-				}
-
-				// now mark every step before _currentRoleIndex as completed (3)
-				// mark the step at _currentRoleIndex as pending (1)
-				// mark every step after _currentRoleIndex as not started (0)
-				filteredSteps.forEach((step, index) => {
-					if (index < _currentRoleIndex) {
-						step.stepStatus = 3; // completed
-					} else if (index === _currentRoleIndex) {
-						step.stepStatus = 1; // pending
-					} else {
-						step.stepStatus = 0; // not started
-					}
-				});
-			}
-
-			// console.log(
-			// 	"[AgentOnboarding] useStepConfig Filtered steps:",
-			// 	filteredSteps
-			// );
+			console.log(
+				"[StepConfiguration] Final filtered steps:",
+				filteredSteps.map((s) => ({
+					id: s.id,
+					name: s.name,
+					status: s.stepStatus,
+					isRequired: s.isRequired,
+				}))
+			);
 
 			// Set the stepper data with filtered steps
 			// Create a new array to prevent reference issues
 			actions.setStepperData([...filteredSteps]);
 		},
-		[actions, userType, onboardingSteps, roleList]
+		[
+			actions,
+			userType,
+			onboardingSteps,
+			roleList,
+			disabledSteps,
+			skippableSteps,
+		]
 	);
 
 	return {
