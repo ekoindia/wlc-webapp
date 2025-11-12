@@ -67,20 +67,6 @@ describe("OnboardingSteps", () => {
 			expect(locationStep?.applicableRoles).toContain(13000);
 		});
 
-		it("should work with legacy role field", () => {
-			const apiSteps = [{ role: 12500, label: "Selfie KYC" }];
-
-			const filtered = filterOnboardingStepsByRoles(
-				masterOnboardingSteps,
-				apiSteps
-			);
-
-			const selfieStep = filtered.find(
-				(step) => step.name === "SelfieKYC"
-			);
-			expect(selfieStep).toBeDefined();
-		});
-
 		it("should return empty array when no roles match", () => {
 			const apiSteps = [{ role: 99999, label: "Non-existent" }];
 

@@ -9,13 +9,13 @@ import { type UnifiedUserData } from "../utils";
 /**
  * Gets the appropriate step data based on user type
  * Returns the master list of all steps - filtering happens via API roles
- * @param {number} userType - The user type identifier (not used in new implementation, kept for backward compatibility)
+ * @param {number} userType - The user type identifier (validated but not used for step selection)
  * @returns {OnboardingStep[]} Master list of all onboarding steps
  */
 const getStepsForUserType = (userType: number): OnboardingStep[] => {
 	// Return master list for all user types
 	// API-driven filtering happens in filterOnboardingStepsByRoles
-	if (!userType) {
+	if (userType === undefined || userType === null) {
 		console.warn(`No user type provided`);
 		return [];
 	}

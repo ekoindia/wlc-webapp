@@ -203,16 +203,9 @@ export const filterOnboardingStepsByRoles = (
 	// Extract role IDs from API response
 	const apiRoles = onboardingSteps?.map((step) => step.role) ?? [];
 
-	// Filter steps where either:
-	// 1. The step's applicableRoles array contains any of the API roles, OR
-	// 2. The step's role field matches any of the API roles (backward compatibility)
+	// Filter steps based on applicableRoles array
 	return stepData.filter((step) => {
-		const matchesApplicableRoles = step.applicableRoles?.some((role) =>
-			apiRoles.includes(role)
-		);
-		const matchesLegacyRole = step.role && apiRoles.includes(step.role);
-
-		return matchesApplicableRoles || matchesLegacyRole;
+		return step.applicableRoles?.some((role) => apiRoles.includes(role));
 	});
 };
 
