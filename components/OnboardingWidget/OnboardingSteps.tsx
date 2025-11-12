@@ -1,5 +1,10 @@
 import { useToken } from "@chakra-ui/react";
 import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
+import {
+	ONBOARDING_API_STATUS,
+	ONBOARDING_STEP_IDS,
+	ONBOARDING_STEP_STATUS,
+} from "constants/OnboardingSteps";
 import { useAppSource, usePubSub } from "contexts";
 import { useBankList, useCountryStates, useShopTypes } from "hooks";
 import { useCallback, useEffect, useMemo } from "react";
@@ -39,6 +44,11 @@ const ExternalOnboardingWidget =
 		handleStepCallBack: (_callType: any) => void;
 		esignStatus: number;
 		digilockerData: any;
+		constants?: {
+			apiStatus: typeof ONBOARDING_API_STATUS;
+			stepIds: typeof ONBOARDING_STEP_IDS;
+			stepStatus: typeof ONBOARDING_STEP_STATUS;
+		};
 	}>;
 
 const OnboardingSteps = ({
@@ -198,21 +208,28 @@ const OnboardingSteps = ({
 		async (data) => {
 			// console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 
-			// Skip role selection (ID 0) as it's handled in RoleSelection component
-			if (data?.id === 0) {
+			// Skip role selection as it's handled in RoleSelection component
+			if (data?.id === ONBOARDING_STEP_IDS.SELECTION_SCREEN) {
 				// console.log(
 				// 	"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
 				// );
 				return;
 			}
 
-			if (data?.id === 3) {
+			if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
 				actions.setLocation(data?.form_data?.latlong);
-				updateStepStatus(3);
+				updateStepStatus(ONBOARDING_STEP_IDS.LOCATION_CAPTURE);
 			}
 
-			// Route to appropriate handler based on form type
-			if ([1, 4, 8, 11].includes(data?.id)) {
+			// Route to appropriate handler based on form type (file upload steps)
+			if (
+				[
+					ONBOARDING_STEP_IDS.WELCOME,
+					ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
+					ONBOARDING_STEP_IDS.PAN_VERIFICATION,
+					ONBOARDING_STEP_IDS.VIDEO_KYC,
+				].includes(data?.id)
+			) {
 				await uploadFile(data);
 				return;
 			} else {
@@ -227,7 +244,7 @@ const OnboardingSteps = ({
 	// Method only for file upload data
 
 	const handleStepCallBack = (callType) => {
-		if (callType.type === 12) {
+		if (callType.type === ONBOARDING_STEP_IDS.SIGN_AGREEMENT) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
 				// Initialize script if not already loaded before getting sign URL
@@ -239,24 +256,26 @@ const OnboardingSteps = ({
 			if (callType.method === "legalityOpen") {
 				esign.openEsign();
 			}
-		} else if (callType.type === 10) {
+		} else if (callType.type === ONBOARDING_STEP_IDS.SECRET_PIN) {
 			if (callType.method === "getBookletNumber") {
 				pintwin.getBookletNumber();
 			}
 			if (callType.method === "getBookletKey") {
 				pintwin.getBookletKey();
 			}
-		} else if (callType.type === 7) {
+		} else if (
+			callType.type === ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY
+		) {
 			if (callType.method === "resendOtp") {
 				handleStepDataSubmit({
-					id: 6,
+					id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
 					form_data: {
 						aadhar: state.aadhaar.number,
 						is_consent: "Y",
 					},
 				});
 			}
-		} else if (callType.type === 3) {
+		} else if (callType.type === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
 			if (callType.method === "grantPermission") {
 				if (isAndroid) {
 					doAndroidAction(
@@ -265,7 +284,9 @@ const OnboardingSteps = ({
 					);
 				}
 			}
-		} else if (callType.type === 20) {
+		} else if (
+			callType.type === ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION
+		) {
 			if (callType.method === "getDigilockerUrl") {
 				digilocker.getDigilockerUrl();
 			}
@@ -276,7 +297,7 @@ const OnboardingSteps = ({
 		const handleMessage = (event) => {
 			if (event.data.type === "STATUS_UPDATE") {
 				handleStepDataSubmit({
-					id: 12,
+					id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
 					form_data: {
 						document_id: state.esign.signUrlData?.document_id ?? "",
 						agreement_id: userData?.userDetails?.agreement_id,
@@ -348,6 +369,11 @@ const OnboardingSteps = ({
 							? 2
 							: 0,
 				digilockerData: state.digilocker.data,
+				constants: {
+					apiStatus: ONBOARDING_API_STATUS,
+					stepIds: ONBOARDING_STEP_IDS,
+					stepStatus: ONBOARDING_STEP_STATUS,
+				},
 			} as any)}
 		/>
 	);

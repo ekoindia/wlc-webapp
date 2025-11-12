@@ -15,6 +15,60 @@ export const visibleAgentTypes = {
 };
 
 /**
+ * API Response Status Codes
+ * Used throughout the onboarding process to handle API responses
+ */
+export const ONBOARDING_API_STATUS = {
+	SUCCESS: 0,
+	ONBOARDING_REDIRECTION_ERROR: 1709,
+} as const;
+
+/**
+ * Onboarding Step IDs
+ * These IDs match the step.id values from the backend API and are used
+ * to identify specific steps in the onboarding flow
+ */
+export const ONBOARDING_STEP_IDS = {
+	WELCOME: 1,
+	SELECTION_SCREEN: 2,
+	LOCATION_CAPTURE: 3,
+	AADHAAR_VERIFICATION: 4,
+	AADHAAR_CONSENT: 5,
+	CONFIRM_AADHAAR_NUMBER: 6,
+	AADHAAR_NUMBER_OTP_VERIFY: 7,
+	PAN_VERIFICATION: 8,
+	BUSINESS: 9,
+	SECRET_PIN: 10,
+	VIDEO_KYC: 11,
+	SIGN_AGREEMENT: 12,
+	ACTIVATION_PLAN: 13,
+	ONBOARDING_STATUS: 14,
+	PAN_AADHAAR_MATCH: 15,
+	PAN_VERIFICATION_DISTRIBUTOR: 16,
+	DIGILOCKER_REDIRECTION: 20,
+	ADD_BANK_ACCOUNT: 25,
+} as const;
+
+/**
+ * Step Status Values
+ * Represents the current state of an onboarding step
+ */
+export const ONBOARDING_STEP_STATUS = {
+	NOT_STARTED: 0,
+	IN_PROGRESS: 1,
+	COMPLETED: 2,
+	FAILED: 3,
+} as const;
+
+// Type exports for TypeScript support
+export type OnboardingApiStatus =
+	(typeof ONBOARDING_API_STATUS)[keyof typeof ONBOARDING_API_STATUS];
+export type OnboardingStepId =
+	(typeof ONBOARDING_STEP_IDS)[keyof typeof ONBOARDING_STEP_IDS];
+export type OnboardingStepStatusType =
+	(typeof ONBOARDING_STEP_STATUS)[keyof typeof ONBOARDING_STEP_STATUS];
+
+/**
  * Role interface representing different user types in the onboarding process
  */
 export interface Role {
@@ -233,7 +287,7 @@ export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
  */
 export const masterOnboardingSteps: OnboardingStep[] = [
 	{
-		id: 3,
+		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
 		name: "LocationCapture",
 		label: "Location Capturing",
 		isSkipable: false,
@@ -248,7 +302,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "Location captured successfully.",
 	},
 	{
-		id: 4,
+		id: ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
 		name: "AadhaarVerification",
 		label: "Aadhaar Verification",
 		isSkipable: false,
@@ -309,7 +363,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	// 	success_message: "Aadhaar confirmed successfully.",
 	// },
 	{
-		id: 20,
+		id: ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION,
 		name: "Digilocker Verification",
 		label: "Digilocker Verification",
 		isSkipable: false,
@@ -324,7 +378,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "Digilocker verification successful.",
 	},
 	{
-		id: 8,
+		id: ONBOARDING_STEP_IDS.PAN_VERIFICATION,
 		name: "PanVerification",
 		label: "PAN Verification",
 		isSkipable: false,
@@ -340,7 +394,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "PAN verified successfully.",
 	},
 	{
-		id: 11,
+		id: ONBOARDING_STEP_IDS.VIDEO_KYC,
 		name: "SelfieKYC",
 		label: "Selfie KYC",
 		isSkipable: false,
@@ -356,7 +410,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "KYC completed.",
 	},
 	{
-		id: 9,
+		id: ONBOARDING_STEP_IDS.BUSINESS,
 		name: "BusinessDetails",
 		label: "Business Details",
 		isSkipable: false,
@@ -370,7 +424,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 	},
 	{
-		id: 25,
+		id: ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
 		name: "addBankAccount",
 		label: "Add Bank Account",
 		isSkipable: false,
@@ -384,7 +438,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 	},
 	{
-		id: 10,
+		id: ONBOARDING_STEP_IDS.SECRET_PIN,
 		name: "SecretPin",
 		label: "Secret Pin",
 		isSkipable: false,
@@ -398,7 +452,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 	},
 	{
-		id: 12,
+		id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
 		name: "Sign Agreement",
 		label: "Sign Agreement",
 		isSkipable: false,

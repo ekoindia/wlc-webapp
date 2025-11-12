@@ -1,6 +1,9 @@
 import { useToken } from "@chakra-ui/react";
 import {
 	createRoleSelectionStep,
+	ONBOARDING_API_STATUS,
+	ONBOARDING_STEP_IDS,
+	ONBOARDING_STEP_STATUS,
 	visibleAgentTypes,
 } from "constants/OnboardingSteps";
 import { useUserTypes } from "hooks";
@@ -97,6 +100,11 @@ const RoleSelection = ({
 			primaryColor={primaryColor}
 			accentColor={accentColor}
 			stepData={onboardingRoleStep}
+			constants={{
+				apiStatus: ONBOARDING_API_STATUS,
+				stepIds: ONBOARDING_STEP_IDS,
+				stepStatus: ONBOARDING_STEP_STATUS,
+			}}
 			handleSubmit={(value) => {
 				const { form_data } = value ?? {};
 				const _applicantType = form_data?.applicant_type ?? "";
