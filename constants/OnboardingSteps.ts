@@ -1,7 +1,7 @@
 import { UserTypeLabel } from "./UserTypes";
 
-// MerchantTypes as defined in the OaaS Widget configuration. Note, it is not the same as EPS's user-type-id
-const MERCHANT_TYPES = {
+// Applicant types as defined in the OaaS Widget configuration. Note, it is not the same as EPS's user-type-id
+const APPLICANT_TYPES = {
 	RETAILER: 0,
 	DISTRIBUTOR: 2,
 	ENTERPRISE: 3,
@@ -10,8 +10,8 @@ const MERCHANT_TYPES = {
 // Configuration for which user types are visible in different onboarding contexts
 // NOTE: The OaaS widget configration (getBaseRoleData) uses wrong merchantType values (1,2,3)
 export const visibleAgentTypes = {
-	assistedOnboarding: [MERCHANT_TYPES.RETAILER],
-	selfOnboarding: [MERCHANT_TYPES.RETAILER, MERCHANT_TYPES.DISTRIBUTOR],
+	assistedOnboarding: [APPLICANT_TYPES.RETAILER],
+	selfOnboarding: [APPLICANT_TYPES.RETAILER, APPLICANT_TYPES.DISTRIBUTOR],
 };
 
 /**
@@ -151,7 +151,7 @@ const getBaseRoleData = (
 ): Role[] => [
 	{
 		id: 1,
-		applicant_type: MERCHANT_TYPES.RETAILER,
+		applicant_type: APPLICANT_TYPES.RETAILER,
 		label: `I'm a ${userTypeLabel[2] || "Retailer"}`,
 		description: "I serve customers from my shop",
 		icon: "../assets/icons/user_merchant.png",
@@ -163,7 +163,7 @@ const getBaseRoleData = (
 	},
 	{
 		id: 2,
-		applicant_type: MERCHANT_TYPES.DISTRIBUTOR,
+		applicant_type: APPLICANT_TYPES.DISTRIBUTOR,
 		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
 		description: "I have a network of retailer and i want to serve them",
 		icon: "../assets/icons/user_distributor.png",
@@ -172,7 +172,7 @@ const getBaseRoleData = (
 	},
 	{
 		id: 3,
-		applicant_type: MERCHANT_TYPES.ENTERPRISE,
+		applicant_type: APPLICANT_TYPES.ENTERPRISE,
 		label: `I'm an ${userTypeLabel[23] || "Enterprise Partner"}`,
 		description:
 			"I want to use API and other solutions to make my own service",
@@ -270,7 +270,7 @@ export const filterOnboardingStepsByRoles = (
  * @deprecated Use createRoleSelectionStep() with appropriate agent types instead
  */
 export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
-	[MERCHANT_TYPES.RETAILER, MERCHANT_TYPES.DISTRIBUTOR] // Default: Retailer and Distributor
+	[APPLICANT_TYPES.RETAILER, APPLICANT_TYPES.DISTRIBUTOR] // Default: Retailer and Distributor
 );
 
 /**
