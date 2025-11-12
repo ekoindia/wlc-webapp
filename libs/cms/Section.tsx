@@ -24,7 +24,7 @@ export type SectionProps = {
  * Section component for wrapping content in a section with padding and max-width.
  * @param {object} props - Component props
  * @param {ReactNode} [props.title] - Section title (can be string or ReactNode)
- * @param {ReactNode} [props.desc] - Section subtitle or decription (can be string or ReactNode)
+ * @param {ReactNode} [props.desc] - Section subtitle or description (can be string or ReactNode)
  * @param {boolean} [props.titleDivider] - Show a divider after the title
  * @param {string} [props.titleBottomPadding] - Bottom padding after the title & desc
  * @param {string} [props.direction] - Flex direction
