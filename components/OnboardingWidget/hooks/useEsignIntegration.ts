@@ -130,7 +130,8 @@ export const useEsignIntegration = ({
 			);
 		} else if (
 			state.esign.signUrlData &&
-			state.esign.signUrlData.pipe === agreementProvider.KARZA
+			(state.esign.signUrlData.pipe === agreementProvider.KARZA ||
+				state.esign.signUrlData.pipe === agreementProvider.LEEGALITY)
 		) {
 			if (!state.esign.signUrlData.short_url) {
 				toast({
