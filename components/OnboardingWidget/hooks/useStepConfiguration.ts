@@ -188,7 +188,7 @@ const applySkippableSteps = (
 
 /**
  * Applies the filter chain to onboarding steps
- * Filter order: 1) Role-based filtering, 2) Disabled steps filtering, 3) Skippable steps marking
+ * Filter order: 1) Visibility filtering, 2) Role-based filtering, 3) Disabled steps filtering, 4) Skippable steps marking
  * @param {OnboardingStep[]} baseStepData - Master list of all steps
  * @param {Array<{ role: number; label?: string }>} onboardingSteps - API onboarding steps with roles
  * @param {number[]} [disabledSteps] - Array of step IDs to exclude from org metadata
@@ -201,16 +201,27 @@ const applyStepFilters = (
 	disabledSteps?: number[],
 	skippableSteps?: number[]
 ): OnboardingStep[] => {
-	// Filter 1: Role-based filtering (API-driven)
-	let filteredSteps = filterOnboardingStepsByRoles(
-		baseStepData,
+	// Filter 1: Visibility filtering - Remove steps with isVisible=false (highest precedence)
+	let filteredSteps = baseStepData.filter((step) => {
+		if (step.isVisible === false) {
+			console.log(
+				`[StepConfiguration] Filtering out invisible step: ${step.name} (ID: ${step.id})`
+			);
+			return false;
+		}
+		return true;
+	});
+
+	// Filter 2: Role-based filtering (API-driven)
+	filteredSteps = filterOnboardingStepsByRoles(
+		filteredSteps,
 		onboardingSteps
 	);
 
-	// Filter 2: Disabled steps filtering (org metadata-driven)
+	// Filter 3: Disabled steps filtering (org metadata-driven)
 	filteredSteps = filterDisabledSteps(filteredSteps, disabledSteps);
 
-	// Filter 3: Skippable steps marking (org metadata-driven)
+	// Filter 4: Skippable steps marking (org metadata-driven)
 	filteredSteps = applySkippableSteps(filteredSteps, skippableSteps);
 
 	return filteredSteps;
