@@ -294,7 +294,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 12400, // Primary role (used by retailer)
 		applicableRoles: [13000, 12400], // Both distributor (13000) and retailer (12400)
 		primaryCTAText: "Capture Location",
-		description: "",
+		description:
+			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
 		form_data: {},
 		success_message: "Location captured successfully.",
 	},
@@ -309,7 +310,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		applicableRoles: [12400],
 		primaryCTAText: "Verify Aadhaar",
 		description:
-			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
+			"Upload clear photos of both front and back of your Aadhaar card. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
 	},
@@ -323,7 +324,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 24000,
 		applicableRoles: [24000],
 		primaryCTAText: "Verify Consent",
-		description: "",
+		description:
+			"Please provide your consent to use Aadhaar for identity verification as per UIDAI guidelines.",
 		form_data: {},
 		success_message: "Aadhaar consent taken.",
 	},
@@ -337,7 +339,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 24000,
 		applicableRoles: [24000],
 		primaryCTAText: "Proceed",
-		description: "",
+		description:
+			"Please verify that your Aadhaar number is entered correctly before proceeding.",
 		form_data: {},
 		success_message: "Aadhaar number confirmed.",
 	},
@@ -351,7 +354,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 24000,
 		applicableRoles: [24000],
 		primaryCTAText: "Confirm",
-		description: "",
+		description:
+			"Enter the OTP sent to your Aadhaar-registered mobile number to verify your identity.",
 		form_data: {},
 		success_message: "Aadhaar confirmed successfully.",
 	},
@@ -380,7 +384,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		applicableRoles: [12300, 13000], // Shared step with multiple role variants
 		primaryCTAText: "Verify PAN",
 		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
+			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "PAN verified successfully.",
 	},
@@ -395,7 +399,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		applicableRoles: [12500],
 		primaryCTAText: "Next",
 		description:
-			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
+			"Take a clear selfie in good lighting to complete your identity verification. Ensure your face is clearly visible.",
 		form_data: {},
 		success_message: "KYC completed.",
 	},
@@ -409,7 +413,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 13300,
 		applicableRoles: [13300], // Distributor only
 		primaryCTAText: "Next",
-		description: "",
+		description:
+			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
 	},
 	{
@@ -422,7 +427,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 51700,
 		applicableRoles: [51700], // Retailer only
 		primaryCTAText: "Next",
-		description: "Add your bank account",
+		description:
+			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
 	},
 	{
@@ -435,7 +441,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 12600,
 		applicableRoles: [12600],
 		primaryCTAText: "Next",
-		description: "Set Your 4-Digit Secret Pin",
+		description:
+			"Create a secure 4-digit PIN for transaction authorization. Keep it confidential and don't share with anyone.",
 		form_data: {},
 	},
 	{
@@ -448,7 +455,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 12800,
 		applicableRoles: [12800],
 		primaryCTAText: "Sign Agreement",
-		description: "",
+		description:
+			"Review and digitally sign the terms and conditions to activate your account and start using our services.",
 		form_data: {},
 		success_message: "Agreement signed successfully.",
 	},
