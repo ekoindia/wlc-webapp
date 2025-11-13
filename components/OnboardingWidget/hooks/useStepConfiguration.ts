@@ -7,6 +7,114 @@ import { useCallback } from "react";
 import { type UnifiedUserData } from "../utils";
 
 /**
+ * Step configuration from metadata
+ */
+interface StepConfig {
+	hide: 0 | 1;
+	optional: 0 | 1;
+	meta?: {
+		reason?: string;
+		[key: string]: any;
+	};
+}
+
+/**
+ * Metadata configuration structure for onboarding
+ */
+interface OnboardingMetadata {
+	[userType: string]: {
+		[stepKey: string]: StepConfig;
+	};
+}
+
+/**
+ * Result of extracting disabled and skippable steps
+ */
+interface ExtractedStepConfig {
+	disabledSteps: number[] | undefined;
+	skippableSteps: number[] | undefined;
+}
+
+/**
+ * Creates a lookup map for fast O(1) step access by name or ID
+ * @param {OnboardingStep[]} steps - Master list of steps
+ * @returns {Map} Map with step name and ID as keys
+ */
+export const createStepLookupMap = (
+	steps: OnboardingStep[]
+): Map<string, OnboardingStep> => {
+	const lookupMap = new Map<string, OnboardingStep>();
+	steps.forEach((step) => {
+		lookupMap.set(step.name, step);
+		lookupMap.set(step.id.toString(), step);
+	});
+	return lookupMap;
+};
+
+/**
+ * Extracts disabled and skippable steps from metadata for a specific user type
+ * @param {OnboardingMetadata} onboardingConfig - Metadata configuration
+ * @param {number} userType - User type (1=Distributor, 2=Retailer/Merchant, 3=Retailer/Merchant)
+ * @param {Map<string, OnboardingStep>} stepLookupMap - Pre-built lookup map for O(1) access
+ * @returns {ExtractedStepConfig} Arrays of disabled and skippable step IDs
+ */
+export const extractStepConfiguration = (
+	onboardingConfig: OnboardingMetadata | undefined,
+	userType: number | undefined,
+	stepLookupMap: Map<string, OnboardingStep>
+): ExtractedStepConfig => {
+	// Early return if no config or userType
+	if (!onboardingConfig || !userType) {
+		return { disabledSteps: undefined, skippableSteps: undefined };
+	}
+
+	// Normalize user type: treat type 3 (Independent Retailer/Merchant & Retailer/Merchant during onboarding) as type 2
+	const normalizedUserType = userType === 3 ? 2 : userType;
+
+	// Get config for current userType
+	const userTypeConfig = onboardingConfig[normalizedUserType.toString()];
+	if (!userTypeConfig) {
+		return { disabledSteps: undefined, skippableSteps: undefined };
+	}
+
+	const disabled: number[] = [];
+	const skippable: number[] = [];
+
+	// Process each step configuration
+	Object.entries(userTypeConfig).forEach(([stepKey, config]) => {
+		if (!config || typeof config !== "object") return;
+
+		// O(1) lookup using pre-built map
+		const matchingStep = stepLookupMap.get(stepKey);
+
+		if (!matchingStep) {
+			console.warn(
+				`[StepConfiguration] No step found for key: ${stepKey}`
+			);
+			return;
+		}
+
+		// hide takes precedence over optional
+		if (config.hide === 1) {
+			disabled.push(matchingStep.id);
+			console.log(
+				`[StepConfiguration] Step disabled: ${matchingStep.name} (ID: ${matchingStep.id})${config.meta?.reason ? ` - ${config.meta.reason}` : ""}`
+			);
+		} else if (config.optional === 1) {
+			skippable.push(matchingStep.id);
+			console.log(
+				`[StepConfiguration] Step skippable: ${matchingStep.name} (ID: ${matchingStep.id})${config.meta?.reason ? ` - ${config.meta.reason}` : ""}`
+			);
+		}
+	});
+
+	return {
+		disabledSteps: disabled.length > 0 ? disabled : undefined,
+		skippableSteps: skippable.length > 0 ? skippable : undefined,
+	};
+};
+
+/**
  * Gets the appropriate step data based on user type
  * Returns the master list of all steps - filtering happens via API roles
  * @param {number} userType - The user type identifier (validated but not used for step selection)
@@ -143,18 +251,16 @@ const applyResumeLogic = (
 		}
 	}
 
-	// Assign step status based on current role index
-	steps.forEach((step, index) => {
-		if (index < _currentRoleIndex) {
-			step.stepStatus = 3; // completed
-		} else if (index === _currentRoleIndex) {
-			step.stepStatus = 1; // pending
-		} else {
-			step.stepStatus = 0; // not started
-		}
-	});
-
-	return steps;
+	// Assign step status based on current role index (immutable)
+	return steps.map((step, index) => ({
+		...step,
+		stepStatus:
+			index < _currentRoleIndex
+				? 3 // completed
+				: index === _currentRoleIndex
+					? 1 // pending
+					: 0, // not started
+	}));
 };
 
 /**

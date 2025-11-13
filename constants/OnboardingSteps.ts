@@ -285,7 +285,7 @@ export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
 export const masterOnboardingSteps: OnboardingStep[] = [
 	{
 		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
-		name: "locationCapture",
+		name: "LOCATION_CAPTURE",
 		label: "Location Capturing",
 		isRequired: true,
 		isVisible: true,
@@ -299,7 +299,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
-		name: "aadhaarVerification",
+		name: "AADHAAR_VERIFICATION",
 		label: "Aadhaar Verification",
 		isRequired: true,
 		isVisible: true,
@@ -356,7 +356,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	// },
 	{
 		id: ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION,
-		name: "digilockerVerification",
+		name: "DIGILOCKER_REDIRECTION",
 		label: "Digilocker Verification",
 		isRequired: true,
 		isVisible: true,
@@ -370,7 +370,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.PAN_VERIFICATION,
-		name: "panVerification",
+		name: "PAN_VERIFICATION",
 		label: "PAN Verification",
 		isRequired: true,
 		isVisible: true,
@@ -385,7 +385,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.VIDEO_KYC,
-		name: "selfieKYC",
+		name: "VIDEO_KYC",
 		label: "Selfie KYC",
 		isRequired: true,
 		isVisible: true,
@@ -400,7 +400,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.BUSINESS,
-		name: "businessDetails",
+		name: "BUSINESS",
 		label: "Business Details",
 		isRequired: true,
 		isVisible: true,
@@ -413,7 +413,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
-		name: "addBankAccount",
+		name: "ADD_BANK_ACCOUNT",
 		label: "Add Bank Account",
 		isRequired: true,
 		isVisible: true,
@@ -426,7 +426,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.SECRET_PIN,
-		name: "secretPin",
+		name: "SECRET_PIN",
 		label: "Secret Pin",
 		isRequired: true,
 		isVisible: true,
@@ -439,7 +439,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
-		name: "signAgreement",
+		name: "SIGN_AGREEMENT",
 		label: "Sign Agreement",
 		isRequired: true,
 		isVisible: true,

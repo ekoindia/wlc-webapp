@@ -1,6 +1,7 @@
 import { useToken } from "@chakra-ui/react";
 import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
 import {
+	masterOnboardingSteps,
 	ONBOARDING_API_STATUS,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
@@ -10,6 +11,8 @@ import { useBankList, useCountryStates, useShopTypes } from "hooks";
 import { useCallback, useEffect, useMemo } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
+	createStepLookupMap,
+	extractStepConfiguration,
 	useAndroidIntegration,
 	useDigilockerApi,
 	useEsignIntegration,
@@ -74,37 +77,6 @@ const OnboardingSteps = ({
 		"accent.DEFAULT",
 	]);
 
-	// Extract disabled_steps from org metadata
-	const disabledSteps = useMemo(() => {
-		const metadata = orgDetail?.metadata;
-
-		if (!metadata?.disabled_steps) {
-			return undefined;
-		}
-		// Ensure it's an array of numbers
-		return Array.isArray(metadata.disabled_steps)
-			? metadata.disabled_steps.filter((id) => typeof id === "number")
-			: undefined;
-	}, [orgDetail?.metadata]);
-
-	// Extract skippable_steps from org metadata
-	const skippableSteps = useMemo(() => {
-		const metadata = orgDetail?.metadata;
-		if (!metadata?.skippable_steps) {
-			return undefined;
-		}
-		// Ensure it's an array of numbers
-		return Array.isArray(metadata.skippable_steps)
-			? metadata.skippable_steps.filter((id) => typeof id === "number")
-			: undefined;
-	}, [orgDetail?.metadata]);
-
-	console.log(
-		"[Onboarding] Disabled Steps:",
-		disabledSteps,
-		"[Onboarding] Skippable Steps:",
-		skippableSteps
-	);
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = useMemo(
 		() => (isAssistedOnboarding ? assistedAgentDetails : userData),
@@ -120,6 +92,21 @@ const OnboardingSteps = ({
 		() => getUserTypeFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
+
+	// Create step lookup map once for O(1) performance
+	const stepLookupMap = useMemo(
+		() => createStepLookupMap(masterOnboardingSteps),
+		[]
+	);
+
+	// Extract disabled_steps and skippable_steps from org metadata based on userType
+	const { disabledSteps, skippableSteps } = useMemo(() => {
+		return extractStepConfiguration(
+			orgDetail?.metadata?.onboarding,
+			userType,
+			stepLookupMap
+		);
+	}, [orgDetail?.metadata?.onboarding, userType]);
 
 	const onboardingSteps = useMemo(
 		() =>
