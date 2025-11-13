@@ -274,11 +274,20 @@ const OnboardingSteps = ({
 		(stepId: number) => {
 			console.log(`[OnboardingSteps] Skipping step with ID: ${stepId}`);
 
-			// Mark step as skipped (status = 4)
-			actions.updateStepStatus(stepId, ONBOARDING_STEP_STATUS.SKIPPED);
+			// Store updated stepper data with skip applied
+			const updatedStepperData = state.stepperData.map((step) => {
+				if (step.id === stepId) {
+					// Mark current step as skipped
+					return {
+						...step,
+						stepStatus: ONBOARDING_STEP_STATUS.SKIPPED,
+					};
+				}
+				return step;
+			});
 
 			// Find current step index
-			const currentStepIndex = state.stepperData.findIndex(
+			const currentStepIndex = updatedStepperData.findIndex(
 				(step) => step.id === stepId
 			);
 
@@ -290,7 +299,7 @@ const OnboardingSteps = ({
 			}
 
 			// Find next step (first step after current that is not skipped/completed)
-			const nextStep = state.stepperData
+			const nextStep = updatedStepperData
 				.slice(currentStepIndex + 1)
 				.find(
 					(step) =>
@@ -299,24 +308,36 @@ const OnboardingSteps = ({
 				);
 
 			if (nextStep) {
-				// Move to next step
-				actions.updateStepStatus(
-					nextStep.id,
-					ONBOARDING_STEP_STATUS.IN_PROGRESS
-				);
+				// Update the next step to IN_PROGRESS
+				const finalStepperData = updatedStepperData.map((step) => {
+					if (step.id === nextStep.id) {
+						return {
+							...step,
+							stepStatus: ONBOARDING_STEP_STATUS.IN_PROGRESS,
+						};
+					}
+					return step;
+				});
+
+				// Set the updated stepper data at once
+				actions.setStepperData(finalStepperData);
+
 				console.log(
-					`[OnboardingSteps] Moving to next step: ${nextStep.name} (ID: ${nextStep.id})`
+					`[OnboardingSteps] Skipped step ${stepId}, moving to next step: ${nextStep.name} (ID: ${nextStep.id})`
 				);
 			} else {
+				// No next step, just update current as skipped
+				actions.setStepperData(updatedStepperData);
 				console.log(
 					"[OnboardingSteps] No more steps available after skip"
 				);
 			}
 
-			// Refresh agent profile to sync state
-			refreshAgentProfile();
+			// Note: Deliberately NOT calling refreshAgentProfile() here
+			// The backend will sync when user completes/submits the next step
+			// This prevents resume logic from resetting the skipped state
 		},
-		[state.stepperData, actions, refreshAgentProfile]
+		[state.stepperData]
 	);
 
 	const handleStepCallBack = (callType) => {
