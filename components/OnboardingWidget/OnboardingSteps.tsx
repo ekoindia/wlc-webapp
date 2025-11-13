@@ -45,6 +45,7 @@ const ExternalOnboardingWidget =
 		stepResponse: any;
 		stepsData: any[];
 		handleStepCallBack: (_callType: any) => void;
+		handleOnboardingSkip: (_stepId: number) => void;
 		esignStatus: number;
 		digilockerData: any;
 		constants?: {
@@ -106,7 +107,7 @@ const OnboardingSteps = ({
 			userType,
 			stepLookupMap
 		);
-	}, [orgDetail?.metadata?.onboarding, userType]);
+	}, [orgDetail?.metadata?.onboarding, userType, stepLookupMap]);
 
 	const onboardingSteps = useMemo(
 		() =>
@@ -264,6 +265,60 @@ const OnboardingSteps = ({
 
 	// Method only for file upload data
 
+	/**
+	 * Handles skipping of an onboarding step
+	 * Called by child component when user skips a step
+	 * @param {number} stepId - ID of the step to skip
+	 */
+	const handleOnboardingSkip = useCallback(
+		(stepId: number) => {
+			console.log(`[OnboardingSteps] Skipping step with ID: ${stepId}`);
+
+			// Mark step as skipped (status = 4)
+			actions.updateStepStatus(stepId, ONBOARDING_STEP_STATUS.SKIPPED);
+
+			// Find current step index
+			const currentStepIndex = state.stepperData.findIndex(
+				(step) => step.id === stepId
+			);
+
+			if (currentStepIndex === -1) {
+				console.warn(
+					`[OnboardingSteps] Step with ID ${stepId} not found in stepperData`
+				);
+				return;
+			}
+
+			// Find next step (first step after current that is not skipped/completed)
+			const nextStep = state.stepperData
+				.slice(currentStepIndex + 1)
+				.find(
+					(step) =>
+						step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED &&
+						step.stepStatus !== ONBOARDING_STEP_STATUS.COMPLETED
+				);
+
+			if (nextStep) {
+				// Move to next step
+				actions.updateStepStatus(
+					nextStep.id,
+					ONBOARDING_STEP_STATUS.IN_PROGRESS
+				);
+				console.log(
+					`[OnboardingSteps] Moving to next step: ${nextStep.name} (ID: ${nextStep.id})`
+				);
+			} else {
+				console.log(
+					"[OnboardingSteps] No more steps available after skip"
+				);
+			}
+
+			// Refresh agent profile to sync state
+			refreshAgentProfile();
+		},
+		[state.stepperData, actions, refreshAgentProfile]
+	);
+
 	const handleStepCallBack = (callType) => {
 		if (callType.type === ONBOARDING_STEP_IDS.SIGN_AGREEMENT) {
 			// Leegality Esign
@@ -347,7 +402,7 @@ const OnboardingSteps = ({
 		if (state.pintwin.bookletNumber) {
 			pintwin.getBookletKey();
 		}
-	}, [state.pintwin.bookletNumber]);
+	}, [state.pintwin.bookletNumber, pintwin]);
 
 	// Subscribe to the Android responses
 	useEffect(() => {
@@ -383,6 +438,7 @@ const OnboardingSteps = ({
 				stepResponse: state.lastStepResponse,
 				stepsData: state.stepperData,
 				handleStepCallBack: handleStepCallBack,
+				handleOnboardingSkip: handleOnboardingSkip,
 				esignStatus:
 					state.esign.status === "ready"
 						? 1

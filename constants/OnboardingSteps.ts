@@ -58,6 +58,7 @@ export const ONBOARDING_STEP_STATUS = {
 	IN_PROGRESS: 1,
 	COMPLETED: 2,
 	FAILED: 3,
+	SKIPPED: 4,
 } as const;
 
 // Type exports for TypeScript support
