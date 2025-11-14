@@ -1,4 +1,7 @@
-import type { OnboardingStep } from "constants/OnboardingSteps";
+import type {
+	OnboardingStep,
+	OnboardingStepStatusType,
+} from "constants/OnboardingSteps";
 import { useReducer } from "react";
 
 export interface AadhaarState {
@@ -72,7 +75,7 @@ export type OnboardingAction =
 	| { type: "STEP_COMPLETED"; payload: { step: number; response: any } }
 	| {
 			type: "UPDATE_STEP_STATUS";
-			payload: { stepId: number; status: number };
+			payload: { stepId: number; status: OnboardingStepStatusType };
 	  }
 	| { type: "RESET_STATE" };
 
@@ -392,7 +395,10 @@ export const useOnboardingState = (): OnboardingStateHook => {
 			});
 		},
 
-		updateStepStatus: (stepId: number, status: number) => {
+		updateStepStatus: (
+			stepId: number,
+			status: OnboardingStepStatusType
+		) => {
 			dispatch({
 				type: "UPDATE_STEP_STATUS",
 				payload: { stepId, status },

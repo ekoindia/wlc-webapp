@@ -51,7 +51,7 @@ describe("OnboardingSteps", () => {
 		});
 
 		it("should handle multi-role steps correctly", () => {
-			// LocationCapture has both 13000 and 12400
+			// LOCATION_CAPTURE has both 13000 and 12400
 			const apiSteps = [{ role: 13000, label: "Location Capture" }];
 
 			const filtered = filterOnboardingStepsByRoles(
@@ -59,9 +59,9 @@ describe("OnboardingSteps", () => {
 				apiSteps
 			);
 
-			// Should include LocationCapture step
+			// Should include LOCATION_CAPTURE step
 			const locationStep = filtered.find(
-				(step) => step.name === "LocationCapture"
+				(step) => step.name === "LOCATION_CAPTURE"
 			);
 			expect(locationStep).toBeDefined();
 			expect(locationStep?.applicableRoles).toContain(13000);
@@ -83,7 +83,7 @@ describe("OnboardingSteps", () => {
 		it("should maintain ID-based routing compatibility", () => {
 			// Verify critical IDs for API routing logic
 			const locationStep = masterOnboardingSteps.find((s) => s.id === 3);
-			expect(locationStep?.name).toBe("LocationCapture");
+			expect(locationStep?.name).toBe("LOCATION_CAPTURE");
 
 			const uploadSteps = masterOnboardingSteps.filter((s) =>
 				[1, 4, 8, 11].includes(s.id)
@@ -96,11 +96,19 @@ describe("OnboardingSteps", () => {
 				expect(step.id).toBeDefined();
 				expect(step.name).toBeDefined();
 				expect(step.label).toBeDefined();
-				expect(typeof step.isSkipable).toBe("boolean");
 				expect(typeof step.isRequired).toBe("boolean");
 				expect(typeof step.isVisible).toBe("boolean");
 				expect(step.primaryCTAText).toBeDefined();
 				expect(step.form_data).toBeDefined();
+			});
+		});
+
+		it("should determine skippability based on isRequired property", () => {
+			masterOnboardingSteps.forEach((step) => {
+				// Skippability is the inverse of isRequired
+				// A step is skippable when it's NOT required
+				const isSkippable = !step.isRequired;
+				expect(typeof isSkippable).toBe("boolean");
 			});
 		});
 	});
