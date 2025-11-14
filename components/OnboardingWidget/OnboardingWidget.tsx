@@ -55,6 +55,7 @@ const OnboardingWidget = ({
 	refreshAgentProfile,
 }: OnboardingWidgetProps): JSX.Element => {
 	const [selectedRole, setSelectedRole] = useState<string>("");
+	const [isInitializing, setIsInitializing] = useState<boolean>(true);
 
 	// State to manage the current step in the onboarding process
 	const [step, setStep] = useState<keyof typeof ONBOARDING_STEPS>(
@@ -68,19 +69,47 @@ const OnboardingWidget = ({
 		? assistedAgentDetails
 		: userData;
 
-	// why do I need to pass this twice??
-	const onboardingSteps = getOnboardingStepsFromData(
-		onboardingUserDetails,
-		isAssistedOnboarding
-	);
-
+	// Initialize onboarding by refreshing profile and determining the step
 	useEffect(() => {
+		const initializeOnboarding = async () => {
+			// Refresh agent profile to get the latest onboarding state
+			await refreshAgentProfile();
+
+			// Mark initialization as complete after refresh
+			setIsInitializing(false);
+		};
+
+		initializeOnboarding();
+	}, [refreshAgentProfile]);
+
+	// React to userData changes after refresh to determine correct step
+	// Only run after initialization is complete
+	useEffect(() => {
+		if (isInitializing) {
+			return; // Don't determine step until refresh completes
+		}
+
+		// Get onboarding steps from user data
+		const onboardingSteps = getOnboardingStepsFromData(
+			onboardingUserDetails,
+			isAssistedOnboarding
+		);
+
+		console.log("[OnboardingWidget] Step determination:", {
+			onboardingSteps,
+			onboardingUserDetails,
+			isAssistedOnboarding,
+		});
+
+		// Determine which step to show based on data
 		if (onboardingSteps?.length > 0) {
+			console.log("[OnboardingWidget] Setting step to KYC_FLOW");
 			setStep(ONBOARDING_STEPS.KYC_FLOW);
 		} else {
+			console.log("[OnboardingWidget] Setting step to ROLE_SELECTION");
 			setStep(ONBOARDING_STEPS.ROLE_SELECTION);
 		}
-	}, []);
+	}, [onboardingUserDetails, isAssistedOnboarding, isInitializing]);
 
 	if (
 		isAssistedOnboarding !== true &&

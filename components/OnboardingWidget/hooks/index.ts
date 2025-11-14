@@ -12,4 +12,8 @@ export type {
 } from "./useOnboardingState";
 export { usePintwinIntegration } from "./usePintwinIntegration";
 export { useRoleFormSubmission } from "./useRoleFormSubmission";
-export { useStepConfiguration } from "./useStepConfiguration";
+export {
+	createStepLookupMap,
+	extractStepConfiguration,
+	useStepConfiguration,
+} from "./useStepConfiguration";

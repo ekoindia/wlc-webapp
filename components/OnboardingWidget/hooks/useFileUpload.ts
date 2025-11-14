@@ -20,6 +20,7 @@ interface FileUploadData {
 		shopType?: string;
 		shopName?: string;
 		videoKyc?: { fileData: File };
+		passbookImage?: { fileData: File };
 	};
 }
 
@@ -183,6 +184,25 @@ export const useFileUpload = ({
 		[objectToFormParams]
 	);
 
+	const handleAddBankAccountUpload = useCallback(
+		(data: FileUploadData, formData: FormData, baseFormData: any) => {
+			const passbookImage = data.form_data.passbookImage?.fileData;
+
+			if (passbookImage) {
+				formData.append("file1", passbookImage);
+
+				const formDataParams = {
+					...baseFormData,
+					file1: "",
+					doc_type: 7,
+				};
+
+				formData.append("formdata", objectToFormParams(formDataParams));
+			}
+		},
+		[objectToFormParams]
+	);
+
 	/**
 	 * Processes different types of file uploads based on data.id
 	 */
@@ -197,6 +217,9 @@ export const useFileUpload = ({
 					break;
 				case 8: // PAN upload
 					handlePanUpload(data, formData, baseFormData);
+					break;
+				case 25: // Passbook upload (not implemented)
+					handleAddBankAccountUpload(data, formData, baseFormData);
 					break;
 				case 11: // Video KYC upload
 					handleVideoKycUpload(data, formData, baseFormData);
