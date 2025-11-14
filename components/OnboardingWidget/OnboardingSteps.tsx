@@ -256,6 +256,7 @@ const OnboardingSteps = ({
 					ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
 					ONBOARDING_STEP_IDS.PAN_VERIFICATION,
 					ONBOARDING_STEP_IDS.VIDEO_KYC,
+					ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
 				].includes(data?.id)
 			) {
 				await uploadFile(data);
