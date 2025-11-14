@@ -374,10 +374,10 @@ const applyResumeLogic = (
 		...step,
 		stepStatus:
 			index < _currentRoleIndex
-				? 3 // completed
+				? ONBOARDING_STEP_STATUS.COMPLETED
 				: index === _currentRoleIndex
-					? 1 // pending
-					: 0, // not started
+					? ONBOARDING_STEP_STATUS.IN_PROGRESS
+					: ONBOARDING_STEP_STATUS.NOT_STARTED,
 	}));
 };
 
