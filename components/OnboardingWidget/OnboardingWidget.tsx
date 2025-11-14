@@ -80,8 +80,7 @@ const OnboardingWidget = ({
 		};
 
 		initializeOnboarding();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [refreshAgentProfile]);
 
 	// React to userData changes after refresh to determine correct step
 	// Only run after initialization is complete
