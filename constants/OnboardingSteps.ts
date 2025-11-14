@@ -315,7 +315,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "Aadhaar uploaded successfully.",
 	},
 	{
-		id: 5,
+		id: ONBOARDING_STEP_IDS.AADHAAR_CONSENT,
 		name: "AADHAAR_CONSENT",
 		label: "Aadhaar Consent",
 		isRequired: true,
@@ -330,7 +330,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "Aadhaar consent taken.",
 	},
 	{
-		id: 6,
+		id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
 		name: "CONFIRM_AADHAAR_NUMBER",
 		label: "Confirm Aadhaar Number",
 		isRequired: true,
@@ -345,8 +345,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "Aadhaar number confirmed.",
 	},
 	{
-		id: 7,
-		name: "CONFIRM_AADHAAR_OTP",
+		id: ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY,
+		name: "AADHAAR_NUMBER_OTP_VERIFY",
 		label: "Confirm Aadhaar OTP",
 		isRequired: true,
 		isVisible: false,
