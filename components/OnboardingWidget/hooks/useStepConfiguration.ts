@@ -1,6 +1,7 @@
 import {
 	filterOnboardingStepsByRoles,
 	masterOnboardingSteps,
+	ONBOARDING_STEP_STATUS,
 	type OnboardingStep,
 } from "constants/OnboardingSteps";
 import { useCallback } from "react";
@@ -407,9 +408,11 @@ const mergeWithCachedStates = (
 	return apiSteps.map((step) => {
 		const cachedStatus = cachedStates.get(step.id);
 
-		// If step is completed (3) or skipped (4) in cache, preserve that status
 		// This handles cases where multiple steps share the same role
-		if (cachedStatus === 3 || cachedStatus === 4) {
+		if (
+			cachedStatus === ONBOARDING_STEP_STATUS.COMPLETED ||
+			cachedStatus === ONBOARDING_STEP_STATUS.SKIPPED
+		) {
 			console.log(
 				`[mergeWithCachedStates] Using cached status for ${step.name}: ${cachedStatus}`
 			);
