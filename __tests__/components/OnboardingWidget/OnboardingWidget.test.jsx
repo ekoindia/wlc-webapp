@@ -1,5 +1,5 @@
 import { OnboardingWidget } from "components/OnboardingWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,10 @@ import { render } from "test-utils";
 
 describe("OnboardingWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OnboardingWidget />);
+		const mockRefreshAgentProfile = jest.fn().mockResolvedValue({});
+		const { container } = pageRender(
+			<OnboardingWidget refreshAgentProfile={mockRefreshAgentProfile} />
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

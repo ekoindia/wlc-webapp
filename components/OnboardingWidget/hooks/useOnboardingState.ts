@@ -1,4 +1,7 @@
-import type { OnboardingStep } from "constants/OnboardingSteps";
+import type {
+	OnboardingStep,
+	OnboardingStepStatusType,
+} from "constants/OnboardingSteps";
 import { useReducer } from "react";
 
 export interface AadhaarState {
@@ -70,6 +73,10 @@ export type OnboardingAction =
 	| { type: "SET_IS_LOADING"; payload: boolean }
 	| { type: "SET_API_IN_PROGRESS"; payload: boolean }
 	| { type: "STEP_COMPLETED"; payload: { step: number; response: any } }
+	| {
+			type: "UPDATE_STEP_STATUS";
+			payload: { stepId: number; status: OnboardingStepStatusType };
+	  }
 	| { type: "RESET_STATE" };
 
 export interface OnboardingStateHook {
@@ -94,6 +101,7 @@ export interface OnboardingStateHook {
 		setLastStepResponse: (_response: any) => void;
 		setStepperData: (_data: OnboardingStep[]) => void;
 		completeStep: (_step: number, _response: any) => void;
+		updateStepStatus: (_stepId: number, _status: number) => void;
 		resetState: () => void;
 	};
 }
@@ -288,6 +296,16 @@ function onboardingReducer(
 				lastStepResponse: action.payload.response,
 			};
 
+		case "UPDATE_STEP_STATUS":
+			return {
+				...state,
+				stepperData: state.stepperData.map((step) =>
+					step.id === action.payload.stepId
+						? { ...step, stepStatus: action.payload.status }
+						: step
+				),
+			};
+
 		case "RESET_STATE":
 			return initialState;
 
@@ -374,6 +392,16 @@ export const useOnboardingState = (): OnboardingStateHook => {
 			dispatch({
 				type: "STEP_COMPLETED",
 				payload: { step, response },
+			});
+		},
+
+		updateStepStatus: (
+			stepId: number,
+			status: OnboardingStepStatusType
+		) => {
+			dispatch({
+				type: "UPDATE_STEP_STATUS",
+				payload: { stepId, status },
 			});
 		},
 

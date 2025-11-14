@@ -1,5 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
+import { ONBOARDING_STEP_IDS } from "constants/OnboardingSteps";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -102,12 +103,12 @@ export const useOnboardingApiSubmission = ({
 			});
 
 			// Handle specific form responses
-			if (data.id === 5) {
+			if (data.id === ONBOARDING_STEP_IDS.AADHAAR_CONSENT) {
 				actions.setAadhaarAccessKey(response?.data?.access_key);
 				actions.setAadhaarUserCode(response?.data?.user_code);
 			}
 
-			if (data.id === 2) {
+			if (data.id === ONBOARDING_STEP_IDS.SELECTION_SCREEN) {
 				actions.setRole(parseInt(data?.form_data?.merchant_type) || 0);
 			}
 
