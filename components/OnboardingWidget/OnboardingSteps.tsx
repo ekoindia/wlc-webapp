@@ -129,18 +129,7 @@ const OnboardingSteps = ({
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	/**
-	 * Update the status of a specific onboarding step
-	 * @param {number} id - The ID of the step to update
-	 * @param {number} status - The new status to set (default is 3)
-	 */
-	const updateStepStatus = (id, status = 3) => {
-		const updatedStepperData = state.stepperData.map((step) =>
-			step.id === id ? { ...step, stepStatus: status } : step
-		);
-		actions.setStepperData(updatedStepperData);
-	};
-
+	// Moved stepConfiguration BEFORE updateStepStatus so it can be referenced
 	// Initialize step configuration hook
 	const stepConfiguration = useStepConfiguration({
 		actions,
@@ -149,7 +138,24 @@ const OnboardingSteps = ({
 		roleList,
 		disabledSteps,
 		skippableSteps,
+		userIdentifier: mobile, // Use mobile number for session storage validation
 	});
+
+	/**
+	 * Update the status of a specific onboarding step
+	 * @param {number} id - The ID of the step to update
+	 * @param {number} status - The new status to set (default is 3)
+	 */
+	const updateStepStatus = useCallback(
+		(id, status = 3) => {
+			const updatedStepperData = state.stepperData.map((step) =>
+				step.id === id ? { ...step, stepStatus: status } : step
+			);
+			// Use stepConfiguration to update and persist to session storage
+			stepConfiguration.updateStepStates(updatedStepperData);
+		},
+		[state.stepperData, stepConfiguration]
+	);
 
 	// Initialize specialized hooks
 	const esign = useEsignIntegration({
@@ -319,15 +325,15 @@ const OnboardingSteps = ({
 					return step;
 				});
 
-				// Set the updated stepper data at once
-				actions.setStepperData(finalStepperData);
+				// Set the updated stepper data at once and persist to session storage
+				stepConfiguration.updateStepStates(finalStepperData);
 
 				console.log(
 					`[OnboardingSteps] Skipped step ${stepId}, moving to next step: ${nextStep.name} (ID: ${nextStep.id})`
 				);
 			} else {
-				// No next step, just update current as skipped
-				actions.setStepperData(updatedStepperData);
+				// No next step, just update current as skipped and persist
+				stepConfiguration.updateStepStates(updatedStepperData);
 				console.log(
 					"[OnboardingSteps] No more steps available after skip"
 				);
@@ -337,7 +343,7 @@ const OnboardingSteps = ({
 			// The backend will sync when user completes/submits the next step
 			// This prevents resume logic from resetting the skipped state
 		},
-		[state.stepperData]
+		[state.stepperData, stepConfiguration]
 	);
 
 	const handleStepCallBack = (callType) => {
@@ -437,10 +443,17 @@ const OnboardingSteps = ({
 	}, [TOPICS.ANDROID_RESPONSE, subscribe, android]);
 
 	useEffect(() => {
-		initialStepSetter({
-			details: onboardingUserDetails,
-		});
-	}, []);
+		// Only initialize if we have valid user details
+		// This allows re-initialization when data becomes available after async fetch
+		if (
+			onboardingUserDetails &&
+			Object.keys(onboardingUserDetails).length > 0
+		) {
+			initialStepSetter({
+				details: onboardingUserDetails,
+			});
+		}
+	}, [onboardingUserDetails]);
 
 	// console.log("[AgentOnboarding] state data", state.stepperData);
 
