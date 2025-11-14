@@ -147,7 +147,7 @@ const OnboardingSteps = ({
 	 * @param {number} status - The new status to set (default is 3)
 	 */
 	const updateStepStatus = useCallback(
-		(id, status = ONBOARDING_STEP_STATUS.COMPLETED) => {
+		(id: number, status: number = ONBOARDING_STEP_STATUS.COMPLETED) => {
 			const updatedStepperData = state.stepperData.map((step) =>
 				step.id === id ? { ...step, stepStatus: status } : step
 			);
@@ -197,7 +197,7 @@ const OnboardingSteps = ({
 		},
 		onError: async (_error, data) => {
 			// Update step status to failed
-			updateStepStatus(data.id, 2);
+			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.FAILED);
 
 			// Refresh user profile
 			await refreshAgentProfile();
@@ -218,7 +218,7 @@ const OnboardingSteps = ({
 
 		onError: async (_error, data) => {
 			// Update step status to failed
-			updateStepStatus(data.id, 2);
+			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.FAILED);
 
 			// Refresh user profile
 			await refreshAgentProfile();
