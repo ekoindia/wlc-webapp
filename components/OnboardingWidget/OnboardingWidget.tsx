@@ -80,7 +80,9 @@ const OnboardingWidget = ({
 		};
 
 		initializeOnboarding();
-	}, [refreshAgentProfile]);
+		// if passing refreshAgentProfile in dependency array, it creates infinite loop
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	// React to userData changes after refresh to determine correct step
 	// Only run after initialization is complete
