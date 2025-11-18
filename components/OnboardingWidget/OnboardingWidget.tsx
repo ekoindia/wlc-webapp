@@ -174,7 +174,7 @@ const OnboardingWidget = ({
 	};
 	// MARK: JSX
 	return (
-		<Flex h="100vh" w="100%" justify="center">
+		<Flex w="100%" justify="center">
 			{renderCurrentStep()}
 		</Flex>
 	);
