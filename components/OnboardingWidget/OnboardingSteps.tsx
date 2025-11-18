@@ -246,7 +246,6 @@ const OnboardingSteps = ({
 
 			if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
 				actions.setLocation(data?.form_data?.latlong);
-				updateStepStatus(ONBOARDING_STEP_IDS.LOCATION_CAPTURE);
 			}
 
 			// Route to appropriate handler based on form type (file upload steps)
