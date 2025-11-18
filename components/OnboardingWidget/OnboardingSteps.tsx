@@ -249,13 +249,19 @@ const OnboardingSteps = ({
 			}
 
 			// Route to appropriate handler based on form type (file upload steps)
-			if (
+			if (data?.id === ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
+				// HACK: For bank account, we need both upload and submit
+				// TODO: Better configuration required to handle such cases
+				await submitForm(data);
+				await uploadFile(data);
+				return;
+			} else if (
 				[
 					ONBOARDING_STEP_IDS.WELCOME,
 					ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
 					ONBOARDING_STEP_IDS.PAN_VERIFICATION,
 					ONBOARDING_STEP_IDS.VIDEO_KYC,
-					ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
+					// ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
 				].includes(data?.id)
 			) {
 				await uploadFile(data);
