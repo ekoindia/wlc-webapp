@@ -141,6 +141,17 @@ export const useEsignIntegration = ({
 			);
 		} else if (
 			state.esign.signUrlData &&
+			state.esign.signUrlData.pipe === agreementProvider.KARZA &&
+			(isAndroid || isAndroidApp())
+		) {
+			// HACK 19 NOV 2025: LEEGALITY ANDROID: Temporarily open directly in browser for testing...
+			// TODO: FIX............
+			window.open(
+				state.esign.signUrlData.short_url,
+				"SignAgreementWindow"
+			);
+		} else if (
+			state.esign.signUrlData &&
 			(state.esign.signUrlData.pipe === agreementProvider.KARZA ||
 				state.esign.signUrlData.pipe === agreementProvider.LEEGALITY)
 		) {
@@ -159,6 +170,7 @@ export const useEsignIntegration = ({
 					status: "info",
 					duration: 2000,
 				});
+
 				doAndroidAction(
 					ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
 					JSON.stringify({
