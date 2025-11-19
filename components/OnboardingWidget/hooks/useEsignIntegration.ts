@@ -6,7 +6,7 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
-import { ANDROID_ACTION, doAndroidAction } from "utils";
+import { ANDROID_ACTION, doAndroidAction, isAndroidApp } from "utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 interface UseEsignIntegrationProps {
@@ -52,6 +52,7 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Fetches the e-signature URL from the backend
+	 * MARK: Get URL
 	 */
 	const getSignUrl = useCallback(() => {
 		fetcher(
@@ -92,6 +93,7 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Handles the leegality callback response
+	 * MARK: Callback
 	 */
 	const handleLeegalityCallback = useCallback(
 		(res) => {
@@ -120,9 +122,14 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Opens the e-signature interface based on provider (Signzy/Karza)
+	 * MARK: Open eSign
 	 */
 	const openEsign = useCallback(() => {
-		console.log("[Esign] openEsign: ", state?.esign?.signUrlData);
+		console.log(
+			"[Esign] openEsign: ",
+			state?.esign?.signUrlData,
+			isAndroidApp()
+		);
 
 		if (
 			state.esign.signUrlData &&
@@ -146,7 +153,12 @@ export const useEsignIntegration = ({
 				return;
 			}
 
-			if (isAndroid) {
+			if (isAndroid || isAndroidApp()) {
+				toast({
+					title: "Please select Leegality Helper App to complete eSign.",
+					status: "info",
+					duration: 2000,
+				});
 				doAndroidAction(
 					ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
 					JSON.stringify({
@@ -154,12 +166,12 @@ export const useEsignIntegration = ({
 						document_id: state.esign.signUrlData?.document_id,
 					})
 				);
+			} else {
 				toast({
-					title: "Please select Leegality Helper App to complete eSign.",
+					title: "Continuing to eSign...",
 					status: "info",
 					duration: 2000,
 				});
-			} else {
 				const leegality = new (window as any).Leegality({
 					callback: handleLeegalityCallback,
 					logo: logo,
@@ -172,6 +184,7 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Initializes the leegality script
+	 * MARK: Init Script
 	 */
 	const initializeEsignScript = useCallback(() => {
 		const script = document.createElement("script");
