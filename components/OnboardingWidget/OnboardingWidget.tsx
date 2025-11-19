@@ -181,7 +181,7 @@ const OnboardingWidget = ({
 	return (
 		<Flex w="100%" justify="center">
 			{renderCurrentStep()}
-			<Flex fontSize="0.6em">
+			<Flex fontSize="0.3em" color="#777">
 				{isAndroidApp() ? "Android" : "Web"} - {appSource}
 			</Flex>
 		</Flex>
