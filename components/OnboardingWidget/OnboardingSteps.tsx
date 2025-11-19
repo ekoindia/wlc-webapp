@@ -361,8 +361,7 @@ const OnboardingSteps = ({
 					esign.initializeEsignScript();
 				}
 				esign.getSignUrl();
-			}
-			if (callType.method === "legalityOpen") {
+			} else if (callType.method === "legalityOpen") {
 				esign.openEsign();
 			}
 		} else if (callType.type === ONBOARDING_STEP_IDS.SECRET_PIN) {
