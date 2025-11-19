@@ -141,7 +141,7 @@ export const useEsignIntegration = ({
 			);
 		} else if (
 			state.esign.signUrlData &&
-			state.esign.signUrlData.pipe === agreementProvider.KARZA &&
+			state.esign.signUrlData.pipe === agreementProvider.LEEGALITY &&
 			(isAndroid || isAndroidApp())
 		) {
 			// HACK 19 NOV 2025: LEEGALITY ANDROID: Temporarily open directly in browser for testing...
