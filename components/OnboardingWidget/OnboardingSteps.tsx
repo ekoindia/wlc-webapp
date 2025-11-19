@@ -363,6 +363,8 @@ const OnboardingSteps = ({
 				esign.getSignUrl();
 			} else if (callType.method === "legalityOpen") {
 				esign.openEsign();
+			} else if (callType.method === "checkEsignStatus") {
+				esign.checkEsignStatus();
 			}
 		} else if (callType.type === ONBOARDING_STEP_IDS.SECRET_PIN) {
 			if (callType.method === "getBookletNumber") {
