@@ -95,6 +95,8 @@ export const useEsignIntegration = ({
 	 */
 	const handleLeegalityCallback = useCallback(
 		(res) => {
+			console.log("[Esign] Leegality Callback: ", res);
+
 			if (res.error) {
 				toast({
 					title:
@@ -120,6 +122,8 @@ export const useEsignIntegration = ({
 	 * Opens the e-signature interface based on provider (Signzy/Karza)
 	 */
 	const openEsign = useCallback(() => {
+		console.log("[Esign] openEsign: ", state?.esign?.signUrlData);
+
 		if (
 			state.esign.signUrlData &&
 			state.esign.signUrlData.pipe === agreementProvider.SIGNZY
@@ -150,6 +154,11 @@ export const useEsignIntegration = ({
 						document_id: state.esign.signUrlData?.document_id,
 					})
 				);
+				toast({
+					title: "Please select Leegality Helper App to complete eSign.",
+					status: "info",
+					duration: 2000,
+				});
 			} else {
 				const leegality = new (window as any).Leegality({
 					callback: handleLeegalityCallback,
