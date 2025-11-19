@@ -22,6 +22,7 @@ interface UseEsignIntegrationProps {
 interface UseEsignIntegrationReturn {
 	getSignUrl: () => void;
 	openEsign: () => void;
+	checkEsignStatus: () => void;
 	handleLeegalityCallback: (_res: any) => void;
 	initializeEsignScript: () => void;
 }
@@ -49,6 +50,24 @@ export const useEsignIntegration = ({
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
+
+	/**
+	 * Call EPS API to manually check the eSign status (if no response from eSign library/SDK)
+	 */
+	const checkEsignStatus = useCallback(() => {
+		console.log(
+			"checkEsignStatus:: ",
+			state?.esign?.signUrlData?.document_id
+		);
+
+		onStepSubmit({
+			id: 12,
+			form_data: {
+				document_id: state?.esign?.signUrlData?.document_id,
+				agreement_id: agreementId,
+			},
+		});
+	}, [state]);
 
 	/**
 	 * Fetches the e-signature URL from the backend
@@ -219,6 +238,7 @@ export const useEsignIntegration = ({
 	return {
 		getSignUrl,
 		openEsign,
+		checkEsignStatus,
 		handleLeegalityCallback,
 		initializeEsignScript,
 	};
