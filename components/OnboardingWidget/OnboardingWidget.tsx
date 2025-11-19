@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { Button } from "components";
+import { useAppSource } from "contexts";
 import { useRouter } from "next/router";
+import { isAndroidApp } from "utils/AndroidUtils";
 import { parseEnvBoolean } from "utils/envUtils";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
@@ -68,6 +70,8 @@ const OnboardingWidget = ({
 	const onboardingUserDetails = isAssistedOnboarding
 		? assistedAgentDetails
 		: userData;
+
+	const { appSource } = useAppSource();
 
 	// Initialize onboarding by refreshing profile and determining the step
 	useEffect(() => {
@@ -137,6 +141,7 @@ const OnboardingWidget = ({
 		);
 	}
 
+	// MARK: Get Step
 	const renderCurrentStep = () => {
 		switch (step) {
 			case "ROLE_SELECTION":
@@ -176,6 +181,9 @@ const OnboardingWidget = ({
 	return (
 		<Flex w="100%" justify="center">
 			{renderCurrentStep()}
+			<Flex fontSize="0.3em" color="#777">
+				{isAndroidApp() ? "Android" : "Web"} - {appSource}
+			</Flex>
 		</Flex>
 	);
 };
