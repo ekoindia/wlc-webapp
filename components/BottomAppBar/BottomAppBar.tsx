@@ -77,9 +77,11 @@ const BottomAppBar = ({
 		return null;
 	}
 
+	// MARK: JSX
 	return (
 		<Flex
 			className="bottom-app-bar"
+			pointerEvents="auto"
 			bg={isSideBarMode ? "sidebar.bg" : "white"}
 			justify="center"
 			w="100%"
