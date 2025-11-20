@@ -38,6 +38,9 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 
 	// console.log(timer);
 
+	/**
+	 * Helper function to reset the OTP resend timer
+	 */
 	const resetTimer = function () {
 		if (!timer || timer <= 0) {
 			setTimer(30);
@@ -113,25 +116,28 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 				fontSize={{ base: "sm", "2xl": "lg" }}
 				align="center"
 			>
-				<Flex align="center" wrap="wrap" userSelect="none">
-					<Text>Sent on&nbsp;</Text>
-					<Center as="b">
-						+91 {number.formatted}
-						<IcoButton
-							iconName="mode-edit"
-							size="sm"
-							theme="primary"
-							ml={2}
-							onClick={() =>
-								setStep(
-									loginType === "Mobile"
-										? "LOGIN"
-										: "GOOGLE_VERIFY"
-								)
-							}
-						/>
-					</Center>
-				</Flex>
+				{/* Hide "Sent on +91 ...." if the number is a user-id instead of mobile number */}
+				{isMobileMappedUserId ? null : (
+					<Flex align="center" wrap="wrap" userSelect="none">
+						<Text>Sent on&nbsp;</Text>
+						<Center as="b">
+							+91 {number.formatted}
+							<IcoButton
+								iconName="mode-edit"
+								size="sm"
+								theme="primary"
+								ml={2}
+								onClick={() =>
+									setStep(
+										loginType === "Mobile"
+											? "LOGIN"
+											: "GOOGLE_VERIFY"
+									)
+								}
+							/>
+						</Center>
+					</Flex>
+				)}
 			</Flex>
 
 			<Flex w="full" align="center" justify="center">
