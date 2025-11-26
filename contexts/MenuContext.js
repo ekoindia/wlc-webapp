@@ -165,17 +165,18 @@ const MenuProvider = ({ children }) => {
 	// Also generate KBar actions for transactions and menu links.
 	// MARK: Process Interactions
 	useEffect(() => {
-		const interactionList = interactions?.interaction_list;
-		const roleTxList = interactions?.role_tx_list;
+		const interactionList = interactions?.interaction_list ?? [];
+		const roleTxList = interactions?.role_tx_list ?? {};
 
-		if (!interactionList || !roleTxList) {
-			setAppLists({
-				menuList: [],
-				trxnList: [],
-				otherList: [],
-			});
-			return;
-		}
+		// FIX: Commenting out the following code to allow generation of menu even if no interactions are available...
+		// if (!interactionList || !roleTxList) {
+		// 	setAppLists({
+		// 		menuList: [],
+		// 		trxnList: [],
+		// 		otherList: [],
+		// 	});
+		// 	return;
+		// }
 
 		let _filteredMenuList = [];
 		const _menuList =
@@ -471,7 +472,11 @@ const generateTransactionActions = (
 		if (!tx) {
 			return;
 		}
-		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
+		if (
+			role_tx_list &&
+			tx.id in role_tx_list &&
+			!(tx.id in processedTrxns)
+		) {
 			let is_group = false;
 			processedTrxns[tx.id] = true;
 			trxn_found = true;
