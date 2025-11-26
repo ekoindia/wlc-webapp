@@ -21,6 +21,8 @@ const BillPaymentWidget = () => {
 	const { role_tx_list } = interactions || {};
 
 	useEffect(() => {
+		if (!role_tx_list) return;
+
 		const billPayment = role_tx_list[TransactionIds.BILL_PAYMENT];
 		if (!billPayment) return;
 

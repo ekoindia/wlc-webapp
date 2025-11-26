@@ -26,9 +26,9 @@ export type ModuleNameType =
 	| "ImageEditor"
 	| "Camera"
 	| "Notifications"
-	| "AiChatWidget";
-// | "Support"
-// | "About";
+	| "AiChatWidget"
+	| "About";
+// | "Support";
 
 /**
  * Data type for the module to load dynamically
@@ -162,7 +162,20 @@ const DefaultOptions: {
 			w: { base: "100%", md: "650px" },
 		},
 	},
-	// About: {},
+	About: {
+		title: "About",
+		popupStyle: "modal",
+		hideCloseIcon: true,
+		dialogStyles: {
+			isCentered: true,
+			size: "xl",
+		},
+		style: {
+			w: { base: "100%", md: "900px" },
+			maxH: "80vh",
+			overflowY: "auto",
+		},
+	},
 };
 
 /**
@@ -216,6 +229,13 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 	),
 	AiChatWidget: dynamic(
 		() => import("page-components/Home/AiChatWidget") as any,
+		{
+			ssr: false,
+			loading: () => <Loading />,
+		}
+	),
+	About: dynamic(
+		() => import("page-components/About").then((pkg) => pkg.About) as any,
 		{
 			ssr: false,
 			loading: () => <Loading />,

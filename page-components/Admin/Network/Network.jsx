@@ -280,7 +280,7 @@ const Network = () => {
 			name: "parent_user_code",
 			label: "Show Sub-Network of a User",
 			parameter_type_id: ParamType.TEXT,
-			placeholder: "Enter User Code",
+			placeholder: "Enter Code",
 			required: false,
 		},
 		{
@@ -448,6 +448,7 @@ const Network = () => {
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
 
+	// MARK: JSX
 	return (
 		<>
 			<PageTitle

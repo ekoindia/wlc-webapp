@@ -282,6 +282,6 @@ export default MyComponentWithHooks;
 ## How to Add a New Module
 
 1.  **Create the Module Component**: Create a new component for the module you want to add. Ensure it follows the expected structure and props. Example: [RaiseIssueCard.tsx](page-components/RaiseIssueCard/RaiseIssueCard.tsx).
-2.  **Update `moduleList`**: Add the new module to the `moduleList` in `DynamicPopupModuleLoader.tsx`. Ensure the key matches the `feature` string used when triggering the popup.
+2.  **Update `moduleList`**: Add the new module to the `moduleList` in [DynamicPopupModuleLoader.tsx](layout-components/DynamicPopupModuleLoader/DynamicPopupModuleLoader.tsx). Ensure the key matches the `feature` string used when triggering the popup.
 3.  **Update `DefaultOptions`**: Add default options for the new module in `DefaultOptions` to ensure consistent styling and behavior.
 4.  **Create a Custom Hook (Optional)**: If the module is complex or requires specific props, consider creating a custom hook (like [useRaiseIssue](hooks/useRaiseIssue.js)) to simplify its usage.

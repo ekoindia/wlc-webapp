@@ -45,7 +45,7 @@ const CommonTrxnWidget = () => {
 		let trxnList = [],
 			impOtherList = [];
 
-		interaction_list.forEach((tx) => {
+		interaction_list?.forEach((tx) => {
 			if (OtherMenuItems?.indexOf(tx.id) === -1) {
 				// Remove "Others..." category entries to get only the main transactions
 				trxnList.push(tx);

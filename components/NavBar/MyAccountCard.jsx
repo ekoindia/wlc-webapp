@@ -4,6 +4,7 @@ import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import { getChatGptAgentUrl } from "helpers";
 import {
+	useAbout,
 	useClipboard,
 	useFeatureFlag,
 	useRaiseIssue,
@@ -111,13 +112,16 @@ const ContactItem = ({ iconName, value, onCopy, isCopied, actionButton }) => (
  * @param {object} props - Component props
  * @param {() => void} props.onLogout - Logout handler function
  * @param {() => void} props.onClearCache - Clear cache and reload handler function
+ * @param {() => void} props.showAbout - Show About dialog handler function
+ * @param {() => void} props.onClose - Close handler function
  * @returns {JSX.Element} - Rendered logout section component
  */
-const LogoutSection = ({ onLogout, onClearCache }) => (
+const LogoutSection = ({ onLogout, onClearCache, showAbout, onClose }) => (
 	<Flex
 		w="100%"
 		align="center"
 		justify="space-between"
+		gap="3"
 		cursor="pointer"
 		px="4"
 		py="3"
@@ -142,6 +146,8 @@ const LogoutSection = ({ onLogout, onClearCache }) => (
 				Logout
 			</Text>
 		</Flex>
+
+		{/* Clear Cache & Reload */}
 		<Tooltip label="Clear Cache & Reload" placement="left" hasArrow>
 			<Flex
 				w="36px"
@@ -158,6 +164,29 @@ const LogoutSection = ({ onLogout, onClearCache }) => (
 				onClick={onClearCache}
 			>
 				<Icon name="reload" size="16px" color="gray.600" />
+			</Flex>
+		</Tooltip>
+
+		{/* Show About Dialog */}
+		<Tooltip label="About This App" placement="left" hasArrow>
+			<Flex
+				w="36px"
+				h="36px"
+				align="center"
+				justify="center"
+				bg="gray.100"
+				borderRadius="10px"
+				transition="all 0.2s ease"
+				_hover={{
+					bg: "gray.200",
+					transform: "scale(1.05)",
+				}}
+				onClick={() => {
+					showAbout();
+					onClose();
+				}}
+			>
+				<Icon name="info-outline" size="16px" color="gray.600" />
 			</Flex>
 		</Tooltip>
 	</Flex>
@@ -205,6 +234,8 @@ const MyAccountCard = ({ onClose }) => {
 
 	const { getUserCodeLabel } = useUserTypes();
 	const userCodeLabel = getUserCodeLabel(userType);
+
+	const { showAbout } = useAbout();
 
 	// const effective_user_id = user_id || code;
 
@@ -650,6 +681,8 @@ const MyAccountCard = ({ onClose }) => {
 					<LogoutSection
 						onLogout={() => logout({ isForced: true })}
 						onClearCache={() => clearCacheAndReload(true)}
+						showAbout={showAbout}
+						onClose={onClose}
 					/>
 				</Flex>
 			</Box>
