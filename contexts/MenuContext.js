@@ -468,7 +468,7 @@ const generateTransactionActions = (
 
 	// Process main transactions
 	let trxn_found = false;
-	interaction_list.forEach((tx) => {
+	interaction_list?.forEach((tx) => {
 		if (!tx) {
 			return;
 		}
