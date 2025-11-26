@@ -8,7 +8,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { CopyButton, IcoButton } from "components";
-import { useAppSource } from "contexts";
+import { useAppSource, useMenuContext, useOrgDetailContext } from "contexts";
 import { usePlatform } from "hooks";
 import { useEffect, useState } from "react";
 import packageJson from "../../package.json";
@@ -73,16 +73,51 @@ const DiagnosticTile = ({
 );
 
 /**
+ * Test if localStorage or sessionStorage is available and usable
+ * @param storage
+ */
+const testStorageAvailability = (storage: Storage): boolean => {
+	try {
+		const testKey = "test";
+		storage.setItem(testKey, "test");
+		storage.removeItem(testKey);
+		return true;
+	} catch {
+		return false;
+	}
+};
+
+/**
+ * Calculate used data for localStorage or sessionStorage
+ * @param storage
+ */
+const calculateStorageUsed = (storage: Storage): number => {
+	let used = 0;
+	if (!storage) return used;
+
+	for (let i = 0; i < storage.length; i++) {
+		const key = storage.key(i);
+		const value = storage.getItem(key);
+		used += key.length + (value ? value.length : 0);
+	}
+	return used;
+};
+
+/**
  * Troubleshoot tab displaying comprehensive device and browser diagnostics
  * @param {TroubleshootTabProps} props - Component props
  * @returns {JSX.Element} TroubleshootTab component
  */
 const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 	const { platform } = usePlatform();
+	const { orgDetail } = useOrgDetailContext();
+
 	const [diagnostics, setDiagnostics] = useState<DiagnosticInfo | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	const { appSource, nativeVersion } = useAppSource();
+	const { interactions } = useMenuContext();
+	const { role_tx_list } = interactions || {};
 
 	/**
 	 * Initialize diagnostic data on mount
@@ -94,44 +129,17 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 			const browserInfo = parseBrowserInfo(userAgent);
 
 			// Test localStorage availability
-			let localStorageAvailable = "Not Available";
-			try {
-				localStorage.setItem("test", "test");
-				localStorage.removeItem("test");
-				localStorageAvailable = "Available";
-			} catch (_e) {
-				localStorageAvailable = "Not Available";
-			}
+			let localStorageAvailable = testStorageAvailability(localStorage);
 
 			// If localStorage is available, add the amount of localStorage used (in KB)
-			let localStorageUsed = 0;
-			if (localStorageAvailable === "Available") {
-				for (let i = 0; i < localStorage.length; i++) {
-					const key = localStorage.key(i);
-					const value = localStorage.getItem(key);
-					localStorageUsed += key.length + (value ? value.length : 0);
-				}
-			}
+			let localStorageUsed = calculateStorageUsed(localStorage);
 
 			// Test sessionStorage availability
-			let sessionStorageAvailable = "Not Available";
-			try {
-				sessionStorage.setItem("test", "test");
-				sessionStorage.removeItem("test");
-				sessionStorageAvailable = "Available";
-			} catch (_e) {
-				sessionStorageAvailable = "Not Available";
-			}
+			let sessionStorageAvailable =
+				testStorageAvailability(sessionStorage);
+
 			// If sessionStorage is available, add the amount of sessionStorage used (in KB)
-			let sessionStorageUsed = 0;
-			if (sessionStorageAvailable === "Available") {
-				for (let i = 0; i < sessionStorage.length; i++) {
-					const key = sessionStorage.key(i);
-					const value = sessionStorage.getItem(key);
-					sessionStorageUsed +=
-						key.length + (value ? value.length : 0);
-				}
-			}
+			let sessionStorageUsed = calculateStorageUsed(sessionStorage);
 
 			// Get connection type if available
 			const connection = (navigator as any).connection;
@@ -148,13 +156,6 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 				Intl.DateTimeFormat().resolvedOptions().timeZone ?? "Unknown";
 
 			setDiagnostics({
-				app: {
-					appVersion: packageJson.version,
-					server: window?.location?.origin ?? "Unknown",
-					source: appSource || "Unknown",
-					nativeVersion: nativeVersion || "N/A",
-					env: process.env.NEXT_PUBLIC_ENV || "Unknown",
-				},
 				display: {
 					viewportWidth: `${window.innerWidth}px`,
 					viewportHeight: `${window.innerHeight}px`,
@@ -166,8 +167,9 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 					pixelDepth: `${window.screen.pixelDepth}-bit`,
 				},
 				browser: {
-					name: browserInfo.name,
-					version: browserInfo.version,
+					name:
+						browserInfo.name +
+						(browserInfo.version ? ` ${browserInfo.version}` : ""),
 					userAgent: userAgent,
 					language: navigator.language,
 					cookiesEnabled: navigator.cookieEnabled ? "Yes" : "No",
@@ -177,12 +179,12 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 					connectionType: connectionType,
 				},
 				storage: {
-					localStorage:
-						localStorageAvailable +
-						` (${(localStorageUsed / 1024).toFixed(2)} KB Used)`,
-					sessionStorage:
-						sessionStorageAvailable +
-						` (${(sessionStorageUsed / 1024).toFixed(2)} KB Used)`,
+					localStorage: localStorageAvailable
+						? `Available (${(localStorageUsed / 1024).toFixed(2)} KB Used)`
+						: "Not Available",
+					sessionStorage: sessionStorageAvailable
+						? `Available (${(sessionStorageUsed / 1024).toFixed(2)} KB Used)`
+						: "Not Available",
 				},
 				system: {
 					platform: platform ?? "Unknown",
@@ -190,6 +192,14 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 						(new Date().toLocaleString() ?? "Unknown") +
 						` (${timezone})`,
 					memory: memory,
+				},
+				app: {
+					details: `${orgDetail.app_name} by ${orgDetail.org_name} (${orgDetail.org_id} / ${packageJson.version})`,
+					server: window?.location?.origin ?? "Unknown",
+					source: appSource || "Unknown",
+					nativeVersion: nativeVersion || "N/A",
+					env: process.env.NEXT_PUBLIC_ENV || "Unknown",
+					trxnRoles: role_tx_list?.join(", ") ?? "N/A",
 				},
 			});
 			setErrorMessage(null);
