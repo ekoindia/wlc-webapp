@@ -70,7 +70,7 @@ interface UseOnboardingApiSubmissionProps {
  * Return type for useOnboardingApiSubmission hook
  */
 interface UseOnboardingApiSubmissionReturn {
-	submit: (_data: FormSubmissionData) => Promise<void>;
+	submit: (_data: FormSubmissionData) => Promise<boolean>;
 	isSubmitting: boolean;
 }
 
@@ -149,6 +149,9 @@ export const useOnboardingApiSubmission = ({
 
 	/**
 	 * Main API submission function
+	 * MARK: submit
+	 * @param {FormSubmissionData} data - Data for the form submission
+	 * @returns {Promise<boolean>} Promise resolving to success status
 	 */
 	const submit = useCallback(
 		async (data: FormSubmissionData) => {
@@ -156,6 +159,8 @@ export const useOnboardingApiSubmission = ({
 			const interactionTypeId = getInteractionTypeId(data);
 
 			actions.setApiInProgress(true);
+
+			let success = false;
 
 			try {
 				const response = await fetcher(
@@ -173,7 +178,7 @@ export const useOnboardingApiSubmission = ({
 				);
 
 				// Check for success: status/response_status_id/response_type_id should be 0
-				const success =
+				success =
 					(response?.status === 0 ||
 						response?.response_type_id === 0) &&
 					!(Object.keys(response?.invalid_params || {}).length > 0);
@@ -196,6 +201,8 @@ export const useOnboardingApiSubmission = ({
 			} finally {
 				actions.setApiInProgress(false);
 			}
+
+			return success;
 		},
 		[
 			processFormData,
