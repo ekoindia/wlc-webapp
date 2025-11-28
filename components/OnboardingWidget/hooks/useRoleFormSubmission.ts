@@ -66,7 +66,7 @@ interface UseRoleFormSubmissionProps {
  * Return type for useRoleFormSubmission hook
  */
 interface UseRoleFormSubmissionReturn {
-	submitRole: (_data: FormSubmissionData) => Promise<void>;
+	submitRole: (_data: FormSubmissionData) => Promise<boolean>;
 	isSubmitting: boolean;
 }
 
