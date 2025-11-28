@@ -55,6 +55,24 @@ const ExternalOnboardingWidget =
 		};
 	}>;
 
+/**
+ * OnboardingSteps
+ *
+ * Manages onboarding state and integrations, and renders the external onboarding widget.
+ * Responsibilities:
+ * - Initialize and persist step state via useStepConfiguration / useOnboardingState
+ * - Route step submissions to upload/form handlers and third-party integrations (esign, digilocker, pintwin)
+ * - Handle step skip logic, widget callbacks, Android messages and pub/sub responses
+ * @param {object} props
+ * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
+ * @param {string} props.logo - organization logo URL
+ * @param {string} props.appName - application display name
+ * @param {string} props.orgName - organization name
+ * @param {any} props.userData - user data object (server/context)
+ * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
+ * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
+ * @returns {JSX.Element} ExternalOnboardingWidget wrapped with local orchestration
+ */
 const OnboardingSteps = ({
 	isAssistedOnboarding,
 	logo,
@@ -225,6 +243,11 @@ const OnboardingSteps = ({
 		},
 	});
 
+	/**
+	 * Initialize step configuration from provided user data.
+	 * @param {object} user_data - object containing onboarding details ({ details: { ... } })
+	 * @returns {void}
+	 */
 	const initialStepSetter = useCallback(
 		(user_data) => {
 			stepConfiguration.initializeSteps(user_data);
@@ -232,27 +255,41 @@ const OnboardingSteps = ({
 		[stepConfiguration]
 	);
 
+	/**
+	 * Handle submission of step data from the external widget.
+	 * Routes payloads to submitForm / uploadFile depending on step id.
+	 * Special cases:
+	 * - SELECTION_SCREEN: ignored (handled by RoleSelection elsewhere)
+	 * - LOCATION_CAPTURE: updates location in state
+	 * - ADD_BANK_ACCOUNT: both submitForm and uploadFile are executed
+	 *
+	 * MARK: Step Submit
+	 * @param {object} data - widget payload
+	 * @param {number} data.id - step id
+	 * @param {object} [data.form_data] - form payload for the step
+	 * @returns {Promise<void>}
+	 */
 	const handleStepDataSubmit = useCallback(
 		async (data) => {
 			// console.log("[AgentOnboarding] handleStepDataSubmit data", data);
-
-			// Skip role selection as it's handled in RoleSelection component
 			if (data?.id === ONBOARDING_STEP_IDS.SELECTION_SCREEN) {
-				// console.log(
-				// 	"[AgentOnboarding] Skipping role selection in OnboardingSteps - handled in RoleSelection"
-				// );
+				// Skip role selection as it's handled in RoleSelection component
 				return;
 			}
 
 			if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
+				// Update location in state
 				actions.setLocation(data?.form_data?.latlong);
 			}
 
-			// Route to appropriate handler based on form type (file upload steps)
 			if (data?.id === ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
 				// HACK: For bank account, we need both upload and submit
 				// TODO: Better configuration required to handle such cases
-				await submitForm(data);
+				const isAccountAdded = await submitForm(data);
+				if (!isAccountAdded) {
+					// If form submission failed, do not proceed to upload
+					return;
+				}
 				await uploadFile(data);
 				return;
 			} else if (
@@ -264,6 +301,7 @@ const OnboardingSteps = ({
 					// ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
 				].includes(data?.id)
 			) {
+				// File upload steps
 				await uploadFile(data);
 				return;
 			} else {
@@ -275,12 +313,13 @@ const OnboardingSteps = ({
 		[actions]
 	);
 
-	// Method only for file upload data
-
 	/**
-	 * Handles skipping of an onboarding step
-	 * Called by child component when user skips a step
-	 * @param {number} stepId - ID of the step to skip
+	 * Handle skipping of an onboarding step.
+	 * Marks the step SKIPPED, advances the next incomplete step to IN_PROGRESS and persists.
+	 * Note: refreshAgentProfile is intentionally NOT called here to preserve resume state.
+	 * MARK: Step Skip
+	 * @param {number} stepId - id of the step to skip
+	 * @returns {void}
 	 */
 	const handleOnboardingSkip = useCallback(
 		(stepId: number) => {
@@ -352,6 +391,15 @@ const OnboardingSteps = ({
 		[state.stepperData, stepConfiguration]
 	);
 
+	/**
+	 * Handle callbacks dispatched by the external widget.
+	 * Supports actions for esign (legality), pintwin, digilocker and Android permission requests.
+	 * MARK: Widget Callbacks
+	 * @param {object} callType - callback descriptor from widget
+	 * @param {number} callType.type - step id constant indicating source step
+	 * @param {string} callType.method - specific method/action requested by the widget
+	 * @returns {void}
+	 */
 	const handleStepCallBack = (callType) => {
 		if (callType.type === ONBOARDING_STEP_IDS.SIGN_AGREEMENT) {
 			// Leegality Esign
@@ -403,6 +451,11 @@ const OnboardingSteps = ({
 		}
 	};
 
+	/**
+	 * Setup Window Message Listener for eSign status updates to trigger step submission.
+	 * The eSign web library sends postMessage events with type "STATUS_UPDATE" on completion from its own tab.
+	 * MARK: eSign Resp
+	 */
 	useEffect(() => {
 		const handleMessage = (event) => {
 			if (event.data.type === "STATUS_UPDATE") {
@@ -410,7 +463,7 @@ const OnboardingSteps = ({
 					id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
 					form_data: {
 						document_id: state.esign.signUrlData?.document_id ?? "",
-						agreement_id: userData?.userDetails?.agreement_id,
+						agreement_id: agreementId,
 					},
 				});
 			}
@@ -426,19 +479,22 @@ const OnboardingSteps = ({
 		return () => {
 			controller.abort();
 		};
-	}, [
-		state.esign.signUrlData,
-		userData?.userDetails?.agreement_id,
-		handleStepDataSubmit,
-	]);
+	}, [state.esign.signUrlData, agreementId, handleStepDataSubmit]);
 
+	/**
+	 * Subscribe to Pintwin booklet number changes to fetch keys automatically
+	 * MARK: PinTwin Fetch Keys
+	 */
 	useEffect(() => {
 		if (state.pintwin.bookletNumber) {
 			pintwin.getBookletKey();
 		}
 	}, [state.pintwin.bookletNumber, pintwin.getBookletKey]);
 
-	// Subscribe to the Android responses
+	/**
+	 * Subscribe to Android responses for eSign status updates.
+	 * MARK: Android Esign Resp
+	 */
 	useEffect(() => {
 		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
@@ -449,6 +505,9 @@ const OnboardingSteps = ({
 		return unsubscribe;
 	}, [TOPICS.ANDROID_RESPONSE, subscribe, android]);
 
+	/**
+	 * Initialize step configuration when onboarding user details become available.
+	 */
 	useEffect(() => {
 		// Only initialize if we have valid user details
 		// This allows re-initialization when data becomes available after async fetch
@@ -464,6 +523,7 @@ const OnboardingSteps = ({
 
 	// console.log("[AgentOnboarding] state data", state.stepperData);
 
+	// MARK: JSX
 	return (
 		<ExternalOnboardingWidget
 			{...({
@@ -474,7 +534,7 @@ const OnboardingSteps = ({
 				shopTypes: shopTypesData,
 				stateTypes: stateTypesData,
 				bankList: bankList,
-				userData: userData,
+				userData: onboardingUserDetails,
 				handleSubmit: handleStepDataSubmit,
 				stepResponse: state.lastStepResponse,
 				stepsData: state.stepperData,
