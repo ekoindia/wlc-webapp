@@ -521,6 +521,14 @@ const OnboardingSteps = ({
 		}
 	}, [onboardingUserDetails]);
 
+	useEffect(() => {
+		console.log(
+			"[OnboardingSteps] state:",
+			state,
+			state?.ui?.apiInProgress
+		);
+	}, [state]);
+
 	// console.log("[AgentOnboarding] state data", state.stepperData);
 
 	// MARK: JSX
@@ -536,17 +544,18 @@ const OnboardingSteps = ({
 				bankList: bankList,
 				userData: onboardingUserDetails,
 				handleSubmit: handleStepDataSubmit,
-				stepResponse: state.lastStepResponse,
-				stepsData: state.stepperData,
+				stepResponse: state?.lastStepResponse,
+				stepsData: state?.stepperData,
 				handleStepCallBack: handleStepCallBack,
 				handleOnboardingSkip: handleOnboardingSkip,
+				apiInProgress: state?.ui?.apiInProgress,
 				esignStatus:
-					state.esign.status === "ready"
+					state?.esign?.status === "ready"
 						? 1
-						: state.esign.status === "failed"
+						: state?.esign?.status === "failed"
 							? 2
 							: 0,
-				digilockerData: state.digilocker.data,
+				digilockerData: state?.digilocker?.data,
 				constants: {
 					apiStatus: ONBOARDING_API_STATUS,
 					stepIds: ONBOARDING_STEP_IDS,
