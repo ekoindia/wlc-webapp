@@ -125,7 +125,12 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 	 */
 	useEffect(() => {
 		try {
-			const userAgent = window.navigator.userAgent;
+			const userAgent = window?.navigator?.userAgent
+				? window.navigator.userAgent.replace(
+						"ekoconnectandroidwebview",
+						""
+					)
+				: "";
 			const browserInfo = parseBrowserInfo(userAgent);
 
 			// Test localStorage availability

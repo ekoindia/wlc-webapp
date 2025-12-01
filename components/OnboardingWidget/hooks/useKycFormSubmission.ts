@@ -99,7 +99,7 @@ interface UseKycFormSubmissionProps {
  * Return type for useKycFormSubmission hook
  */
 interface UseKycFormSubmissionReturn {
-	submitForm: (_data: FormSubmissionData) => Promise<void>;
+	submitForm: (_data: FormSubmissionData) => Promise<boolean>;
 	isSubmitting: boolean;
 }
 

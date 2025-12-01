@@ -117,16 +117,27 @@ const AssistedOnboarding = (): JSX.Element => {
 			);
 
 			if (response?.data) {
+				let agentData = response.data;
 				console.log(
 					"[AssistedOnboarding] Agent details fetched:",
-					response.data
+					agentData
 				);
-				// check if response.data.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
-				if (response?.data?.user_detail?.onboarding === 0) {
+				// check if agentData.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
+				if (agentData?.user_detail?.onboarding === 0) {
 					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
 					return;
 				}
-				return response.data;
+
+				// Transform agentData to match logged-in userData structure.
+				// This is to keep the onboarding logic consistent between assisted and self onboarding.
+				agentData = {
+					...agentData,
+					userDetails: agentData.user_detail,
+					onboarding_steps: agentData.user_detail.onboarding_steps,
+					role_list: agentData.user_detail.role_list,
+				};
+
+				return agentData;
 			}
 			return null;
 		} catch (error) {

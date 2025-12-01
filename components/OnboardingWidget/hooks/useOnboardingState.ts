@@ -150,6 +150,8 @@ function onboardingReducer(
 	state: OnboardingState,
 	action: OnboardingAction
 ): OnboardingState {
+	console.log("[OnboardingReducer] Action: ", action);
+
 	switch (action.type) {
 		case "SET_ROLE":
 			return {

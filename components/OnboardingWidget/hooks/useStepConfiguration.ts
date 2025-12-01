@@ -564,6 +564,12 @@ export const useStepConfiguration = ({
 	 */
 	const updateStepStates = useCallback(
 		(steps: OnboardingStep[]) => {
+			console.log(
+				"[useStepConfiguration] updateStepState: ",
+				steps,
+				userIdentifier
+			);
+
 			actions.setStepperData([...steps]);
 			saveStepsToSessionStorage(steps, userIdentifier || "");
 			console.log(
