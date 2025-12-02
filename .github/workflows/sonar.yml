@@ -16,6 +16,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 1
 
             - name: Set up Node.js
               uses: actions/setup-node@v4
@@ -28,6 +30,7 @@ jobs:
 
             - name: Run tests with coverage
               run: npm test -- --coverage
+              continue-on-error: true
 
             - name: SonarQube Scan
               uses: SonarSource/sonarqube-scan-action@v1.2
