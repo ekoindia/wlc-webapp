@@ -14,7 +14,7 @@ jest.mock("@chakra-ui/react", () => ({
 // Mock API helper
 const mockFetcher = jest.fn();
 jest.mock("helpers/apiHelper", () => ({
-	fetcher: mockFetcher,
+	fetcher: (...args) => mockFetcher(...args),
 }));
 
 // Mock sessionStorage
