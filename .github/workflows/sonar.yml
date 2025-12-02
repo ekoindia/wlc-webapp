@@ -39,6 +39,6 @@ jobs:
                       -Dsonar.projectKey=${{ secrets.SONARQUBE_PROJECT_KEY }}
                       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                       -Dsonar.projectName=Your-JS-Project
-                      -Dsonar.sources=.
-                      -Dsonar.exclusions=node_modules/**,dist/**
+                      -Dsonar.sources=components,constants,contexts,helpers,hooks,layout-components,libs,page-components,pages,tf-components,utils,coverage
+                      -Dsonar.exclusions=node_modules/**,dist/**,__tests__/**,public/**,docs/**,
                       -Dsonar.sourceEncoding=UTF-8
