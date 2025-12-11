@@ -42,6 +42,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					3, // Satin Prod
 				],
 			},
+			development: {
+				forOrgId: [3],
+			},
 		},
 	},
 
