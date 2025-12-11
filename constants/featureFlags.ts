@@ -39,7 +39,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					ORG_ID.EKOSTORE,
 					...ORG_ID.EKOTESTS,
 					...ORG_ID.DASHBOARD_V2,
-					// 3, // Satin Prod
+					3, // Satin Prod
 				],
 			},
 		},
