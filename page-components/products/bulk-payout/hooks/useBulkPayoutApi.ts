@@ -2,11 +2,7 @@ import { Endpoints } from "constants/EndPoints";
 import { useApiFetch } from "hooks";
 import { useCallback } from "react";
 import { useBulkPayout } from "../context/BulkPayoutContext";
-import {
-	BatchHistoryItem,
-	CustomerInfo,
-	ValidationError,
-} from "../context/types";
+import { BatchHistoryItem, ValidationError } from "../context/types";
 
 /**
  * TF API URI paths for Bulk Payout feature
@@ -16,8 +12,6 @@ const BULK_PAYOUT_TF_URIS = {
 	BATCH_LIST: "/bulk-payout/batch-list",
 	BATCH_STATUS: "/bulk-payout/batch",
 	DOWNLOAD: "/bulk-payout/download",
-	SEARCH_CUSTOMER: "/customer/search",
-	VERIFY_PINTWIN: "/authentication/verify-pintwin",
 } as const;
 
 /**
@@ -53,11 +47,7 @@ export interface ProcessRecordsPayload {
  */
 export const useBulkPayoutApi = () => {
 	const {
-		customer,
-		setLoading,
 		setError,
-		setCustomer,
-		setStep,
 		setUploadStatus,
 		setValidationErrors,
 		setCurrentBatch,
@@ -67,125 +57,9 @@ export const useBulkPayoutApi = () => {
 	} = useBulkPayout();
 
 	// Initialize useApiFetch for API calls with TF headers
-	// Using TRANSACTION endpoint like in NotificationCreator.jsx
 	const [fetchApi, isLoading] = useApiFetch(Endpoints.TRANSACTION, {
 		method: "POST",
 	});
-
-	/**
-	 * Search for customer by mobile number or customer ID
-	 */
-	const searchCustomer = useCallback(
-		async (searchValue: string) => {
-			setLoading(true);
-			setError(null);
-
-			try {
-				const result = await fetchApi({
-					headers: {
-						"Content-Type": "application/json",
-						"tf-req-uri-root-path": TF_ROOT_PATH,
-						"tf-req-uri": BULK_PAYOUT_TF_URIS.SEARCH_CUSTOMER,
-						"tf-req-method": "POST",
-					},
-					body: {
-						customer_id: searchValue,
-					},
-				});
-
-				if (result?.error) {
-					const errorMsg =
-						result.data?.message || "Failed to search customer";
-					setError(errorMsg);
-					return { success: false, error: errorMsg };
-				}
-
-				const data = result?.data;
-				if (data?.status === 0 && data?.data) {
-					const customerInfo: CustomerInfo = {
-						customerId: data.data.customer_id || data.data.id,
-						customerNumber:
-							data.data.mobile || data.data.customer_number,
-						customerName: data.data.name || data.data.customer_name,
-					};
-					setCustomer(customerInfo);
-					return { success: true, data: customerInfo };
-				} else {
-					const errorMsg = data?.message || "Customer not found";
-					setError(errorMsg);
-					return { success: false, error: errorMsg };
-				}
-			} catch (error) {
-				const errorMsg =
-					error instanceof Error
-						? error.message
-						: "Failed to search customer";
-				setError(errorMsg);
-				return { success: false, error: errorMsg };
-			} finally {
-				setLoading(false);
-			}
-		},
-		[fetchApi, setLoading, setError, setCustomer]
-	);
-
-	/**
-	 * Verify OTP/Pintwin for customer
-	 */
-	const verifyPintwin = useCallback(
-		async (pintwin: string) => {
-			if (!customer) {
-				setError("No customer selected");
-				return { success: false, error: "No customer selected" };
-			}
-
-			setLoading(true);
-			setError(null);
-
-			try {
-				const result = await fetchApi({
-					headers: {
-						"Content-Type": "application/json",
-						"tf-req-uri-root-path": TF_ROOT_PATH,
-						"tf-req-uri": BULK_PAYOUT_TF_URIS.VERIFY_PINTWIN,
-						"tf-req-method": "POST",
-					},
-					body: {
-						customer_id: customer.customerId,
-						pintwin: pintwin,
-					},
-				});
-
-				if (result?.error) {
-					const errorMsg =
-						result.data?.message || "Pintwin verification failed";
-					setError(errorMsg);
-					return { success: false, error: errorMsg };
-				}
-
-				const data = result?.data;
-				if (data?.status === 0) {
-					setStep("main");
-					return { success: true };
-				} else {
-					const errorMsg =
-						data?.message || "Pintwin verification failed";
-					setError(errorMsg);
-					return { success: false, error: errorMsg };
-				}
-			} catch (error) {
-				const errorMsg =
-					error instanceof Error
-						? error.message
-						: "Verification failed";
-				setError(errorMsg);
-				return { success: false, error: errorMsg };
-			} finally {
-				setLoading(false);
-			}
-		},
-		[fetchApi, customer, setLoading, setError, setStep]
-	);
 
 	/**
 	 * Process bulk payout records (upload Excel file)
@@ -416,8 +290,6 @@ export const useBulkPayoutApi = () => {
 	);
 
 	return {
-		searchCustomer,
-		verifyPintwin,
 		processRecords,
 		fetchBatchList,
 		fetchBatchStatus,

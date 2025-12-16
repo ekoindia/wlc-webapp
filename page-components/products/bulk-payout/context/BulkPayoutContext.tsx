@@ -12,8 +12,7 @@ import {
 	ActiveTab,
 	BatchHistoryItem,
 	BulkPayoutState,
-	BulkPayoutStep,
-	CustomerInfo,
+	CustomerParams,
 	initialState,
 	UploadStatus,
 	ValidationError,
@@ -68,13 +67,10 @@ export const useBulkPayout = () => {
 
 	const actions = useMemo(
 		() => ({
-			setStep: (step: BulkPayoutStep) =>
-				dispatch({ type: "SET_STEP", step }),
+			setCustomerParams: (params: CustomerParams) =>
+				dispatch({ type: "SET_CUSTOMER_PARAMS", params }),
 
 			setTab: (tab: ActiveTab) => dispatch({ type: "SET_TAB", tab }),
-
-			setCustomer: (customer: CustomerInfo | null) =>
-				dispatch({ type: "SET_CUSTOMER", payload: customer }),
 
 			setUploadStatus: (status: UploadStatus) =>
 				dispatch({ type: "SET_UPLOAD_STATUS", status }),

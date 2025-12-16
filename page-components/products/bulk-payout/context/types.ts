@@ -1,22 +1,12 @@
 /**
  * @file Bulk Payout Feature - Type Definitions
  * @description Type definitions for the Bulk Payout module including state management,
- * API payloads, and UI flow control. Follows the bbps/context/types.ts pattern.
+ * API payloads, and UI flow control.
  * @module bulk-payout/context/types
  */
 
 /**
- * Workflow steps for Bulk Payout process.
- * The user flows through these steps sequentially:
- * 1. `customer-search` - Initial step to search and select a customer
- * 2. `otp-verification` - Verify customer with pintwin/OTP
- * 3. `main` - Main view with upload and history tabs
- * @typedef {("customer-search" | "otp-verification" | "main")} BulkPayoutStep
- */
-export type BulkPayoutStep = "customer-search" | "otp-verification" | "main";
-
-/**
- * Active tab in the main view after successful OTP verification.
+ * Active tab in the main view.
  * - `upload` - Upload recipients Excel file
  * - `history` - View batch upload history
  * @typedef {("upload" | "history")} ActiveTab
@@ -38,23 +28,6 @@ export type BatchStatus =
 	| "SUCCESS"
 	| "FAILED"
 	| "PARTIAL";
-
-/**
- * Customer information returned from the customer search API.
- * Used to identify the customer for bulk payout transactions.
- * @interface CustomerInfo
- * @property {string} customerId - Unique customer identifier
- * @property {string} customerNumber - Customer mobile number
- * @property {string} customerName - Customer display name
- */
-export interface CustomerInfo {
-	/** Unique customer identifier from the backend */
-	customerId: string;
-	/** Customer mobile number */
-	customerNumber: string;
-	/** Customer display name */
-	customerName: string;
-}
 
 /**
  * Validation error for an individual row in the uploaded Excel file.
@@ -93,19 +66,6 @@ export type UploadStatus =
  * Single batch history record from the batch list API.
  * Represents one uploaded batch of payout transactions.
  * @interface BatchHistoryItem
- * @property {number} id - Unique batch ID from database
- * @property {string} batchNumber - Human-readable batch reference number
- * @property {string} userCode - User code who created the batch
- * @property {string} customerNumber - Customer mobile number
- * @property {string} customerName - Customer display name
- * @property {number} totalAmount - Total amount in the batch (in paisa or rupees)
- * @property {number} totalRecords - Total number of recipient records
- * @property {BatchStatus} status - Current processing status
- * @property {number} successCount - Number of successfully processed records
- * @property {number} failureCount - Number of failed records
- * @property {number} [invalidCount] - Number of invalid records (optional)
- * @property {number} [refundedCount] - Number of refunded records (optional)
- * @property {string} createdDate - ISO date string when batch was created
  */
 export interface BatchHistoryItem {
 	/** Unique batch ID from database */
@@ -141,11 +101,24 @@ export interface BatchHistoryItem {
  * Extends BatchHistoryItem with additional fields.
  * @interface BatchDetails
  * @augments BatchHistoryItem
- * @property {string} [uploadDate] - ISO date string when file was uploaded
  */
 export interface BatchDetails extends BatchHistoryItem {
 	/** ISO date string when file was uploaded */
 	uploadDate?: string;
+}
+
+/**
+ * Customer parameters passed via URL query params from Polymer widget.
+ * These come from the search customer flow configured in DB.
+ * @interface CustomerParams
+ */
+export interface CustomerParams {
+	/** Customer ID (mobile number) */
+	customerId: string;
+	/** Customer display name */
+	customerName: string;
+	/** User code for the customer */
+	userCode: string;
 }
 
 /**
@@ -155,21 +128,18 @@ export interface BatchDetails extends BatchHistoryItem {
  */
 export interface BulkPayoutState {
 	// =====================
-	// Flow Control State
+	// Customer Params (from URL)
 	// =====================
 
-	/** Current step in the multi-step workflow */
-	currentStep: BulkPayoutStep;
+	/** Customer parameters from URL query params */
+	customerParams: CustomerParams | null;
+
+	// =====================
+	// Tab State
+	// =====================
 
 	/** Currently active tab in the main view */
 	activeTab: ActiveTab;
-
-	// =====================
-	// Customer State
-	// =====================
-
-	/** Customer information after successful search */
-	customer: CustomerInfo | null;
 
 	// =====================
 	// Upload State
@@ -211,9 +181,8 @@ export interface BulkPayoutState {
  * @constant {BulkPayoutState} initialState
  */
 export const initialState: BulkPayoutState = {
-	currentStep: "customer-search",
+	customerParams: null,
 	activeTab: "upload",
-	customer: null,
 	uploadStatus: "idle",
 	validationErrors: [],
 	currentBatchNumber: null,
@@ -229,9 +198,8 @@ export const initialState: BulkPayoutState = {
  * @typedef {object} Action
  * @description Actions available:
  * @property
- * - `SET_STEP` - Navigate to a different workflow step
+ * - `SET_CUSTOMER_PARAMS` - Set customer params from URL query params
  * - `SET_TAB` - Switch between upload and history tabs
- * - `SET_CUSTOMER` - Set customer info after successful search
  * - `SET_UPLOAD_STATUS` - Update file upload status
  * - `SET_VALIDATION_ERRORS` - Set validation errors from file upload
  * - `SET_CURRENT_BATCH` - Set batch number after successful upload
@@ -244,9 +212,8 @@ export const initialState: BulkPayoutState = {
  * - `RESET_UPLOAD` - Reset only upload-related state
  */
 export type Action =
-	| { type: "SET_STEP"; step: BulkPayoutStep }
+	| { type: "SET_CUSTOMER_PARAMS"; params: CustomerParams }
 	| { type: "SET_TAB"; tab: ActiveTab }
-	| { type: "SET_CUSTOMER"; payload: CustomerInfo | null }
 	| { type: "SET_UPLOAD_STATUS"; status: UploadStatus }
 	| { type: "SET_VALIDATION_ERRORS"; errors: ValidationError[] }
 	| { type: "SET_CURRENT_BATCH"; batchNumber: string | null }

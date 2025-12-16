@@ -6,39 +6,59 @@ import {
 	TabPanels,
 	Tabs,
 } from "@chakra-ui/react";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import BatchHistory from "./components/BatchHistory";
-import CustomerSearch from "./components/CustomerSearch";
-import OtpVerification from "./components/OtpVerification";
 import UploadRecipients from "./components/UploadRecipients";
 import { BulkPayoutProvider, useBulkPayout } from "./context/BulkPayoutContext";
 
 /**
- * Main content component handling step-based navigation
+ * Main content component with Upload and History tabs.
+ * Reads customer params from URL query params on mount.
  */
 const BulkPayoutContent = () => {
-	const { currentStep, activeTab, setTab } = useBulkPayout();
+	const { activeTab, setTab, setCustomerParams, customerParams } =
+		useBulkPayout();
+	const searchParams = useSearchParams();
 
-	// Step 1: Customer Search
-	if (currentStep === "customer-search") {
-		return (
-			<Flex justify="center" align="center" minH="400px">
-				<CustomerSearch />
-			</Flex>
-		);
-	}
+	// Read customer params from URL on mount
+	useEffect(() => {
+		const customerId = searchParams.get("customer_id");
+		const customerName = searchParams.get("customer_name");
+		const userCode = searchParams.get("user_code");
 
-	// Step 2: OTP Verification
-	if (currentStep === "otp-verification") {
-		return (
-			<Flex justify="center" align="center" minH="400px">
-				<OtpVerification />
-			</Flex>
-		);
-	}
+		if (customerId && customerName && userCode) {
+			setCustomerParams({
+				customerId,
+				customerName: decodeURIComponent(customerName),
+				userCode,
+			});
+		}
+	}, [searchParams, setCustomerParams]);
 
-	// Step 3: Main View with Tabs
 	return (
 		<Flex direction="column" gap="6" w="100%">
+			{/* Show customer info if available */}
+			{customerParams && (
+				<Flex
+					bg="primary.50"
+					p="4"
+					borderRadius="12px"
+					justify="space-between"
+					align="center"
+				>
+					<Flex direction="column" gap="1">
+						<Flex fontSize="sm" color="gray.600">
+							Customer
+						</Flex>
+						<Flex fontWeight="semibold" color="dark">
+							{customerParams.customerName} (
+							{customerParams.customerId})
+						</Flex>
+					</Flex>
+				</Flex>
+			)}
+
 			<Tabs
 				index={activeTab === "upload" ? 0 : 1}
 				onChange={(index) => setTab(index === 0 ? "upload" : "history")}

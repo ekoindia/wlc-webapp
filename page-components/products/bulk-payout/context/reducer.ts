@@ -11,8 +11,7 @@ import { Action, BulkPayoutState, initialState } from "./types";
  * Reducer function for managing Bulk Payout state transitions.
  *
  * This reducer handles all state updates for the Bulk Payout feature including:
- * - Workflow step navigation
- * - Customer search and verification
+ * - Tab navigation
  * - File upload status management
  * - Batch history updates
  * - Error handling
@@ -21,14 +20,8 @@ import { Action, BulkPayoutState, initialState } from "./types";
  * @param {Action} action - Action object containing type and payload
  * @returns {BulkPayoutState} New state after applying the action
  * @example
- * // Navigate to OTP verification step
- * dispatch({ type: "SET_STEP", step: "otp-verification" });
- * @example
- * // Set customer after successful search
- * dispatch({
- *   type: "SET_CUSTOMER",
- *   payload: { customerId: "123", customerNumber: "9876543210", customerName: "John" }
- * });
+ * // Switch to history tab
+ * dispatch({ type: "SET_TAB", tab: "history" });
  * @example
  * // Update batch status during polling
  * dispatch({
@@ -45,15 +38,13 @@ export const bulkPayoutReducer = (
 ): BulkPayoutState => {
 	switch (action.type) {
 		/**
-		 * SET_STEP - Navigate to a different workflow step.
-		 * Also clears any existing error when changing steps.
+		 * SET_CUSTOMER_PARAMS - Set customer params from URL query params.
+		 * Called when component mounts to populate customer data from Polymer widget.
 		 */
-		case "SET_STEP":
+		case "SET_CUSTOMER_PARAMS":
 			return {
 				...state,
-				currentStep: action.step,
-				// Reset error when changing steps
-				error: null,
+				customerParams: action.params,
 			};
 
 		/**
@@ -63,22 +54,6 @@ export const bulkPayoutReducer = (
 			return {
 				...state,
 				activeTab: action.tab,
-			};
-
-		/**
-		 * SET_CUSTOMER - Set customer info after successful search.
-		 * Automatically advances to OTP verification step if customer is set.
-		 * Returns to customer search step if customer is null.
-		 */
-		case "SET_CUSTOMER":
-			return {
-				...state,
-				customer: action.payload,
-				// Move to OTP step if customer is set
-				currentStep: action.payload
-					? "otp-verification"
-					: "customer-search",
-				error: null,
 			};
 
 		/**
@@ -182,7 +157,6 @@ export const bulkPayoutReducer = (
 		/**
 		 * RESET_UPLOAD - Reset only upload-related state.
 		 * Used when user wants to upload another file.
-		 * Preserves customer info and other state.
 		 */
 		case "RESET_UPLOAD":
 			return {
@@ -195,7 +169,6 @@ export const bulkPayoutReducer = (
 
 		/**
 		 * RESET_STATE - Reset entire state to initial values.
-		 * Used when starting a new session or logging out.
 		 */
 		case "RESET_STATE":
 			return {

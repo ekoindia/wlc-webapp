@@ -22,7 +22,7 @@ interface UploadFormData {
 const UploadRecipients = () => {
 	const [file, setFile] = useState<File | null>(null);
 	const {
-		customer,
+		customerParams,
 		uploadStatus,
 		validationErrors,
 		currentBatchNumber,
@@ -58,14 +58,20 @@ const UploadRecipients = () => {
 	const hasErrors = uploadStatus === "error";
 
 	const handleFormSubmit = async (data: UploadFormData) => {
-		if (!file || !customer) return;
+		if (!file) return;
+
+		// Use customerParams from URL if available, fallback to userData
+		const customerId = customerParams?.customerId || userData?.mobile || "";
+		const userCode = customerParams?.userCode || userData?.user_code || "";
+		const senderName =
+			customerParams?.customerName || userData?.userDetails?.name || "";
 
 		const payload = {
 			bc: "1",
-			sender_name: userData?.userDetails?.name || customer.customerName,
+			sender_name: senderName,
 			source: "NEWCONNECT",
 			locale: "en",
-			user_code: userData?.user_code || "",
+			user_code: userCode,
 			pintwin: data.pintwin,
 			is_consent: "1",
 			latlong: "0,0,0",
@@ -74,7 +80,7 @@ const UploadRecipients = () => {
 				Date.now() + "" + Math.floor(Math.random() * 1000000000),
 			initiator_id: userData?.initiator_id || "",
 			org_id: userData?.org_id || "1",
-			customer_id: customer.customerId,
+			customer_id: customerId,
 			service_code: "45",
 		};
 
