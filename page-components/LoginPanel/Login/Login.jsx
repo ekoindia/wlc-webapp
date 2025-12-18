@@ -96,7 +96,8 @@ const Login = ({
 				toast,
 				"send",
 				isAndroid,
-				isMobileMappedUserId
+				isMobileMappedUserId,
+				orgDetail.org_token
 			);
 
 			setNumber({
