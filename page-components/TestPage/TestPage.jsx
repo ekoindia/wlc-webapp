@@ -2,6 +2,7 @@ import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import {
 	CopyButton,
 	Dropzone,
+	EkoConnectWidget,
 	Input,
 	Markdown,
 	MicInput,
@@ -775,6 +776,14 @@ const CopyButtonTest = () => {
 	);
 };
 
+const EkoConnectWidgetTest = () => {
+	return (
+		<Flex>
+			<EkoConnectWidget start_id={998} />
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -829,6 +838,10 @@ const TestComponents = [
 	{
 		title: "Copy Button Test",
 		component: CopyButtonTest,
+	},
+	{
+		title: "Eko Connect Widget Test",
+		component: EkoConnectWidgetTest,
 	},
 ];
 

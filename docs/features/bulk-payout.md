@@ -82,6 +82,23 @@ This tab contains the Search Customer interface and conditionally renders UI bas
 * **Component:** `EkoConnectWidget`
 * **Purpose:** Renders configuration-driven UI from transaction framework
 * **Data Source:** Uses existing transaction framework configuration for Bulk IMPS
+* **Usage:** (See `TestPage.jsx` for live example)
+```tsx
+<EkoConnectWidget start_id={998} />
+```
+* **Props:**
+    * `start_id` (string | number): The transaction ID to load. This is the entry point for the transaction flow.
+    * `paths` (Array<string>, optional): List of sub-paths to navigate within the transaction flow.
+    * `language` (string, optional): Language for localization (default: "en").
+* **Key Features:**
+    * Loads and manages transaction flows (requests & responses)
+    * Handles caching of transaction metadata
+    * Theme & localization support
+    * Location capture integration
+    * Toast notifications
+    * Built-in raise query/ticket management
+    * Shadow DOM rendering (isolated from host page CSS)
+* **Reference:** See implementation in `page-components/TestPage/TestPage.jsx` → `EkoConnectWidgetTest` component
 
 ### Tab 2: History
 This tab displays the Bulk Payout Transaction History, visible from the start.
