@@ -20,6 +20,8 @@ interface InfoTileProps {
 	onClick?: () => void;
 	/** URL to navigate to when the tile is clicked. This is used if the `onClick` function is not provided */
 	url?: string;
+	/** Unique name identifier for the tile. When provided, enables event delegation via data-card-name attribute */
+	name?: string;
 }
 
 /**
@@ -31,6 +33,7 @@ interface InfoTileProps {
  * @param root0.onClick
  * @param root0.url
  * @param root0.iconStyle
+ * @param root0.name
  */
 const InfoTile = ({
 	label,
@@ -39,6 +42,7 @@ const InfoTile = ({
 	iconStyle = "avatar",
 	onClick,
 	url,
+	name,
 }: InfoTileProps): JSX.Element => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState<boolean>(false);
@@ -52,7 +56,7 @@ const InfoTile = ({
 		}
 	};
 
-	return (
+	const tileContent = (
 		<Flex
 			key={label}
 			w="100%"
@@ -129,6 +133,17 @@ const InfoTile = ({
 			/>
 		</Flex>
 	);
+
+	// Wrap with data-card-name div when name is provided for event delegation
+	if (name) {
+		return (
+			<div data-card-name={name} style={{ width: "100%" }}>
+				{tileContent}
+			</div>
+		);
+	}
+
+	return tileContent;
 };
 
 export default InfoTile;

@@ -17,6 +17,8 @@ interface InfoTileGridProps {
 		url?: string;
 		/** Function to call when the tile is clicked. When both `url` and `onClick` are provided, `onClick` will take precedence. */
 		onClick?: () => void;
+		/** Unique name identifier for the tile. When provided, enables event delegation via data-card-name attribute */
+		name?: string;
 	}[];
 
 	/** Style of the icon - avatar (default) or square */
@@ -46,12 +48,12 @@ const InfoTileGrid = ({ list, iconStyle = "avatar" }: InfoTileGridProps) => {
 			}}
 		>
 			{list?.map((item) => {
-				const { label, desc, icon, url, onClick } = item || {};
+				const { label, desc, icon, url, onClick, name } = item || {};
 				if (!label) return null;
 
 				return (
 					<InfoTile
-						key={label + url}
+						key={name || label + url}
 						iconStyle={iconStyle}
 						{...{
 							label,
@@ -59,6 +61,7 @@ const InfoTileGrid = ({ list, iconStyle = "avatar" }: InfoTileGridProps) => {
 							icon,
 							url,
 							onClick,
+							name,
 						}}
 					/>
 				);
