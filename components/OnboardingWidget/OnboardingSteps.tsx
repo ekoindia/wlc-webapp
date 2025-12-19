@@ -207,11 +207,14 @@ const OnboardingSteps = ({
 		agreementId,
 		mobile,
 		onSuccess: async (_response, data) => {
-			// Update step status
-			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.COMPLETED);
+			// since there are two calls for ADD_BANK_ACCOUNT, avoid double refresh and status update as if second calls gets failed then status will be marked as successful as second call will refresh the profile
+			if (data.id !== ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
+				// Update step status
+				updateStepStatus(data.id, ONBOARDING_STEP_STATUS.COMPLETED);
 
-			// Refresh user profile
-			await refreshAgentProfile();
+				// Skip refresh for ADD_BANK_ACCOUNT - will refresh after upload completes
+				await refreshAgentProfile();
+			}
 		},
 		onError: async (_error, data) => {
 			// Update step status to failed
