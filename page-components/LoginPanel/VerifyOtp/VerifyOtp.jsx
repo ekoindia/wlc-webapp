@@ -56,7 +56,8 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 			toast,
 			"resend",
 			isAndroid,
-			isMobileMappedUserId
+			isMobileMappedUserId,
+			orgDetail.org_token
 		);
 		if (!otp_sent) {
 			// OTP failed..back to previous screen
@@ -76,6 +77,7 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 			mobile: _mobile,
 			id_token: _otp || Otp,
 			org_id: orgDetail.org_id,
+			org_token: orgDetail.org_token,
 			// ...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
 		});
 	};

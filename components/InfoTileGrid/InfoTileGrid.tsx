@@ -18,14 +18,18 @@ interface InfoTileGridProps {
 		/** Function to call when the tile is clicked. When both `url` and `onClick` are provided, `onClick` will take precedence. */
 		onClick?: () => void;
 	}[];
+
+	/** Style of the icon - avatar (default) or square */
+	iconStyle?: "avatar" | "square";
 }
 
 /**
  * A grid of InfoTile components where each tile has a label, description, and an icon. It can be used to display a collection of related information in a visually appealing way. Each tile can be clicked to navigate to a different page or perform an action.
  * @param root0
  * @param root0.list
+ * @param root0.iconStyle
  */
-const InfoTileGrid = ({ list }: InfoTileGridProps) => {
+const InfoTileGrid = ({ list, iconStyle = "avatar" }: InfoTileGridProps) => {
 	// MARK: JSX
 	return (
 		<Grid
@@ -48,6 +52,7 @@ const InfoTileGrid = ({ list }: InfoTileGridProps) => {
 				return (
 					<InfoTile
 						key={label + url}
+						iconStyle={iconStyle}
 						{...{
 							label,
 							desc,

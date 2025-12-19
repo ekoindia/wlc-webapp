@@ -43,7 +43,8 @@ const SocialVerify = ({ email, number, previewMode, setNumber, setStep }) => {
 				originalNum,
 				toast,
 				"send",
-				isAndroid
+				isAndroid,
+				orgDetail.org_token
 			);
 
 			if (!otp_sent) {
