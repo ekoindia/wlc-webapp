@@ -286,7 +286,11 @@ const OnboardingSteps = ({
 				// HACK: For bank account, we need both upload and submit
 				// TODO: Better configuration required to handle such cases
 				console.log("[BankAccount] handleStepDataSubmit data", data);
-				const isAccountAdded = await submitForm(data);
+				let _data = { ...data };
+				if (_data?.form_data?.passbookImage)
+					delete _data.form_data.passbookImage;
+
+				const isAccountAdded = await submitForm(_data);
 				console.log(
 					"[BankAccount] handleStepDataSubmit isAccountAdded",
 					isAccountAdded
