@@ -285,11 +285,20 @@ const OnboardingSteps = ({
 			if (data?.id === ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
 				// HACK: For bank account, we need both upload and submit
 				// TODO: Better configuration required to handle such cases
+				console.log("[BankAccount] handleStepDataSubmit data", data);
 				const isAccountAdded = await submitForm(data);
+				console.log(
+					"[BankAccount] handleStepDataSubmit isAccountAdded",
+					isAccountAdded
+				);
 				if (!isAccountAdded) {
 					// If form submission failed, do not proceed to upload
 					return;
 				}
+				console.log(
+					"[BankAccount] handleStepDataSubmit uploadFile data",
+					data
+				);
 				await uploadFile(data);
 				return;
 			} else if (

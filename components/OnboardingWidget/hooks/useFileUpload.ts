@@ -187,6 +187,11 @@ export const useFileUpload = ({
 	const handleAddBankAccountUpload = useCallback(
 		(data: FileUploadData, formData: FormData, baseFormData: any) => {
 			const passbookImage = data.form_data.passbookImage?.fileData;
+			console.log("[BankAccount] handleAddBankAccountUpload data", data);
+			console.log(
+				"[BankAccount] handleAddBankAccountUpload passbookImage",
+				passbookImage
+			);
 
 			if (passbookImage) {
 				formData.append("file1", passbookImage);
@@ -196,6 +201,11 @@ export const useFileUpload = ({
 					file1: "",
 					doc_type: 7,
 				};
+
+				console.log(
+					"[BankAccount] handleAddBankAccountUpload formDataParams",
+					formDataParams
+				);
 
 				formData.append("formdata", objectToFormParams(formDataParams));
 			}
