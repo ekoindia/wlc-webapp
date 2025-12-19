@@ -289,11 +289,18 @@ const OnboardingSteps = ({
 				// HACK: For bank account, we need both upload and submit
 				// TODO: Better configuration required to handle such cases
 				console.log("[BankAccount] handleStepDataSubmit data", data);
-				let _data = { ...data };
-				if (_data?.form_data?.passbookImage)
-					delete _data.form_data.passbookImage;
 
-				const isAccountAdded = await submitForm(_data);
+				// Preserve passbookImage before mutation (shallow copy bug fix)
+				const passbookImage = data?.form_data?.passbookImage;
+
+				// Deep clone form_data to avoid mutating the original data object
+				const submitData = {
+					...data,
+					form_data: { ...data.form_data },
+				};
+				delete submitData.form_data.passbookImage;
+
+				const isAccountAdded = await submitForm(submitData);
 				console.log(
 					"[BankAccount] handleStepDataSubmit isAccountAdded",
 					isAccountAdded
@@ -302,11 +309,17 @@ const OnboardingSteps = ({
 					// If form submission failed, do not proceed to upload
 					return;
 				}
+
+				// Use preserved passbookImage for upload
+				const uploadData = {
+					id: data.id,
+					form_data: { passbookImage },
+				};
 				console.log(
 					"[BankAccount] handleStepDataSubmit uploadFile data",
-					data
+					uploadData
 				);
-				await uploadFile(data);
+				await uploadFile(uploadData);
 				return;
 			} else if (
 				[
