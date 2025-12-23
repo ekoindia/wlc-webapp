@@ -147,6 +147,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		summary: "Configure KYC verification for your users.",
 		fullDescription:
 			"Configure KYC verification for your users. This includes setting up the KYC verification process, including the required documents and the verification process.",
+		beta: true,
 	},
 	// {
 	// 	id: 30,
@@ -262,6 +263,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 		summary: "Verify KYC documents for customers",
 		fullDescription:
 			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
+		beta: true,
 	},
 	{
 		id: 215,
