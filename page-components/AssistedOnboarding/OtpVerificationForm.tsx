@@ -132,14 +132,19 @@ const OtpVerificationForm = ({
 					return;
 				}
 
-				// Handle OTP verification error
+				// Handle OTP verification error (check invalid_params
 				if (
-					responseTypeId === RESPONSE_TYPE_IDS.OTP_VERIFICATION_ERROR
+					response?.invalid_params &&
+					Object.keys(response.invalid_params).length > 0
 				) {
-					console.log("[AgentOnboarding] OTP INVALID");
+					console.log(
+						"[AgentOnboarding] OTP INVALID - invalid_params:",
+						response.invalid_params
+					);
 					toast({
 						title: "Invalid OTP",
 						description:
+							response.invalid_params?.otp ??
 							"Please enter the correct OTP sent to the agent's mobile number.",
 						status: "error",
 						duration: 5000,

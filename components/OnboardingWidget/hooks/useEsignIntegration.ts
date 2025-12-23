@@ -9,6 +9,9 @@ import { useCallback } from "react";
 import { ANDROID_ACTION, doAndroidAction, isAndroidApp } from "utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
+// Response type ID for agreement already signed
+const AGREEMENT_ALREADY_SIGNED_RESPONSE_ID = 1615;
+
 interface UseEsignIntegrationProps {
 	state: OnboardingStateHook["state"];
 	actions: OnboardingStateHook["actions"];
@@ -17,6 +20,7 @@ interface UseEsignIntegrationProps {
 	agreementId?: string | number;
 	mobile?: string;
 	onStepSubmit: (_data: any) => void;
+	onEsignAlreadyCompleted?: () => void;
 }
 
 interface UseEsignIntegrationReturn {
@@ -46,6 +50,7 @@ export const useEsignIntegration = ({
 	agreementId,
 	mobile,
 	onStepSubmit,
+	onEsignAlreadyCompleted,
 }: UseEsignIntegrationProps): UseEsignIntegrationReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
@@ -91,6 +96,20 @@ export const useEsignIntegration = ({
 			generateNewToken
 		)
 			.then((res) => {
+				// Check if esign is already completed (response_type_id: 1069)
+				if (
+					res?.response_type_id ===
+					AGREEMENT_ALREADY_SIGNED_RESPONSE_ID
+				) {
+					toast({
+						title: res?.message || "Agreement already signed.",
+						status: "info",
+						duration: 3000,
+					});
+					onEsignAlreadyCompleted?.();
+					return;
+				}
+
 				if (res?.data?.short_url) {
 					actions.setSignUrlData(res.data);
 					actions.updateEsignStatus("ready");

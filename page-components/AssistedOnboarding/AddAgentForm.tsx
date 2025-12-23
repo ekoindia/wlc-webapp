@@ -163,6 +163,25 @@ const AddAgentForm = ({
 					setStep(ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION);
 					return;
 				}
+
+				// Handle invalid_params from API response (field-level errors)
+				if (
+					response?.invalid_params &&
+					Object.keys(response.invalid_params).length > 0
+				) {
+					const errorMessage =
+						response.invalid_params?.csp_id ??
+						response.message ??
+						"An error occurred. Please try again.";
+					toast({
+						title: "Error",
+						description: errorMessage,
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+					});
+					return;
+				}
 			}
 		} catch (error: any) {
 			console.error("Error checking agent:", error);
