@@ -10,7 +10,7 @@ import { ANDROID_ACTION, doAndroidAction, isAndroidApp } from "utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 // Response type ID for agreement already signed
-const AGREEMENT_ALREADY_SIGNED_RESPONSE_ID = 1069;
+const AGREEMENT_ALREADY_SIGNED_RESPONSE_ID = 1615;
 
 interface UseEsignIntegrationProps {
 	state: OnboardingStateHook["state"];
