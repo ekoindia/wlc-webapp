@@ -207,11 +207,14 @@ const OnboardingSteps = ({
 		agreementId,
 		mobile,
 		onSuccess: async (_response, data) => {
-			// Update step status
-			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.COMPLETED);
+			// since there are two calls for ADD_BANK_ACCOUNT, avoid double refresh and status update as if second calls gets failed then status will be marked as successful as second call will refresh the profile
+			if (data.id !== ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
+				// Update step status
+				updateStepStatus(data.id, ONBOARDING_STEP_STATUS.COMPLETED);
 
-			// Refresh user profile
-			await refreshAgentProfile();
+				// Skip refresh for ADD_BANK_ACCOUNT - will refresh after upload completes
+				await refreshAgentProfile();
+			}
 		},
 		onError: async (_error, data) => {
 			// Update step status to failed
@@ -285,12 +288,38 @@ const OnboardingSteps = ({
 			if (data?.id === ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
 				// HACK: For bank account, we need both upload and submit
 				// TODO: Better configuration required to handle such cases
-				const isAccountAdded = await submitForm(data);
+				console.log("[BankAccount] handleStepDataSubmit data", data);
+
+				// Preserve passbookImage before mutation (shallow copy bug fix)
+				const passbookImage = data?.form_data?.passbookImage;
+
+				// Deep clone form_data to avoid mutating the original data object
+				const submitData = {
+					...data,
+					form_data: { ...data.form_data },
+				};
+				delete submitData.form_data.passbookImage;
+
+				const isAccountAdded = await submitForm(submitData);
+				console.log(
+					"[BankAccount] handleStepDataSubmit isAccountAdded",
+					isAccountAdded
+				);
 				if (!isAccountAdded) {
 					// If form submission failed, do not proceed to upload
 					return;
 				}
-				await uploadFile(data);
+
+				// Use preserved passbookImage for upload
+				const uploadData = {
+					id: data.id,
+					form_data: { passbookImage },
+				};
+				console.log(
+					"[BankAccount] handleStepDataSubmit uploadFile data",
+					uploadData
+				);
+				await uploadFile(uploadData);
 				return;
 			} else if (
 				[
