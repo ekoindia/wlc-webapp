@@ -135,8 +135,7 @@ const OtpVerificationForm = ({
 				// Handle OTP verification error (check invalid_params
 				if (
 					response?.invalid_params &&
-					Object.keys(response.invalid_params).length > 0 &&
-					response.invalid_params.otp
+					Object.keys(response.invalid_params).length > 0
 				) {
 					console.log(
 						"[AgentOnboarding] OTP INVALID - invalid_params:",
