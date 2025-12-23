@@ -63,7 +63,7 @@ const ExternalOnboardingWidget =
  * - Initialize and persist step state via useStepConfiguration / useOnboardingState
  * - Route step submissions to upload/form handlers and third-party integrations (esign, digilocker, pintwin)
  * - Handle step skip logic, widget callbacks, Android messages and pub/sub responses
- * @param {object} props
+ * @param {object} props - Component props
  * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
  * @param {string} props.logo - organization logo URL
  * @param {string} props.appName - application display name
@@ -71,6 +71,7 @@ const ExternalOnboardingWidget =
  * @param {any} props.userData - user data object (server/context)
  * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
  * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
+ * @param {() => void} [props.onEsignAlreadyCompleted] - callback when esign is already completed (assisted onboarding only)
  * @returns {JSX.Element} ExternalOnboardingWidget wrapped with local orchestration
  */
 const OnboardingSteps = ({
@@ -81,6 +82,7 @@ const OnboardingSteps = ({
 	userData,
 	assistedAgentDetails,
 	refreshAgentProfile,
+	onEsignAlreadyCompleted,
 }) => {
 	const { state, actions } = useOnboardingState();
 	const { isAndroid } = useAppSource();
@@ -184,6 +186,7 @@ const OnboardingSteps = ({
 		agreementId,
 		mobile,
 		onStepSubmit: (data) => handleStepDataSubmit(data),
+		onEsignAlreadyCompleted,
 	});
 
 	const android = useAndroidIntegration({

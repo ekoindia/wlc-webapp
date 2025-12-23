@@ -27,20 +27,21 @@ interface OnboardingWidgetProps {
 	assistedAgentDetails?: any;
 	allowedMerchantTypes?: number[];
 	refreshAgentProfile: () => Promise<void>;
+	onEsignAlreadyCompleted?: () => void;
 }
 
 /**
  * A OnboardingWidget component for handling agent onboarding flow
  * @param {object} props - Properties passed to the component
- * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
+ * @param {string} [props.logo] - Organization logo URL
+ * @param {string} [props.appName] - Application display name
+ * @param {string} [props.orgName] - Organization name
+ * @param {any} [props.userData] - User data object
+ * @param {boolean} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
- * @param props.refreshAgentProfile
- * @param props.logo
- * @param props.appName
- * @param props.orgName
- * @param props.userData
- * @param props.updateUserInfo
+ * @param {() => Promise<void>} props.refreshAgentProfile - Refresh callback to sync profile after step changes
+ * @param {() => void} [props.onEsignAlreadyCompleted] - Callback when esign is already completed (assisted onboarding only)
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
@@ -53,6 +54,7 @@ const OnboardingWidget = ({
 	assistedAgentDetails,
 	allowedMerchantTypes,
 	refreshAgentProfile,
+	onEsignAlreadyCompleted,
 }: OnboardingWidgetProps): JSX.Element => {
 	const [selectedRole, setSelectedRole] = useState<string>("");
 	const [isInitializing, setIsInitializing] = useState<boolean>(true);
@@ -163,6 +165,7 @@ const OnboardingWidget = ({
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}
+						onEsignAlreadyCompleted={onEsignAlreadyCompleted}
 					/>
 				);
 			default:

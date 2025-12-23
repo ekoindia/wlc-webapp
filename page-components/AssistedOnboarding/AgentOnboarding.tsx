@@ -10,6 +10,7 @@ export interface AgentOnboardingProps {
 	agentMobile?: string;
 	agentDetails?: any;
 	fetchAgentDetails?: (_mobile: string) => Promise<any>;
+	onEsignAlreadyCompleted?: () => void;
 }
 
 /**
@@ -29,6 +30,7 @@ const AgentOnboarding = ({
 	agentMobile,
 	agentDetails: initialAgentDetails,
 	fetchAgentDetails: fetchAgentDetailsProp,
+	onEsignAlreadyCompleted,
 }: AgentOnboardingProps) => {
 	const { userData, updateUserInfo } = useUser();
 	// console.log("[AgentOnboarding] userData", userData);
@@ -206,6 +208,7 @@ const AgentOnboarding = ({
 			assistedAgentDetails={agentDetails}
 			allowedMerchantTypes={[1]} // Restrict to Retailer role only
 			refreshAgentProfile={fetchAgentDetails}
+			onEsignAlreadyCompleted={onEsignAlreadyCompleted}
 		/>
 	);
 };
