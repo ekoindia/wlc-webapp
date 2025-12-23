@@ -139,6 +139,15 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Set up and manage dynamic pricing rules and commission structures for your products. This includes defining pricing tiers, setting commission rates for different user roles, etc.",
 	},
+	{
+		id: 35,
+		label: "KYC Verification",
+		icon: "person",
+		link: "/products/kyc-verification",
+		summary: "Configure KYC verification for your users.",
+		fullDescription:
+			"Configure KYC verification for your users. This includes setting up the KYC verification process, including the required documents and the verification process.",
+	},
 	// {
 	// 	id: 30,
 	// 	label: "Company Profile",
@@ -246,6 +255,15 @@ export const sidebarMenu: sidebarMenuType[] = [
 		featureFlag: "ASSISTED_FULL_ONBOARDING",
 	},
 	{
+		id: 36,
+		label: "KYC Verification",
+		icon: "verified-user",
+		link: "/products/kyc-verification",
+		summary: "Verify KYC documents for customers",
+		fullDescription:
+			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
+	},
+	{
 		id: 215,
 		label: "Product Catalogue",
 		icon: "shopping-cart",
@@ -255,7 +273,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 		beta: true,
 	},
 	{
-		id: 215,
+		id: 216,
 		label: "Manage Inventory",
 		icon: "shopping-cart",
 		link: "/products/inventory/manage",
