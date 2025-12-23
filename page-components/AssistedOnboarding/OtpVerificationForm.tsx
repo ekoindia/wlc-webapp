@@ -137,10 +137,10 @@ const OtpVerificationForm = ({
 					response?.invalid_params &&
 					Object.keys(response.invalid_params).length > 0
 				) {
-					console.log(
-						"[AgentOnboarding] OTP INVALID - invalid_params:",
-						response.invalid_params
-					);
+					// console.log(
+					// 	"[AgentOnboarding] OTP INVALID - invalid_params:",
+					// 	response.invalid_params
+					// );
 					toast({
 						title: "Invalid OTP",
 						description:
