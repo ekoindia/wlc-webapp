@@ -53,6 +53,8 @@ export interface VerificationService {
 	description?: string;
 	/** Icon name from the icon library */
 	icon?: string;
+	/** API endpoint path for verification (e.g., "/tools/kyc/pan-lite") */
+	endpointPath: string;
 	/** List of request parameters for the form */
 	requestParams: RequestParam[];
 }

@@ -24,6 +24,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Identity",
 		description: "Verify PAN with name and DOB matching",
 		icon: "credit-card",
+		endpointPath: "/tools/kyc/pan-lite",
 		requestParams: [
 			{
 				is_required: 1,
@@ -64,6 +65,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Financial",
 		description: "Verify GSTIN and view business details",
 		icon: "business-center",
+		endpointPath: "/tools/kyc/gstin",
 		requestParams: [
 			{
 				is_required: 1,
@@ -98,6 +100,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Vehicle",
 		description: "Verify vehicle details and registration information",
 		icon: "directions-car",
+		endpointPath: "/tools/kyc/vehicle-rc",
 		requestParams: [
 			{
 				is_required: 1,
@@ -121,6 +124,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		description:
 			"Verify driving license details including validity and vehicle classes",
 		icon: "directions-car",
+		endpointPath: "/tools/kyc/driving-license",
 		requestParams: [
 			{
 				is_required: 1,
@@ -150,6 +154,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		description:
 			"Verify voter ID details including constituency information",
 		icon: "how-to-vote",
+		endpointPath: "/tools/kyc/voter-id",
 		requestParams: [
 			{
 				is_required: 1,
@@ -183,6 +188,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Identity",
 		description: "Verify Indian passport details using file number and DOB",
 		icon: "book",
+		endpointPath: "/tools/kyc/passport",
 		requestParams: [
 			{
 				is_required: 1,
@@ -223,6 +229,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		description:
 			"Verify Corporate Identification Number including business and director info",
 		icon: "domain",
+		endpointPath: "/tools/kyc/cin",
 		requestParams: [
 			{
 				is_required: 1,
@@ -247,6 +254,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		description:
 			"Verify employee employment details including UAN and company information",
 		icon: "badge",
+		endpointPath: "/tools/kyc/employment",
 		requestParams: [
 			{
 				is_required: 1,
@@ -310,6 +318,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Financial",
 		description: "Verify bank account details with IFSC code",
 		icon: "account-balance",
+		endpointPath: "/tools/kyc/dummy-bank-account",
 		requestParams: [
 			{
 				is_required: 1,
@@ -344,6 +353,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Utility",
 		description: "Get details about an IP address",
 		icon: "language",
+		endpointPath: "/tools/kyc/dummy-ip-verification",
 		requestParams: [
 			{
 				is_required: 1,
@@ -365,6 +375,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Utility",
 		description: "Compare two names to check if they match",
 		icon: "compare",
+		endpointPath: "/tools/kyc/dummy-name-match",
 		requestParams: [
 			{
 				is_required: 1,
@@ -397,6 +408,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 		category: "Utility",
 		description: "Get address from latitude and longitude coordinates",
 		icon: "location-on",
+		endpointPath: "/tools/kyc/dummy-reverse-geocoding",
 		requestParams: [
 			{
 				is_required: 1,
