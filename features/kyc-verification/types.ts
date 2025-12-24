@@ -140,3 +140,70 @@ export interface CategoryOption {
 	/** Number of services in this category */
 	count?: number;
 }
+
+// ============================================
+// Verification Result Types
+// ============================================
+
+/**
+ * Status of a single verification request.
+ * - pending: Not yet started
+ * - in_progress: API call in progress
+ * - success: Verification completed successfully
+ * - failed: Verification failed
+ */
+export type VerificationStatus =
+	| "pending"
+	| "in_progress"
+	| "success"
+	| "failed";
+
+/**
+ * Result of a single service verification.
+ */
+export interface VerificationResult {
+	/** Service code identifier */
+	serviceCode: string;
+	/** Human-readable service name */
+	serviceName: string;
+	/** API endpoint that was called */
+	endpointPath: string;
+	/** Current status of this verification */
+	status: VerificationStatus;
+	/** Request data sent to the API */
+	requestData: Record<string, unknown>;
+	/** Response data received from API (if successful or partially successful) */
+	responseData?: Record<string, unknown>;
+	/** Error message (if failed) */
+	error?: string;
+	/** Timestamp when verification completed */
+	timestamp?: string;
+}
+
+/**
+ * Overall state of the verification process.
+ */
+export interface VerificationState {
+	/** Overall status of verification batch */
+	status: "idle" | "submitting" | "in_progress" | "completed";
+	/** Array of verification results (one per service) */
+	results: VerificationResult[];
+	/** Index of currently processing service (0-based) */
+	currentIndex: number;
+	/** Total number of services to verify */
+	totalCount: number;
+	/** Form data used for verification */
+	formData?: Record<string, unknown>;
+}
+
+/**
+ * Filter options for verification results.
+ */
+export interface VerificationFilterOptions {
+	/** Filter by status */
+	status?: VerificationStatus | "all";
+	/** Search query for service name */
+	searchQuery?: string;
+	/** Filter by category */
+	category?: string;
+}

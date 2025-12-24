@@ -274,26 +274,35 @@ export const ServiceFormPage = ({
 			setSubmitError(null);
 
 			try {
-				// TODO: Implement actual API call for each service
-				// For now, just log the data
 				console.log("Form submitted with data:", data);
 				console.log("Services to verify:", selectedServiceObjects);
 
-				// Simulate API call
-				await new Promise((resolve) => setTimeout(resolve, 1000));
+				// Store verification data in sessionStorage for results page
+				const verificationData = {
+					formData: data,
+					services: selectedServiceObjects.map((s) => ({
+						serviceCode: s.serviceCode,
+						name: s.name,
+						endpointPath: s.endpointPath,
+						requestParams: s.requestParams,
+					})),
+					timestamp: Date.now(),
+				};
+				sessionStorage.setItem(
+					"kyc_verification_data",
+					JSON.stringify(verificationData)
+				);
 
-				// Clear selection state after successful submission
+				// Clear selection state
 				resetAll();
 
-				// Navigate to results page (to be implemented in future phase)
-				// For now, redirect back to listing
-				router.push("/products/kyc-verification");
+				// Navigate to results page
+				router.push("/products/kyc-verification/results");
 			} catch (err) {
 				setSubmitError(
 					"Failed to submit verification. Please try again."
 				);
 				console.error("Submission error:", err);
-			} finally {
 				setIsSubmitting(false);
 			}
 		},

@@ -7,6 +7,7 @@
  * - Search functionality
  * - Single and multi-service selection modes
  * - Dynamic form generation based on service parameters
+ * - API integration with progressive results display
  * @example
  * // In a page component:
  * import { KycVerificationPage } from "features/kyc-verification";
@@ -17,7 +18,11 @@
  */
 
 // Page components
-export { KycVerificationPage, ServiceFormPage } from "./page-components";
+export {
+	KycVerificationPage,
+	ServiceFormPage,
+	VerificationResultsPage,
+} from "./page-components";
 
 // Feature components
 export {
@@ -25,10 +30,17 @@ export {
 	MultiServiceToggle,
 	SelectedServicesPill,
 	ServiceSearch,
+	VerificationProgress,
+	VerificationResultCard,
+	VerificationResultList,
 } from "./components";
 
 // Hooks
-export { useKycServices, useServiceSelection } from "./hooks";
+export {
+	useKycServices,
+	useKycVerification,
+	useServiceSelection,
+} from "./hooks";
 
 // Types
 export type {
@@ -38,7 +50,11 @@ export type {
 	MultiServiceState,
 	RequestParam,
 	RequestParamValidation,
+	VerificationFilterOptions,
+	VerificationResult,
 	VerificationService,
+	VerificationState,
+	VerificationStatus,
 } from "./types";
 
 // Constants

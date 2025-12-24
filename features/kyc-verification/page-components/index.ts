@@ -4,3 +4,4 @@
 
 export { KycVerificationPage } from "./KycVerificationPage";
 export { ServiceFormPage } from "./ServiceFormPage";
+export { VerificationResultsPage } from "./VerificationResultsPage";
