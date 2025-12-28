@@ -7,12 +7,14 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
+	Tooltip,
 	useBreakpointValue,
 	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
 import { useKBarReady } from "components/CommandBar";
 import { useNotification, useOrgDetailContext, useUser } from "contexts";
+import { useNetworkState } from "hooks/useNetworkState";
 import dynamic from "next/dynamic";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
@@ -143,8 +145,14 @@ const NavContent = () => {
 						</Flex>
 					)}
 			</Flex>
+
 			{/* Right-side items of navbar */}
 			<Flex align="center" gap={{ base: "1em", md: "1.5em" }}>
+				{/* Show Network Status Icon, only if offline or slow network */}
+				<NetworkStatusIcon
+					navstyle={orgDetail?.metadata?.theme?.navstyle}
+				/>
+
 				{/* Show Notifications Icon, only if notifications are available */}
 				{notificationCount ? (
 					<Ico
@@ -277,11 +285,11 @@ const Ico = ({ iconName, bubble, navstyle, onClick }) => {
 		<Flex
 			align="center"
 			justify="center"
-			cursor="pointer"
+			cursor={onClick ? "pointer" : "default"}
 			onClick={onClick}
 			position="relative"
 			borderRadius="50%"
-			_hover={{ bg: "gray.200" }}
+			_hover={onClick ? { bg: "gray.200" } : {}}
 			w="40px"
 			h="40px"
 		>
@@ -312,4 +320,38 @@ const Ico = ({ iconName, bubble, navstyle, onClick }) => {
 			) : null}
 		</Flex>
 	);
+};
+
+const NetworkStatusIcon = ({ navstyle }) => {
+	const { online, networkStatus } = useNetworkState();
+
+	// Offline...
+	if (!online) {
+		return (
+			<Tooltip label="No Internet Connection!" hasArrow>
+				<Box>
+					<Ico
+						iconName="signal-cellular-connected-no-internet-0-bar"
+						navstyle={navstyle}
+					/>
+				</Box>
+			</Tooltip>
+		);
+	}
+
+	// Slow network...
+	if (networkStatus === "slow") {
+		return (
+			<Tooltip label="Slow Internet Connection!" hasArrow>
+				<Box>
+					<Ico
+						iconName="signal-cellular-connected-no-internet-1-bar"
+						navstyle={navstyle}
+					/>
+				</Box>
+			</Tooltip>
+		);
+	}
+
+	return null;
 };
