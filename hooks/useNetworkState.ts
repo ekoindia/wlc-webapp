@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 interface NetworkState {
 	online: boolean;
+	networkStatus: "online" | "offline" | "slow" | "unknown";
 	effectiveType: string;
 	downlink: number;
 }
@@ -10,6 +11,7 @@ const getConnectionState = (): NetworkState => {
 	if (typeof window === "undefined" || typeof navigator === "undefined") {
 		return {
 			online: false,
+			networkStatus: "unknown",
 			effectiveType: "unknown",
 			downlink: 0,
 		};
@@ -19,9 +21,15 @@ const getConnectionState = (): NetworkState => {
 	const effectiveType = connection?.effectiveType ?? "unknown";
 	const downlink =
 		typeof connection?.downlink === "number" ? connection.downlink : 0;
+	const networkStatus = navigator?.onLine
+		? effectiveType === "2g" || effectiveType === "slow-2g"
+			? "slow"
+			: "online"
+		: "offline";
 
 	return {
 		online: navigator?.onLine ?? false,
+		networkStatus,
 		effectiveType,
 		downlink,
 	};
