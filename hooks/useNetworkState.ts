@@ -65,4 +65,4 @@ const useNetworkState = (): NetworkState => {
 	return state;
 };
 
-export default useNetworkState;
+export { useNetworkState };
