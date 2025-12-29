@@ -38,6 +38,22 @@ const getTimestamp = (): string => {
 	});
 };
 
+/**
+ * Filter form data to only include parameters relevant to a specific service.
+ * @param service - The service to filter parameters for
+ * @param formData - The complete form data
+ * @returns Object containing only the parameters defined in the service's requestParams
+ */
+const getServiceSpecificParams = (
+	service: VerificationService,
+	formData: Record<string, unknown>
+): Record<string, unknown> => {
+	const serviceParamNames = new Set(service.requestParams.map((p) => p.name));
+	return Object.fromEntries(
+		Object.entries(formData).filter(([key]) => serviceParamNames.has(key))
+	);
+};
+
 interface UseKycVerificationReturn {
 	/** Current verification state */
 	state: VerificationState;
@@ -75,13 +91,20 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 			services: VerificationService[],
 			formData: Record<string, unknown>
 		): VerificationResult[] => {
-			return services.map((service) => ({
-				serviceCode: service.serviceCode,
-				serviceName: service.name,
-				endpointPath: service.endpointPath,
-				status: "pending",
-				requestData: { ...formData },
-			}));
+			return services.map((service) => {
+				// Filter to only include params relevant to this service
+				const filteredData = getServiceSpecificParams(
+					service,
+					formData
+				);
+				return {
+					serviceCode: service.serviceCode,
+					serviceName: service.name,
+					endpointPath: service.endpointPath,
+					status: "pending",
+					requestData: filteredData,
+				};
+			});
 		},
 		[]
 	);
@@ -95,6 +118,9 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 			formData: Record<string, unknown>,
 			index: number
 		): Promise<VerificationResult> => {
+			// Filter to only include params relevant to this service
+			const filteredData = getServiceSpecificParams(service, formData);
+
 			// Mark as in_progress
 			setState((prev) => ({
 				...prev,
@@ -111,7 +137,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 					headers: {
 						"tf-req-uri": service.endpointPath,
 					},
-					body: formData,
+					body: filteredData,
 				});
 
 				console.log(
@@ -127,7 +153,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 						serviceName: service.name,
 						endpointPath: service.endpointPath,
 						status: "success",
-						requestData: formData,
+						requestData: filteredData,
 						responseData: response.data.data,
 						timestamp: getTimestamp(),
 					};
@@ -138,7 +164,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 						serviceName: service.name,
 						endpointPath: service.endpointPath,
 						status: "failed",
-						requestData: formData,
+						requestData: filteredData,
 						responseData: response?.data,
 						error:
 							response?.data?.message ||
@@ -156,7 +182,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 					serviceName: service.name,
 					endpointPath: service.endpointPath,
 					status: "failed",
-					requestData: formData,
+					requestData: filteredData,
 					error:
 						err instanceof Error
 							? err.message
