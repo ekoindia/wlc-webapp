@@ -12,16 +12,69 @@ import { Controller } from "react-hook-form";
 import { getFormErrorMessage } from "utils";
 
 /**
- * A Form component
- * @param {object} prop Properties passed to the component
- * @param {Array} prop.parameter_list
- * @param prop.register
- * @param prop.formValues
- * @param prop.control
- * @param prop.errors
- * @param {string} [prop.size] Size of the form components: "sm" | "md" | "lg"
- * @param {boolean} [prop.hideOptionalMark] Hide the optional mark on the form fields.
- * @param {...*} rest Rest of the props passed to this component.
+ * A dynamic Form component that renders form fields based on a parameter list configuration.
+ *
+ * This component supports multiple field types including text, numeric, date, select, radio,
+ * and textarea inputs. It integrates with react-hook-form for form state management and validation.
+ *
+ * ## Supported Parameter Types (via `parameter_type_id`):
+ * - `ParamType.TEXT` (12) - Standard text input
+ * - `ParamType.NUMERIC` (11) - Numeric input with step support
+ * - `ParamType.DATETIME` (14) - Date picker without addon
+ * - `ParamType.FROM_DATE` (16) - Date picker with "From" addon
+ * - `ParamType.TO_DATE` (17) - Date picker with "To" addon
+ * - `ParamType.LIST` (3) - Radio buttons (< 4 options) or Select dropdown
+ * - `ParamType.FIXED` (1) - Hidden fixed value input
+ * - `ParamType.LABEL` (20) - Display-only text label
+ * @param {object} props - Component properties
+ * @param {Array<object>} props.parameter_list - Array of field configurations
+ * @param {string} props.parameter_list[].name - Field name (used as form key)
+ * @param {string} props.parameter_list[].label - Field label text
+ * @param {boolean} [props.parameter_list[].required] - Whether field is required
+ * @param {number} [props.parameter_list[].parameter_type_id] - Field type ID
+ * @param {*} [props.parameter_list[].value] - Field value (for fixed/display fields)
+ * @param {*} [props.parameter_list[].defaultValue] - Default value for controlled fields
+ * @param {boolean} [props.parameter_list[].disabled] - Whether field is disabled
+ * @param {Array} [props.parameter_list[].list_elements] - Options for LIST type
+ * @param {boolean} [props.parameter_list[].is_multi] - Enable multi-select for LIST type
+ * @param {object} [props.parameter_list[].validations] - react-hook-form validation rules
+ * @param {string} [props.parameter_list[].helperText] - Helper text shown below field
+ * @param {string} [props.parameter_list[].minDate] - Min date for date fields (YYYY-MM-DD)
+ * @param {string} [props.parameter_list[].maxDate] - Max date for date fields (YYYY-MM-DD)
+ * @param {number} [props.parameter_list[].lines_min] - Min lines for textarea (> 1 enables textarea)
+ * @param {Function} props.register - react-hook-form register function
+ * @param {object} props.formValues - Current form values from watch()
+ * @param {object} props.control - react-hook-form control object
+ * @param {object} props.errors - react-hook-form errors object
+ * @param {("sm"|"md"|"lg")} [props.size] - Size of form components
+ * @param {boolean} [props.hideOptionalMark] - Hide "(optional)" text on non-required fields
+ * @returns {JSX.Element} A Grid containing rendered form fields
+ * @example
+ * ```jsx
+ * import { useForm } from "react-hook-form";
+ * import { Form } from "tf-components";
+ * import { ParamType } from "constants";
+ *
+ * const MyForm = () => {
+ *   const { register, control, handleSubmit, watch, formState: { errors } } = useForm();
+ *
+ *   const fields = [
+ *     { name: "name", label: "Full Name", required: true },
+ *     { name: "email", label: "Email", parameter_type_id: ParamType.EMAIL },
+ *     { name: "dob", label: "Date of Birth", parameter_type_id: ParamType.DATETIME },
+ *   ];
+ *
+ *   return (
+ *     <Form
+ *       parameter_list={fields}
+ *       register={register}
+ *       control={control}
+ *       errors={errors}
+ *       formValues={watch()}
+ *     />
+ *   );
+ * };
+ * ```
  */
 const Form = ({
 	parameter_list,
