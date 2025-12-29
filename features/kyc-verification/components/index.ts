@@ -2,6 +2,8 @@
  * Barrel exports for KYC Verification components.
  */
 
+export { BulkUploadButton } from "./BulkUploadButton";
+export { BulkVerificationModal } from "./BulkVerificationModal";
 export { CategoryTabs } from "./CategoryTabs";
 export { MultiServiceToggle } from "./MultiServiceToggle";
 export { SelectedServicesPill } from "./SelectedServicesPill";

@@ -6,8 +6,10 @@
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
+	BulkUploadButton,
+	BulkVerificationModal,
 	CategoryTabs,
 	MultiServiceToggle,
 	SelectedServicesPill,
@@ -24,6 +26,7 @@ export const KycVerificationPage = (): JSX.Element => {
 
 	// Services data and filtering
 	const {
+		services,
 		filteredServices,
 		categories,
 		selectedCategory,
@@ -34,6 +37,9 @@ export const KycVerificationPage = (): JSX.Element => {
 		error,
 		getServicesByCodes,
 	} = useKycServices();
+
+	// Bulk verification modal state
+	const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
 	// Selection state
 	const {
@@ -120,7 +126,21 @@ export const KycVerificationPage = (): JSX.Element => {
 
 	return (
 		<>
-			<PageTitle title="KYC & Verification" isBeta hideBackIcon />
+			<PageTitle
+				title="KYC & Verification"
+				isBeta
+				hideBackIcon
+				toolComponent={
+					<BulkUploadButton
+						onClick={() => setIsBulkModalOpen(true)}
+					/>
+				}
+			/>
+			<BulkVerificationModal
+				isOpen={isBulkModalOpen}
+				onClose={() => setIsBulkModalOpen(false)}
+				services={services}
+			/>
 			<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
 				{/* Category Tabs */}
 				<CategoryTabs
