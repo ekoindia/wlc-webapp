@@ -13,7 +13,7 @@ import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumb } from "./Breadcrumb";
 import { BreadcrumbWrapper } from "./BreadcrumbWrapper";
 import { Button } from "./Button";
-import { Calenders } from "./Calenders";
+import { Calendar, Calenders } from "./Calendar";
 import { Camera } from "./Camera";
 import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
@@ -77,6 +77,7 @@ export {
 	Breadcrumb,
 	BreadcrumbWrapper,
 	Button,
+	Calendar,
 	Calenders,
 	Camera,
 	Card,
