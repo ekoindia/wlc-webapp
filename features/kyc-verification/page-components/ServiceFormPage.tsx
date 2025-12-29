@@ -30,7 +30,7 @@ const mapTypeToParamType = (type: string): ParamType => {
 		case "number":
 			return ParamType.NUMERIC;
 		case "date":
-			return ParamType.FROM_DATE;
+			return ParamType.DATETIME;
 		case "array":
 			return ParamType.TEXT; // Arrays handled as JSON text for now
 		default:
