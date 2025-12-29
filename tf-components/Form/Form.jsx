@@ -1,6 +1,6 @@
 import { FormControl, Grid, Text } from "@chakra-ui/react";
 import {
-	Calenders,
+	Calendar,
 	Input,
 	InputLabel,
 	Radio,
@@ -151,59 +151,17 @@ const Form = ({
 								</FormControl>
 							);
 
+						case ParamType.DATETIME:
 						case ParamType.FROM_DATE:
-							return (
-								<FormControl
-									key={`${name}-${label}-${index}`}
-									id={name}
-									maxW="500px"
-								>
-									<Controller
-										name={name}
-										control={control}
-										defaultValue={defaultValue}
-										rules={{ ..._validations }}
-										render={({
-											field: { onChange, value },
-										}) => (
-											<Calenders
-												{...{
-													id: name,
-													label,
-													value,
-													minDate,
-													maxDate,
-													onChange,
-													required,
-													disabled,
-													labelStyle,
-													size,
-													hideOptionalMark,
-												}}
-												{...rest}
-											/>
-										)}
-									/>
-									<Text
-										fontSize="xs"
-										fontWeight="medium"
-										color={
-											errors[name]
-												? "error"
-												: "primary.dark"
-										}
-									>
-										{errors[name]
-											? `⚠ (${getFormErrorMessage(
-													name,
-													errors
-												)}) ${helperText || ""}`
-											: helperText || ""}
-									</Text>
-								</FormControl>
-							);
+						case ParamType.TO_DATE: {
+							// Determine leftAddon based on type
+							const dateLeftAddon =
+								parameter_type_id === ParamType.FROM_DATE
+									? "From"
+									: parameter_type_id === ParamType.TO_DATE
+										? "To"
+										: undefined;
 
-						case ParamType.TO_DATE:
 							return (
 								<FormControl
 									key={`${name}-${label}-${index}`}
@@ -218,11 +176,12 @@ const Form = ({
 										render={({
 											field: { onChange, value },
 										}) => (
-											<Calenders
+											<Calendar
 												{...{
 													id: name,
 													label,
 													value,
+													leftAddon: dateLeftAddon,
 													minDate,
 													maxDate,
 													onChange,
@@ -254,6 +213,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+						}
 
 						case ParamType.LIST:
 							if (list_elements) {
