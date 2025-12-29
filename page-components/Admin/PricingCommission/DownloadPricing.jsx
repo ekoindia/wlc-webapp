@@ -42,10 +42,9 @@ export const DownloadPricing = () => {
 
 	return (
 		<Button
-			size={{ base: "sm", md: "md" }}
+			size="sm"
 			icon="file-download"
-			iconStyle={{ size: { base: "xs", md: "sm" } }}
-			iconSpacing="2"
+			iconStyle={{ size: "xs" }}
 			onClick={throttledDownload}
 		>
 			Existing Pricing

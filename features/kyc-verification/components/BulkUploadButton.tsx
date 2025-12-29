@@ -3,7 +3,7 @@
  * Used in PageTitle's toolComponent prop.
  */
 
-import { Button, Icon } from "components";
+import { Button } from "components";
 
 interface BulkUploadButtonProps {
 	/** Callback when button is clicked */
@@ -21,9 +21,13 @@ export const BulkUploadButton = ({
 	onClick,
 }: BulkUploadButtonProps): JSX.Element => {
 	return (
-		<Button onClick={onClick} size="sm" variant="accent">
-			<Icon name="file-upload" size="xs" />
-			&nbsp; Bulk Upload
+		<Button
+			onClick={onClick}
+			size="sm"
+			icon="file-upload"
+			iconStyle={{ size: "xs" }}
+		>
+			Bulk Upload
 		</Button>
 	);
 };
