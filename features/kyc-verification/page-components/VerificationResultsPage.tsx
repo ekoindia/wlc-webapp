@@ -1,12 +1,14 @@
 /**
  * VerificationResultsPage - Page component showing verification progress and results.
  * Loads data from sessionStorage and displays progressive results.
+ * Includes conditional action buttons based on verification outcome.
  */
 
-import { Box, Card, Flex, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { Button, PageTitle } from "components";
+import { formatDateTime } from "libs";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VerificationResultList } from "../components";
 import { useKycVerification } from "../hooks";
 import type { VerificationService } from "../types";
@@ -27,8 +29,18 @@ export const VerificationResultsPage = (): JSX.Element => {
 		useState<StoredVerificationData | null>(null);
 	const [loadError, setLoadError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [completedAt, setCompletedAt] = useState<string | undefined>(
+		undefined
+	);
 
-	const { state, startVerification, progressText } = useKycVerification();
+	const {
+		state,
+		startVerification,
+		retryFailedServices,
+		progressText,
+		failedCount,
+		successCount,
+	} = useKycVerification();
 
 	// Load verification data from sessionStorage on mount
 	useEffect(() => {
@@ -70,24 +82,12 @@ export const VerificationResultsPage = (): JSX.Element => {
 		}
 	}, [initialData, startVerification, state.status]);
 
-	// Handle download JSON
-	const handleDownloadJson = useCallback(() => {
-		const jsonData = JSON.stringify(
-			{
-				timestamp: new Date().toISOString(),
-				results: state.results,
-			},
-			null,
-			2
-		);
-		const blob = new Blob([jsonData], { type: "application/json" });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = `kyc-verification-${Date.now()}.json`;
-		a.click();
-		URL.revokeObjectURL(url);
-	}, [state.results]);
+	// Set completion timestamp when verification completes
+	useEffect(() => {
+		if (state.status === "completed" && !completedAt) {
+			setCompletedAt(formatDateTime(new Date().toISOString()));
+		}
+	}, [state.status, completedAt]);
 
 	// Handle download PDF
 	const handleDownloadPdf = useCallback(() => {
@@ -95,10 +95,43 @@ export const VerificationResultsPage = (): JSX.Element => {
 		window.print();
 	}, []);
 
-	// Handle "Go Back" button
-	const handleGoBack = useCallback(() => {
+	// Handle "Back to Services" button
+	const handleBackToServices = useCallback(() => {
 		router.push("/products/kyc-verification");
 	}, [router]);
+
+	// Handle "Home" button
+	const handleGoHome = useCallback(() => {
+		router.push("/");
+	}, [router]);
+
+	// Handle "Retry Failed Services" button
+	const handleRetryFailed = useCallback(() => {
+		setCompletedAt(undefined); // Reset completion timestamp
+		retryFailedServices();
+	}, [retryFailedServices]);
+
+	// Determine button text for retry
+	const retryButtonText = useMemo(() => {
+		if (failedCount === 1) {
+			return "Retry Failed Service";
+		}
+		return `Retry Failed Services (${failedCount})`;
+	}, [failedCount]);
+
+	// Check if all verifications were successful
+	const allSuccessful = useMemo(() => {
+		return (
+			state.status === "completed" &&
+			failedCount === 0 &&
+			successCount > 0
+		);
+	}, [state.status, failedCount, successCount]);
+
+	// Check if there are any failures
+	const hasFailures = useMemo(() => {
+		return state.status === "completed" && failedCount > 0;
+	}, [state.status, failedCount]);
 
 	// Loading state
 	if (isLoading) {
@@ -119,14 +152,21 @@ export const VerificationResultsPage = (): JSX.Element => {
 				<PageTitle title="Verification Results" />
 				<Flex justify="center" w="100%">
 					<VStack spacing={4} maxW="600px" w="100%" px={4}>
-						<Card p={6} textAlign="center" w="100%">
+						<Box
+							p={6}
+							textAlign="center"
+							w="100%"
+							bg="white"
+							borderRadius="lg"
+							shadow="sm"
+						>
 							<Text color="red.500" mb={4}>
 								{loadError}
 							</Text>
-							<Button onClick={handleGoBack}>
+							<Button onClick={handleBackToServices}>
 								Go to Services
 							</Button>
-						</Card>
+						</Box>
 					</VStack>
 				</Flex>
 			</>
@@ -158,35 +198,76 @@ export const VerificationResultsPage = (): JSX.Element => {
 							currentIndex={state.currentIndex}
 							totalCount={state.totalCount}
 							isComplete={state.status === "completed"}
-							onDownloadJson={handleDownloadJson}
+							successCount={successCount}
+							failedCount={failedCount}
+							completedAt={completedAt}
+							retryingIndices={state.retryingIndices}
 							onDownloadPdf={handleDownloadPdf}
 						/>
 					) : (
-						<Card p={6} textAlign="center">
+						<Box
+							p={6}
+							textAlign="center"
+							bg="white"
+							borderRadius="lg"
+							shadow="sm"
+						>
 							<Text color="gray.500">
 								Preparing verification...
 							</Text>
-						</Card>
+						</Box>
 					)}
 
-					{/* Actions */}
+					{/* Conditional Action Buttons */}
 					{state.status === "completed" && (
 						<Box pt={4}>
 							<Flex gap={3} justify="center">
-								<Button
-									variant="outline"
-									onClick={handleGoBack}
-									icon="refresh"
-								>
-									Verify More
-								</Button>
-								<Button
-									onClick={handleGoBack}
-									icon="arrow-forward"
-									iconPosition="right"
-								>
-									Back to Services
-								</Button>
+								{hasFailures ? (
+									<>
+										{/* Failures exist: Show Back to Services + Retry */}
+										<Button
+											variant="outline"
+											onClick={handleBackToServices}
+											icon="arrow-back"
+										>
+											Back to Services
+										</Button>
+										<Button
+											onClick={handleRetryFailed}
+											icon="refresh"
+										>
+											{retryButtonText}
+										</Button>
+									</>
+								) : allSuccessful ? (
+									<>
+										{/* All successful: Show Verify More + Home */}
+										<Button
+											variant="outline"
+											onClick={handleBackToServices}
+											icon="refresh"
+										>
+											Verify More
+										</Button>
+										<Button
+											onClick={handleGoHome}
+											icon="home"
+										>
+											Home
+										</Button>
+									</>
+								) : (
+									<>
+										{/* Default fallback */}
+										<Button
+											variant="outline"
+											onClick={handleBackToServices}
+											icon="arrow-back"
+										>
+											Back to Services
+										</Button>
+									</>
+								)}
 							</Flex>
 						</Box>
 					)}

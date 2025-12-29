@@ -194,6 +194,10 @@ export interface VerificationState {
 	totalCount: number;
 	/** Form data used for verification */
 	formData?: Record<string, unknown>;
+	/** Original services for retry functionality */
+	services?: VerificationService[];
+	/** Indices of services currently being retried */
+	retryingIndices?: number[];
 }
 
 /**

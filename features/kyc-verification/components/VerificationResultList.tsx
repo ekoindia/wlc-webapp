@@ -1,10 +1,11 @@
 /**
  * VerificationResultList - Container for all verification results
  * with filters and export options.
+ * Layout: Results count → Filters & Download → Service blocks
  */
 
-import { Box, Button, Flex, Select, Text, VStack } from "@chakra-ui/react";
-import { Input } from "components";
+import { Box, Flex, Select, Text, VStack } from "@chakra-ui/react";
+import { Button, Input } from "components";
 import { useMemo, useState } from "react";
 import type {
 	VerificationFilterOptions,
@@ -23,10 +24,16 @@ interface VerificationResultListProps {
 	totalCount: number;
 	/** Whether verification is complete */
 	isComplete: boolean;
+	/** Count of successful verifications */
+	successCount?: number;
+	/** Count of failed verifications */
+	failedCount?: number;
+	/** Completion timestamp */
+	completedAt?: string;
+	/** Indices of services being retried (for skeleton display) */
+	retryingIndices?: number[];
 	/** Callback to download results as PDF */
 	onDownloadPdf?: () => void;
-	/** Callback to download results as JSON */
-	onDownloadJson?: () => void;
 }
 
 /**
@@ -57,16 +64,22 @@ const getStatusCounts = (
  * @param root0.currentIndex
  * @param root0.totalCount
  * @param root0.isComplete
+ * @param root0.successCount
+ * @param root0.failedCount
+ * @param root0.completedAt
+ * @param root0.retryingIndices
  * @param root0.onDownloadPdf
- * @param root0.onDownloadJson
  */
 export const VerificationResultList = ({
 	results,
 	currentIndex,
 	totalCount,
 	isComplete,
+	successCount,
+	failedCount,
+	completedAt,
+	retryingIndices,
 	onDownloadPdf,
-	onDownloadJson,
 }: VerificationResultListProps): JSX.Element => {
 	const [filters, setFilters] = useState<VerificationFilterOptions>({
 		status: "all",
@@ -75,7 +88,7 @@ export const VerificationResultList = ({
 
 	const statusCounts = useMemo(() => getStatusCounts(results), [results]);
 
-	// Filter results based on current filters
+	// Filter results based on current filters, maintain original order (first at top)
 	const filteredResults = useMemo(() => {
 		let filtered = [...results];
 
@@ -92,44 +105,38 @@ export const VerificationResultList = ({
 			);
 		}
 
-		// Show completed results first (reverse order - newest first)
-		return filtered.reverse();
+		// Keep original order (first service at top)
+		return filtered;
 	}, [results, filters]);
+
+	// Get the original index of a result for checking retry status
+	const getOriginalIndex = (result: VerificationResult): number => {
+		return results.findIndex((r) => r.serviceCode === result.serviceCode);
+	};
 
 	return (
 		<VStack spacing={4} align="stretch" w="100%">
-			{/* Progress Section */}
-			<Box bg="white" p={4} borderRadius="md" shadow="sm">
+			{/* 1. Results Summary Card (Progress Section) */}
+			<Box bg="white" p={6} borderRadius="lg" shadow="sm">
 				<VerificationProgress
 					current={currentIndex}
 					total={totalCount}
 					isComplete={isComplete}
+					successCount={successCount ?? statusCounts.success}
+					failedCount={failedCount ?? statusCounts.failed}
+					completedAt={completedAt}
 				/>
-
-				{/* Status Summary */}
-				{isComplete && (
-					<Flex gap={4} mt={3} flexWrap="wrap">
-						<Text fontSize="sm" color="green.600">
-							✓ {statusCounts.success} Success
-						</Text>
-						{statusCounts.failed > 0 && (
-							<Text fontSize="sm" color="red.600">
-								✗ {statusCounts.failed} Failed
-							</Text>
-						)}
-					</Flex>
-				)}
 			</Box>
 
-			{/* Filters and Actions */}
+			{/* 2. Filters and Actions - All on single line */}
 			<Flex
-				direction={{ base: "column", md: "row" }}
 				gap={3}
-				align={{ base: "stretch", md: "center" }}
+				align="center"
 				justify="space-between"
+				flexWrap="wrap"
 			>
 				{/* Filters */}
-				<Flex gap={3} flex={1} flexWrap="wrap">
+				<Flex gap={3} align="center" flex={1}>
 					<Input
 						placeholder="Search services..."
 						value={filters.searchQuery || ""}
@@ -150,10 +157,10 @@ export const VerificationResultList = ({
 									.value as VerificationFilterOptions["status"],
 							}))
 						}
-						maxW="180px"
+						maxW="150px"
 						bg="white"
 					>
-						<option value="all">All Statuses</option>
+						<option value="all">All Status</option>
 						<option value="success">Success</option>
 						<option value="failed">Failed</option>
 						<option value="in_progress">In Progress</option>
@@ -161,51 +168,47 @@ export const VerificationResultList = ({
 					</Select>
 				</Flex>
 
-				{/* Export Actions - only show when complete */}
-				{isComplete && (
-					<Flex gap={2}>
-						{onDownloadJson && (
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={onDownloadJson}
-								leftIcon={<Text>{"</>"}</Text>}
-							>
-								Download JSON
-							</Button>
-						)}
-						{onDownloadPdf && (
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={onDownloadPdf}
-								leftIcon={<Text>📄</Text>}
-							>
-								Download PDF
-							</Button>
-						)}
-					</Flex>
+				{/* Download PDF - only show when complete */}
+				{isComplete && onDownloadPdf && (
+					<Button
+						size="sm"
+						variant="outline"
+						onClick={onDownloadPdf}
+						icon="file-download"
+					>
+						Download PDF
+					</Button>
 				)}
 			</Flex>
 
-			{/* Results List */}
+			{/* 3. Results List - Results label */}
+			<Text fontWeight="semibold" color="gray.700" mt={2}>
+				Results
+			</Text>
+
+			{/* 3. Results List - Cards */}
 			<VStack spacing={3} align="stretch">
 				{filteredResults.length === 0 ? (
 					<Box textAlign="center" py={8}>
 						<Text color="gray.500">No results to display</Text>
 					</Box>
 				) : (
-					filteredResults.map((result) => (
-						<VerificationResultCard
-							key={result.serviceCode}
-							result={result}
-							defaultExpanded={
-								result.status === "success" ||
-								result.status === "failed" ||
-								result.status === "in_progress"
-							}
-						/>
-					))
+					filteredResults.map((result, displayIndex) => {
+						const originalIndex = getOriginalIndex(result);
+						const isRetrying =
+							retryingIndices?.includes(originalIndex);
+						// Only first result is expanded by default
+						const isFirstResult = displayIndex === 0;
+
+						return (
+							<VerificationResultCard
+								key={result.serviceCode}
+								result={result}
+								defaultExpanded={isFirstResult}
+								isRetrying={isRetrying}
+							/>
+						);
+					})
 				)}
 			</VStack>
 		</VStack>

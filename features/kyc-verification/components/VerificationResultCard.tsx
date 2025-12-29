@@ -1,6 +1,7 @@
 /**
  * VerificationResultCard - Displays a single verification result
  * with input data and response in a card layout.
+ * Supports skeleton loading state for retry functionality.
  */
 
 import {
@@ -9,9 +10,12 @@ import {
 	Card,
 	Collapse,
 	Flex,
+	Skeleton,
+	SkeletonText,
 	Spinner,
 	Text,
 	useDisclosure,
+	VStack,
 } from "@chakra-ui/react";
 import { Icon } from "components";
 import type { VerificationResult, VerificationStatus } from "../types";
@@ -21,6 +25,8 @@ interface VerificationResultCardProps {
 	result: VerificationResult;
 	/** Whether to show expanded by default */
 	defaultExpanded?: boolean;
+	/** Whether this card is in retry loading state */
+	isRetrying?: boolean;
 }
 
 /**
@@ -44,6 +50,24 @@ const getStatusBadgeProps = (
 };
 
 /**
+ * Get status icon based on verification status.
+ * @param status
+ */
+const getStatusIcon = (status: VerificationStatus): string => {
+	switch (status) {
+		case "success":
+			return "check-circle";
+		case "failed":
+			return "warning";
+		case "in_progress":
+			return "autorenew";
+		case "pending":
+		default:
+			return "schedule";
+	}
+};
+
+/**
  * Render key-value pairs for input/response data.
  * @param root0
  * @param root0.data
@@ -58,12 +82,18 @@ const DataDisplay = ({
 }): JSX.Element => (
 	<Box>
 		<Text fontSize="sm" fontWeight="semibold" color="gray.600" mb={2}>
-			{title}:
+			{title}
 		</Text>
-		<Flex direction="column" gap={1}>
+		<Box
+			bg="gray.50"
+			p={3}
+			borderRadius="md"
+			fontFamily="mono"
+			fontSize="xs"
+		>
 			{Object.entries(data).map(([key, value]) => (
-				<Flex key={key} fontSize="sm">
-					<Text color="gray.500" minW="140px">
+				<Flex key={key} mb={1}>
+					<Text color="blue.600" minW="140px">
 						{key}:
 					</Text>
 					<Text color="gray.700" wordBreak="break-word">
@@ -73,7 +103,7 @@ const DataDisplay = ({
 					</Text>
 				</Flex>
 			))}
-		</Flex>
+		</Box>
 	</Box>
 );
 
@@ -82,16 +112,19 @@ const DataDisplay = ({
  * @param root0
  * @param root0.result
  * @param root0.defaultExpanded
+ * @param root0.isRetrying
  */
 export const VerificationResultCard = ({
 	result,
-	defaultExpanded = true,
+	defaultExpanded = false,
+	isRetrying = false,
 }: VerificationResultCardProps): JSX.Element => {
 	const { isOpen, onToggle } = useDisclosure({
 		defaultIsOpen: defaultExpanded,
 	});
 	const statusBadge = getStatusBadgeProps(result.status);
-	const isLoading = result.status === "in_progress";
+	const statusIcon = getStatusIcon(result.status);
+	const isLoading = result.status === "in_progress" || isRetrying;
 
 	return (
 		<Card
@@ -104,6 +137,13 @@ export const VerificationResultCard = ({
 						? "red.200"
 						: "gray.200"
 			}
+			bg={
+				result.status === "success"
+					? "green.50"
+					: result.status === "failed"
+						? "red.50"
+						: "white"
+			}
 		>
 			{/* Header */}
 			<Flex
@@ -112,37 +152,49 @@ export const VerificationResultCard = ({
 				justify="space-between"
 				cursor="pointer"
 				onClick={onToggle}
-				bg={result.status === "in_progress" ? "blue.50" : "transparent"}
-				_hover={{ bg: "gray.50" }}
 			>
 				<Flex align="center" gap={3} flex={1}>
-					{/* Expand/Collapse Icon */}
-					<Icon
-						name={isOpen ? "expand-more" : "chevron-right"}
-						size="sm"
-						color="gray.400"
-					/>
+					{/* Status Icon */}
+					{isLoading ? (
+						<Spinner size="sm" color="blue.500" />
+					) : (
+						<Icon
+							name={statusIcon}
+							size="sm"
+							color={
+								result.status === "success"
+									? "green.500"
+									: result.status === "failed"
+										? "red.500"
+										: "gray.400"
+							}
+						/>
+					)}
 
-					{/* Service Name */}
-					<Text fontWeight="semibold" color="gray.800">
-						{result.serviceName}
-					</Text>
+					{/* Service Name and Timestamp */}
+					<Box>
+						<Text fontWeight="semibold" color="gray.800">
+							{result.serviceName}
+						</Text>
+						{result.timestamp && (
+							<Text fontSize="xs" color="gray.500">
+								{result.timestamp}
+							</Text>
+						)}
+					</Box>
+				</Flex>
 
-					{/* Loading Spinner for in_progress */}
-					{isLoading && <Spinner size="sm" color="blue.500" />}
-
-					{/* Status Badge */}
+				{/* Status Badge and Expand Icon */}
+				<Flex align="center" gap={2}>
 					<Badge colorScheme={statusBadge.colorScheme} fontSize="xs">
 						{statusBadge.label}
 					</Badge>
+					<Icon
+						name={isOpen ? "expand-less" : "expand-more"}
+						size="sm"
+						color="gray.400"
+					/>
 				</Flex>
-
-				{/* Timestamp */}
-				{result.timestamp && (
-					<Text fontSize="xs" color="gray.500">
-						{result.timestamp}
-					</Text>
-				)}
 			</Flex>
 
 			{/* Collapsible Content */}
@@ -153,18 +205,25 @@ export const VerificationResultCard = ({
 					pt={2}
 					borderTop="1px"
 					borderColor="gray.100"
+					bg="white"
 				>
-					<Flex direction={{ base: "column", md: "row" }} gap={6}>
-						{/* Input Data */}
-						<Box flex={1}>
+					{/* Skeleton loading state for retry */}
+					{isRetrying ? (
+						<Box>
+							<Skeleton height="16px" width="80px" mb={3} />
+							<SkeletonText noOfLines={3} spacing={2} mb={4} />
+							<Skeleton height="16px" width="80px" mb={3} />
+							<SkeletonText noOfLines={4} spacing={2} />
+						</Box>
+					) : (
+						<VStack spacing={4} align="stretch">
+							{/* Input Data */}
 							<DataDisplay
 								data={result.requestData}
 								title="Input Data"
 							/>
-						</Box>
 
-						{/* Response Data */}
-						<Box flex={1}>
+							{/* Response Data */}
 							{result.status === "pending" ? (
 								<Text fontSize="sm" color="gray.400">
 									Waiting to start...
@@ -184,11 +243,13 @@ export const VerificationResultCard = ({
 										color="red.600"
 										mb={2}
 									>
-										Error:
+										Error Details
 									</Text>
-									<Text fontSize="sm" color="red.500">
-										{result.error}
-									</Text>
+									<Box bg="red.50" p={3} borderRadius="md">
+										<Text fontSize="sm" color="red.600">
+											{result.error}
+										</Text>
+									</Box>
 								</Box>
 							) : result.responseData ? (
 								<DataDisplay
@@ -200,8 +261,8 @@ export const VerificationResultCard = ({
 									No response data
 								</Text>
 							)}
-						</Box>
-					</Flex>
+						</VStack>
+					)}
 				</Box>
 			</Collapse>
 		</Card>

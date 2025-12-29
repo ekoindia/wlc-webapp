@@ -5,6 +5,7 @@
  */
 
 import { useEpsV3Fetch } from "hooks";
+import { formatDateTime } from "libs";
 import { useCallback, useState } from "react";
 import type {
 	VerificationResult,
@@ -21,22 +22,15 @@ const INITIAL_STATE: VerificationState = {
 	currentIndex: 0,
 	totalCount: 0,
 	formData: undefined,
+	services: undefined,
+	retryingIndices: undefined,
 };
 
 /**
- * Format current timestamp for display.
+ * Format current timestamp for display using consistent date utilities.
  * @returns Formatted timestamp string
  */
-const getTimestamp = (): string => {
-	return new Date().toLocaleString("en-IN", {
-		day: "numeric",
-		month: "numeric",
-		year: "numeric",
-		hour: "numeric",
-		minute: "2-digit",
-		hour12: true,
-	});
-};
+const getTimestamp = (): string => formatDateTime(new Date().toISOString());
 
 /**
  * Filter form data to only include parameters relevant to a specific service.
@@ -62,6 +56,8 @@ interface UseKycVerificationReturn {
 		_services: VerificationService[],
 		_formData: Record<string, unknown>
 	) => Promise<void>;
+	/** Retry only failed services with same form data */
+	retryFailedServices: () => Promise<void>;
 	/** Reset verification state to initial */
 	reset: () => void;
 	/** Check if verification is in progress */
@@ -70,6 +66,10 @@ interface UseKycVerificationReturn {
 	progressPercent: number;
 	/** Get progress text (e.g., "2 of 5") */
 	progressText: string;
+	/** Count of failed services */
+	failedCount: number;
+	/** Count of successful services */
+	successCount: number;
 }
 
 /**
@@ -213,6 +213,8 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 				currentIndex: 0,
 				totalCount: services.length,
 				formData,
+				services,
+				retryingIndices: undefined,
 			});
 
 			// Process services sequentially
@@ -243,6 +245,54 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 	);
 
 	/**
+	 * Retry only failed services with the same form data.
+	 */
+	const retryFailedServices = useCallback(async (): Promise<void> => {
+		const { services, formData, results } = state;
+		if (!services || !formData) return;
+
+		// Find indices of failed results
+		const failedIndices = results
+			.map((r, i) => (r.status === "failed" ? i : -1))
+			.filter((i) => i !== -1);
+
+		if (failedIndices.length === 0) return;
+
+		// Mark as in_progress and set retrying indices
+		setState((prev) => ({
+			...prev,
+			status: "in_progress",
+			retryingIndices: failedIndices,
+			results: prev.results.map((r, i) =>
+				failedIndices.includes(i)
+					? { ...r, status: "pending" as const }
+					: r
+			),
+		}));
+
+		// Process failed services sequentially
+		const updatedResults = [...results];
+
+		for (const idx of failedIndices) {
+			const service = services[idx];
+			const result = await verifyService(service, formData, idx);
+			updatedResults[idx] = result;
+
+			setState((prev) => ({
+				...prev,
+				results: [...updatedResults],
+			}));
+		}
+
+		// Mark as completed and clear retrying indices
+		setState((prev) => ({
+			...prev,
+			status: "completed",
+			retryingIndices: undefined,
+		}));
+	}, [state, verifyService]);
+
+	/**
 	 * Reset verification state.
 	 */
 	const reset = useCallback(() => {
@@ -251,6 +301,12 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 
 	// Computed values
 	const isVerifying = state.status === "in_progress";
+	const failedCount = state.results.filter(
+		(r) => r.status === "failed"
+	).length;
+	const successCount = state.results.filter(
+		(r) => r.status === "success"
+	).length;
 	const progressPercent =
 		state.totalCount > 0
 			? Math.round((state.currentIndex / state.totalCount) * 100)
@@ -263,10 +319,13 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 	return {
 		state,
 		startVerification,
+		retryFailedServices,
 		reset,
 		isVerifying,
 		progressPercent,
 		progressText,
+		failedCount,
+		successCount,
 	};
 };
 
