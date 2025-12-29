@@ -57,6 +57,8 @@ export interface VerificationService {
 	endpointPath: string;
 	/** List of request parameters for the form */
 	requestParams: RequestParam[];
+	/** Whether this service supports bulk verification uploads */
+	supports_bulk_verification?: boolean;
 }
 
 /**
