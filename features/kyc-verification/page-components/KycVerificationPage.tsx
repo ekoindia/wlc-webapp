@@ -178,7 +178,7 @@ export const KycVerificationPage = (): JSX.Element => {
 								size="md"
 								icon="arrow-forward"
 								iconPosition="right"
-								iconStyle={{ size: "sm" }}
+								iconStyle={{ size: "xs" }}
 								disabled={selectedCount === 0}
 							>
 								Continue ({selectedCount})
