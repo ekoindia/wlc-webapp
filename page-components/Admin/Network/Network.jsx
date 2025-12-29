@@ -458,7 +458,7 @@ const Network = () => {
 					isAdmin ? (
 						<Button
 							size="sm"
-							icon="user"
+							icon="person"
 							iconStyle={{ size: "xs" }}
 							onClick={() =>
 								router.push(
