@@ -269,7 +269,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		formState: { errors, isSubmitting, isValid },
 		watch,
 		unregister,
-	} = useForm({
+	} = useForm<Record<string, unknown>>({
 		mode: "onChange",
 		// Merge product defaults with previously stored search data
 		// This ensures form is prefilled when returning from status screen
