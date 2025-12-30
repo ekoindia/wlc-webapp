@@ -32,6 +32,7 @@ ServiceFormRoute.pageMeta = {
 	title: "KYC & Verification | Service Form",
 	isBeta: true,
 	isSubPage: true,
+	isFixedBottomAppBar: true,
 };
 
 export default ServiceFormRoute;

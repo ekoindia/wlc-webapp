@@ -6,6 +6,7 @@
 
 import { Box, Flex, Spinner, Text, VStack } from "@chakra-ui/react";
 import { Button, PageTitle } from "components";
+import ActionButtonGroup from "components/ActionButtonGroup/ActionButtonGroup";
 import { formatDateTime } from "libs";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -183,7 +184,7 @@ export const VerificationResultsPage = (): JSX.Element => {
 	return (
 		<>
 			<PageTitle title={pageTitle} />
-			<Flex justify="center" w="100%">
+			<Flex justify="center" w="100%" mb={{ base: "128px", md: "64px" }}>
 				<VStack
 					spacing={4}
 					align="stretch"
@@ -218,58 +219,83 @@ export const VerificationResultsPage = (): JSX.Element => {
 						</Box>
 					)}
 
-					{/* Conditional Action Buttons */}
+					{/* Action Buttons */}
 					{state.status === "completed" && (
-						<Box pt={4}>
-							<Flex gap={3} justify="center">
-								{hasFailures ? (
-									<>
-										{/* Failures exist: Show Back to Services + Retry */}
-										<Button
-											variant="outline"
-											onClick={handleBackToServices}
-											icon="arrow-back"
-										>
-											Back to Services
-										</Button>
-										<Button
-											onClick={handleRetryFailed}
-											icon="refresh"
-										>
-											{retryButtonText}
-										</Button>
-									</>
-								) : allSuccessful ? (
-									<>
-										{/* All successful: Show Verify More + Home */}
-										<Button
-											variant="outline"
-											onClick={handleBackToServices}
-											icon="refresh"
-										>
-											Verify More
-										</Button>
-										<Button
-											onClick={handleGoHome}
-											icon="home"
-										>
-											Home
-										</Button>
-									</>
-								) : (
-									<>
-										{/* Default fallback */}
-										<Button
-											variant="outline"
-											onClick={handleBackToServices}
-											icon="arrow-back"
-										>
-											Back to Services
-										</Button>
-									</>
-								)}
-							</Flex>
-						</Box>
+						<ActionButtonGroup
+							buttonConfigList={
+								hasFailures
+									? [
+											{
+												label: retryButtonText,
+												onClick: handleRetryFailed,
+												styles: {
+													h: "64px",
+													w: {
+														base: "100%",
+														md: "200px",
+													},
+												},
+												icon: "refresh",
+											},
+											{
+												variant: "link",
+												label: "Back to Services",
+												onClick: handleBackToServices,
+												styles: {
+													h: "64px",
+													w: {
+														base: "100%",
+														md: "200px",
+													},
+												},
+											},
+										]
+									: allSuccessful
+										? [
+												{
+													label: "Verify More",
+													onClick:
+														handleBackToServices,
+													styles: {
+														h: "64px",
+														w: {
+															base: "100%",
+															md: "200px",
+														},
+													},
+												},
+												{
+													variant: "link",
+													label: "Home",
+													onClick: handleGoHome,
+													styles: {
+														h: "64px",
+														w: {
+															base: "100%",
+															md: "200px",
+														},
+													},
+													icon: "home",
+												},
+											]
+										: [
+												{
+													label: "Back to Services",
+													onClick:
+														handleBackToServices,
+													styles: {
+														h: "64px",
+														w: {
+															base: "100%",
+															md: "200px",
+														},
+													},
+													icon: "arrow-back",
+												},
+											]
+							}
+							bg={{ base: "white", md: "none" }}
+						/>
 					)}
 				</VStack>
 			</Flex>

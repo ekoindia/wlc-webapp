@@ -18,6 +18,7 @@ VerificationResultsRoute.pageMeta = {
 	title: "KYC & Verification | Results",
 	isBeta: true,
 	isSubPage: true,
+	isFixedBottomAppBar: true,
 };
 
 export default VerificationResultsRoute;

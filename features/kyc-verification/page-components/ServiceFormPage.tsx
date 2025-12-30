@@ -364,7 +364,7 @@ export const ServiceFormPage = ({
 	return (
 		<>
 			<PageTitle title={pageTitle} />
-			<Flex justify="center" w="100%">
+			<Flex justify="center" w="100%" mb={{ base: "128px", md: "64px" }}>
 				<Flex
 					direction="column"
 					gap="4"
