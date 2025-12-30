@@ -3,6 +3,7 @@ import {
 	CopyButton,
 	Dropzone,
 	Input,
+	JsonViewer,
 	Markdown,
 	MicInput,
 	Select,
@@ -775,6 +776,56 @@ const CopyButtonTest = () => {
 	);
 };
 
+/**
+ * Test JsonViewer component
+ * MARK: JsonViewerTest
+ */
+const JsonViewerTest = () => {
+	// Sample data matching KYC verification response structure
+	const sampleData = {
+		user: {
+			id: 12345,
+			name: "Jane Smith",
+			email: "jane.smith@example.com",
+			isActive: true,
+			roles: ["admin", "editor", "viewer"],
+			metadata: {
+				createdAt: "2024-01-15T10:30:00Z",
+				lastLogin: "2024-12-30T08:45:00Z",
+				preferences: {
+					theme: "dark",
+					notifications: {
+						email: true,
+						push: false,
+						sms: null,
+					},
+				},
+			},
+		},
+		verification: {
+			status: "success",
+			documents: [
+				{ type: "PAN", verified: true, number: "ABCDE1234F" },
+				{ type: "Aadhaar", verified: true, lastFour: "1234" },
+			],
+		},
+		statistics: {
+			totalUsers: 1523,
+			activeToday: 847,
+			revenue: 125430.5,
+		},
+		emptyObject: {},
+		emptyArray: [],
+		nullValue: null,
+	};
+
+	return (
+		<Flex direction="column" gap={4}>
+			<JsonViewer data={sampleData} collapseAfterLevel={2} />
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -829,6 +880,10 @@ const TestComponents = [
 	{
 		title: "Copy Button Test",
 		component: CopyButtonTest,
+	},
+	{
+		title: "JSON Viewer",
+		component: JsonViewerTest,
 	},
 ];
 
