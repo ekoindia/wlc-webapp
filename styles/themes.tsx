@@ -4,6 +4,7 @@ import {
 	buttonTheme,
 	checkboxTheme,
 	radioTheme,
+	switchTheme,
 	tableTheme,
 	tabsTheme,
 } from "./theme_system/theme/components";
@@ -53,6 +54,7 @@ export const light = extendTheme({
 		Button: buttonTheme,
 		Checkbox: checkboxTheme,
 		Radio: radioTheme,
+		Switch: switchTheme,
 		Table: tableTheme,
 		Tabs: tabsTheme,
 		Skeleton: {
