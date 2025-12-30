@@ -37,7 +37,7 @@ export const MultiServiceToggle = ({
 		<Flex align="center" gap="2">
 			<Switch
 				size={{ base: "sm", md: "md" }}
-				colorScheme="green"
+				variant="primary"
 				isChecked={isEnabled}
 				onChange={onToggle}
 			/>
