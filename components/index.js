@@ -33,6 +33,7 @@ import { Icon } from "./Icon";
 import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
+import { JsonViewer } from "./JsonViewer";
 import { Kbd } from "./Kbd";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
@@ -98,6 +99,7 @@ export {
 	Input,
 	InputLabel,
 	InputMsg,
+	JsonViewer,
 	Kbd,
 	Menus,
 	Modal,
