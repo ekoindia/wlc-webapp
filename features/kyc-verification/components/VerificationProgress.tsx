@@ -87,7 +87,7 @@ export const VerificationProgress = ({
 						<Box
 							w={`${successPercent}%`}
 							h="100%"
-							bg="green.500"
+							bg="success"
 							transition="width 0.3s ease"
 						/>
 					)}
@@ -96,7 +96,7 @@ export const VerificationProgress = ({
 						<Box
 							w={`${failedPercent}%`}
 							h="100%"
-							bg="red.500"
+							bg="error"
 							transition="width 0.3s ease"
 						/>
 					)}
@@ -109,20 +109,16 @@ export const VerificationProgress = ({
 					{/* Successful */}
 					<Box
 						p={4}
-						bg="green.50"
+						bg="rgba(0, 195, 65, 0.12)"
 						borderRadius="md"
 						border="1px solid"
-						borderColor="green.200"
+						borderColor="rgba(0, 195, 65, 0.4)"
 						textAlign="center"
 					>
-						<Text
-							fontSize="2xl"
-							fontWeight="bold"
-							color="green.600"
-						>
+						<Text fontSize="2xl" fontWeight="bold" color="success">
 							{successCount}
 						</Text>
-						<Text fontSize="sm" color="green.600">
+						<Text fontSize="sm" color="success">
 							Successful
 						</Text>
 					</Box>
@@ -130,16 +126,16 @@ export const VerificationProgress = ({
 					{/* Failed */}
 					<Box
 						p={4}
-						bg="red.50"
+						bg="rgba(255, 64, 129, 0.12)"
 						borderRadius="md"
 						border="1px solid"
-						borderColor="red.200"
+						borderColor="rgba(255, 64, 129, 0.4)"
 						textAlign="center"
 					>
-						<Text fontSize="2xl" fontWeight="bold" color="red.600">
+						<Text fontSize="2xl" fontWeight="bold" color="error">
 							{failedCount}
 						</Text>
-						<Text fontSize="sm" color="red.600">
+						<Text fontSize="sm" color="error">
 							Failed
 						</Text>
 					</Box>
@@ -147,16 +143,20 @@ export const VerificationProgress = ({
 					{/* Total */}
 					<Box
 						p={4}
-						bg="blue.50"
+						bg="rgba(254, 159, 0, 0.12)"
 						borderRadius="md"
 						border="1px solid"
-						borderColor="blue.200"
+						borderColor="rgba(254, 159, 0, 0.4)"
 						textAlign="center"
 					>
-						<Text fontSize="2xl" fontWeight="bold" color="blue.600">
+						<Text
+							fontSize="2xl"
+							fontWeight="bold"
+							color="accent.DEFAULT"
+						>
 							{total}
 						</Text>
-						<Text fontSize="sm" color="blue.600">
+						<Text fontSize="sm" color="accent.DEFAULT">
 							Total
 						</Text>
 					</Box>

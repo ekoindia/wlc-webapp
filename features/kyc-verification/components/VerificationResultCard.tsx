@@ -36,17 +36,25 @@ interface VerificationResultCardProps {
  */
 const getStatusBadgeProps = (
 	status: VerificationStatus
-): { colorScheme: string; label: string } => {
+): { bg: string; color: string; label: string } => {
 	switch (status) {
 		case "success":
-			return { colorScheme: "green", label: "SUCCESS" };
+			return {
+				bg: "rgba(0, 195, 65, 0.25)",
+				color: "success",
+				label: "SUCCESS",
+			};
 		case "failed":
-			return { colorScheme: "red", label: "FAILED" };
+			return {
+				bg: "rgba(255, 64, 129, 0.25)",
+				color: "error",
+				label: "FAILED",
+			};
 		case "in_progress":
-			return { colorScheme: "blue", label: "IN PROGRESS" };
+			return { bg: "blue.100", color: "blue.700", label: "IN PROGRESS" };
 		case "pending":
 		default:
-			return { colorScheme: "gray", label: "PENDING" };
+			return { bg: "gray.100", color: "gray.600", label: "PENDING" };
 	}
 };
 
@@ -96,16 +104,16 @@ export const VerificationResultCard = ({
 			overflow="hidden"
 			borderColor={
 				result.status === "success"
-					? "green.200"
+					? "rgba(0, 195, 65, 0.4)"
 					: result.status === "failed"
-						? "red.200"
+						? "rgba(255, 64, 129, 0.4)"
 						: "gray.200"
 			}
 			bg={
 				result.status === "success"
-					? "green.50"
+					? "rgba(0, 195, 65, 0.25)"
 					: result.status === "failed"
-						? "red.50"
+						? "rgba(255, 64, 129, 0.25)"
 						: "white"
 			}
 		>
@@ -127,9 +135,9 @@ export const VerificationResultCard = ({
 							size="sm"
 							color={
 								result.status === "success"
-									? "green.500"
+									? "success"
 									: result.status === "failed"
-										? "red.500"
+										? "error"
 										: "gray.400"
 							}
 						/>
@@ -150,13 +158,13 @@ export const VerificationResultCard = ({
 
 				{/* Status Badge and Expand Icon */}
 				<Flex align="center" gap={2}>
-					<Badge colorScheme={statusBadge.colorScheme} fontSize="xs">
+					<Badge color={statusBadge.color} fontSize="xs">
 						{statusBadge.label}
 					</Badge>
 					<Icon
 						name={isOpen ? "expand-less" : "expand-more"}
 						size="sm"
-						color="gray.400"
+						color="gray.600"
 					/>
 				</Flex>
 			</Flex>
@@ -214,13 +222,17 @@ export const VerificationResultCard = ({
 									<Text
 										fontSize="sm"
 										fontWeight="semibold"
-										color="red.600"
+										color="error"
 										mb={2}
 									>
 										Error Details
 									</Text>
-									<Box bg="red.50" p={3} borderRadius="md">
-										<Text fontSize="sm" color="red.600">
+									<Box
+										bg="rgba(255, 64, 129, 0.15)"
+										p={3}
+										borderRadius="md"
+									>
+										<Text fontSize="sm" color="error">
 											{result.error}
 										</Text>
 									</Box>
