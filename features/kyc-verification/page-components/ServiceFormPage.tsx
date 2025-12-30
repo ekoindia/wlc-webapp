@@ -139,7 +139,6 @@ export const ServiceFormPage = ({
 	serviceCodes: initialServiceCodes,
 }: ServiceFormPageProps): JSX.Element => {
 	const router = useRouter();
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitError, setSubmitError] = useState<string | null>(null);
 
 	// Local state to track active service codes - allows dynamic removal
@@ -192,7 +191,7 @@ export const ServiceFormPage = ({
 		handleSubmit,
 		watch,
 		unregister,
-		formState: { errors },
+		formState: { errors, isValid, isDirty, isSubmitting },
 	} = useForm();
 
 	const formValues = watch();
@@ -270,7 +269,6 @@ export const ServiceFormPage = ({
 	// Handle form submission
 	const onSubmit = useCallback(
 		async (data: Record<string, unknown>) => {
-			setIsSubmitting(true);
 			setSubmitError(null);
 
 			try {
@@ -303,7 +301,6 @@ export const ServiceFormPage = ({
 					"Failed to submit verification. Please try again."
 				);
 				console.error("Submission error:", err);
-				setIsSubmitting(false);
 			}
 		},
 		[selectedServiceObjects, resetAll, router]
@@ -423,12 +420,6 @@ export const ServiceFormPage = ({
 								<ActionButtonGroup
 									buttonConfigList={[
 										{
-											variant: "outline",
-											label: "Back",
-											onClick: handleBack,
-											disabled: isSubmitting,
-										},
-										{
 											type: "submit",
 											label:
 												selectedServiceObjects.length ===
@@ -436,7 +427,33 @@ export const ServiceFormPage = ({
 													? "Verify"
 													: `Verify ${selectedServiceObjects.length} Services`,
 											loading: isSubmitting,
+											disabled: !isValid || !isDirty,
+											styles: {
+												h: "64px",
+												w: {
+													base: "100%",
+													md: "200px",
+												},
+											},
 											icon: "arrow-forward",
+										},
+										{
+											variant: "link",
+											label: "Back",
+											onClick: handleBack,
+											disabled: isSubmitting,
+											styles: {
+												color: "primary.DEFAULT",
+												bg: {
+													base: "white",
+													md: "none",
+												},
+												h: { base: "64px", md: "64px" },
+												w: { base: "100%", md: "auto" },
+												_hover: {
+													textDecoration: "none",
+												},
+											},
 										},
 									]}
 								/>
