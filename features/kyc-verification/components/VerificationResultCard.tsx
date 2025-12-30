@@ -111,9 +111,9 @@ export const VerificationResultCard = ({
 			}
 			bg={
 				result.status === "success"
-					? "rgba(0, 195, 65, 0.25)"
+					? "linear-gradient(rgba(0, 195, 65, 0.15), rgba(0, 195, 65, 0.15)), white"
 					: result.status === "failed"
-						? "rgba(255, 64, 129, 0.25)"
+						? "linear-gradient(rgba(255, 64, 129, 0.15), rgba(255, 64, 129, 0.15)), white"
 						: "white"
 			}
 		>
@@ -158,7 +158,7 @@ export const VerificationResultCard = ({
 
 				{/* Status Badge and Expand Icon */}
 				<Flex align="center" gap={2}>
-					<Badge color={statusBadge.color} fontSize="xs">
+					<Badge color={statusBadge.color} bg="white" fontSize="xs">
 						{statusBadge.label}
 					</Badge>
 					<Icon
