@@ -23,7 +23,9 @@ import type {
 
 /**
  * Derives an icon for a service based on its category or name.
- * @param service
+ * Falls back to DEFAULT_ICON if no match is found.
+ * @param {VerificationService} service - The service to get icon for
+ * @returns {string} Icon name from the icon library
  */
 const getServiceIcon = (service: VerificationService): string => {
 	if (service.icon) return service.icon;
@@ -45,7 +47,9 @@ const getServiceIcon = (service: VerificationService): string => {
 
 /**
  * Derives a description for a service if not provided.
- * @param service
+ * Falls back to label with provider prefix removed.
+ * @param {VerificationService} service - The service to get description for
+ * @returns {string} Service description text
  */
 const getServiceDescription = (service: VerificationService): string => {
 	if (service.description) return service.description;
@@ -54,8 +58,10 @@ const getServiceDescription = (service: VerificationService): string => {
 };
 
 /**
- * Normalize services to ensure all required fields are present.
- * @param services
+ * Normalizes services to ensure all required fields are present.
+ * Adds default icons, descriptions, and categories where missing.
+ * @param {VerificationService[]} services - Array of services to normalize
+ * @returns {VerificationService[]} Normalized services with all fields populated
  */
 const normalizeServices = (
 	services: VerificationService[]
@@ -69,8 +75,10 @@ const normalizeServices = (
 };
 
 /**
- * Extract unique categories from services.
- * @param services
+ * Extracts unique categories from services for filtering.
+ * Returns array with "All" option first, followed by sorted categories.
+ * @param {VerificationService[]} services - Array of services to extract categories from
+ * @returns {CategoryOption[]} Array of category options with counts
  */
 const extractCategories = (
 	services: VerificationService[]
@@ -112,9 +120,11 @@ const extractCategories = (
 };
 
 /**
- * Simple fuzzy search - checks if query terms appear in text.
- * @param text
- * @param query
+ * Simple fuzzy search - checks if all query terms appear in text.
+ * Case-insensitive matching.
+ * @param {string} text - The text to search within
+ * @param {string} query - The search query (space-separated terms)
+ * @returns {boolean} True if all query terms are found in text
  */
 const fuzzyMatch = (text: string, query: string): boolean => {
 	const normalizedText = text.toLowerCase();
@@ -156,6 +166,8 @@ interface UseKycServicesReturn {
 
 /**
  * Hook for fetching and managing KYC verification services.
+ * Provides category filtering, search functionality, and service lookup.
+ * @returns {UseKycServicesReturn} Object with services data, filters, and utility functions
  */
 export const useKycServices = (): UseKycServicesReturn => {
 	const [services, setServices] = useState<VerificationService[]>([]);

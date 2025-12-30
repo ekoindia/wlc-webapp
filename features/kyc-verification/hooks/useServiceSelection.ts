@@ -47,6 +47,8 @@ interface UseServiceSelectionReturn {
 
 /**
  * Hook for managing service selection state.
+ * Supports both single and multi-service selection modes with localStorage persistence.
+ * @returns {UseServiceSelectionReturn} Object with selection state and control functions
  */
 export const useServiceSelection = (): UseServiceSelectionReturn => {
 	const [state, setState] = useLocalStorage<MultiServiceState>(

@@ -22,8 +22,9 @@ interface ServiceFormPageProps {
 }
 
 /**
- * Map API parameter type to Form component's parameter_type_id.
- * @param type
+ * Maps API parameter type to Form component's parameter_type_id.
+ * @param {string} type - The API parameter type ('number' | 'date' | 'array' | 'string')
+ * @returns {ParamType} Form component parameter type enum value
  */
 const mapTypeToParamType = (type: string): ParamType => {
 	switch (type) {
@@ -39,8 +40,9 @@ const mapTypeToParamType = (type: string): ParamType => {
 };
 
 /**
- * Convert API validations to react-hook-form validations.
- * @param param
+ * Converts API validations to react-hook-form validation rules.
+ * @param {RequestParam} param - The request parameter with validation rules
+ * @returns {FormField['validations'] | undefined} React-hook-form compatible validation object or undefined
  */
 const mapValidations = (
 	param: RequestParam
@@ -88,8 +90,10 @@ const mapValidations = (
 };
 
 /**
- * Merge parameters from multiple services, keeping track of which service(s) require each param.
- * @param services
+ * Merges parameters from multiple services, tracking which service(s) require each param.
+ * Deduplicates parameters by name and aggregates requiredBy arrays.
+ * @param {VerificationService[]} services - Array of services to merge parameters from
+ * @returns {FormField[]} Deduplicated array of form fields with requiredBy metadata
  */
 const mergeServiceParams = (services: VerificationService[]): FormField[] => {
 	const paramMap = new Map<string, FormField>();
@@ -131,9 +135,11 @@ const mergeServiceParams = (services: VerificationService[]): FormField[] => {
 };
 
 /**
- * Service form page component.
- * @param root0
- * @param root0.serviceCodes
+ * Dynamic form page for single or multi-service KYC verification.
+ * Renders form fields from requestParams and handles submission to verification results.
+ * @param {ServiceFormPageProps} props - Component props
+ * @param {string[]} props.serviceCodes - Service codes from the route to render form for
+ * @returns {JSX.Element} Rendered form page with dynamic fields and service pills
  */
 export const ServiceFormPage = ({
 	serviceCodes: initialServiceCodes,

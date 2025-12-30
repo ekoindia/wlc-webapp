@@ -27,16 +27,16 @@ const INITIAL_STATE: VerificationState = {
 };
 
 /**
- * Format current timestamp for display using consistent date utilities.
- * @returns Formatted timestamp string
+ * Formats current timestamp for display using consistent date utilities.
+ * @returns {string} Formatted timestamp string
  */
 const getTimestamp = (): string => formatDateTime(new Date().toISOString());
 
 /**
- * Filter form data to only include parameters relevant to a specific service.
- * @param service - The service to filter parameters for
- * @param formData - The complete form data
- * @returns Object containing only the parameters defined in the service's requestParams
+ * Filters form data to only include parameters relevant to a specific service.
+ * @param {VerificationService} service - The service to filter parameters for
+ * @param {Record<string, unknown>} formData - The complete form data object
+ * @returns {Record<string, unknown>} Object containing only the parameters defined in the service's requestParams
  */
 const getServiceSpecificParams = (
 	service: VerificationService,
@@ -74,7 +74,8 @@ interface UseKycVerificationReturn {
 
 /**
  * Hook for managing KYC verification API calls.
- * @returns Object with verification state and control functions
+ * Supports single and multi-service verification with progress tracking.
+ * @returns {UseKycVerificationReturn} Object with verification state and control functions
  */
 export const useKycVerification = (): UseKycVerificationReturn => {
 	const [state, setState] = useState<VerificationState>(INITIAL_STATE);

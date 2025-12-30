@@ -20,11 +20,12 @@ interface MultiServiceToggleProps {
 /**
  * Toggle switch for enabling multi-service selection mode.
  * Styled similar to pricing-config with info tooltip.
- * @param root0
- * @param root0.isEnabled
- * @param root0.onToggle
- * @param root0.label
- * @param root0.tooltip
+ * @param {MultiServiceToggleProps} props - Component props
+ * @param {boolean} props.isEnabled - Whether multi-service mode is currently enabled
+ * @param {Function} props.onToggle - Callback invoked when toggle state changes
+ * @param {string} [props.label] - Label text displayed next to the toggle
+ * @param {string} [props.tooltip] - Tooltip text explaining the feature
+ * @returns {JSX.Element} Rendered toggle switch with label and info tooltip
  */
 export const MultiServiceToggle = ({
 	isEnabled,

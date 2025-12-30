@@ -47,8 +47,9 @@ interface VerificationResultListProps {
 }
 
 /**
- * Get counts by status for summary display.
- * @param results
+ * Calculates counts by verification status for summary display.
+ * @param {VerificationResult[]} results - Array of verification results to count
+ * @returns {Record<VerificationStatus, number>} Object with count for each status type
  */
 const getStatusCounts = (
 	results: VerificationResult[]
@@ -68,17 +69,19 @@ const getStatusCounts = (
 };
 
 /**
- * VerificationResultList component.
- * @param root0
- * @param root0.results
- * @param root0.currentIndex
- * @param root0.totalCount
- * @param root0.isComplete
- * @param root0.successCount
- * @param root0.failedCount
- * @param root0.completedAt
- * @param root0.retryingIndices
- * @param root0.onDownloadPdf
+ * Container component for displaying verification results with filtering and export options.
+ * Layout: Results count → Filters & Download → Service result cards.
+ * @param {VerificationResultListProps} props - Component props
+ * @param {VerificationResult[]} props.results - Array of verification results to display
+ * @param {number} props.currentIndex - Current progress index (0-based)
+ * @param {number} props.totalCount - Total count of services being verified
+ * @param {boolean} props.isComplete - Whether all verifications are complete
+ * @param {number} [props.successCount] - Count of successful verifications
+ * @param {number} [props.failedCount] - Count of failed verifications
+ * @param {string} [props.completedAt] - Formatted completion timestamp
+ * @param {number[]} [props.retryingIndices] - Indices of services being retried (for skeleton display)
+ * @param {Function} [props.onDownloadPdf] - Callback to download results as PDF
+ * @returns {JSX.Element} Rendered results list with progress, filters, and result cards
  */
 export const VerificationResultList = ({
 	results,

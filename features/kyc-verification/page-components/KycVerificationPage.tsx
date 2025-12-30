@@ -20,6 +20,8 @@ import { useKycServices, useServiceSelection } from "../hooks";
 
 /**
  * Main KYC Verification page component.
+ * Displays a grid of verification services with category filtering, search, and multi-select support.
+ * @returns {JSX.Element} Rendered page with service grid and controls
  */
 export const KycVerificationPage = (): JSX.Element => {
 	const router = useRouter();

@@ -30,8 +30,9 @@ interface VerificationResultCardProps {
 }
 
 /**
- * Get badge color based on verification status.
- * @param status
+ * Returns badge color scheme and label based on verification status.
+ * @param {VerificationStatus} status - The verification status to get badge props for
+ * @returns {{ colorScheme: string; label: string }} Badge color scheme and display label
  */
 const getStatusBadgeProps = (
 	status: VerificationStatus
@@ -50,8 +51,9 @@ const getStatusBadgeProps = (
 };
 
 /**
- * Get status icon based on verification status.
- * @param status
+ * Returns the icon name for a given verification status.
+ * @param {VerificationStatus} status - The verification status to get icon for
+ * @returns {string} Icon name from the icon library
  */
 const getStatusIcon = (status: VerificationStatus): string => {
 	switch (status) {
@@ -68,11 +70,13 @@ const getStatusIcon = (status: VerificationStatus): string => {
 };
 
 /**
- * VerificationResultCard component.
- * @param root0
- * @param root0.result
- * @param root0.defaultExpanded
- * @param root0.isRetrying
+ * Displays a single verification result with input data and response in a collapsible card.
+ * Supports skeleton loading state for retry functionality.
+ * @param {VerificationResultCardProps} props - Component props
+ * @param {VerificationResult} props.result - Verification result data including status, request, and response
+ * @param {boolean} [props.defaultExpanded] - Whether to show expanded by default (default: false)
+ * @param {boolean} [props.isRetrying] - Whether this card is in retry loading state (default: false)
+ * @returns {JSX.Element} Rendered collapsible card with status badge, request data, and response
  */
 export const VerificationResultCard = ({
 	result,

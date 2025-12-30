@@ -19,13 +19,14 @@ interface ServiceSearchProps {
 }
 
 /**
- * Search input for filtering services by name/description.
- * Uses the shared Input component for consistent styling.
- * @param root0
- * @param root0.value
- * @param root0.onChange
- * @param root0.placeholder
- * @param root0.debounceMs
+ * Search input for filtering KYC verification services by name/description.
+ * Uses the shared Input component for consistent styling with debounced input.
+ * @param {ServiceSearchProps} props - Component props
+ * @param {string} props.value - Current search query value
+ * @param {Function} props.onChange - Callback invoked when search query changes (debounced)
+ * @param {string} [props.placeholder] - Placeholder text for the input field
+ * @param {number} [props.debounceMs] - Debounce delay in milliseconds (default: 300)
+ * @returns {JSX.Element} Rendered search input with clear functionality
  */
 export const ServiceSearch = ({
 	value,

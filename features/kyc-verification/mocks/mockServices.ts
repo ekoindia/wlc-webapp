@@ -7,14 +7,18 @@
 import type { KycServicesResponse, VerificationService } from "../types";
 
 /**
- * Check if mock data should be used.
+ * Whether to use mock data instead of real API calls.
+ * Enabled when NEXT_PUBLIC_USE_MOCK_KYC=true or in test environment.
+ * @constant {boolean}
  */
 export const USE_MOCK_DATA =
 	process.env.NEXT_PUBLIC_USE_MOCK_KYC === "true" ||
 	process.env.NODE_ENV === "test";
 
 /**
- * Mock KYC verification services with Form-compatible requestParams.
+ * Mock KYC verification services array.
+ * Each service includes Form-compatible requestParams for development and testing.
+ * @constant {VerificationService[]}
  */
 export const MOCK_KYC_SERVICES: VerificationService[] = [
 	{
@@ -441,7 +445,9 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 ];
 
 /**
- * Mock API response structure.
+ * Mock API response structure for KYC services fetch.
+ * Mimics the actual API response format.
+ * @constant {KycServicesResponse}
  */
 export const MOCK_KYC_SERVICES_RESPONSE: KycServicesResponse = {
 	response_status_id: 0,
@@ -454,8 +460,9 @@ export const MOCK_KYC_SERVICES_RESPONSE: KycServicesResponse = {
 };
 
 /**
- * Get a mock service by its code.
- * @param serviceCode
+ * Retrieves a mock service by its unique service code.
+ * @param {string} serviceCode - The service code to search for
+ * @returns {VerificationService | undefined} The matching service or undefined if not found
  */
 export const getMockServiceByCode = (
 	serviceCode: string
@@ -464,8 +471,9 @@ export const getMockServiceByCode = (
 };
 
 /**
- * Get mock services by their codes.
- * @param serviceCodes
+ * Retrieves multiple mock services by their service codes.
+ * @param {string[]} serviceCodes - Array of service codes to search for
+ * @returns {VerificationService[]} Array of matching services (may be empty)
  */
 export const getMockServicesByCodes = (
 	serviceCodes: string[]

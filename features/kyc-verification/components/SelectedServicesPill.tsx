@@ -18,13 +18,14 @@ interface SelectedServicesPillProps {
 }
 
 /**
- * Display selected services as removable pills with accent color.
- * Shows placeholder when empty to prevent UI shift.
- * @param root0
- * @param root0.services
- * @param root0.onRemove
- * @param root0.removable
- * @param root0.maxVisible
+ * Displays selected KYC verification services as removable pills with accent color.
+ * Shows placeholder badge when empty to prevent UI shift.
+ * @param {SelectedServicesPillProps} props - Component props
+ * @param {VerificationService[]} props.services - Array of selected services to display as pills
+ * @param {Function} [props.onRemove] - Callback invoked when a service pill is removed
+ * @param {boolean} [props.removable] - Whether pills can be removed (default: true)
+ * @param {number} [props.maxVisible] - Maximum number of pills to show before collapsing (default: 5)
+ * @returns {JSX.Element} Rendered pill badges with optional overflow indicator
  */
 export const SelectedServicesPill = ({
 	services,

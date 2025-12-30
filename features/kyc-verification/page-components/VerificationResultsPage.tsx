@@ -21,7 +21,10 @@ interface StoredVerificationData {
 }
 
 /**
- * VerificationResultsPage component.
+ * Verification results page component.
+ * Loads verification data from sessionStorage and displays progressive results.
+ * Includes conditional action buttons based on verification outcome.
+ * @returns {JSX.Element} Rendered results page with progress and result cards
  */
 export const VerificationResultsPage = (): JSX.Element => {
 	const router = useRouter();

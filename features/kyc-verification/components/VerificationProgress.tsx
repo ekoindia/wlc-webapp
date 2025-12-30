@@ -22,14 +22,16 @@ interface VerificationProgressProps {
 }
 
 /**
- * VerificationProgress component.
- * @param root0
- * @param root0.current
- * @param root0.total
- * @param root0.isComplete
- * @param root0.successCount
- * @param root0.failedCount
- * @param root0.completedAt
+ * Progress indicator component for multi-service verification.
+ * Displays a segmented progress bar and summary statistics.
+ * @param {VerificationProgressProps} props - Component props
+ * @param {number} props.current - Current index (number of completed verifications)
+ * @param {number} props.total - Total number of services to verify
+ * @param {boolean} [props.isComplete] - Whether all verifications are complete
+ * @param {number} [props.successCount] - Count of successful verifications
+ * @param {number} [props.failedCount] - Count of failed verifications
+ * @param {string} [props.completedAt] - Formatted timestamp when verification completed
+ * @returns {JSX.Element} Rendered progress bar with success/failed segments and stats grid
  */
 export const VerificationProgress = ({
 	current,

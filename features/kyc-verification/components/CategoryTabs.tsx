@@ -17,12 +17,13 @@ interface CategoryTabsProps {
 }
 
 /**
- * Category tabs for filtering services.
+ * Category tabs for filtering KYC verification services.
  * Selection persists across tabs - changing category only filters the view.
- * @param root0
- * @param root0.categories
- * @param root0.selectedCategory
- * @param root0.onCategoryChange
+ * @param {CategoryTabsProps} props - Component props
+ * @param {CategoryOption[]} props.categories - Available category options for filtering
+ * @param {string} props.selectedCategory - Currently selected category value
+ * @param {Function} props.onCategoryChange - Callback invoked when category selection changes
+ * @returns {JSX.Element} Rendered category tabs using SegmentedControl
  */
 export const CategoryTabs = ({
 	categories,
