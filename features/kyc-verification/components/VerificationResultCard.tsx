@@ -17,7 +17,7 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Icon, JsonViewer } from "components";
 import type { VerificationResult, VerificationStatus } from "../types";
 
 interface VerificationResultCardProps {
@@ -66,46 +66,6 @@ const getStatusIcon = (status: VerificationStatus): string => {
 			return "schedule";
 	}
 };
-
-/**
- * Render key-value pairs for input/response data.
- * @param root0
- * @param root0.data
- * @param root0.title
- */
-const DataDisplay = ({
-	data,
-	title,
-}: {
-	data: Record<string, unknown>;
-	title: string;
-}): JSX.Element => (
-	<Box>
-		<Text fontSize="sm" fontWeight="semibold" color="gray.600" mb={2}>
-			{title}
-		</Text>
-		<Box
-			bg="gray.50"
-			p={3}
-			borderRadius="md"
-			fontFamily="mono"
-			fontSize="xs"
-		>
-			{Object.entries(data).map(([key, value]) => (
-				<Flex key={key} mb={1}>
-					<Text color="blue.600" minW="140px">
-						{key}:
-					</Text>
-					<Text color="gray.700" wordBreak="break-word">
-						{typeof value === "object"
-							? JSON.stringify(value)
-							: String(value ?? "N/A")}
-					</Text>
-				</Flex>
-			))}
-		</Box>
-	</Box>
-);
 
 /**
  * VerificationResultCard component.
@@ -217,11 +177,21 @@ export const VerificationResultCard = ({
 						</Box>
 					) : (
 						<VStack spacing={4} align="stretch">
-							{/* Input Data */}
-							<DataDisplay
-								data={result.requestData}
-								title="Input Data"
-							/>
+							{/* Request Data */}
+							<Box>
+								<Text
+									fontSize="sm"
+									fontWeight="semibold"
+									color="gray.600"
+									mb={2}
+								>
+									Request
+								</Text>
+								<JsonViewer
+									data={result.requestData}
+									collapseAfterLevel={2}
+								/>
+							</Box>
 
 							{/* Response Data */}
 							{result.status === "pending" ? (
@@ -252,10 +222,20 @@ export const VerificationResultCard = ({
 									</Box>
 								</Box>
 							) : result.responseData ? (
-								<DataDisplay
-									data={result.responseData}
-									title="Response"
-								/>
+								<Box>
+									<Text
+										fontSize="sm"
+										fontWeight="semibold"
+										color="gray.600"
+										mb={2}
+									>
+										Response
+									</Text>
+									<JsonViewer
+										data={result.responseData}
+										collapseAfterLevel={2}
+									/>
+								</Box>
 							) : (
 								<Text fontSize="sm" color="gray.400">
 									No response data
