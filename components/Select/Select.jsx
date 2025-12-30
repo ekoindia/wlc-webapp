@@ -45,7 +45,7 @@ const SIZE_CONFIG = {
  * @param {object} [props.labelStyle] - Style props passed to the InputLabel component
  * @param {Function} [props.getOptionLabel] - Custom function to get option label
  * @param {Function} [props.getOptionValue] - Custom function to get option value
- * @param {'sm'|'md'|'lg'} [props.size='lg'] - Size variant: 'sm' (32px), 'md' (40px), 'lg' (48px)
+ * @param {'sm'|'md'|'lg'} [props.size] - Size variant: 'sm' (32px), 'md' (40px), 'lg' (48px)
  * @example
  * // Basic usage
  * <Select
@@ -53,7 +53,6 @@ const SIZE_CONFIG = {
  *   onChange={(option) => console.log(option)}
  *   placeholder="Select an option"
  * />
- *
  * @example
  * // Multi-select with custom size
  * <Select
@@ -116,6 +115,7 @@ const Select = ({
 				borderRadius: radii.lg,
 				border: borders.card,
 				boxShadow: shadows.basic,
+				zIndex: 10,
 			};
 		},
 		menuList: (base) => {
