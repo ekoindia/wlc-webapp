@@ -4,16 +4,26 @@
  * Layout: Results count → Filters & Download → Service blocks
  */
 
-import { Box, Flex, Select, Text, VStack } from "@chakra-ui/react";
-import { Button, Input } from "components";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
+import { Button, Select } from "components";
 import { useMemo, useState } from "react";
 import type {
 	VerificationFilterOptions,
 	VerificationResult,
 	VerificationStatus,
 } from "../types";
+import ServiceSearch from "./ServiceSearch";
 import { VerificationProgress } from "./VerificationProgress";
 import { VerificationResultCard } from "./VerificationResultCard";
+
+/** Status filter options for the Select component */
+const STATUS_OPTIONS = [
+	{ label: "All Status", value: "all" },
+	{ label: "Success", value: "success" },
+	{ label: "Failed", value: "failed" },
+	{ label: "In Progress", value: "in_progress" },
+	{ label: "Pending", value: "pending" },
+];
 
 interface VerificationResultListProps {
 	/** Array of verification results */
@@ -137,44 +147,43 @@ export const VerificationResultList = ({
 			>
 				{/* Filters */}
 				<Flex gap={3} align="center" flex={1}>
-					<Input
-						placeholder="Search services..."
+					<ServiceSearch
 						value={filters.searchQuery || ""}
-						onChange={(e) =>
+						onChange={(query) =>
 							setFilters((prev) => ({
 								...prev,
-								searchQuery: e.target.value,
+								searchQuery: query,
 							}))
 						}
-						maxW="250px"
+						placeholder="Search services..."
 					/>
 					<Select
-						value={filters.status || "all"}
-						onChange={(e) =>
+						options={STATUS_OPTIONS}
+						value={STATUS_OPTIONS.find(
+							(opt) => opt.value === (filters.status || "all")
+						)}
+						onChange={(
+							option: (typeof STATUS_OPTIONS)[number] | null
+						) =>
 							setFilters((prev) => ({
 								...prev,
-								status: e.target
-									.value as VerificationFilterOptions["status"],
+								status: (option?.value ||
+									"all") as VerificationFilterOptions["status"],
 							}))
 						}
-						maxW="150px"
-						bg="white"
-					>
-						<option value="all">All Status</option>
-						<option value="success">Success</option>
-						<option value="failed">Failed</option>
-						<option value="in_progress">In Progress</option>
-						<option value="pending">Pending</option>
-					</Select>
+						placeholder="All Status"
+						size="md"
+						w="180px"
+					/>
 				</Flex>
 
 				{/* Download PDF - only show when complete */}
 				{isComplete && onDownloadPdf && (
 					<Button
-						size="sm"
-						variant="outline"
+						size="md"
 						onClick={onDownloadPdf}
 						icon="file-download"
+						iconStyle={{ size: "xs" }}
 					>
 						Download PDF
 					</Button>
