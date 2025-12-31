@@ -142,11 +142,11 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 35,
 		label: "KYC Verification",
-		icon: "person",
-		link: "/products/kyc-verification",
-		summary: "Configure KYC verification for your users.",
+		icon: "verified-user",
+		link: "/admin/products/kyc-verification",
+		summary: "Verify KYC documents for customers",
 		fullDescription:
-			"Configure KYC verification for your users. This includes setting up the KYC verification process, including the required documents and the verification process.",
+			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
 		beta: true,
 	},
 	// {
