@@ -760,7 +760,8 @@ const History = ({ forNetwork = false }) => {
 					w="full"
 					h="auto"
 					p={{
-						base: "0px",
+						base: "16px",
+						sm: "16px",
 						md: "20px",
 						"2xl": "14px 30px 30px 30px",
 					}}
@@ -770,7 +771,6 @@ const History = ({ forNetwork = false }) => {
 					boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
 					align="center"
 					bg={{ base: "none", md: "white" }}
-					px="16px"
 					sx={{
 						"@media print": {
 							padding: "0 !important",

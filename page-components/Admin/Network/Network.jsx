@@ -472,7 +472,7 @@ const Network = () => {
 			<Flex
 				direction="column"
 				gap="4"
-				mx={{ base: "4", md: "0" }}
+				p={{ base: "16px", sm: "16px", md: "0px" }}
 				// align="center"
 			>
 				<NetworkToolbar
