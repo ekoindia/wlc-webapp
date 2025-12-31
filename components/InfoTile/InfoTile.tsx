@@ -1,8 +1,17 @@
-import { Avatar, Badge, Circle, Flex, HStack, Text } from "@chakra-ui/react";
+import {
+	Avatar,
+	Badge,
+	Circle,
+	Flex,
+	HStack,
+	Spinner,
+	Switch,
+	Text,
+} from "@chakra-ui/react";
 import { Icon } from "components";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FiCheck, FiPlus } from "react-icons/fi";
 
 /**
@@ -33,25 +42,25 @@ interface InfoTileProps {
 	tags?: string[];
 	/** Whether to show tags (default: true if tags are provided) */
 	showTags?: boolean;
+	/** Enable toggle mode - shows a switch to toggle enabled/disabled state */
+	toggleMode?: boolean;
+	/** Whether the item is enabled (only used when toggleMode=true) */
+	isEnabled?: boolean;
+	/** Callback when toggle is switched (only used when toggleMode=true) */
+	onToggle?: () => void;
+	/** Whether toggle is in loading state (only used when toggleMode=true) */
+	isToggling?: boolean;
+	/** Enable double-click/tap to toggle (only used when toggleMode=true) */
+	enableDoubleClickToggle?: boolean;
 }
 
 /**
  * A minimal tile component that displays an icon, label, and description.
  * Supports selection mode with a simple plus→checkmark toggle.
+ * Supports toggle mode with a switch and optional double-click/tap.
  * When selected, shows primary-colored border and checkmark in circle.
- * @param root0
- * @param root0.label
- * @param root0.desc
- * @param root0.icon
- * @param root0.iconStyle
- * @param root0.onClick
- * @param root0.url
- * @param root0.name
- * @param root0.selectable
- * @param root0.selected
- * @param root0.onSelect
- * @param root0.tags
- * @param root0.showTags
+ * @param {InfoTileProps} props - Component props
+ * @returns {JSX.Element} Rendered tile component
  */
 const InfoTile = ({
 	label,
@@ -66,12 +75,34 @@ const InfoTile = ({
 	onSelect,
 	tags,
 	showTags = true,
+	toggleMode = false,
+	isEnabled = true,
+	onToggle,
+	isToggling = false,
+	enableDoubleClickToggle = true,
 }: InfoTileProps): JSX.Element => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState<boolean>(false);
 	const router = useRouter();
 
-	const handleClick = (): void => {
+	// Track double-click timing
+	const lastClickTime = useRef<number>(0);
+	const DOUBLE_CLICK_DELAY = 300; // ms
+
+	const handleClick = useCallback((): void => {
+		// In toggle mode, handle double-click
+		if (toggleMode && enableDoubleClickToggle && onToggle) {
+			const now = Date.now();
+			if (now - lastClickTime.current < DOUBLE_CLICK_DELAY) {
+				// Double-click detected
+				onToggle();
+				lastClickTime.current = 0; // Reset
+				return;
+			}
+			lastClickTime.current = now;
+			return;
+		}
+
 		// In selectable mode, toggle selection instead of navigation
 		if (selectable && onSelect) {
 			onSelect();
@@ -83,10 +114,30 @@ const InfoTile = ({
 		} else if (url) {
 			router.push(url);
 		}
-	};
+	}, [
+		toggleMode,
+		enableDoubleClickToggle,
+		onToggle,
+		selectable,
+		onSelect,
+		onClick,
+		url,
+		router,
+	]);
+
+	const handleToggleClick = useCallback(
+		(e: React.MouseEvent): void => {
+			e.stopPropagation();
+			if (onToggle && !isToggling) {
+				onToggle();
+			}
+		},
+		[onToggle, isToggling]
+	);
 
 	// Determine if the tile is interactive
-	const isInteractive = selectable || onClick || url;
+	const isInteractive =
+		selectable || onClick || url || (toggleMode && enableDoubleClickToggle);
 
 	// Selection toggle - checkmark in circle when selected, plus icon when not
 	const SelectionToggle = () => {
@@ -119,6 +170,34 @@ const InfoTile = ({
 		);
 	};
 
+	// Toggle switch component
+	const ToggleSwitch = () => {
+		if (!toggleMode) return null;
+
+		return (
+			<Flex
+				align="center"
+				justify="center"
+				flexShrink={0}
+				onClick={handleToggleClick}
+				cursor={isToggling ? "wait" : "pointer"}
+			>
+				{isToggling ? (
+					<Spinner size="sm" color="primary.DEFAULT" />
+				) : (
+					<Switch
+						isChecked={isEnabled}
+						variant="primary"
+						size="md"
+						isDisabled={isToggling}
+						onChange={() => {}}
+						pointerEvents="none"
+					/>
+				)}
+			</Flex>
+		);
+	};
+
 	const tileContent = (
 		<Flex
 			key={label}
@@ -127,7 +206,7 @@ const InfoTile = ({
 			bg={selected ? `hsl(${h},80%,96%)` : "white"}
 			p="4"
 			borderRadius="8"
-			align={selectable ? "flex-start" : "center"}
+			align={selectable || toggleMode ? "flex-start" : "center"}
 			justify="space-between"
 			gap="3"
 			transition="all 0.2s ease-out"
@@ -163,7 +242,11 @@ const InfoTile = ({
 					<Flex
 						w="32px"
 						h="32px"
-						bg={`hsl(${h},80%,60%)`}
+						bg={
+							toggleMode && !isEnabled
+								? "gray.400"
+								: `hsl(${h},80%,60%)`
+						}
 						borderRadius="6px"
 						align="center"
 						justify="center"
@@ -209,6 +292,7 @@ const InfoTile = ({
 									borderColor="gray.300"
 									color="gray.600"
 									bg="white"
+									userSelect="none"
 								>
 									{tag}
 								</Badge>
@@ -217,8 +301,10 @@ const InfoTile = ({
 					) : null}
 				</Flex>
 			</Flex>
-			{/* Right side: Selection toggle or arrow */}
-			{selectable ? (
+			{/* Right side: Toggle switch, Selection toggle, or arrow */}
+			{toggleMode ? (
+				<ToggleSwitch />
+			) : selectable ? (
 				<SelectionToggle />
 			) : (
 				<Icon

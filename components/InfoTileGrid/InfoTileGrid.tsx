@@ -25,6 +25,12 @@ interface InfoTileGridProps {
 		onSelect?: () => void;
 		/** Category tags to display */
 		tags?: string[];
+		/** Whether the item is enabled (only used when toggleMode=true on grid) */
+		isEnabled?: boolean;
+		/** Callback when toggle is switched (only used when toggleMode=true on grid) */
+		onToggle?: () => void;
+		/** Whether toggle is in loading state (only used when toggleMode=true on grid) */
+		isToggling?: boolean;
 	}[];
 
 	/** Style of the icon - avatar (default) or square */
@@ -35,22 +41,35 @@ interface InfoTileGridProps {
 
 	/** Whether to show tags on tiles */
 	showTags?: boolean;
+
+	/** Enable toggle mode for all tiles - shows a switch to toggle enabled/disabled state */
+	toggleMode?: boolean;
+
+	/** Enable double-click/tap to toggle (only used when toggleMode=true) */
+	enableDoubleClickToggle?: boolean;
 }
 
 /**
- * A grid of InfoTile components where each tile has a label, description, and an icon. It can be used to display a collection of related information in a visually appealing way. Each tile can be clicked to navigate to a different page or perform an action.
+ * A grid of InfoTile components where each tile has a label, description, and an icon.
+ * It can be used to display a collection of related information in a visually appealing way.
+ * Each tile can be clicked to navigate to a different page or perform an action.
  * Supports selection mode for multi-select scenarios.
- * @param root0
- * @param root0.list
- * @param root0.iconStyle
- * @param root0.selectable
- * @param root0.showTags
+ * Supports toggle mode for admin enable/disable scenarios.
+ * @param props Component props
+ * @param props.list
+ * @param props.iconStyle
+ * @param props.selectable
+ * @param props.showTags
+ * @param props.toggleMode
+ * @param props.enableDoubleClickToggle
  */
 const InfoTileGrid = ({
 	list,
 	iconStyle = "avatar",
 	selectable = false,
 	showTags = true,
+	toggleMode = false,
+	enableDoubleClickToggle = true,
 }: InfoTileGridProps) => {
 	// MARK: JSX
 	return (
@@ -79,6 +98,9 @@ const InfoTileGrid = ({
 					selected,
 					onSelect,
 					tags,
+					isEnabled,
+					onToggle,
+					isToggling,
 				} = item || {};
 				if (!label) return null;
 
@@ -88,6 +110,8 @@ const InfoTileGrid = ({
 						iconStyle={iconStyle}
 						selectable={selectable}
 						showTags={showTags}
+						toggleMode={toggleMode}
+						enableDoubleClickToggle={enableDoubleClickToggle}
 						{...{
 							label,
 							desc,
@@ -98,6 +122,9 @@ const InfoTileGrid = ({
 							selected,
 							onSelect,
 							tags,
+							isEnabled,
+							onToggle,
+							isToggling,
 						}}
 					/>
 				);
