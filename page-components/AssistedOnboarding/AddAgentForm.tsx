@@ -246,7 +246,7 @@ const AddAgentForm = ({
 						}}
 						size="md"
 					/>
-					<ActionButtonGroup {...{ buttonConfigList }} />
+					<ActionButtonGroup {...{ buttonConfigList }} mt="1em" />
 				</Flex>
 			</form>
 		</Flex>
