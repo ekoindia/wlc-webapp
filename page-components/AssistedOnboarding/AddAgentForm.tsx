@@ -14,6 +14,34 @@ import {
 	RESPONSE_TYPE_IDS,
 } from "./AssistedOnboarding";
 
+const add_agent_parameter_list = [
+	{
+		name: "csp_id",
+		label: `Agent's Mobile Number`,
+		parameter_type_id: ParamType.MOBILE,
+		maxLength: 10,
+		minLength: 10,
+		metadata: "91",
+		inputmode: "tel",
+		placeholder: "Enter 10-digit mobile number",
+		validations: {
+			required: "Mobile number is required",
+			pattern: {
+				value: /^[6-9]\d{9}$/,
+				message: "Enter a valid 10-digit mobile number",
+			},
+			minLength: {
+				value: 10,
+				message: "Mobile number must minimum be 10 digits",
+			},
+			maxLength: {
+				value: 10,
+				message: "Mobile number must be max 10 digits",
+			},
+		},
+	},
+];
+
 interface AddAgentFormProps {
 	setStep: React.Dispatch<React.SetStateAction<string>>;
 	setAgentMobile: React.Dispatch<React.SetStateAction<string>>;
@@ -31,6 +59,7 @@ const AddAgentForm = ({
 	setAgentMobile,
 }: AddAgentFormProps): JSX.Element => {
 	const toast = useToast();
+
 	const {
 		handleSubmit,
 		register,
@@ -52,47 +81,13 @@ const AddAgentForm = ({
 		control,
 	});
 
-	const add_agent_parameter_list = [
-		{
-			name: "csp_id",
-			label: `Agent's Mobile Number`,
-			parameter_type_id: ParamType.TEXT,
-			maxLength: 10,
-			minLength: 10,
-			placeholder: "Enter 10-digit mobile number",
-			validations: {
-				required: "Mobile number is required",
-				pattern: {
-					value: /^[6-9]\d{9}$/,
-					message: "Enter a valid 10-digit mobile number",
-				},
-			},
-		},
-	];
-
-	const buttonConfigList = [
-		{
-			type: "submit",
-			size: "lg",
-			label: "Proceed",
-			loading: isSubmitting,
-			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
-		},
-		{
-			variant: "link",
-			size: "lg",
-			label: "Back",
-			onClick: () => router.back(),
-			styles: {
-				color: "primary.DEFAULT",
-				bg: { base: "white", md: "none" },
-				h: { base: "64px", md: "64px" },
-				w: { base: "100%", md: "auto" },
-				_hover: { textDecoration: "none" },
-			},
-		},
-	];
+	// console.log("[AddAgentForm][FORM] state: ", {
+	// 	errors,
+	// 	isValid,
+	// 	isDirty,
+	// 	isSubmitting,
+	// 	watcher,
+	// });
 
 	// const toast = useToast();
 	const { accessToken } = useSession();
@@ -164,12 +159,59 @@ const AddAgentForm = ({
 					return;
 				}
 			}
+
+			// Any other failure scenario...
+			toast({
+				title:
+					response.message ||
+					`Unknown error (#${response?.response_type_id}). Please try again.`,
+				status: "error",
+				duration: 5000,
+				position: "top-right",
+			});
 		} catch (error: any) {
 			console.error("Error checking agent:", error);
+			toast({
+				title:
+					error?.message || "Something went wrong. Please try again.",
+				status: "error",
+				duration: 5000,
+				position: "top-right",
+			});
 		}
 	};
 
-	// handle if agent already exists
+	const handleFormErrors = (errors) => {
+		console.error("Form submission errors:", errors);
+	};
+
+	// MARK: Form Buttons
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Proceed",
+			loading: isSubmitting,
+			disabled: !isValid || !isDirty,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			// onClick: () => handleSubmit(handleFormSubmit, handleFormErrors)(),
+		},
+		{
+			variant: "link",
+			size: "lg",
+			label: "Back",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
+
+	// MARK: jsx
 	return (
 		<Flex
 			direction="column"
@@ -182,7 +224,17 @@ const AddAgentForm = ({
 			maxW="600px"
 			w="100%"
 		>
-			<form onSubmit={handleSubmit(handleFormSubmit)}>
+			<form
+				// onSubmit={(e) => e.preventDefault()}
+				onSubmit={handleSubmit(handleFormSubmit, handleFormErrors)}
+				// onKeyDown={(e) => {
+				// 	if (e.key === "Enter") {
+				// 		console.log("ENTER PRESSED... submitting form");
+				// 		e.preventDefault();
+				// 		handleSubmit(handleFormSubmit, handleFormErrors)();
+				// 	}
+				// }}
+			>
 				<Flex direction="column" gap="6">
 					<Form
 						{...{
@@ -192,8 +244,8 @@ const AddAgentForm = ({
 							register,
 							errors,
 						}}
+						size="md"
 					/>
-
 					<ActionButtonGroup {...{ buttonConfigList }} />
 				</Flex>
 			</form>
