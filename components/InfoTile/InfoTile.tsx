@@ -135,9 +135,8 @@ const InfoTile = ({
 		[onToggle, isToggling]
 	);
 
-	// Determine if the tile is interactive
-	const isInteractive =
-		selectable || onClick || url || (toggleMode && enableDoubleClickToggle);
+	// Determine if the tile is interactive (not in toggleMode - only toggle switch is interactive)
+	const isInteractive = selectable || onClick || url;
 
 	// Selection toggle - checkmark in circle when selected, plus icon when not
 	const SelectionToggle = () => {
@@ -213,10 +212,14 @@ const InfoTile = ({
 			cursor={isInteractive ? "pointer" : "default"}
 			border="2px solid"
 			borderColor="transparent"
-			_hover={{
-				bg: `hsl(${h},80%,96%)`,
-				borderColor: `hsl(${h},70%,70%)`,
-			}}
+			_hover={
+				toggleMode
+					? {} // No hover effect in toggle mode
+					: {
+							bg: `hsl(${h},80%,96%)`,
+							borderColor: `hsl(${h},70%,70%)`,
+						}
+			}
 			boxShadow="sh-button"
 			onMouseEnter={() => setOnHover(true)}
 			onMouseLeave={() => setOnHover(false)}
