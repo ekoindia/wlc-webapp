@@ -58,9 +58,10 @@ const getServiceIcon = (service: VerificationService): string => {
 
 /**
  * Normalizes services to ensure all required fields are present.
- * @param services
+ * @param {AgentService[]} services - Services from API with is_enabled status
+ * @returns {AgentService[]} Normalized services with icons and categories
  */
-const normalizeServices = (services: VerificationService[]): AgentService[] => {
+const normalizeServices = (services: AgentService[]): AgentService[] => {
 	return services.map((service) => ({
 		...service,
 		icon: getServiceIcon(service),
