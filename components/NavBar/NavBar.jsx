@@ -83,6 +83,14 @@ const NavContent = () => {
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["navbar.dark"]);
 
+	// Determine environment label (only DEV/UAT) to show on navbar
+	const envLabel =
+		process.env.NEXT_PUBLIC_ENV === "development"
+			? "DEV"
+			: process.env.NEXT_PUBLIC_ENV === "staging"
+				? "UAT"
+				: undefined;
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const GlobalSearch = dynamic(
@@ -106,12 +114,14 @@ const NavContent = () => {
 		}
 	);
 
+	// MARK: jsx
 	return (
 		<HStack
 			bg="navbar.bg"
 			h="full"
 			justifyContent="space-between"
 			px={{ base: "4", xl: "6" }}
+			position="relative"
 			backgroundImage={svgBgDotted({
 				fill: contrast_color,
 				opacity: 0.04,
@@ -268,6 +278,30 @@ const NavContent = () => {
 					</MenuList>
 				</Menu>
 			</Flex>
+
+			{/* Show environment label (only in non-production environments) */}
+			{envLabel ? (
+				<Box
+					position="absolute"
+					top="-2px"
+					left="-2em"
+					h="15px"
+					w="6em"
+					display="flex"
+					alignItems="flex-end"
+					justifyContent="center"
+					bg="primary.light"
+					color="white"
+					pointerEvents="none"
+					fontSize="6px"
+					fontWeight="bold"
+					textTransform="uppercase"
+					transform="rotate(-45deg)"
+					opacity="0.7"
+				>
+					{envLabel}
+				</Box>
+			) : null}
 		</HStack>
 	);
 };
