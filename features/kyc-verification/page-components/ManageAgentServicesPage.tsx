@@ -4,7 +4,7 @@
  */
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
-import { InfoTileGrid, PageTitle, Select } from "components";
+import { InfoTileGrid, Select } from "components";
 import { useNetworkUsers } from "contexts/NetworkUsersContext";
 import { useMemo } from "react";
 import { CategoryTabs, ServiceSearch } from "../components";
@@ -84,13 +84,6 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 
 	return (
 		<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
-			{/* Page Title */}
-			<PageTitle
-				title="Manage Agent Verification Services"
-				subtitle="Enable or disable KYC verification services for agents in your network"
-				hideBackIcon
-			/>
-
 			{/* Agent Selection and Stats */}
 			<Flex
 				direction={{ base: "column", md: "row" }}
@@ -107,6 +100,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 						onChange={handleAgentChange}
 						disabled={loadingUsers}
 						size="md"
+						required
 					/>
 				</Flex>
 			</Flex>

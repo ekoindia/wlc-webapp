@@ -17,6 +17,7 @@ import {
 } from "../components";
 import { ALL_CATEGORIES_VALUE } from "../constants";
 import { useKycServices, useServiceSelection } from "../hooks";
+import { ManageAgentServicesPage } from "./ManageAgentServicesPage";
 
 interface KycVerificationPageProps {
 	/** Base path for navigation (defaults to /products/kyc-verification) */
@@ -51,6 +52,9 @@ export const KycVerificationPage = ({
 
 	// Bulk verification modal state
 	const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+
+	// Manage services mode state
+	const [isManageMode, setIsManageMode] = useState(false);
 
 	// Selection state
 	const {
@@ -140,12 +144,30 @@ export const KycVerificationPage = ({
 		<>
 			<PageTitle
 				title="KYC & Verification"
+				subtitle={
+					!isManageMode
+						? "Verify KYC documents for customers"
+						: "Enable or disable KYC verification services for agents in your network"
+				}
 				isBeta
 				hideBackIcon
 				toolComponent={
-					<BulkUploadButton
-						onClick={() => setIsBulkModalOpen(true)}
-					/>
+					<Flex gap="2">
+						<BulkUploadButton
+							onClick={() => setIsBulkModalOpen(true)}
+						/>
+						<Button
+							onClick={() => setIsManageMode(!isManageMode)}
+							size="sm"
+							icon="settings"
+							iconStyle={{ size: "xs" }}
+							variant={
+								isManageMode ? "primary" : "primary_outline"
+							}
+						>
+							Manage
+						</Button>
+					</Flex>
 				}
 			/>
 			<BulkVerificationModal
@@ -153,78 +175,83 @@ export const KycVerificationPage = ({
 				onClose={() => setIsBulkModalOpen(false)}
 				services={services}
 			/>
-			<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
-				{/* Category Tabs */}
-				<CategoryTabs
-					categories={categories}
-					selectedCategory={selectedCategory}
-					onCategoryChange={setSelectedCategory}
-				/>
-
-				{/* Controls Row: Multi-service toggle, Search, Continue button */}
-				<Flex
-					direction={{ base: "column", md: "row" }}
-					justify="space-between"
-					align={{ base: "stretch", md: "center" }}
-					gap="4"
-					flexWrap="wrap"
-				>
-					<Flex align="center" gap="4" flexWrap="wrap">
-						<MultiServiceToggle
-							isEnabled={isMultiModeEnabled}
-							onToggle={toggleMultiMode}
-						/>
-					</Flex>
-
-					<Flex align="center" gap="4" flexWrap="wrap">
-						<ServiceSearch
-							value={searchQuery}
-							onChange={setSearchQuery}
-							placeholder="Search services..."
-						/>
-
-						{/* Continue button - visible when multi-mode */}
-						{isMultiModeEnabled ? (
-							<Button
-								onClick={handleContinue}
-								size="md"
-								icon="arrow-forward"
-								iconPosition="right"
-								iconStyle={{ size: "xs" }}
-								disabled={selectedCount === 0}
-							>
-								Continue ({selectedCount})
-							</Button>
-						) : null}
-					</Flex>
-				</Flex>
-
-				{/* Selected services pills - show when multi-mode */}
-				{isMultiModeEnabled ? (
-					<SelectedServicesPill
-						services={selectedServiceObjects}
-						onRemove={removeService}
-						removable
+			{/* Conditional content based on manage mode */}
+			{isManageMode ? (
+				<ManageAgentServicesPage />
+			) : (
+				<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
+					{/* Category Tabs */}
+					<CategoryTabs
+						categories={categories}
+						selectedCategory={selectedCategory}
+						onCategoryChange={setSelectedCategory}
 					/>
-				) : null}
 
-				{/* Service Grid */}
-				<InfoTileGrid
-					list={gridItems}
-					iconStyle="square"
-					selectable={isMultiModeEnabled}
-					showTags={selectedCategory === ALL_CATEGORIES_VALUE}
-				/>
+					{/* Controls Row: Multi-service toggle, Search, Continue button */}
+					<Flex
+						direction={{ base: "column", md: "row" }}
+						justify="space-between"
+						align={{ base: "stretch", md: "center" }}
+						gap="4"
+						flexWrap="wrap"
+					>
+						<Flex align="center" gap="4" flexWrap="wrap">
+							<MultiServiceToggle
+								isEnabled={isMultiModeEnabled}
+								onToggle={toggleMultiMode}
+							/>
+						</Flex>
 
-				{/* Empty state */}
-				{filteredServices.length === 0 && (
-					<Card p="8" textAlign="center">
-						<Text color="gray.500">
-							No services found matching your criteria.
-						</Text>
-					</Card>
-				)}
-			</Flex>
+						<Flex align="center" gap="4" flexWrap="wrap">
+							<ServiceSearch
+								value={searchQuery}
+								onChange={setSearchQuery}
+								placeholder="Search services..."
+							/>
+
+							{/* Continue button - visible when multi-mode */}
+							{isMultiModeEnabled ? (
+								<Button
+									onClick={handleContinue}
+									size="md"
+									icon="arrow-forward"
+									iconPosition="right"
+									iconStyle={{ size: "xs" }}
+									disabled={selectedCount === 0}
+								>
+									Continue ({selectedCount})
+								</Button>
+							) : null}
+						</Flex>
+					</Flex>
+
+					{/* Selected services pills - show when multi-mode */}
+					{isMultiModeEnabled ? (
+						<SelectedServicesPill
+							services={selectedServiceObjects}
+							onRemove={removeService}
+							removable
+						/>
+					) : null}
+
+					{/* Service Grid */}
+					<InfoTileGrid
+						list={gridItems}
+						iconStyle="square"
+						selectable={isMultiModeEnabled}
+						showTags={selectedCategory === ALL_CATEGORIES_VALUE}
+					/>
+
+					{/* Empty state */}
+					{filteredServices.length === 0 && (
+						<Card p="8" textAlign="center">
+							<Text color="gray.500">
+								No services found matching your criteria.
+							</Text>
+						</Card>
+					)}
+				</Flex>
+			)}
 		</>
 	);
 };
