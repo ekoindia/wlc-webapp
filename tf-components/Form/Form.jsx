@@ -3,6 +3,7 @@ import {
 	Calenders,
 	Input,
 	InputLabel,
+	OtpInput,
 	Radio,
 	Select,
 	Textarea,
@@ -21,6 +22,7 @@ import { getFormErrorMessage } from "utils";
  * @param prop.errors
  * @param {string} [prop.size] Size of the form components: "sm" | "md" | "lg"
  * @param {boolean} [prop.hideOptionalMark] Hide the optional mark on the form fields.
+ * @param {Function} [prop.onEnter] Function to be called when Enter key is pressed.
  * @param {...*} rest Rest of the props passed to this component.
  */
 const Form = ({
@@ -31,6 +33,7 @@ const Form = ({
 	errors,
 	size = "md",
 	hideOptionalMark = false,
+	onEnter,
 	...rest
 }) => {
 	// console.log("[Form] State::  ", { formValues, errors, parameter_list });
@@ -248,6 +251,74 @@ const Form = ({
 											..._validations,
 										})}
 									/> */}
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+												)}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
+
+						case ParamType.OTP:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									{label ? (
+										<InputLabel
+											required={required}
+											hideOptionalMark={hideOptionalMark}
+											{...labelStyle}
+										>
+											{label}
+										</InputLabel>
+									) : null}
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value, ref },
+										}) => (
+											<OtpInput
+												// inputStyle={{
+												// 	w: { base: 12, sm: 14 },
+												// 	h: { base: 12 },
+												// 	fontSize: "sm",
+												// }}
+												ref={ref}
+												id={name}
+												name={name}
+												// label={label}
+												value={value}
+												length={4}
+												onChange={onChange}
+												size={size}
+												disabled={disabled}
+												invalid={!!errors[name]}
+												onEnter={onEnter}
+												onComplete={onEnter}
+												// onComplete={(otp) => {
+												// 	verifyOtpHandler(otp);
+												// }}
+												// onKeyDown={onkeyHandler}
+											/>
+										)}
+									/>
 									<Text
 										fontSize="xs"
 										fontWeight="medium"
