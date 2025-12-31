@@ -108,12 +108,27 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 			{/* Show content only when agent is selected */}
 			{selectedAgentCode ? (
 				<>
-					{/* Category Tabs */}
-					<CategoryTabs
-						categories={categories}
-						selectedCategory={selectedCategory}
-						onCategoryChange={setSelectedCategory}
-					/>
+					<Flex
+						direction={{ base: "column", md: "row" }}
+						align="center"
+						gap="2"
+						justify="space-between"
+					>
+						{/* Category Tabs */}
+						<CategoryTabs
+							categories={categories}
+							selectedCategory={selectedCategory}
+							onCategoryChange={setSelectedCategory}
+						/>
+
+						<Text
+							fontSize="xs"
+							fontWeight="medium"
+							color="gray.500"
+						>
+							{statsText}
+						</Text>
+					</Flex>
 
 					{/* Stats and Search Row */}
 					<Flex
@@ -123,20 +138,11 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 						gap="4"
 					>
 						{/* Stats with Tip */}
-						<Flex align="center" gap="2" flexWrap="wrap">
-							<Text
-								fontSize="xs"
-								fontWeight="medium"
-								color="gray.500"
-							>
-								{statsText}
-							</Text>
-							<Text fontSize="xs" color="gray.400">
-								💡 Tip: Use the toggle switch or
-								double-click/double-tap to enable or disable
-								services
-							</Text>
-						</Flex>
+						<Text fontSize="xs" color="gray.400">
+							💡 Tip: Use the toggle switch or
+							double-click/double-tap to enable or disable
+							services
+						</Text>
 
 						{/* Search */}
 						<ServiceSearch
