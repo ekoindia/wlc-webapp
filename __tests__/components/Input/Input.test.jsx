@@ -1,53 +1,142 @@
 import { Input } from "components/Input";
-import { render } from "test-utils";
-
-/*
-	* React Testing Library:
-		- Cheatsheet: https://testing-library.com/docs/react-testing-library/cheatsheet
-		- How to query: https://testing-library.com/docs/queries/about/
-		- Testing user events: https://testing-library.com/docs/user-event/intro
-		- Migrate from Enzyme (examples): https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/
-		- Testing onChange event handlers: https://testing-library.com/docs/react-testing-library/faq
-		- All APIs: https://testing-library.com/docs/react-testing-library/api
-		- Debug: https://testing-library.com/docs/queries/about/#screendebug, https://testing-library.com/docs/dom-testing-library/api-debugging/#prettydom
-	* Jest:
-		- Docs: https://jestjs.io/docs/getting-started
-		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
-*/
+import { fireEvent, render, screen } from "test-utils";
 
 describe("Input", () => {
 	it("renders without error with no attributes", () => {
 		const { container } = render(<Input />);
 		expect(container).not.toBeEmptyDOMElement();
-
-		// expect(container).toHaveTextContent("Any text");
-
-		// const inp = screen.getByLabelText("Input Label");
-		// expect(inp).toBeInTheDocument();
-
-		// const btn = utils.getByRole("button", { name: "Submit" });
-
-		// CUSTOM MATCHERS (jest-dom)
-		// See all matchers here: https://github.com/testing-library/jest-dom#table-of-contents
-		// expect(btn).toBeDisabled();
-		// expect(btn).toBeEnabled();
-		// expect(inp).toBeInvalid();
-		// expect(inp).toBeRequired();
-		// expect(btn).toBeVisible();
-		// expect(btn).toContainElement(elm);
-		// expect(btn).toContainHTML(htmlText: string);
-		// expect(btn).toHaveFocus();
-
-		// Check style
-		// expect(getByTestId('background')).toHaveStyle(`background-image: url(${props.image})`);
-
-		// Enable snapshot testing:
-		// expect(container).toMatchSnapshot();
 	});
 
-	// TODO: Write other tests here..
-	// Start by writting all possible test cases here using test.todo()
-	test.todo(
-		"TODO: add proper test cases for Input in __tests__/components/Input/Input.test.jsx"
-	);
+	describe("Numeric Input (isNumInput=true)", () => {
+		it("displays formatted value with spaces", () => {
+			render(
+				<Input label="Mobile Number" isNumInput={true} maxLength={10} />
+			);
+
+			const input = screen.getByLabelText(/mobile number/i);
+			fireEvent.change(input, { target: { value: "1234567890" } });
+
+			expect(input).toHaveValue("123 456 7890");
+		});
+
+		it("dispatches unformatted value via onChange", () => {
+			const handleChange = jest.fn();
+
+			render(
+				<Input
+					label="Mobile Number"
+					isNumInput={true}
+					maxLength={10}
+					onChange={handleChange}
+				/>
+			);
+
+			const input = screen.getByLabelText(/mobile number/i);
+			fireEvent.change(input, { target: { value: "1234567890" } });
+
+			expect(handleChange).toHaveBeenCalled();
+			const lastCall =
+				handleChange.mock.calls[handleChange.mock.calls.length - 1];
+			expect(lastCall[0].target.value).toBe("1234567890");
+		});
+
+		it("dispatches unformatted value via onEnter", () => {
+			const handleEnter = jest.fn();
+
+			render(
+				<Input
+					label="Mobile Number"
+					isNumInput={true}
+					maxLength={10}
+					onEnter={handleEnter}
+				/>
+			);
+
+			const input = screen.getByLabelText(/mobile number/i);
+			fireEvent.change(input, { target: { value: "1234567890" } });
+			fireEvent.keyDown(input, { code: "Enter" });
+
+			expect(handleEnter).toHaveBeenCalledWith("1234567890");
+		});
+
+		it("handles controlled mode with formatted display", () => {
+			const handleChange = jest.fn();
+			const { rerender } = render(
+				<Input
+					label="Mobile Number"
+					isNumInput={true}
+					maxLength={10}
+					value=""
+					onChange={handleChange}
+				/>
+			);
+
+			const input = screen.getByLabelText(/mobile number/i);
+			expect(input).toHaveValue("");
+
+			rerender(
+				<Input
+					label="Mobile Number"
+					isNumInput={true}
+					maxLength={10}
+					value="1234567890"
+					onChange={handleChange}
+				/>
+			);
+
+			expect(input).toHaveValue("123 456 7890");
+		});
+
+		it("handles partial input correctly", () => {
+			const handleChange = jest.fn();
+
+			render(
+				<Input
+					label="Mobile Number"
+					isNumInput={true}
+					maxLength={10}
+					onChange={handleChange}
+				/>
+			);
+
+			const input = screen.getByLabelText(/mobile number/i);
+			fireEvent.change(input, { target: { value: "12345" } });
+
+			expect(input).toHaveValue("123 45");
+			const lastCall =
+				handleChange.mock.calls[handleChange.mock.calls.length - 1];
+			expect(lastCall[0].target.value).toBe("12345");
+		});
+	});
+
+	describe("Regular Input (isNumInput=false)", () => {
+		it("does not format regular text input", () => {
+			const handleChange = jest.fn();
+
+			render(
+				<Input
+					label="Username"
+					isNumInput={false}
+					onChange={handleChange}
+				/>
+			);
+
+			const input = screen.getByLabelText(/username/i);
+			fireEvent.change(input, { target: { value: "testuser123" } });
+
+			expect(input).toHaveValue("testuser123");
+			const lastCall =
+				handleChange.mock.calls[handleChange.mock.calls.length - 1];
+			expect(lastCall[0].target.value).toBe("testuser123");
+		});
+
+		it("uses provided maxLength without adjustment", () => {
+			render(
+				<Input label="Username" isNumInput={false} maxLength={10} />
+			);
+
+			const input = screen.getByLabelText(/username/i);
+			expect(input).toHaveAttribute("maxLength", "10");
+		});
+	});
 });
