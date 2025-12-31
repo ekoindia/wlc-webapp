@@ -108,6 +108,29 @@ export interface KycServicesResponse {
 }
 
 /**
+ * A verification service with enabled status for agent management.
+ * Extends VerificationService with is_enabled flag from API 1043.
+ * @interface AgentService
+ */
+export interface AgentService extends VerificationService {
+	/** Whether this service is enabled for the agent */
+	is_enabled: boolean;
+}
+
+/**
+ * API response structure for fetching agent services (interaction_type_id: 1043).
+ * @interface AgentServicesResponse
+ */
+export interface AgentServicesResponse {
+	response_status_id: number;
+	data: {
+		service_list: AgentService[];
+	};
+	message: string;
+	status: number;
+}
+
+/**
  * State for multi-service selection mode.
  * Persisted to maintain selection across page navigation.
  * @interface MultiServiceState

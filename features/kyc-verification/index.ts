@@ -17,9 +17,9 @@
  * }
  */
 
-// Page components
 export {
 	KycVerificationPage,
+	ManageAgentServicesPage,
 	ServiceFormPage,
 	VerificationResultsPage,
 } from "./page-components";
@@ -37,6 +37,7 @@ export {
 
 // Hooks
 export {
+	useAgentServices,
 	useKycServices,
 	useKycVerification,
 	useServiceSelection,
@@ -44,6 +45,8 @@ export {
 
 // Types
 export type {
+	AgentService,
+	AgentServicesResponse,
 	CategoryOption,
 	FormField,
 	KycServicesResponse,
@@ -72,9 +75,9 @@ export {
 
 // Mocks (for development)
 export {
-	getMockServiceByCode,
-	getMockServicesByCodes,
 	MOCK_KYC_SERVICES,
 	MOCK_KYC_SERVICES_RESPONSE,
 	USE_MOCK_DATA,
+	getMockServiceByCode,
+	getMockServicesByCodes,
 } from "./mocks/mockServices";
