@@ -4,7 +4,16 @@
  * Form dynamically updates when services are removed.
  */
 
-import { Box, Card, Flex, Spinner, Text, VStack } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Card,
+	Flex,
+	Spinner,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
 import { Button, PaddingBox, PageTitle } from "components";
 import ActionButtonGroup from "components/ActionButtonGroup/ActionButtonGroup";
 import { ParamType } from "constants/trxnFramework";
@@ -14,7 +23,12 @@ import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
 import { SelectedServicesPill } from "../components";
 import { useKycServices, useServiceSelection } from "../hooks";
-import type { FormField, RequestParam, VerificationService } from "../types";
+import type {
+	FormField,
+	RequestParam,
+	RetryData,
+	VerificationService,
+} from "../types";
 
 interface ServiceFormPageProps {
 	/** Service codes from the route */
@@ -150,6 +164,7 @@ export const ServiceFormPage = ({
 }: ServiceFormPageProps): JSX.Element => {
 	const router = useRouter();
 	const [submitError, setSubmitError] = useState<string | null>(null);
+	const [isRetryMode, setIsRetryMode] = useState(false);
 
 	// Local state to track active service codes - allows dynamic removal
 	const [activeServiceCodes, setActiveServiceCodes] =
@@ -201,10 +216,45 @@ export const ServiceFormPage = ({
 		handleSubmit,
 		watch,
 		unregister,
+		reset,
 		formState: { errors, isValid, isDirty, isSubmitting },
 	} = useForm();
 
 	const formValues = watch();
+
+	// Load retry data from sessionStorage on mount - prefill form with previous values
+	useEffect(() => {
+		try {
+			const retryDataStr = sessionStorage.getItem("kyc_retry_data");
+			if (retryDataStr) {
+				const retryData: RetryData = JSON.parse(retryDataStr);
+				// Check if data is not expired (5 minutes)
+				if (Date.now() - retryData.timestamp < 5 * 60 * 1000) {
+					setIsRetryMode(true);
+					// Prefill form with previous values after a short delay
+					// to ensure form fields are registered
+					setTimeout(() => {
+						reset(retryData.formData);
+					}, 100);
+				}
+				// Clean up sessionStorage
+				sessionStorage.removeItem("kyc_retry_data");
+			}
+		} catch (err) {
+			console.error("Error loading retry data:", err);
+		}
+	}, [reset]);
+
+	// Handle "Clear All" button - reset form to empty values
+	const handleClearAll = useCallback(() => {
+		// Create an object with all field names set to empty strings
+		const emptyValues: Record<string, string> = {};
+		formFields.forEach((field) => {
+			emptyValues[field.name] = "";
+		});
+		reset(emptyValues);
+		setIsRetryMode(false);
+	}, [reset, formFields]);
 
 	// Handle service removal - updates local state and URL
 	const handleRemoveService = useCallback(
@@ -410,6 +460,35 @@ export const ServiceFormPage = ({
 
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<VStack spacing="6" align="stretch">
+								{/* Retry Mode Banner */}
+								{isRetryMode && (
+									<Alert status="info" borderRadius="md">
+										<AlertIcon />
+										<Box flex="1">
+											<Text
+												fontSize="sm"
+												fontWeight="medium"
+											>
+												Retrying failed verifications
+											</Text>
+											<Text
+												fontSize="xs"
+												color="gray.600"
+											>
+												Review and update the values if
+												needed before submitting.
+											</Text>
+										</Box>
+										<Button
+											size="sm"
+											variant="outline"
+											onClick={handleClearAll}
+										>
+											Clear All
+										</Button>
+									</Alert>
+								)}
+
 								<Form
 									parameter_list={parameterList}
 									register={register}
@@ -429,7 +508,9 @@ export const ServiceFormPage = ({
 													? "Verify"
 													: `Verify ${selectedServiceObjects.length} Services`,
 											loading: isSubmitting,
-											disabled: !isValid || !isDirty,
+											disabled:
+												!isValid ||
+												(!isDirty && !isRetryMode),
 											styles: {
 												h: "64px",
 												w: {

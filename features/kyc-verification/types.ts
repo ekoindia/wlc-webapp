@@ -312,3 +312,23 @@ export interface VerificationFilterOptions {
 	/** Filter by category */
 	category?: string;
 }
+
+/**
+ * Data stored in sessionStorage for retry functionality.
+ * Allows form page to prefill values from previous attempt.
+ * @interface RetryData
+ * @property {Record<string, unknown>} formData - Previous form data to prefill
+ * @property {string[]} failedServiceCodes - Service codes that failed and need retry
+ * @property {boolean} isRetryMode - Flag indicating this is a retry attempt
+ * @property {number} timestamp - Timestamp for session expiry
+ */
+export interface RetryData {
+	/** Previous form data to prefill */
+	formData: Record<string, unknown>;
+	/** Service codes that failed and need retry */
+	failedServiceCodes: string[];
+	/** Flag indicating this is a retry attempt */
+	isRetryMode: boolean;
+	/** Timestamp for session expiry */
+	timestamp: number;
+}

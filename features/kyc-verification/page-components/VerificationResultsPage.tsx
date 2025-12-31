@@ -4,7 +4,15 @@
  * Includes conditional action buttons based on verification outcome.
  */
 
-import { Box, Flex, Spinner, Text, VStack } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Flex,
+	Spinner,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
 import { Button, PageTitle } from "components";
 import ActionButtonGroup from "components/ActionButtonGroup/ActionButtonGroup";
 import { formatDateTime } from "libs";
@@ -12,7 +20,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VerificationResultList } from "../components";
 import { useKycVerification } from "../hooks";
-import type { VerificationService } from "../types";
+import type { RetryData, VerificationService } from "../types";
 
 interface StoredVerificationData {
 	formData: Record<string, unknown>;
@@ -49,7 +57,6 @@ export const VerificationResultsPage = ({
 	const {
 		state,
 		startVerification,
-		retryFailedServices,
 		progressText,
 		failedCount,
 		successCount,
@@ -118,11 +125,32 @@ export const VerificationResultsPage = ({
 		router.push("/");
 	}, [router]);
 
-	// Handle "Retry Failed Services" button
+	// Handle "Retry Failed Services" button - navigate to form with failed services
 	const handleRetryFailed = useCallback(() => {
-		setCompletedAt(undefined); // Reset completion timestamp
-		retryFailedServices();
-	}, [retryFailedServices]);
+		// Get failed services and their form data
+		const failedServiceCodes =
+			state.results
+				?.filter((r) => r.status === "failed")
+				.map((r) => r.serviceCode) || [];
+
+		if (failedServiceCodes.length === 0 || !state.formData) return;
+
+		// Store retry data in sessionStorage for form page to pick up
+		const retryData: RetryData = {
+			formData: state.formData,
+			failedServiceCodes,
+			isRetryMode: true,
+			timestamp: Date.now(),
+		};
+		sessionStorage.setItem("kyc_retry_data", JSON.stringify(retryData));
+
+		// Navigate to form page with failed service codes
+		const path =
+			failedServiceCodes.length === 1
+				? `${basePath}/${failedServiceCodes[0]}`
+				: `${basePath}/${failedServiceCodes.join("/")}`;
+		router.push(path);
+	}, [state.results, state.formData, basePath, router]);
 
 	// Determine button text for retry
 	const retryButtonText = useMemo(() => {
@@ -173,7 +201,7 @@ export const VerificationResultsPage = ({
 							borderRadius="lg"
 							shadow="sm"
 						>
-							<Text color="red.500" mb={4}>
+							<Text color="error" mb={4}>
 								{loadError}
 							</Text>
 							<Button onClick={handleBackToServices}>
@@ -233,41 +261,30 @@ export const VerificationResultsPage = ({
 
 					{/* Action Buttons */}
 					{state.status === "completed" && (
-						<ActionButtonGroup
-							buttonConfigList={
-								hasFailures
-									? [
-											{
-												label: retryButtonText,
-												onClick: handleRetryFailed,
-												styles: {
-													h: "64px",
-													w: {
-														base: "100%",
-														md: "200px",
-													},
-												},
-												icon: "refresh",
-											},
-											{
-												variant: "link",
-												label: "Back to Services",
-												onClick: handleBackToServices,
-												styles: {
-													h: "64px",
-													w: {
-														base: "100%",
-														md: "200px",
-													},
-												},
-											},
-										]
-									: allSuccessful
+						<>
+							{/* Download warning for retry */}
+							{hasFailures && (
+								<Alert
+									status="warning"
+									borderRadius="md"
+									py={3}
+								>
+									<AlertIcon />
+									<Text fontSize="sm">
+										Wait! If you need these results,
+										download the report before retrying.
+										After retry, they&apos;ll only be
+										available in transaction history.
+									</Text>
+								</Alert>
+							)}
+							<ActionButtonGroup
+								buttonConfigList={
+									hasFailures
 										? [
 												{
-													label: "Verify More",
-													onClick:
-														handleBackToServices,
+													label: retryButtonText,
+													onClick: handleRetryFailed,
 													styles: {
 														h: "64px",
 														w: {
@@ -275,23 +292,10 @@ export const VerificationResultsPage = ({
 															md: "200px",
 														},
 													},
+													icon: "refresh",
 												},
 												{
 													variant: "link",
-													label: "Home",
-													onClick: handleGoHome,
-													styles: {
-														h: "64px",
-														w: {
-															base: "100%",
-															md: "200px",
-														},
-													},
-													icon: "home",
-												},
-											]
-										: [
-												{
 													label: "Back to Services",
 													onClick:
 														handleBackToServices,
@@ -302,12 +306,55 @@ export const VerificationResultsPage = ({
 															md: "200px",
 														},
 													},
-													icon: "arrow-back",
 												},
 											]
-							}
-							bg={{ base: "white", md: "none" }}
-						/>
+										: allSuccessful
+											? [
+													{
+														label: "Verify More",
+														onClick:
+															handleBackToServices,
+														styles: {
+															h: "64px",
+															w: {
+																base: "100%",
+																md: "200px",
+															},
+														},
+													},
+													{
+														variant: "link",
+														label: "Home",
+														onClick: handleGoHome,
+														styles: {
+															h: "64px",
+															w: {
+																base: "100%",
+																md: "200px",
+															},
+														},
+														icon: "home",
+													},
+												]
+											: [
+													{
+														label: "Back to Services",
+														onClick:
+															handleBackToServices,
+														styles: {
+															h: "64px",
+															w: {
+																base: "100%",
+																md: "200px",
+															},
+														},
+														icon: "arrow-back",
+													},
+												]
+								}
+								bg={{ base: "white", md: "none" }}
+							/>
+						</>
 					)}
 				</VStack>
 			</Flex>
