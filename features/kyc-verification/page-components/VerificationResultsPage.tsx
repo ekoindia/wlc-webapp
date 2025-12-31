@@ -20,13 +20,22 @@ interface StoredVerificationData {
 	timestamp: number;
 }
 
+interface VerificationResultsPageProps {
+	/** Base path for navigation (defaults to /products/kyc-verification) */
+	basePath?: string;
+}
+
 /**
  * Verification results page component.
  * Loads verification data from sessionStorage and displays progressive results.
  * Includes conditional action buttons based on verification outcome.
+ * @param {VerificationResultsPageProps} [props] - Component props
+ * @param {string} [props.basePath] - Base path for navigation (defaults to /products/kyc-verification)
  * @returns {JSX.Element} Rendered results page with progress and result cards
  */
-export const VerificationResultsPage = (): JSX.Element => {
+export const VerificationResultsPage = ({
+	basePath = "/products/kyc-verification",
+}: VerificationResultsPageProps = {}): JSX.Element => {
 	const router = useRouter();
 	const hasStarted = useRef(false);
 	const [initialData, setInitialData] =
@@ -101,8 +110,8 @@ export const VerificationResultsPage = (): JSX.Element => {
 
 	// Handle "Back to Services" button
 	const handleBackToServices = useCallback(() => {
-		router.push("/products/kyc-verification");
-	}, [router]);
+		router.push(basePath);
+	}, [router, basePath]);
 
 	// Handle "Home" button
 	const handleGoHome = useCallback(() => {

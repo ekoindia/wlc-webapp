@@ -18,12 +18,21 @@ import {
 import { ALL_CATEGORIES_VALUE } from "../constants";
 import { useKycServices, useServiceSelection } from "../hooks";
 
+interface KycVerificationPageProps {
+	/** Base path for navigation (defaults to /products/kyc-verification) */
+	basePath?: string;
+}
+
 /**
  * Main KYC Verification page component.
  * Displays a grid of verification services with category filtering, search, and multi-select support.
+ * @param {KycVerificationPageProps} [props] - Component props
+ * @param {string} [props.basePath] - Base path for navigation (defaults to /products/kyc-verification)
  * @returns {JSX.Element} Rendered page with service grid and controls
  */
-export const KycVerificationPage = (): JSX.Element => {
+export const KycVerificationPage = ({
+	basePath = "/products/kyc-verification",
+}: KycVerificationPageProps = {}): JSX.Element => {
 	const router = useRouter();
 
 	// Services data and filtering
@@ -69,7 +78,7 @@ export const KycVerificationPage = (): JSX.Element => {
 			name: service.serviceCode,
 			url: isMultiModeEnabled
 				? undefined
-				: `/products/kyc-verification/${service.serviceCode}`,
+				: `${basePath}/${service.serviceCode}`,
 			onClick: isMultiModeEnabled ? undefined : undefined,
 			selected: isSelected(service.serviceCode),
 			onSelect: () => toggleService(service.serviceCode),
@@ -85,6 +94,7 @@ export const KycVerificationPage = (): JSX.Element => {
 		isSelected,
 		toggleService,
 		selectedCategory,
+		basePath,
 	]);
 
 	// Debug logging
@@ -98,7 +108,7 @@ export const KycVerificationPage = (): JSX.Element => {
 	// Handle continue button click
 	const handleContinue = () => {
 		// Navigate to catch-all route with selected service codes
-		const routePath = `/products/kyc-verification/${selectedServices.join("/")}`;
+		const routePath = `${basePath}/${selectedServices.join("/")}`;
 		router.push(routePath);
 	};
 

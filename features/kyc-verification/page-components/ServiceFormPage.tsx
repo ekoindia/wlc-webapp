@@ -19,6 +19,8 @@ import type { FormField, RequestParam, VerificationService } from "../types";
 interface ServiceFormPageProps {
 	/** Service codes from the route */
 	serviceCodes: string[];
+	/** Base path for navigation (defaults to /products/kyc-verification) */
+	basePath?: string;
 }
 
 /**
@@ -139,10 +141,12 @@ const mergeServiceParams = (services: VerificationService[]): FormField[] => {
  * Renders form fields from requestParams and handles submission to verification results.
  * @param {ServiceFormPageProps} props - Component props
  * @param {string[]} props.serviceCodes - Service codes from the route to render form for
+ * @param {string} [props.basePath] - Base path for navigation (defaults to /products/kyc-verification)
  * @returns {JSX.Element} Rendered form page with dynamic fields and service pills
  */
 export const ServiceFormPage = ({
 	serviceCodes: initialServiceCodes,
+	basePath = "/products/kyc-verification",
 }: ServiceFormPageProps): JSX.Element => {
 	const router = useRouter();
 	const [submitError, setSubmitError] = useState<string | null>(null);
@@ -215,24 +219,20 @@ export const ServiceFormPage = ({
 
 			if (newCodes.length === 0) {
 				// No services left, redirect back to listing
-				router.replace("/products/kyc-verification");
+				router.replace(basePath);
 				return;
 			}
 
 			if (newCodes.length === 1) {
 				// Only one service left, update URL to single service route
-				router.replace(
-					`/products/kyc-verification/${newCodes[0]}`,
-					undefined,
-					{ shallow: true }
-				);
+				router.replace(`${basePath}/${newCodes[0]}`, undefined, {
+					shallow: true,
+				});
 			} else {
 				// Multiple services, update URL to reflect remaining services
-				router.replace(
-					`/products/kyc-verification/${newCodes.join("/")}`,
-					undefined,
-					{ shallow: true }
-				);
+				router.replace(`${basePath}/${newCodes.join("/")}`, undefined, {
+					shallow: true,
+				});
 			}
 
 			// Update local state to trigger form re-render
@@ -301,7 +301,7 @@ export const ServiceFormPage = ({
 				resetAll();
 
 				// Navigate to results page
-				router.push("/products/kyc-verification/results");
+				router.push(`${basePath}/results`);
 			} catch (err) {
 				setSubmitError(
 					"Failed to submit verification. Please try again."
@@ -349,11 +349,7 @@ export const ServiceFormPage = ({
 				<Card p="6">
 					<VStack spacing="4">
 						<Text>No services selected or services not found.</Text>
-						<Button
-							onClick={() =>
-								router.push("/products/kyc-verification")
-							}
-						>
+						<Button onClick={() => router.push(basePath)}>
 							Go to Services
 						</Button>
 					</VStack>
