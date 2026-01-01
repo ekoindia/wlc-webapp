@@ -192,10 +192,11 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 			{selectedAgentCode ? (
 				<>
 					<Flex
-						direction={{ base: "column", md: "row" }}
+						// direction={{ base: "column", sm: "row" }}
 						align="center"
 						gap="2"
 						justify="space-between"
+						wrap="wrap"
 					>
 						{/* Category Tabs */}
 						<CategoryTabs
@@ -218,9 +219,9 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 					{/* Medium screens: stats on own row, search + buttons together */}
 					{/* Small screens: full-width search, buttons on separate row */}
 					<Flex
-						direction={{ base: "column", lg: "row" }}
+						direction={{ base: "column", sm: "row" }}
 						justify="space-between"
-						align={{ base: "stretch", lg: "center" }}
+						align={{ base: "stretch", sm: "center" }}
 						gap="4"
 					>
 						{/* Search */}
@@ -231,12 +232,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 						/>
 
 						{/* Batch Action Buttons */}
-						<Flex
-							gap="3"
-							justify={{ base: "stretch", sm: "flex-end" }}
-							direction={{ base: "column", sm: "row" }}
-							flexShrink={0}
-						>
+						<Flex gap="2" direction={{ base: "column", sm: "row" }}>
 							<Button
 								variant="primary_outline"
 								size="sm"
@@ -245,7 +241,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 									filteredDisabledCount === 0 ||
 									batchProgress.isRunning
 								}
-								minW={{ sm: "120px" }}
+								// minW={{ sm: "120px" }}
 							>
 								Enable ({filteredDisabledCount})
 							</Button>
@@ -257,7 +253,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 									filteredEnabledCount === 0 ||
 									batchProgress.isRunning
 								}
-								minW={{ sm: "120px" }}
+								// minW={{ sm: "120px" }}
 							>
 								Disable ({filteredEnabledCount})
 							</Button>
