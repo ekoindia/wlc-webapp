@@ -41,8 +41,8 @@ interface BatchProgress {
 
 /**
  * Derives an icon for a service based on its category or name.
- * @param service - The service to get icon for
- * @returns Icon name from the icon library
+ * @param {VerificationService} service - The service to get icon for
+ * @returns {string} Icon name from the icon library
  */
 const getServiceIcon = (service: VerificationService): string => {
 	if (service.icon) return service.icon;
@@ -75,7 +75,9 @@ const normalizeServices = (services: AgentService[]): AgentService[] => {
 
 /**
  * Extracts unique categories from services for filtering.
- * @param services
+ * Returns array with "All" option first, followed by sorted categories.
+ * @param {AgentService[]} services - Array of services to extract categories from
+ * @returns {CategoryOption[]} Array of category options with counts
  */
 const extractCategories = (services: AgentService[]): CategoryOption[] => {
 	const categoryMap = new Map<string, number>();
