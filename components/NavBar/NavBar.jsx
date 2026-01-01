@@ -7,12 +7,14 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
+	Tooltip,
 	useBreakpointValue,
 	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
 import { useKBarReady } from "components/CommandBar";
 import { useNotification, useOrgDetailContext, useUser } from "contexts";
+import { useNetworkState } from "hooks/useNetworkState";
 import dynamic from "next/dynamic";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
@@ -81,6 +83,14 @@ const NavContent = () => {
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["navbar.dark"]);
 
+	// Determine environment label (only DEV/UAT) to show on navbar
+	const envLabel =
+		process.env.NEXT_PUBLIC_ENV === "development"
+			? "DEV"
+			: process.env.NEXT_PUBLIC_ENV === "staging"
+				? "UAT"
+				: undefined;
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const GlobalSearch = dynamic(
@@ -104,12 +114,14 @@ const NavContent = () => {
 		}
 	);
 
+	// MARK: jsx
 	return (
 		<HStack
 			bg="navbar.bg"
 			h="full"
 			justifyContent="space-between"
 			px={{ base: "4", xl: "6" }}
+			position="relative"
 			backgroundImage={svgBgDotted({
 				fill: contrast_color,
 				opacity: 0.04,
@@ -143,8 +155,14 @@ const NavContent = () => {
 						</Flex>
 					)}
 			</Flex>
+
 			{/* Right-side items of navbar */}
 			<Flex align="center" gap={{ base: "1em", md: "1.5em" }}>
+				{/* Show Network Status Icon, only if offline or slow network */}
+				<NetworkStatusIcon
+					navstyle={orgDetail?.metadata?.theme?.navstyle}
+				/>
+
 				{/* Show Notifications Icon, only if notifications are available */}
 				{notificationCount ? (
 					<Ico
@@ -260,6 +278,30 @@ const NavContent = () => {
 					</MenuList>
 				</Menu>
 			</Flex>
+
+			{/* Show environment label (only in non-production environments) */}
+			{envLabel ? (
+				<Box
+					position="absolute"
+					top="-2px"
+					left="-2em"
+					h="15px"
+					w="6em"
+					display="flex"
+					alignItems="flex-end"
+					justifyContent="center"
+					bg="primary.light"
+					color="white"
+					pointerEvents="none"
+					fontSize="6px"
+					fontWeight="bold"
+					textTransform="uppercase"
+					transform="rotate(-45deg)"
+					opacity="0.7"
+				>
+					{envLabel}
+				</Box>
+			) : null}
 		</HStack>
 	);
 };
@@ -277,11 +319,11 @@ const Ico = ({ iconName, bubble, navstyle, onClick }) => {
 		<Flex
 			align="center"
 			justify="center"
-			cursor="pointer"
+			cursor={onClick ? "pointer" : "default"}
 			onClick={onClick}
 			position="relative"
 			borderRadius="50%"
-			_hover={{ bg: "gray.200" }}
+			_hover={onClick ? { bg: "gray.200" } : {}}
 			w="40px"
 			h="40px"
 		>
@@ -312,4 +354,38 @@ const Ico = ({ iconName, bubble, navstyle, onClick }) => {
 			) : null}
 		</Flex>
 	);
+};
+
+const NetworkStatusIcon = ({ navstyle }) => {
+	const { online, networkStatus } = useNetworkState();
+
+	// Offline...
+	if (!online) {
+		return (
+			<Tooltip label="No Internet Connection!" hasArrow>
+				<Box>
+					<Ico
+						iconName="signal-cellular-connected-no-internet-0-bar"
+						navstyle={navstyle}
+					/>
+				</Box>
+			</Tooltip>
+		);
+	}
+
+	// Slow network...
+	if (networkStatus === "slow") {
+		return (
+			<Tooltip label="Slow Internet Connection!" hasArrow>
+				<Box>
+					<Ico
+						iconName="signal-cellular-connected-no-internet-1-bar"
+						navstyle={navstyle}
+					/>
+				</Box>
+			</Tooltip>
+		);
+	}
+
+	return null;
 };
