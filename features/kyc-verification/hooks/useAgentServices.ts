@@ -3,9 +3,10 @@
  * Provides fetching services for a specific agent and toggling their enabled/disabled state.
  */
 
+import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useApiFetch, useEpsV3Fetch } from "hooks";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
 	ALL_CATEGORIES_VALUE,
 	DEFAULT_ICON,
@@ -20,6 +21,9 @@ import type {
 
 /** Interaction type ID for fetching agent services */
 const AGENT_SERVICES_INTERACTION_ID = 1043;
+
+/** Throttle delay for toggle actions (ms) */
+const TOGGLE_THROTTLE_DELAY = 5000;
 
 /**
  * Progress tracking for batch operations (Enable All / Disable All)
@@ -153,9 +157,10 @@ interface UseAgentServicesReturn {
  * Hook for fetching and managing agent verification services.
  * Supports fetching services by agent, toggling individual services,
  * and batch enable/disable operations.
- * @returns Object with agent services data, filters, and control functions
+ * @returns {UseAgentServicesReturn} Object with agent services data, filters, and control functions
  */
 export const useAgentServices = (): UseAgentServicesReturn => {
+	const toast = useToast();
 	const [services, setServices] = useState<AgentService[]>([]);
 	const [selectedCategory, setSelectedCategory] =
 		useState<string>(ALL_CATEGORIES_VALUE);
@@ -173,6 +178,9 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 		total: 0,
 		operation: null,
 	});
+
+	// Throttle ref for toggle actions
+	const lastToggleTime = useRef<Record<string, number>>({});
 
 	// API hook for fetching services
 	const [fetchServicesApi, loading] = useApiFetch(Endpoints.TRANSACTION, {
@@ -254,11 +262,21 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 
 	/**
 	 * Toggle a single service's enabled state.
-	 * @returns true if toggle was successful, false otherwise
+	 * Throttled to prevent rapid API calls.
+	 * @param {string} serviceCode - The service code to toggle
+	 * @returns {Promise<boolean>} true if toggle was successful, false otherwise
 	 */
 	const toggleService = useCallback(
 		async (serviceCode: string): Promise<boolean> => {
 			if (!selectedAgentCode) return false;
+
+			// Throttle check per service
+			const now = Date.now();
+			const lastTime = lastToggleTime.current[serviceCode] || 0;
+			if (now - lastTime < TOGGLE_THROTTLE_DELAY) {
+				return false;
+			}
+			lastToggleTime.current[serviceCode] = now;
 
 			const service = services.find((s) => s.serviceCode === serviceCode);
 			if (!service) return false;
@@ -289,11 +307,37 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 								: s
 						)
 					);
+
+					// Show success toast
+					toast({
+						title:
+							action === "activate"
+								? "Service Activated"
+								: "Service Deactivated",
+						description:
+							response?.data?.message ||
+							`${service.name} has been ${action === "activate" ? "enabled" : "disabled"} successfully.`,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+
 					return true;
 				} else {
-					setError(
-						response?.data?.message || `Failed to ${action} service`
-					);
+					const errorMessage =
+						response?.data?.message ||
+						`Failed to ${action} service`;
+					setError(errorMessage);
+
+					// Show error toast
+					toast({
+						title: `Failed to ${action === "activate" ? "Activate" : "Deactivate"} Service`,
+						description: errorMessage,
+						status: "error",
+						duration: 4000,
+						isClosable: true,
+					});
+
 					return false;
 				}
 			} catch (err) {
@@ -301,7 +345,18 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 					"[useAgentServices] Error toggling service:",
 					err
 				);
-				setError(`Failed to ${action} service`);
+				const errorMessage = `Failed to ${action} service`;
+				setError(errorMessage);
+
+				// Show error toast
+				toast({
+					title: "Error",
+					description: errorMessage,
+					status: "error",
+					duration: 4000,
+					isClosable: true,
+				});
+
 				return false;
 			} finally {
 				setTogglingServices((prev) => ({
@@ -310,7 +365,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 				}));
 			}
 		},
-		[selectedAgentCode, services, toggleServiceApi]
+		[selectedAgentCode, services, toggleServiceApi, toast]
 	);
 
 	/**
