@@ -139,10 +139,6 @@ interface UseAgentServicesReturn {
 	toggleService: (_serviceCode: string) => Promise<boolean>;
 	/** Loading state for individual service toggle (maps serviceCode to loading state) */
 	togglingServices: Record<string, boolean>;
-	/** Enable all services for the selected agent @deprecated Use enableFilteredServices */
-	enableAllServices: () => Promise<void>;
-	/** Disable all services for the selected agent @deprecated Use disableFilteredServices */
-	disableAllServices: () => Promise<void>;
 	/** Enable all disabled services in the current filtered view */
 	enableFilteredServices: () => Promise<void>;
 	/** Disable all enabled services in the current filtered view */
@@ -388,64 +384,6 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	);
 
 	/**
-	 * Enable all services for the selected agent.
-	 * Makes consecutive API calls with progress tracking.
-	 * @deprecated Use enableFilteredServices instead for category-aware batch operations
-	 */
-	const enableAllServices = useCallback(async () => {
-		const disabledServices = services.filter((s) => !s.is_enabled);
-		if (disabledServices.length === 0) return;
-
-		setBatchProgress({
-			isRunning: true,
-			current: 0,
-			total: disabledServices.length,
-			operation: "enable",
-		});
-
-		for (let i = 0; i < disabledServices.length; i++) {
-			setBatchProgress((prev) => ({ ...prev, current: i + 1 }));
-			await toggleService(disabledServices[i].serviceCode, true);
-		}
-
-		setBatchProgress({
-			isRunning: false,
-			current: 0,
-			total: 0,
-			operation: null,
-		});
-	}, [services, toggleService]);
-
-	/**
-	 * Disable all services for the selected agent.
-	 * Makes consecutive API calls with progress tracking.
-	 * @deprecated Use disableFilteredServices instead for category-aware batch operations
-	 */
-	const disableAllServices = useCallback(async () => {
-		const enabledServices = services.filter((s) => s.is_enabled);
-		if (enabledServices.length === 0) return;
-
-		setBatchProgress({
-			isRunning: true,
-			current: 0,
-			total: enabledServices.length,
-			operation: "disable",
-		});
-
-		for (let i = 0; i < enabledServices.length; i++) {
-			setBatchProgress((prev) => ({ ...prev, current: i + 1 }));
-			await toggleService(enabledServices[i].serviceCode, true);
-		}
-
-		setBatchProgress({
-			isRunning: false,
-			current: 0,
-			total: 0,
-			operation: null,
-		});
-	}, [services, toggleService]);
-
-	/**
 	 * Categories derived from services.
 	 */
 	const categories = useMemo(() => extractCategories(services), [services]);
@@ -575,8 +513,6 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 		selectAgent,
 		toggleService,
 		togglingServices,
-		enableAllServices,
-		disableAllServices,
 		enableFilteredServices,
 		disableFilteredServices,
 		batchProgress,

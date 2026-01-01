@@ -19,6 +19,10 @@ interface VerificationProgressProps {
 	failedCount?: number;
 	/** Completion timestamp */
 	completedAt?: string;
+	/** Custom header label (defaults to "X Verification(s)") */
+	label?: string;
+	/** Custom progress text (defaults to "Verifying X of Y...") */
+	progressLabel?: string;
 }
 
 /**
@@ -31,6 +35,8 @@ interface VerificationProgressProps {
  * @param {number} [props.successCount] - Count of successful verifications
  * @param {number} [props.failedCount] - Count of failed verifications
  * @param {string} [props.completedAt] - Formatted timestamp when verification completed
+ * @param {string} [props.label] - Custom header label (defaults to "X Verification(s)")
+ * @param {string} [props.progressLabel] - Custom progress text (defaults to "Verifying X of Y...")
  * @returns {JSX.Element} Rendered progress bar with success/failed segments and stats grid
  */
 export const VerificationProgress = ({
@@ -40,6 +46,8 @@ export const VerificationProgress = ({
 	successCount = 0,
 	failedCount = 0,
 	completedAt,
+	label,
+	progressLabel,
 }: VerificationProgressProps): JSX.Element => {
 	const successPercent = total > 0 ? (successCount / total) * 100 : 0;
 	const failedPercent = total > 0 ? (failedCount / total) * 100 : 0;
@@ -48,19 +56,24 @@ export const VerificationProgress = ({
 	const overallPercent =
 		total > 0 ? Math.round((completedCount / total) * 100) : 0;
 
+	const defaultLabel = `${total} Verification${total !== 1 ? "s" : ""}`;
+	const headerLabel = label ?? defaultLabel;
+
 	return (
 		<Box w="100%">
-			{/* Header with count and timestamp */}
-			<Flex direction="column" align="center" mb={4}>
-				<Text fontSize="xl" fontWeight="bold" color="gray.800">
-					{total} Verification{total !== 1 ? "s" : ""}
-				</Text>
-				{isComplete && completedAt && (
-					<Text fontSize="sm" color="gray.500">
-						Completed on {completedAt}
+			{/* Header with count and timestamp - hidden if label is empty string */}
+			{headerLabel && (
+				<Flex direction="column" align="center" mb={4}>
+					<Text fontSize="xl" fontWeight="bold" color="gray.800">
+						{headerLabel}
 					</Text>
-				)}
-			</Flex>
+					{isComplete && completedAt && (
+						<Text fontSize="sm" color="gray.500">
+							Completed on {completedAt}
+						</Text>
+					)}
+				</Flex>
+			)}
 
 			{/* Progress Section */}
 			<Flex justify="space-between" align="center" mb={2}>
@@ -166,7 +179,7 @@ export const VerificationProgress = ({
 			{/* In-progress text */}
 			{!isComplete && (
 				<Text fontSize="sm" color="gray.500" textAlign="center">
-					Verifying {current} of {total}...
+					{progressLabel ?? `Verifying ${current} of ${total}...`}
 				</Text>
 			)}
 		</Box>

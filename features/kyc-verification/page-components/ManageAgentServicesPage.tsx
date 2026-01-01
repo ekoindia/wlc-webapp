@@ -340,6 +340,8 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 									total={batchProgress.total}
 									successCount={batchProgress.current}
 									failedCount={0}
+									label=""
+									progressLabel={`${batchProgress.current} of ${batchProgress.total} ${pendingOperation === "enable" ? "enabled" : "disabled"}`}
 								/>
 							)}
 						</Flex>
