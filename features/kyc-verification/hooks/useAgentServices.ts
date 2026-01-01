@@ -139,18 +139,28 @@ interface UseAgentServicesReturn {
 	toggleService: (_serviceCode: string) => Promise<boolean>;
 	/** Loading state for individual service toggle (maps serviceCode to loading state) */
 	togglingServices: Record<string, boolean>;
-	/** Enable all services for the selected agent */
+	/** Enable all services for the selected agent @deprecated Use enableFilteredServices */
 	enableAllServices: () => Promise<void>;
-	/** Disable all services for the selected agent */
+	/** Disable all services for the selected agent @deprecated Use disableFilteredServices */
 	disableAllServices: () => Promise<void>;
+	/** Enable all disabled services in the current filtered view */
+	enableFilteredServices: () => Promise<void>;
+	/** Disable all enabled services in the current filtered view */
+	disableFilteredServices: () => Promise<void>;
 	/** Batch operation progress */
 	batchProgress: BatchProgress;
-	/** Count of enabled services */
+	/** Count of enabled services (total) */
 	enabledCount: number;
-	/** Count of disabled services */
+	/** Count of disabled services (total) */
 	disabledCount: number;
 	/** Total count of services */
 	totalCount: number;
+	/** Count of enabled services in filtered view */
+	filteredEnabledCount: number;
+	/** Count of disabled services in filtered view */
+	filteredDisabledCount: number;
+	/** Total count of services in filtered view */
+	filteredTotalCount: number;
 	/** Refetch services for the current agent */
 	refetch: () => void;
 }
@@ -266,10 +276,11 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	 * Toggle a single service's enabled state.
 	 * Throttled to prevent rapid API calls.
 	 * @param {string} serviceCode - The service code to toggle
+	 * @param {boolean} [skipToast=false] - Skip showing toast notification (used in batch operations)
 	 * @returns {Promise<boolean>} true if toggle was successful, false otherwise
 	 */
 	const toggleService = useCallback(
-		async (serviceCode: string): Promise<boolean> => {
+		async (serviceCode: string, skipToast = false): Promise<boolean> => {
 			if (!selectedAgentCode) return false;
 
 			// Throttle check per service
@@ -310,19 +321,21 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 						)
 					);
 
-					// Show success toast
-					toast({
-						title:
-							action === "activate"
-								? "Service Activated"
-								: "Service Deactivated",
-						description:
-							response?.data?.message ||
-							`${service.name} has been ${action === "activate" ? "enabled" : "disabled"} successfully.`,
-						status: "success",
-						duration: 3000,
-						isClosable: true,
-					});
+					// Show success toast (skip during batch operations)
+					if (!skipToast) {
+						toast({
+							title:
+								action === "activate"
+									? "Service Activated"
+									: "Service Deactivated",
+							description:
+								response?.data?.message ||
+								`${service.name} has been ${action === "activate" ? "enabled" : "disabled"} successfully.`,
+							status: "success",
+							duration: 3000,
+							isClosable: true,
+						});
+					}
 
 					return true;
 				} else {
@@ -331,14 +344,16 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 						`Failed to ${action} service`;
 					setError(errorMessage);
 
-					// Show error toast
-					toast({
-						title: `Failed to ${action === "activate" ? "Activate" : "Deactivate"} Service`,
-						description: errorMessage,
-						status: "error",
-						duration: 4000,
-						isClosable: true,
-					});
+					// Show error toast (skip during batch operations)
+					if (!skipToast) {
+						toast({
+							title: `Failed to ${action === "activate" ? "Activate" : "Deactivate"} Service`,
+							description: errorMessage,
+							status: "error",
+							duration: 4000,
+							isClosable: true,
+						});
+					}
 
 					return false;
 				}
@@ -350,14 +365,16 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 				const errorMessage = `Failed to ${action} service`;
 				setError(errorMessage);
 
-				// Show error toast
-				toast({
-					title: "Error",
-					description: errorMessage,
-					status: "error",
-					duration: 4000,
-					isClosable: true,
-				});
+				// Show error toast (skip during batch operations)
+				if (!skipToast) {
+					toast({
+						title: "Error",
+						description: errorMessage,
+						status: "error",
+						duration: 4000,
+						isClosable: true,
+					});
+				}
 
 				return false;
 			} finally {
@@ -373,6 +390,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	/**
 	 * Enable all services for the selected agent.
 	 * Makes consecutive API calls with progress tracking.
+	 * @deprecated Use enableFilteredServices instead for category-aware batch operations
 	 */
 	const enableAllServices = useCallback(async () => {
 		const disabledServices = services.filter((s) => !s.is_enabled);
@@ -387,7 +405,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 
 		for (let i = 0; i < disabledServices.length; i++) {
 			setBatchProgress((prev) => ({ ...prev, current: i + 1 }));
-			await toggleService(disabledServices[i].serviceCode);
+			await toggleService(disabledServices[i].serviceCode, true);
 		}
 
 		setBatchProgress({
@@ -401,6 +419,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	/**
 	 * Disable all services for the selected agent.
 	 * Makes consecutive API calls with progress tracking.
+	 * @deprecated Use disableFilteredServices instead for category-aware batch operations
 	 */
 	const disableAllServices = useCallback(async () => {
 		const enabledServices = services.filter((s) => s.is_enabled);
@@ -415,7 +434,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 
 		for (let i = 0; i < enabledServices.length; i++) {
 			setBatchProgress((prev) => ({ ...prev, current: i + 1 }));
-			await toggleService(enabledServices[i].serviceCode);
+			await toggleService(enabledServices[i].serviceCode, true);
 		}
 
 		setBatchProgress({
@@ -457,7 +476,63 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	}, [services, selectedCategory, searchQuery]);
 
 	/**
-	 * Counts
+	 * Enable all disabled services in the current filtered view.
+	 * Makes consecutive API calls with progress tracking.
+	 */
+	const enableFilteredServices = useCallback(async () => {
+		const disabledInView = filteredServices.filter((s) => !s.is_enabled);
+		if (disabledInView.length === 0) return;
+
+		setBatchProgress({
+			isRunning: true,
+			current: 0,
+			total: disabledInView.length,
+			operation: "enable",
+		});
+
+		for (let i = 0; i < disabledInView.length; i++) {
+			setBatchProgress((prev) => ({ ...prev, current: i + 1 }));
+			await toggleService(disabledInView[i].serviceCode, true);
+		}
+
+		setBatchProgress({
+			isRunning: false,
+			current: 0,
+			total: 0,
+			operation: null,
+		});
+	}, [filteredServices, toggleService]);
+
+	/**
+	 * Disable all enabled services in the current filtered view.
+	 * Makes consecutive API calls with progress tracking.
+	 */
+	const disableFilteredServices = useCallback(async () => {
+		const enabledInView = filteredServices.filter((s) => s.is_enabled);
+		if (enabledInView.length === 0) return;
+
+		setBatchProgress({
+			isRunning: true,
+			current: 0,
+			total: enabledInView.length,
+			operation: "disable",
+		});
+
+		for (let i = 0; i < enabledInView.length; i++) {
+			setBatchProgress((prev) => ({ ...prev, current: i + 1 }));
+			await toggleService(enabledInView[i].serviceCode, true);
+		}
+
+		setBatchProgress({
+			isRunning: false,
+			current: 0,
+			total: 0,
+			operation: null,
+		});
+	}, [filteredServices, toggleService]);
+
+	/**
+	 * Total counts (all services)
 	 */
 	const enabledCount = useMemo(
 		() => services.filter((s) => s.is_enabled).length,
@@ -470,6 +545,21 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	);
 
 	const totalCount = services.length;
+
+	/**
+	 * Filtered counts (current view)
+	 */
+	const filteredEnabledCount = useMemo(
+		() => filteredServices.filter((s) => s.is_enabled).length,
+		[filteredServices]
+	);
+
+	const filteredDisabledCount = useMemo(
+		() => filteredServices.filter((s) => !s.is_enabled).length,
+		[filteredServices]
+	);
+
+	const filteredTotalCount = filteredServices.length;
 
 	return {
 		services,
@@ -487,10 +577,15 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 		togglingServices,
 		enableAllServices,
 		disableAllServices,
+		enableFilteredServices,
+		disableFilteredServices,
 		batchProgress,
 		enabledCount,
 		disabledCount,
 		totalCount,
+		filteredEnabledCount,
+		filteredDisabledCount,
+		filteredTotalCount,
 		refetch,
 	};
 };
