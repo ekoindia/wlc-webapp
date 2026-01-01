@@ -214,10 +214,6 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 						</Text>
 					</Flex>
 
-					{/* Search and Batch Actions - Responsive Layout */}
-					{/* Large screens: search + buttons inline */}
-					{/* Medium screens: stats on own row, search + buttons together */}
-					{/* Small screens: full-width search, buttons on separate row */}
 					<Flex
 						direction={{ base: "column", sm: "row" }}
 						justify="space-between"
