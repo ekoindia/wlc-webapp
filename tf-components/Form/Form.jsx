@@ -16,11 +16,13 @@ import { getFormErrorMessage } from "utils";
  * A dynamic Form component that renders form fields based on a parameter list configuration.
  *
  * This component supports multiple field types including text, numeric, date, select, radio,
- * and textarea inputs. It integrates with react-hook-form for form state management and validation.
+ * OTP, mobile, and textarea inputs. It integrates with react-hook-form for form state management and validation.
  *
  * ## Supported Parameter Types (via `parameter_type_id`):
- * - `ParamType.TEXT` (12) - Standard text input
+ * - `ParamType.TEXT` (12) - Standard text input (default)
  * - `ParamType.NUMERIC` (11) - Numeric input with step support
+ * - `ParamType.MOBILE` - Mobile number input with +91 prefix
+ * - `ParamType.OTP` - OTP input with configurable length (default: 4 digits)
  * - `ParamType.DATETIME` (14) - Date picker without addon
  * - `ParamType.FROM_DATE` (16) - Date picker with "From" addon
  * - `ParamType.TO_DATE` (17) - Date picker with "To" addon
@@ -32,7 +34,7 @@ import { getFormErrorMessage } from "utils";
  * @param {string} props.parameter_list[].name - Field name (used as form key)
  * @param {string} props.parameter_list[].label - Field label text
  * @param {boolean} [props.parameter_list[].required] - Whether field is required
- * @param {number} [props.parameter_list[].parameter_type_id] - Field type ID
+ * @param {number} [props.parameter_list[].parameter_type_id] - Field type ID from ParamType constants
  * @param {*} [props.parameter_list[].value] - Field value (for fixed/display fields)
  * @param {*} [props.parameter_list[].defaultValue] - Default value for controlled fields
  * @param {boolean} [props.parameter_list[].disabled] - Whether field is disabled
@@ -43,13 +45,18 @@ import { getFormErrorMessage } from "utils";
  * @param {string} [props.parameter_list[].minDate] - Min date for date fields (YYYY-MM-DD)
  * @param {string} [props.parameter_list[].maxDate] - Max date for date fields (YYYY-MM-DD)
  * @param {number} [props.parameter_list[].lines_min] - Min lines for textarea (> 1 enables textarea)
+ * @param {boolean} [props.parameter_list[].is_inactive] - Skip rendering if true
+ * @param {string} [props.parameter_list[].visible_on_param_name] - Conditional visibility based on another field
+ * @param {RegExp} [props.parameter_list[].visible_on_param_value] - Regex pattern to test for conditional visibility
+ * @param {object} [props.parameter_list[].meta] - Additional metadata (e.g., force_dropdown for LIST)
+ * @param {object} [props.parameter_list[].labelStyle] - Custom styles for the label
  * @param {Function} props.register - react-hook-form register function
  * @param {object} props.formValues - Current form values from watch()
  * @param {object} props.control - react-hook-form control object
  * @param {object} props.errors - react-hook-form errors object
- * @param {("sm"|"md"|"lg")} [props.size] - Size of form components
- * @param {boolean} [props.hideOptionalMark] - Hide "(optional)" text on non-required fields
- * @param {Function} [props.onEnter] - Callback function for Enter key press
+ * @param {("sm"|"md"|"lg")} [props.size] - Size of form components (default: "md")
+ * @param {boolean} [props.hideOptionalMark] - Hide "(optional)" text on non-required fields (default: false)
+ * @param {Function} [props.onEnter] - Callback function for Enter key press (used by OTP input on complete)
  * @returns {JSX.Element} A Grid containing rendered form fields
  * @example
  * ```jsx
@@ -62,7 +69,8 @@ import { getFormErrorMessage } from "utils";
  *
  *   const fields = [
  *     { name: "name", label: "Full Name", required: true },
- *     { name: "email", label: "Email", parameter_type_id: ParamType.EMAIL },
+ *     { name: "mobile", label: "Mobile", parameter_type_id: ParamType.MOBILE },
+ *     { name: "otp", label: "Enter OTP", parameter_type_id: ParamType.OTP },
  *     { name: "dob", label: "Date of Birth", parameter_type_id: ParamType.DATETIME },
  *   ];
  *
@@ -73,6 +81,7 @@ import { getFormErrorMessage } from "utils";
  *       control={control}
  *       errors={errors}
  *       formValues={watch()}
+ *       onEnter={(otp) => console.log("OTP entered:", otp)}
  *     />
  *   );
  * };
