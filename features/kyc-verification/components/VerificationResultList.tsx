@@ -177,6 +177,7 @@ export const VerificationResultList = ({
 						placeholder="All Status"
 						size="md"
 						w="180px"
+						required
 					/>
 				</Flex>
 
