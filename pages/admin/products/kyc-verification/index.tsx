@@ -9,7 +9,7 @@ import { KycVerificationPage } from "features/kyc-verification";
 const KycVerificationRoute = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<KycVerificationPage />
+			<KycVerificationPage basePath="/admin/products/kyc-verification" />
 		</PaddingBox>
 	);
 };
