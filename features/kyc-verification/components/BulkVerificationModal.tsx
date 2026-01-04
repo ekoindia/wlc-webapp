@@ -3,7 +3,7 @@
  * Allows users to select a bulk-enabled service, download sample file, and upload data.
  */
 
-import { Alert, AlertIcon, Flex, Link, Text } from "@chakra-ui/react";
+import { Alert, AlertIcon, Flex, Link, Text, useToast } from "@chakra-ui/react";
 import {
 	ActionButtonGroup,
 	Button,
@@ -13,6 +13,8 @@ import {
 	Modal,
 	Select,
 } from "components";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts/UserContext";
 import { useMemo, useState } from "react";
 import type { VerificationService } from "../types";
 
@@ -54,6 +56,9 @@ export const BulkVerificationModal = ({
 	const [selectedService, setSelectedService] =
 		useState<ServiceOption | null>(null);
 	const [file, setFile] = useState<File | null>(null);
+	const [isUploading, setIsUploading] = useState(false);
+	const { accessToken } = useSession();
+	const toast = useToast();
 
 	// Filter services to only show bulk-enabled ones
 	const bulkEnabledOptions = useMemo<ServiceOption[]>(() => {
@@ -80,27 +85,98 @@ export const BulkVerificationModal = ({
 		onClose();
 	};
 
+	const handleFileUpload = async (service_code: string) => {
+		const formDataObj = {
+			client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
+			source: "WLC",
+			service_code: service_code,
+		};
+
+		const formData = new FormData();
+		formData.append(
+			"formdata",
+			new URLSearchParams(formDataObj).toString()
+		);
+		formData.append("file", file);
+
+		setIsUploading(true);
+
+		try {
+			const res = await fetch(
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.UPLOAD_CUSTOM_URL,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+						"tf-req-method": "POST",
+						"tf-req-uri-root-path": "/api/v1",
+						"tf-req-uri": "/bulk-payout/process-records",
+						"x-forwarded-proto":
+							process.env.NEXT_PUBLIC_ENV !== "production"
+								? "http"
+								: "https",
+					},
+					body: formData,
+				}
+			);
+
+			const data = await res.json();
+
+			if (data.status === 0) {
+				toast({
+					title: "File Uploaded Successfully",
+					description:
+						data.message ||
+						"Your file has been uploaded and is being processed.",
+					status: "success",
+					duration: 4000,
+					isClosable: true,
+				});
+				// handleClose();
+			} else {
+				toast({
+					title: "Upload Failed",
+					description:
+						data.message ||
+						"Failed to upload file. Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
+		} catch (err) {
+			console.error("Error uploading file: ", err);
+			toast({
+				title: "Upload Error",
+				description:
+					"An error occurred while uploading the file. Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsUploading(false);
+		}
+	};
+
 	// Handle start verification
 	const handleStartVerification = () => {
 		if (!selectedService || !file) return;
-		// TODO: Implement bulk verification API call
-		console.log("[BulkVerificationModal] Starting verification:", {
-			service: selectedService,
-			file,
-		});
-		handleClose();
+
+		handleFileUpload(selectedService.serviceCode);
 	};
 
 	// Custom label to show service name with category
 	const getOptionLabel = (option: ServiceOption) =>
 		`${option.label} (${option.category})`;
 
-	const isStartDisabled = !selectedService || !file;
+	const isStartDisabled = !selectedService || !file || isUploading;
 
 	// Action button configuration
 	const buttonConfigList = [
 		{
-			label: "Start Verification",
+			label: isUploading ? "Uploading..." : "Start Verification",
 			onClick: handleStartVerification,
 			disabled: isStartDisabled,
 			icon: "check-circle",
