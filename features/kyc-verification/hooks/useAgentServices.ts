@@ -215,7 +215,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 				const response = await fetchServicesApi({
 					body: {
 						interaction_type_id: AGENT_SERVICES_INTERACTION_ID,
-						user_code: agentUserCode,
+						agent_code: agentUserCode,
 					},
 				});
 
