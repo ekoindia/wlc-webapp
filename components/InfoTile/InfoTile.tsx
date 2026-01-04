@@ -142,30 +142,20 @@ const InfoTile = ({
 	const SelectionToggle = () => {
 		if (!selectable) return null;
 
-		if (selected) {
-			return (
-				<Circle
-					size="28px"
-					bg="primary.DEFAULT"
-					color="white"
-					flexShrink={0}
-				>
-					<FiCheck size={16} strokeWidth={3} />
-				</Circle>
-			);
-		}
-
 		return (
-			<Flex
-				w="28px"
-				h="28px"
-				align="center"
-				justify="center"
-				color="gray.400"
+			<Circle
+				size="28px"
+				bg={selected ? "primary.DEFAULT" : "transparent"}
+				color={selected ? "white" : "gray.400"}
 				flexShrink={0}
+				transition="all 0.3s ease-in-out"
 			>
-				<FiPlus size={18} strokeWidth={2} />
-			</Flex>
+				{selected ? (
+					<FiCheck size={16} strokeWidth={3} />
+				) : (
+					<FiPlus size={18} strokeWidth={2.5} />
+				)}
+			</Circle>
 		);
 	};
 
