@@ -45,5 +45,8 @@ export const KYC_SERVICES_INTERACTION_ID = 1041;
 /** API interaction type ID for downloading KYC verification report */
 export const KYC_REPORT_DOWNLOAD_INTERACTION_ID = 1042;
 
+/** Response type ID indicating successful bulk upload */
+export const BULK_UPLOAD_SUCCESS_RESPONSE_TYPE_ID = "2406";
+
 /** Session timeout for multi-service state (30 minutes) */
 export const MULTI_SERVICE_SESSION_TIMEOUT_MS = 30 * 60 * 1000;

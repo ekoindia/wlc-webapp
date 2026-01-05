@@ -16,6 +16,7 @@ import {
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { useMemo, useState } from "react";
+import { BULK_UPLOAD_SUCCESS_RESPONSE_TYPE_ID } from "../constants";
 import type { VerificationService } from "../types";
 
 /** Base URL for sample file downloads */
@@ -122,7 +123,9 @@ export const BulkVerificationModal = ({
 
 			const data = await res.json();
 
-			if (data.status === 0) {
+			if (
+				data.response_type_id === BULK_UPLOAD_SUCCESS_RESPONSE_TYPE_ID
+			) {
 				toast({
 					title: "File Uploaded Successfully",
 					description:
@@ -132,7 +135,7 @@ export const BulkVerificationModal = ({
 					duration: 4000,
 					isClosable: true,
 				});
-				// handleClose();
+				handleClose();
 			} else {
 				toast({
 					title: "Upload Failed",
@@ -175,9 +178,10 @@ export const BulkVerificationModal = ({
 	// Action button configuration
 	const buttonConfigList = [
 		{
-			label: isUploading ? "Uploading..." : "Start Verification",
+			label: "Start Verification",
 			onClick: handleStartVerification,
 			disabled: isStartDisabled,
+			loading: isUploading,
 			icon: "check-circle",
 			styles: {
 				borderRadius: "10px",
