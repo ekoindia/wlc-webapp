@@ -1,6 +1,5 @@
 import { Flex, Grid } from "@chakra-ui/react";
-import { Endpoints, ProductRoleConfiguration, UserTypeIcon } from "constants";
-import { useUser } from "contexts";
+import { Endpoints, UserTypeIcon } from "constants";
 import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
@@ -16,10 +15,6 @@ const ACTIVE_AGENTS_CACHE_KEY = "inf-dashboard-active-agents";
  * @example	`<BusinessDashboard></BusinessDashboard>`
  */
 const BusinessDashboard = () => {
-	const { userData } = useUser();
-	const { userDetails } = userData;
-	const { role_list } = userDetails;
-
 	const [dateRange, setDateRange] = useState("today");
 	const [totalBusiness, setTotalBusiness] = useState({});
 
@@ -36,31 +31,58 @@ const BusinessDashboard = () => {
 
 	const { getUserTypeLabel } = useUserTypes();
 
-	const productFilterList = useMemo(() => {
-		const productListWithRoleList =
-			ProductRoleConfiguration?.products ?? [];
+	// State for product filter list from API
+	const [productFilterList, setProductFilterList] = useState([
+		{ label: "All Products", value: "" },
+	]);
 
-		const allOption = { label: "All Products", value: "" };
-
-		if (!role_list || productListWithRoleList.length === 0) {
-			return [allOption];
-		}
-
-		// Filter products whose roles intersect with role_list
-		const filteredProducts = productListWithRoleList
-			.filter((product) =>
-				product.roles.some((role) => role_list.includes(role))
-			) // Filter products based on role_list
-			.filter((product) => product.tx_typeid !== undefined) // Ensure tx_typeid is present
-			.filter((product) => product.isFinancial !== false) // Exclude non-financial products
-			.map((product) => ({
+	// MARK: Fetching Product Filter List from API
+	const [fetchProductFilterList] = useApiFetch(Endpoints.TRANSACTION, {
+		body: {
+			interaction_type_id: 1044,
+		},
+		onSuccess: (res) => {
+			const allOption = { label: "All Products", value: "" };
+			const products = res?.param_attributes?.list_elements ?? [];
+			const formattedProducts = products.map((product) => ({
 				label: product.label,
 				value: product.tx_typeid,
 			}));
 
-		// Prepend "All" option
-		return [allOption, ...filteredProducts];
-	}, [role_list]);
+			setProductFilterList([allOption, ...formattedProducts]);
+		},
+	});
+
+	useEffect(() => {
+		fetchProductFilterList();
+	}, []);
+
+	// COMMENTED OUT: Previous local filtering implementation
+	// const productFilterList = useMemo(() => {
+	// 	const productListWithRoleList =
+	// 		ProductRoleConfiguration?.products ?? [];
+
+	// 	const allOption = { label: "All Products", value: "" };
+
+	// 	if (!role_list || productListWithRoleList.length === 0) {
+	// 		return [allOption];
+	// 	}
+
+	// 	// Filter products whose roles intersect with role_list
+	// 	const filteredProducts = productListWithRoleList
+	// 		.filter((product) =>
+	// 			product.roles.some((role) => role_list.includes(role))
+	// 		) // Filter products based on role_list
+	// 		.filter((product) => product.tx_typeid !== undefined) // Ensure tx_typeid is present
+	// 		.filter((product) => product.isFinancial !== false) // Exclude non-financial products
+	// 		.map((product) => ({
+	// 			label: product.label,
+	// 			value: product.tx_typeid,
+	// 		}));
+
+	// 	// Prepend "All" option
+	// 	return [allOption, ...filteredProducts];
+	// }, [role_list]);
 
 	// MARK: Fetching Active Agents Data
 	const [fetchActiveAgentsData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
