@@ -103,8 +103,7 @@ export const BulkVerificationModal = ({
 
 		try {
 			const res = await fetch(
-				process.env.NEXT_PUBLIC_API_BASE_URL +
-					Endpoints.UPLOAD_CUSTOM_URL,
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
 				{
 					method: "POST",
 					headers: {
