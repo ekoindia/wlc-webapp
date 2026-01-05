@@ -56,6 +56,16 @@ export interface JsonViewerProps {
 	animated?: boolean;
 
 	/**
+	 * Maximum height of the JSON viewer container.
+	 * If content exceeds this, it becomes scrollable.
+	 * Can be a responsive object or string value.
+	 * Default is { base: "200px", md: "350px" }.
+	 */
+	maxHeight?:
+		| string
+		| { base?: string; sm?: string; md?: string; lg?: string; xl?: string };
+
+	/**
 	 * Additional CSS class name for the container
 	 */
 	className?: string;

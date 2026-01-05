@@ -21,6 +21,7 @@ import { parseJsonInput } from "./utils";
  * @param props.collapseAfterLevel
  * @param props.animated
  * @param props.className
+ * @param props.maxHeight
  * @example
  * // Basic usage with object
  * <JsonViewer data={{ name: "John", age: 30 }} />
@@ -35,6 +36,7 @@ const JsonViewer = ({
 	data,
 	collapseAfterLevel = 2,
 	animated = true,
+	maxHeight = { base: "200px", md: "350px" },
 	className,
 }: JsonViewerProps) => {
 	// Parse input data
@@ -66,12 +68,13 @@ const JsonViewer = ({
 
 	return (
 		<Box
-			className={className}
+			className={`${className || ""} customScrollbars`}
 			py={2}
 			px={3}
 			bg="gray.50"
 			borderRadius="md"
 			overflow="auto"
+			maxH={maxHeight}
 		>
 			{/* JSON Tree */}
 			<Box role="tree" aria-label="JSON data tree">
