@@ -222,7 +222,7 @@ const MostUsedServices = ({
 				align="center"
 				gap="0.4em"
 			>
-				<LuTrendingUp color="#3c83f6" />
+				<LuTrendingUp color="#5dd859ff" />
 				Most Used Services
 			</Flex>
 

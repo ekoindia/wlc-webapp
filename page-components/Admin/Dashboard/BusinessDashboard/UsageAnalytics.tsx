@@ -334,7 +334,7 @@ const UsageAnalytics = ({
 					align="center"
 					gap="0.4em"
 				>
-					<LuChartColumn color="#3c83f6" />
+					<LuChartColumn color="#5ba1d6ff" />
 					Usage Analytics
 				</Flex>
 
