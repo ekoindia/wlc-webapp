@@ -2,7 +2,12 @@ import { Flex, Grid } from "@chakra-ui/react";
 import { Endpoints, UserTypeIcon } from "constants";
 import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
-import { EarningOverview, SuccessRate, TopMerchants } from ".";
+import {
+	EarningOverview,
+	MostUsedServices,
+	SuccessRate,
+	TopMerchants,
+} from ".";
 import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
 
 const ACTIVE_AGENTS_CACHE_KEY = "inf-dashboard-active-agents";
@@ -132,6 +137,13 @@ const BusinessDashboard = () => {
 
 				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
 			</Grid>
+
+			<MostUsedServices
+				dateFrom={prevDate}
+				dateTo={_currDate}
+				productFilterList={productFilterList}
+			/>
+
 			<TopMerchants
 				dateRange={dateRange}
 				dateFrom={prevDate}
