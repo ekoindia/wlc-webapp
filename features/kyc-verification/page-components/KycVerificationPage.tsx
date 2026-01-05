@@ -8,6 +8,8 @@ import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import {
+	AddUserButton,
+	AddUserModal,
 	BulkUploadButton,
 	BulkVerificationModal,
 	CategoryTabs,
@@ -52,6 +54,9 @@ export const KycVerificationPage = ({
 
 	// Bulk verification modal state
 	const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+
+	// Add user modal state
+	const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
 	// Manage services mode state
 	const [isManageMode, setIsManageMode] = useState(false);
@@ -156,6 +161,9 @@ export const KycVerificationPage = ({
 						<BulkUploadButton
 							onClick={() => setIsBulkModalOpen(true)}
 						/>
+						<AddUserButton
+							onClick={() => setIsAddUserModalOpen(true)}
+						/>
 						<Button
 							onClick={() => setIsManageMode(!isManageMode)}
 							size="sm"
@@ -174,6 +182,10 @@ export const KycVerificationPage = ({
 				isOpen={isBulkModalOpen}
 				onClose={() => setIsBulkModalOpen(false)}
 				services={services}
+			/>
+			<AddUserModal
+				isOpen={isAddUserModalOpen}
+				onClose={() => setIsAddUserModalOpen(false)}
 			/>
 			{/* Conditional content based on manage mode */}
 			{isManageMode ? (
