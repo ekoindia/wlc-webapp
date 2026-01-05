@@ -761,7 +761,6 @@ const History = ({ forNetwork = false }) => {
 					h="auto"
 					p={{
 						base: "16px",
-						sm: "16px",
 						md: "20px",
 						"2xl": "14px 30px 30px 30px",
 					}}
