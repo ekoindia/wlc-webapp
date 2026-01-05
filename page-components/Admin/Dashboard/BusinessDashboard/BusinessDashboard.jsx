@@ -60,7 +60,7 @@ const BusinessDashboard = () => {
 
 		// Prepend "All" option
 		return [allOption, ...filteredProducts];
-	}, [role_list, ProductRoleConfiguration]);
+	}, [role_list]);
 
 	// MARK: Fetching Active Agents Data
 	const [fetchActiveAgentsData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
