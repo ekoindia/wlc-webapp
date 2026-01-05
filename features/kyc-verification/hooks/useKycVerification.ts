@@ -148,15 +148,20 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 
 				// Check response
 				if (response?.data?.status === 0 && response.data.data) {
-					// Success
+					// Success - extract tid from response data
+					const responseData = response.data.data as Record<
+						string,
+						unknown
+					>;
 					return {
 						serviceCode: service.serviceCode,
 						serviceName: service.name,
 						endpointPath: service.endpointPath,
 						status: "success",
 						requestData: filteredData,
-						responseData: response.data.data,
+						responseData,
 						timestamp: getTimestamp(),
+						tid: responseData.tid as string | undefined,
 					};
 				} else {
 					// API returned error

@@ -44,6 +44,8 @@ interface VerificationResultListProps {
 	retryingIndices?: number[];
 	/** Callback to download results as PDF */
 	onDownloadPdf?: () => void;
+	/** Whether PDF download is in progress */
+	isDownloading?: boolean;
 }
 
 /**
@@ -81,6 +83,7 @@ const getStatusCounts = (
  * @param {string} [props.completedAt] - Formatted completion timestamp
  * @param {number[]} [props.retryingIndices] - Indices of services being retried (for skeleton display)
  * @param {Function} [props.onDownloadPdf] - Callback to download results as PDF
+ * @param {boolean} [props.isDownloading] - Whether PDF download is in progress
  * @returns {JSX.Element} Rendered results list with progress, filters, and result cards
  */
 export const VerificationResultList = ({
@@ -93,6 +96,7 @@ export const VerificationResultList = ({
 	completedAt,
 	retryingIndices,
 	onDownloadPdf,
+	isDownloading,
 }: VerificationResultListProps): JSX.Element => {
 	const [filters, setFilters] = useState<VerificationFilterOptions>({
 		status: "all",
@@ -188,6 +192,9 @@ export const VerificationResultList = ({
 						onClick={onDownloadPdf}
 						icon="file-download"
 						iconStyle={{ size: "xs" }}
+						isLoading={isDownloading}
+						isDisabled={isDownloading}
+						loadingText="Downloading..."
 					>
 						Download PDF
 					</Button>

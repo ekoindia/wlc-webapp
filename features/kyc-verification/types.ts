@@ -266,6 +266,8 @@ export interface VerificationResult {
 	error?: string;
 	/** Timestamp when verification completed */
 	timestamp?: string;
+	/** Transaction ID from API response (used for downloading reports) */
+	tid?: string;
 }
 
 /**

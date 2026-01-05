@@ -11,14 +11,20 @@ import {
 	Flex,
 	Spinner,
 	Text,
+	useToast,
 	VStack,
 } from "@chakra-ui/react";
 import { Button, PageTitle } from "components";
 import ActionButtonGroup from "components/ActionButtonGroup/ActionButtonGroup";
+import { Endpoints } from "constants/EndPoints";
+import { useAppSource, useSession } from "contexts";
+import { fetcher } from "helpers";
 import { formatDateTime } from "libs";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ANDROID_ACTION, doAndroidAction, saveDataToFile } from "utils";
 import { VerificationResultList } from "../components";
+import { KYC_REPORT_DOWNLOAD_INTERACTION_ID } from "../constants";
 import { useKycVerification } from "../hooks";
 import type { RetryData, VerificationService } from "../types";
 
@@ -45,14 +51,19 @@ export const VerificationResultsPage = ({
 	basePath = "/products/kyc-verification",
 }: VerificationResultsPageProps = {}): JSX.Element => {
 	const router = useRouter();
+	const toast = useToast();
 	const hasStarted = useRef(false);
 	const [initialData, setInitialData] =
 		useState<StoredVerificationData | null>(null);
 	const [loadError, setLoadError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isDownloading, setIsDownloading] = useState(false);
 	const [completedAt, setCompletedAt] = useState<string | undefined>(
 		undefined
 	);
+
+	const { accessToken } = useSession();
+	const { isAndroid } = useAppSource();
 
 	const {
 		state,
@@ -109,11 +120,92 @@ export const VerificationResultsPage = ({
 		}
 	}, [state.status, completedAt]);
 
-	// Handle download PDF
-	const handleDownloadPdf = useCallback(() => {
-		// Use print functionality for now
-		window.print();
-	}, []);
+	/**
+	 * Get comma-separated tids from all verification results (success and failed).
+	 * The PDF report will contain information about all processed verifications.
+	 * @returns {string} Comma-separated transaction IDs
+	 */
+	const getAllTids = useCallback((): string => {
+		return state.results
+			.filter((r) => r.tid)
+			.map((r) => r.tid)
+			.join(",");
+	}, [state.results]);
+
+	/**
+	 * Handle download PDF - calls API with tids to download verification report.
+	 */
+	const handleDownloadPdf = useCallback(async (): Promise<void> => {
+		const tids = getAllTids();
+
+		if (!tids) {
+			toast({
+				title: "No results to download",
+				description: "There are no verification results to download.",
+				status: "warning",
+				duration: 3000,
+				isClosable: true,
+			});
+			return;
+		}
+
+		setIsDownloading(true);
+
+		try {
+			const response = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-is-file-download": "1",
+					},
+					body: {
+						interaction_type_id: KYC_REPORT_DOWNLOAD_INTERACTION_ID,
+						tids,
+					},
+					token: accessToken,
+				}
+			);
+
+			const blob = response?.file?.blob;
+			const filename = response?.file?.name || "verification-report.pdf";
+			const contentType =
+				response?.file?.["content-type"] || "application/pdf";
+			const isBase64 = true;
+
+			if (blob) {
+				if (isAndroid) {
+					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
+						blob,
+						name: filename,
+					});
+				} else {
+					saveDataToFile(blob, filename, contentType, isBase64);
+				}
+
+				toast({
+					title: "Report downloaded",
+					description: "Verification report has been downloaded.",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+			} else {
+				throw new Error("No file data in response");
+			}
+		} catch (err) {
+			console.error("[VerificationResultsPage] Download error:", err);
+			toast({
+				title: "Download failed",
+				description:
+					"Failed to download the verification report. Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsDownloading(false);
+		}
+	}, [getAllTids, accessToken, isAndroid, toast]);
 
 	// Handle "Back to Services" button
 	const handleBackToServices = useCallback(() => {
@@ -244,6 +336,7 @@ export const VerificationResultsPage = ({
 							completedAt={completedAt}
 							retryingIndices={state.retryingIndices}
 							onDownloadPdf={handleDownloadPdf}
+							isDownloading={isDownloading}
 						/>
 					) : (
 						<Box
