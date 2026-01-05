@@ -7,7 +7,7 @@ import {
 	MostUsedServices,
 	SuccessRate,
 	TopMerchants,
-	VerificationTrends,
+	UsageAnalytics,
 } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
 
@@ -139,13 +139,15 @@ const BusinessDashboard = () => {
 				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
 			</Grid>
 
-			<MostUsedServices
-				dateFrom={prevDate}
-				dateTo={_currDate}
-				productFilterList={productFilterList}
-			/>
+			<Grid templateColumns={{ base: "1fr", lg: "1fr 2fr" }} gap="4">
+				<MostUsedServices
+					dateFrom={prevDate}
+					dateTo={_currDate}
+					productFilterList={productFilterList}
+				/>
 
-			<VerificationTrends dateFrom={prevDate} dateTo={_currDate} />
+				<UsageAnalytics dateFrom={prevDate} dateTo={_currDate} />
+			</Grid>
 
 			<TopMerchants
 				dateRange={dateRange}
