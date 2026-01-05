@@ -51,15 +51,15 @@ const JsonViewer = ({
 			<Box
 				className={className}
 				p={4}
-				bg="red.50"
+				bg="white"
 				borderRadius="md"
 				border="1px solid"
-				borderColor="red.200"
+				borderColor="error"
 			>
-				<Text color="red.600" fontWeight="500" mb={2}>
+				<Text color="error" fontWeight="500" mb={2}>
 					Invalid JSON
 				</Text>
-				<Text color="red.500" fontSize="sm" fontFamily="mono">
+				<Text color="error" fontSize="sm" fontFamily="mono">
 					{parseResult.error}
 				</Text>
 			</Box>
