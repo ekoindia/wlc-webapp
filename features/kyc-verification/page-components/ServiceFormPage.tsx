@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { Button, PaddingBox, PageTitle } from "components";
 import ActionButtonGroup from "components/ActionButtonGroup/ActionButtonGroup";
-import { ParamType } from "constants/trxnFramework";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,24 +35,6 @@ interface ServiceFormPageProps {
 	/** Base path for navigation (defaults to /products/kyc-verification) */
 	basePath?: string;
 }
-
-/**
- * Maps API parameter type to Form component's parameter_type_id.
- * @param {string} type - The API parameter type ('number' | 'date' | 'array' | 'string')
- * @returns {ParamType} Form component parameter type enum value
- */
-const mapTypeToParamType = (type: string): ParamType => {
-	switch (type) {
-		case "number":
-			return ParamType.NUMERIC;
-		case "date":
-			return ParamType.DATETIME;
-		case "array":
-			return ParamType.TEXT; // Arrays handled as JSON text for now
-		default:
-			return ParamType.TEXT;
-	}
-};
 
 /**
  * Converts API validations to react-hook-form validation rules.
@@ -134,7 +115,7 @@ const mergeServiceParams = (services: VerificationService[]): FormField[] => {
 					name: param.name,
 					label: param.label,
 					required: param.is_required === 1,
-					parameter_type_id: mapTypeToParamType(param.type),
+					parameter_type_id: param.type,
 					validations: mapValidations(param),
 					helperText:
 						services.length > 1

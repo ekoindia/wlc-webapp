@@ -30,7 +30,7 @@ export interface RequestParamValidation {
  * @property {0|1} is_required - Whether this parameter is required (1 = required, 0 = optional)
  * @property {string} name - Parameter name (used as form field name)
  * @property {string} label - Display label for the parameter
- * @property {string} type - Data type of the parameter ('string' | 'array' | 'number' | 'date')
+ * @property {ParamType} type - Parameter type ID from the ParamType enum (e.g., 12 for TEXT, 15 for MOBILE)
  * @property {RequestParamValidation} [validations] - Validation rules
  * @property {string} [placeholder] - Placeholder text
  * @property {string} [helperText] - Helper text shown below the field
@@ -42,8 +42,8 @@ export interface RequestParam {
 	name: string;
 	/** Display label for the parameter */
 	label: string;
-	/** Data type of the parameter */
-	type: "string" | "array" | "number" | "date";
+	/** Parameter type ID from the ParamType enum (e.g., 12 for TEXT, 15 for MOBILE, 14 for DATETIME) */
+	type: ParamType;
 	/** Validation rules */
 	validations?: RequestParamValidation;
 	/** Placeholder text */

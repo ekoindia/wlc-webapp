@@ -4,6 +4,7 @@
  * Set NEXT_PUBLIC_USE_MOCK_KYC=true in .env.local to enable.
  */
 
+import { ParamType } from "constants/trxnFramework";
 import type { KycServicesResponse, VerificationService } from "../types";
 
 /**
@@ -34,7 +35,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "pan_number",
 				label: "PAN Number",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter PAN Number (e.g., ABCDE1234F)",
 				validations: {
 					pattern: "^[A-Z]{5}[0-9]{4}[A-Z]{1}$",
@@ -46,7 +47,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "name",
 				label: "Full Name",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter full name as per PAN",
 				validations: {
 					minLength: 3,
@@ -57,7 +58,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "dob",
 				label: "Date of Birth",
-				type: "date",
+				type: ParamType.DATETIME,
 				placeholder: "YYYY-MM-DD",
 			},
 		],
@@ -76,7 +77,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "gstin",
 				label: "GSTIN",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter 15-digit GSTIN",
 				validations: {
 					pattern:
@@ -89,7 +90,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "business_name",
 				label: "Business Name",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter business name to verify",
 				validations: {
 					minLength: 3,
@@ -112,7 +113,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "vehicle_number",
 				label: "Vehicle Number",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter vehicle registration number",
 				validations: {
 					pattern: "^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{4}$",
@@ -137,7 +138,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "dl_number",
 				label: "DL Number",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter driving license number",
 				validations: {
 					minLength: 10,
@@ -148,7 +149,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "dob",
 				label: "Date of Birth",
-				type: "date",
+				type: ParamType.DATETIME,
 				placeholder: "YYYY-MM-DD",
 			},
 		],
@@ -168,7 +169,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "epic_number",
 				label: "EPIC Number",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter EPIC number from Voter ID",
 				validations: {
 					pattern: "^[A-Z]{3}[0-9]{7}$",
@@ -180,7 +181,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "name",
 				label: "Full Name",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter name as per Voter ID",
 				validations: {
 					minLength: 3,
@@ -202,7 +203,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "file_number",
 				label: "File Number",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter passport file number",
 				validations: {
 					minLength: 10,
@@ -213,14 +214,14 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "dob",
 				label: "Date of Birth",
-				type: "date",
+				type: ParamType.DATETIME,
 				placeholder: "YYYY-MM-DD",
 			},
 			{
 				is_required: 1,
 				name: "name",
 				label: "Full Name",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter name as per passport",
 				validations: {
 					minLength: 3,
@@ -244,7 +245,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "cin",
 				label: "CIN",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter 21-character CIN",
 				validations: {
 					pattern:
@@ -269,7 +270,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "uan",
 				label: "UAN",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter 12-digit UAN",
 				validations: {
 					pattern: "^[0-9]{12}$",
@@ -281,7 +282,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "employee_name",
 				label: "Employee Name",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter employee name",
 				validations: {
 					minLength: 3,
@@ -292,7 +293,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "employer_name",
 				label: "Employer Name",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter employer/company name",
 				validations: {
 					minLength: 3,
@@ -303,14 +304,14 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "dob",
 				label: "Date of Birth",
-				type: "date",
+				type: ParamType.DATETIME,
 				placeholder: "YYYY-MM-DD",
 			},
 			{
 				is_required: 1,
 				name: "phone",
 				label: "Phone Number",
-				type: "string",
+				type: ParamType.MOBILE,
 				placeholder: "Enter 10-digit phone number",
 				validations: {
 					pattern: "^[6-9][0-9]{9}$",
@@ -333,7 +334,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "bank_account",
 				label: "Bank Account Number",
-				type: "string",
+				type: ParamType.NUMERIC,
 				placeholder: "Enter bank account number",
 				validations: {
 					pattern: "^[0-9]{9,18}$",
@@ -345,7 +346,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "ifsc",
 				label: "IFSC Code",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter 11-character IFSC code",
 				validations: {
 					pattern: "^[A-Z]{4}0[A-Z0-9]{6}$",
@@ -369,7 +370,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "ip_address",
 				label: "IP Address",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter IP address (e.g., 192.168.1.1)",
 				validations: {
 					pattern:
@@ -391,7 +392,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "name_1",
 				label: "Name 1",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter first name",
 				validations: {
 					minLength: 2,
@@ -402,7 +403,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "name_2",
 				label: "Name 2",
-				type: "string",
+				type: ParamType.TEXT,
 				placeholder: "Enter second name to compare",
 				validations: {
 					minLength: 2,
@@ -424,7 +425,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "latitude",
 				label: "Latitude",
-				type: "string",
+				type: ParamType.FLOATING_POINT,
 				placeholder: "Enter latitude (e.g., 28.6139)",
 				validations: {
 					pattern: "^-?([1-8]?[0-9]\\.\\d+|90\\.0+)$",
@@ -434,7 +435,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				is_required: 1,
 				name: "longitude",
 				label: "Longitude",
-				type: "string",
+				type: ParamType.FLOATING_POINT,
 				placeholder: "Enter longitude (e.g., 77.2090)",
 				validations: {
 					pattern: "^-?((1[0-7][0-9]|[1-9]?[0-9])\\.\\d+|180\\.0+)$",
