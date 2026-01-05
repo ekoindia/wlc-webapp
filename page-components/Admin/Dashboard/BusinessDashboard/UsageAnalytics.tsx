@@ -365,10 +365,11 @@ const UsageAnalytics = ({
 						<Grid
 							templateColumns={{
 								base: "repeat(2, 1fr)",
-								xl: "repeat(4, 1fr)",
+								lg: "repeat(4, 1fr)",
 							}}
 							gap="4"
 							mb="2"
+							justifyItems="center"
 						>
 							<StatCard
 								label="Total Volume"
