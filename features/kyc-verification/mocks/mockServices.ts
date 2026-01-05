@@ -9,12 +9,10 @@ import type { KycServicesResponse, VerificationService } from "../types";
 
 /**
  * Whether to use mock data instead of real API calls.
- * Enabled when NEXT_PUBLIC_USE_MOCK_KYC=true or in test environment.
+ * Enabled when NEXT_PUBLIC_USE_MOCK_KYC=true in .env.local.
  * @constant {boolean}
  */
-export const USE_MOCK_DATA =
-	process.env.NEXT_PUBLIC_USE_MOCK_KYC === "true" ||
-	process.env.NODE_ENV !== "production";
+export const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_KYC === "true";
 
 /**
  * Mock KYC verification services array.
