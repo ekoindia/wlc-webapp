@@ -112,10 +112,10 @@ export const BulkVerificationModal = ({
 						"tf-req-method": "POST",
 						"tf-req-uri-root-path": "/api/v1",
 						"tf-req-uri": "/bulk-payout/process-records",
-						"x-forwarded-proto":
-							process.env.NEXT_PUBLIC_ENV !== "production"
-								? "http"
-								: "https",
+						// "x-forwarded-proto":
+						// 	process.env.NEXT_PUBLIC_ENV !== "production"
+						// 		? "http"
+						// 		: "https",
 					},
 					body: formData,
 				}
