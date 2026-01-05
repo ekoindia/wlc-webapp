@@ -3,6 +3,8 @@
  * Provides filtering by category and search functionality.
  */
 
+import { useToast } from "@chakra-ui/react";
+import { Endpoints } from "constants/EndPoints";
 import { useApiFetch } from "hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -170,16 +172,26 @@ interface UseKycServicesReturn {
  * @returns {UseKycServicesReturn} Object with services data, filters, and utility functions
  */
 export const useKycServices = (): UseKycServicesReturn => {
+	const toast = useToast();
 	const [services, setServices] = useState<VerificationService[]>([]);
 	const [selectedCategory, setSelectedCategory] =
 		useState<string>(ALL_CATEGORIES_VALUE);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [error, setError] = useState<string | null>(null);
 
-	const [fetchServices, loading] = useApiFetch(undefined, {
+	const [fetchServices, loading] = useApiFetch(Endpoints.TRANSACTION, {
 		method: "POST",
 		onError: (err) => {
-			setError(err?.data?.message || "Failed to fetch services");
+			const errorMessage =
+				err?.data?.message || "Failed to fetch services";
+			setError(errorMessage);
+			toast({
+				title: "Error",
+				description: errorMessage,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		},
 	});
 
@@ -226,11 +238,28 @@ export const useKycServices = (): UseKycServicesReturn => {
 				setServices(normalizedServices);
 				setError(null);
 			} else {
-				setError(response?.data?.message || "Failed to fetch services");
+				const errorMessage =
+					response?.data?.message || "Failed to fetch services";
+				setError(errorMessage);
+				toast({
+					title: "Error",
+					description: errorMessage,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		} catch (err) {
 			console.error("[useKycServices] Error fetching services:", err);
-			setError("Failed to fetch services");
+			const errorMessage = "Failed to fetch services";
+			setError(errorMessage);
+			toast({
+				title: "Error",
+				description: errorMessage,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

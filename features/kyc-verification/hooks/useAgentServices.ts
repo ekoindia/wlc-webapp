@@ -194,7 +194,16 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 	const [fetchServicesApi, loading] = useApiFetch(Endpoints.TRANSACTION, {
 		method: "POST",
 		onError: (err) => {
-			setError(err?.data?.message || "Failed to fetch services");
+			const errorMessage =
+				err?.data?.message || "Failed to fetch services";
+			setError(errorMessage);
+			toast({
+				title: "Error",
+				description: errorMessage,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		},
 	});
 
@@ -230,19 +239,34 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 					);
 					setServices(normalizedServices);
 				} else {
-					setError(
-						response?.data?.message || "Failed to fetch services"
-					);
+					const errorMessage =
+						response?.data?.message || "Failed to fetch services";
+					setError(errorMessage);
+					toast({
+						title: "Error",
+						description: errorMessage,
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+					});
 				}
 			} catch (err) {
 				console.error(
 					"[useAgentServices] Error fetching services:",
 					err
 				);
-				setError("Failed to fetch services");
+				const errorMessage = "Failed to fetch services";
+				setError(errorMessage);
+				toast({
+					title: "Error",
+					description: errorMessage,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		},
-		[fetchServicesApi]
+		[fetchServicesApi, toast]
 	);
 
 	/**
