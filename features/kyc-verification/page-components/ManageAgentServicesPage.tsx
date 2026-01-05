@@ -99,7 +99,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 	const categoryLabel =
 		selectedCategory === ALL_CATEGORIES_VALUE
 			? ""
-			: ` in ${selectedCategory}`;
+			: ` in ${selectedCategory} category`;
 
 	// Open confirmation modal for batch operation
 	const openBatchConfirmation = useCallback(
