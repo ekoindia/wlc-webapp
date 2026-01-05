@@ -84,8 +84,9 @@ export const AddUserModal = ({
 		handleSubmit,
 		watch,
 		reset,
-		formState: { errors },
+		formState: { errors, isValid },
 	} = useForm<AddUserFormValues>({
+		mode: "onChange",
 		defaultValues: {
 			name: "",
 			mobile: "",
@@ -139,7 +140,7 @@ export const AddUserModal = ({
 		{
 			label: "Add User",
 			onClick: handleSubmit(onSubmit),
-			disabled: isSubmitting,
+			disabled: !isValid || isSubmitting,
 			loading: isSubmitting,
 			icon: "check-circle",
 			styles: {
