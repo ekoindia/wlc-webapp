@@ -133,8 +133,8 @@ export const KycVerificationPage = ({
 		return (
 			<PaddingBox>
 				<PageTitle title="KYC & Verification" isBeta hideBackIcon />
-				<Card p="6" bg="red.50">
-					<Text color="red.600">{error}</Text>
+				<Card p="6">
+					<Text color="error">{error}</Text>
 				</Card>
 			</PaddingBox>
 		);
