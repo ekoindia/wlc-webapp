@@ -13,7 +13,7 @@ import type { KycServicesResponse, VerificationService } from "../types";
  */
 export const USE_MOCK_DATA =
 	process.env.NEXT_PUBLIC_USE_MOCK_KYC === "true" ||
-	process.env.NODE_ENV === "test";
+	process.env.NODE_ENV !== "production";
 
 /**
  * Mock KYC verification services array.
