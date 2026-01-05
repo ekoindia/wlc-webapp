@@ -7,6 +7,7 @@ import {
 	MostUsedServices,
 	SuccessRate,
 	TopMerchants,
+	VerificationTrends,
 } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
 
@@ -143,6 +144,8 @@ const BusinessDashboard = () => {
 				dateTo={_currDate}
 				productFilterList={productFilterList}
 			/>
+
+			<VerificationTrends dateFrom={prevDate} dateTo={_currDate} />
 
 			<TopMerchants
 				dateRange={dateRange}

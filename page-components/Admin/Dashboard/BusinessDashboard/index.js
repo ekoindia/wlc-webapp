@@ -7,3 +7,4 @@ export { default as SuccessRate } from "./SuccessRate";
 export { default as TopMerchants } from "./TopMerchants";
 export { default as TopMerchantsChart } from "./TopMerchantsChart";
 export { default as TopMerchantsTable } from "./TopMerchantsTable";
+export { default as VerificationTrends } from "./VerificationTrends";
