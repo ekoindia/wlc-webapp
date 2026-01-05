@@ -281,8 +281,8 @@ const MostUsedServices = ({
 						<YAxis
 							dataKey="name"
 							type="category"
-							width={120}
-							fontSize="0.7em"
+							width={70}
+							fontSize="0.65em"
 							axisLine={false}
 							tickLine={false}
 							tick={{ fill: "#4A5568" }}
