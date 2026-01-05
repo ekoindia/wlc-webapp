@@ -235,11 +235,7 @@ const InfoTile = ({
 					<Flex
 						w="32px"
 						h="32px"
-						bg={
-							toggleMode && !isEnabled
-								? "gray.400"
-								: `hsl(${h},80%,60%)`
-						}
+						bg={`hsl(${h},80%,60%)`}
 						borderRadius="6px"
 						align="center"
 						justify="center"
