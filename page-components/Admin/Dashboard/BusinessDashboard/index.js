@@ -4,6 +4,7 @@ export { default as BusinessDashboardFilters } from "./BusinessDashboardFilters"
 export {
 	DashboardWidget,
 	DraggableGrid,
+	DragHandle,
 	resetDashboardLayout,
 } from "./DraggableGrid";
 export { default as EarningOverview } from "./EarningOverview";

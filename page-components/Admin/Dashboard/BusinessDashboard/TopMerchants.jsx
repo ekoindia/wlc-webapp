@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { LuTrophy } from "react-icons/lu";
 import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
+import { DragHandle } from "./DraggableGrid";
 
 /**
  * Process top merchants data for the dashboard
@@ -109,6 +110,7 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
  * @param {object} props.totalBusiness - Total business data (total GTV, Transaction count, etc).
+ * @param props.isDraggable
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -121,6 +123,7 @@ const TopMerchants = ({
 	dateTo,
 	productFilterList,
 	totalBusiness,
+	isDraggable,
 }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]); // Actual/cached list of top merchants
@@ -227,28 +230,64 @@ const TopMerchants = ({
 			border="basic"
 			gap="4"
 		>
-			<Flex
-				direction={{ base: "column", md: "row" }}
-				justify="space-between"
-				gap={{ base: "2", md: "4" }}
-				w="100%"
-			>
+			<Flex direction="column" gap={{ base: "2", md: "0" }} w="100%">
+				{/* Desktop: All in one row */}
 				<Flex
-					fontSize="lg"
-					fontWeight="semibold"
+					display={{ base: "none", md: "flex" }}
+					justify="space-between"
 					align="center"
-					gap="0.4em"
+					gap="4"
 				>
-					<LuTrophy color="#e27c7c" />
-					GTV Leaderboard
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+							flex="1"
+						>
+							<LuTrophy color="#e27c7c" />
+							GTV Leaderboard
+						</Flex>
+						<Select
+							variant="filled"
+							value={productFilter}
+							onChange={(e) => setProductFilter(e.target.value)}
+							size="xs"
+							w="auto"
+						>
+							{productFilterList.map(({ label, value }) => (
+								<option key={value} value={value}>
+									{label}
+								</option>
+							))}
+						</Select>
+					</DragHandle>
 				</Flex>
 
-				<Flex w={{ base: "100%", md: "auto" }}>
+				{/* Mobile: Title + grip on first row, Select on second row */}
+				<Flex
+					display={{ base: "flex", md: "none" }}
+					direction="column"
+					gap="2"
+				>
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+						>
+							<LuTrophy color="#e27c7c" />
+							GTV Leaderboard
+						</Flex>
+					</DragHandle>
 					<Select
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
 						size="xs"
+						w="100%"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>

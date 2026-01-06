@@ -1,6 +1,13 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Icon } from "components";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+	cloneElement,
+	isValidElement,
+	ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import {
 	Layout,
 	ResponsiveGridLayout,
@@ -9,7 +16,7 @@ import {
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
-const LAYOUT_STORAGE_KEY = "dashboard-grid-layout";
+const LAYOUT_STORAGE_KEY = "inf-dashboard-grid-layout";
 
 interface LayoutItem {
 	i: string;
@@ -103,6 +110,7 @@ const DraggableGrid = ({
 	);
 
 	// Render grid items from children object
+	// Clones each child and injects isDraggable prop so widgets can use DragHandle
 	const gridItems = useMemo(() => {
 		return Object.entries(children).map(([key, child]) => (
 			<Flex
@@ -113,26 +121,13 @@ const DraggableGrid = ({
 				overflow="hidden"
 				h="100%"
 			>
-				{/* Drag Handle */}
-				<Flex
-					className="drag-handle"
-					align="center"
-					justify="center"
-					py="1"
-					cursor={isDraggable ? "grab" : "default"}
-					_active={isDraggable ? { cursor: "grabbing" } : undefined}
-					bg="gray.50"
-					borderBottom="1px solid"
-					borderColor="divider"
-					opacity={0.6}
-					_hover={{ opacity: 1 }}
-					transition="opacity 0.2s"
-				>
-					<Icon name="drag_indicator" size="16px" color="gray.400" />
-				</Flex>
-				{/* Widget Content */}
+				{/* Widget Content - clone child to inject isDraggable prop */}
 				<Box flex="1" overflow="auto">
-					{child}
+					{isValidElement(child)
+						? cloneElement(child, {
+								isDraggable,
+							} as Partial<unknown>)
+						: child}
 				</Box>
 			</Flex>
 		));
@@ -175,6 +170,7 @@ const DraggableGrid = ({
 				dragConfig={{
 					enabled: isDraggable,
 					handle: ".drag-handle",
+					cancel: "select, button, input, a, [data-no-drag]",
 				}}
 				resizeConfig={{
 					enabled: isResizable,
@@ -188,6 +184,58 @@ const DraggableGrid = ({
 };
 
 export default DraggableGrid;
+
+/**
+ * DragHandle component - renders a draggable header bar with grip icon
+ * Use this in widget components to create a draggable area
+ * @param {object} props - Component properties
+ * @param {ReactNode} props.children - Content to render inside the drag handle
+ * @param {boolean} props.isDraggable - Whether dragging is enabled
+ */
+interface DragHandleProps {
+	children: ReactNode;
+	isDraggable?: boolean;
+}
+
+export const DragHandle = ({
+	children,
+	isDraggable = true,
+}: DragHandleProps): JSX.Element => {
+	return (
+		<Flex
+			className="drag-handle"
+			align="center"
+			justify="space-between"
+			w="100%"
+			cursor={isDraggable ? "grab" : "default"}
+			_active={isDraggable ? { cursor: "grabbing" } : undefined}
+			userSelect="none"
+		>
+			{children}
+			{/* Drag indicator icon */}
+			<Box
+				as="span"
+				fontSize="16px"
+				color="gray.300"
+				opacity={0.5}
+				transition="color 0.2s, opacity 0.2s"
+				ml="2"
+				_groupHover={{
+					color: "gray.500",
+					opacity: 1,
+				}}
+				sx={{
+					".drag-handle:hover &": {
+						color: "gray.500",
+						opacity: 1,
+					},
+				}}
+			>
+				⠿
+			</Box>
+		</Flex>
+	);
+};
 
 /**
  * Resets the dashboard layout to default configuration

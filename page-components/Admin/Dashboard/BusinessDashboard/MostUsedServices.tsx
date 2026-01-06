@@ -13,6 +13,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { DragHandle } from "./DraggableGrid";
 
 /** Chart colors - matching project color scheme */
 const CHART_COLORS = [
@@ -44,6 +45,8 @@ interface MostUsedServicesProps {
 	productFilterList: ProductFilterItem[];
 	/** Optional product filter (typeid) */
 	productFilter?: string;
+	/** Whether dragging is enabled (passed from DraggableGrid) */
+	isDraggable?: boolean;
 }
 
 /** Service data item for chart display */
@@ -130,6 +133,7 @@ const MostUsedServices = ({
 	dateTo,
 	productFilterList,
 	productFilter,
+	isDraggable,
 }: MostUsedServicesProps): JSX.Element => {
 	const [mostUsedServicesData, setMostUsedServicesData] =
 		useState<MostUsedServicesData>({});
@@ -216,15 +220,17 @@ const MostUsedServices = ({
 			gap="4"
 			w="100%"
 		>
-			<Flex
-				fontSize="lg"
-				fontWeight="semibold"
-				align="center"
-				gap="0.4em"
-			>
-				<LuTrendingUp color="#5dd859ff" />
-				Most Used Services
-			</Flex>
+			<DragHandle isDraggable={isDraggable}>
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuTrendingUp color="#5dd859ff" />
+					Most Used Services
+				</Flex>
+			</DragHandle>
 
 			<Divider />
 

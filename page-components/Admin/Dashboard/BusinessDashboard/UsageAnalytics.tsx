@@ -14,6 +14,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { DragHandle } from "./DraggableGrid";
 
 /**
  * Chart color scheme for Area + Histogram hybrid.
@@ -33,6 +34,8 @@ interface UsageAnalyticsProps {
 	dateFrom: string;
 	/** End date for filtering data (YYYY-MM-DD HH:mm:ss format) */
 	dateTo: string;
+	/** Whether dragging is enabled (passed from DraggableGrid) */
+	isDraggable?: boolean;
 }
 
 /** API response structure for verification trends */
@@ -221,10 +224,12 @@ const StatCard = ({
  * @param root0
  * @param root0.dateFrom
  * @param root0.dateTo
+ * @param root0.isDraggable
  */
 const UsageAnalytics = ({
 	dateFrom,
 	dateTo,
+	isDraggable,
 }: UsageAnalyticsProps): JSX.Element => {
 	const [trendsData, setTrendsData] = useState<VerificationTrendItem[]>([]);
 
@@ -328,15 +333,17 @@ const UsageAnalytics = ({
 			w="100%"
 		>
 			<Flex justify="space-between" align="center" wrap="wrap" gap="4">
-				<Flex
-					fontSize="lg"
-					fontWeight="semibold"
-					align="center"
-					gap="0.4em"
-				>
-					<LuChartColumn color="#5ba1d6ff" />
-					Usage Analytics
-				</Flex>
+				<DragHandle isDraggable={isDraggable}>
+					<Flex
+						fontSize="lg"
+						fontWeight="semibold"
+						align="center"
+						gap="0.4em"
+					>
+						<LuChartColumn color="#5ba1d6ff" />
+						Usage Analytics
+					</Flex>
+				</DragHandle>
 
 				{/* Future: Add Product Filter Dropdown here */}
 			</Flex>
