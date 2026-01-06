@@ -107,6 +107,8 @@ export interface FormProps extends Omit<GridProps, "children"> {
 	size?: "sm" | "md" | "lg";
 	/** Hide "(optional)" text on non-required fields */
 	hideOptionalMark?: boolean;
+	/** Callback function for Enter key press (used by OTP input on complete) */
+	onEnter?: (_e?: React.BaseSyntheticEvent) => void | Promise<void>;
 }
 
 /**
