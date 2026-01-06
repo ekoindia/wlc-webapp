@@ -16,14 +16,14 @@ import ServiceSearch from "./ServiceSearch";
 import { VerificationProgress } from "./VerificationProgress";
 import { VerificationResultCard } from "./VerificationResultCard";
 
-/** Status filter options for the Select component */
-const STATUS_OPTIONS = [
-	{ label: "All Status", value: "all" },
-	{ label: "Success", value: "success" },
-	{ label: "Failed", value: "failed" },
-	{ label: "In Progress", value: "in_progress" },
-	{ label: "Pending", value: "pending" },
-];
+/** Status label mapping for display */
+const STATUS_LABELS: Record<VerificationStatus | "all", string> = {
+	all: "All Status",
+	success: "Success",
+	failed: "Failed",
+	in_progress: "In Progress",
+	pending: "Pending",
+};
 
 interface VerificationResultListProps {
 	/** Array of verification results */
@@ -105,6 +105,34 @@ export const VerificationResultList = ({
 
 	const statusCounts = useMemo(() => getStatusCounts(results), [results]);
 
+	// Determine if this is a multi-service verification (show filters only for multiple)
+	const isMultiService = totalCount > 1;
+
+	// Generate dynamic status options based on available statuses in results
+	const statusOptions = useMemo(() => {
+		const options: Array<{ label: string; value: string }> = [
+			{ label: "All Status", value: "all" },
+		];
+
+		// Only add status options that exist in results
+		const availableStatuses: VerificationStatus[] = [
+			"pending",
+			"in_progress",
+			"success",
+			"failed",
+		];
+		availableStatuses.forEach((status) => {
+			if (statusCounts[status] > 0) {
+				options.push({
+					label: STATUS_LABELS[status],
+					value: status,
+				});
+			}
+		});
+
+		return options;
+	}, [statusCounts]);
+
 	// Filter results based on current filters, maintain original order (first at top)
 	const filteredResults = useMemo(() => {
 		let filtered = [...results];
@@ -149,41 +177,43 @@ export const VerificationResultList = ({
 			<Flex
 				gap={3}
 				align="center"
-				justify="space-between"
+				justify={isMultiService ? "space-between" : "flex-end"}
 				flexWrap="wrap"
 			>
-				{/* Filters */}
-				<Flex gap={3} align="center" flex={1}>
-					<ServiceSearch
-						value={filters.searchQuery || ""}
-						onChange={(query) =>
-							setFilters((prev) => ({
-								...prev,
-								searchQuery: query,
-							}))
-						}
-						placeholder="Search services..."
-					/>
-					<Select
-						options={STATUS_OPTIONS}
-						value={STATUS_OPTIONS.find(
-							(opt) => opt.value === (filters.status || "all")
-						)}
-						onChange={(
-							option: (typeof STATUS_OPTIONS)[number] | null
-						) =>
-							setFilters((prev) => ({
-								...prev,
-								status: (option?.value ||
-									"all") as VerificationFilterOptions["status"],
-							}))
-						}
-						placeholder="All Status"
-						size="md"
-						w="180px"
-						required
-					/>
-				</Flex>
+				{/* Filters - only show for multi-service verification */}
+				{isMultiService && (
+					<Flex gap={3} align="center" flex={1}>
+						<ServiceSearch
+							value={filters.searchQuery || ""}
+							onChange={(query) =>
+								setFilters((prev) => ({
+									...prev,
+									searchQuery: query,
+								}))
+							}
+							placeholder="Search services..."
+						/>
+						<Select
+							options={statusOptions}
+							value={statusOptions.find(
+								(opt) => opt.value === (filters.status || "all")
+							)}
+							onChange={(
+								option: (typeof statusOptions)[number] | null
+							) =>
+								setFilters((prev) => ({
+									...prev,
+									status: (option?.value ||
+										"all") as VerificationFilterOptions["status"],
+								}))
+							}
+							placeholder="All Status"
+							size="md"
+							w="180px"
+							required
+						/>
+					</Flex>
+				)}
 
 				{/* Download PDF - only show when complete */}
 				{isComplete && onDownloadPdf && (
