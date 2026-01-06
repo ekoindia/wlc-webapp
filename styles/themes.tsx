@@ -1,6 +1,7 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { globalStyles } from "./globals";
 import {
+	badgeTheme,
 	buttonTheme,
 	checkboxTheme,
 	radioTheme,
@@ -51,6 +52,7 @@ export const light = extendTheme({
 		overlayBg: "#e9edf1b3",
 	},
 	components: {
+		Badge: badgeTheme,
 		Button: buttonTheme,
 		Checkbox: checkboxTheme,
 		Radio: radioTheme,

@@ -31,6 +31,8 @@ interface InfoTileGridProps {
 		onToggle?: () => void;
 		/** Whether toggle is in loading state (only used when toggleMode=true on grid) */
 		isToggling?: boolean;
+		/** Whether toggle is in throttle/cooldown state (only used when toggleMode=true on grid) */
+		isThrottled?: boolean;
 	}[];
 
 	/** Style of the icon - avatar (default) or square */
@@ -101,6 +103,7 @@ const InfoTileGrid = ({
 					isEnabled,
 					onToggle,
 					isToggling,
+					isThrottled,
 				} = item || {};
 				if (!label) return null;
 
@@ -125,6 +128,7 @@ const InfoTileGrid = ({
 							isEnabled,
 							onToggle,
 							isToggling,
+							isThrottled,
 						}}
 					/>
 				);

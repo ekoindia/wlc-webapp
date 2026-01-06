@@ -50,6 +50,8 @@ interface InfoTileProps {
 	onToggle?: () => void;
 	/** Whether toggle is in loading state (only used when toggleMode=true) */
 	isToggling?: boolean;
+	/** Whether toggle is in throttle/cooldown state - shows status tag instead of switch (only used when toggleMode=true) */
+	isThrottled?: boolean;
 	/** Enable double-click/tap to toggle (only used when toggleMode=true) */
 	enableDoubleClickToggle?: boolean;
 }
@@ -79,6 +81,7 @@ const InfoTile = ({
 	isEnabled = true,
 	onToggle,
 	isToggling = false,
+	isThrottled = false,
 	enableDoubleClickToggle = true,
 }: InfoTileProps): JSX.Element => {
 	const { h } = useHslColor(label);
@@ -162,6 +165,15 @@ const InfoTile = ({
 	// Toggle switch component
 	const ToggleSwitch = () => {
 		if (!toggleMode) return null;
+
+		// Show status tag during throttle/cooldown period
+		if (isThrottled) {
+			return (
+				<Badge variant={isEnabled ? "primary" : "muted"}>
+					{isEnabled ? "Enabled ✓" : "Disabled"}
+				</Badge>
+			);
+		}
 
 		return (
 			<Flex

@@ -139,6 +139,8 @@ interface UseAgentServicesReturn {
 	toggleService: (_serviceCode: string) => Promise<boolean>;
 	/** Loading state for individual service toggle (maps serviceCode to loading state) */
 	togglingServices: Record<string, boolean>;
+	/** Throttle/cooldown state for individual services (maps serviceCode to throttled state) */
+	throttledServices: Record<string, boolean>;
 	/** Enable all disabled services in the current filtered view */
 	enableFilteredServices: () => Promise<void>;
 	/** Disable all enabled services in the current filtered view */
@@ -186,6 +188,11 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 		total: 0,
 		operation: null,
 	});
+
+	// Track which services are in throttle/cooldown period
+	const [throttledServices, setThrottledServices] = useState<
+		Record<string, boolean>
+	>({});
 
 	// Throttle ref for toggle actions
 	const lastToggleTime = useRef<Record<string, number>>({});
@@ -340,6 +347,18 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 								: s
 						)
 					);
+
+					// Set throttled state and clear after delay
+					setThrottledServices((prev) => ({
+						...prev,
+						[serviceCode]: true,
+					}));
+					setTimeout(() => {
+						setThrottledServices((prev) => ({
+							...prev,
+							[serviceCode]: false,
+						}));
+					}, TOGGLE_THROTTLE_DELAY);
 
 					// Show success toast (skip during batch operations)
 					if (!skipToast) {
@@ -537,6 +556,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 		selectAgent,
 		toggleService,
 		togglingServices,
+		throttledServices,
 		enableFilteredServices,
 		disableFilteredServices,
 		batchProgress,

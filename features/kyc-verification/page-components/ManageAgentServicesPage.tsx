@@ -58,6 +58,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		selectAgent,
 		toggleService,
 		togglingServices,
+		throttledServices,
 		enabledCount,
 		totalCount,
 		filteredEnabledCount,
@@ -93,12 +94,19 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 			isEnabled: service.is_enabled,
 			onToggle: () => toggleService(service.serviceCode),
 			isToggling: togglingServices[service.serviceCode] || false,
+			isThrottled: throttledServices[service.serviceCode] || false,
 			tags:
 				selectedCategory === ALL_CATEGORIES_VALUE && service.category
 					? [service.category]
 					: undefined,
 		}));
-	}, [filteredServices, selectedCategory, toggleService, togglingServices]);
+	}, [
+		filteredServices,
+		selectedCategory,
+		toggleService,
+		togglingServices,
+		throttledServices,
+	]);
 
 	// Handle agent selection
 	const handleAgentChange = (option: { value: string } | null) => {

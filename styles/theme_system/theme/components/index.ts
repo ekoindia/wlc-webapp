@@ -1,3 +1,4 @@
+export { badgeTheme } from "./badge.js";
 export { buttonTheme } from "./button.js";
 export { checkboxTheme } from "./checkbox.js";
 export { radioTheme } from "./radio.js";
