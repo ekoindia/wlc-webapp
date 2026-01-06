@@ -216,17 +216,17 @@ export const DragHandle = ({
 			<Box
 				as="span"
 				fontSize="16px"
-				color="gray.300"
+				color="light"
 				opacity={0.5}
 				transition="color 0.2s, opacity 0.2s"
 				ml="2"
 				_groupHover={{
-					color: "gray.500",
+					color: "dark",
 					opacity: 1,
 				}}
 				sx={{
 					".drag-handle:hover &": {
-						color: "gray.500",
+						color: "dark",
 						opacity: 1,
 					},
 				}}
