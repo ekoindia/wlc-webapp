@@ -6,7 +6,7 @@
 import { Card, Flex, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import { Button, InfoTileGrid, Modal, Select } from "components";
 import { useNetworkUsers } from "contexts/NetworkUsersContext";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
 	CategoryTabs,
 	ServiceSearch,
@@ -25,7 +25,19 @@ type BatchOperation = "enable" | "disable";
  */
 export const ManageAgentServicesPage = (): JSX.Element => {
 	// Network users for agent selection
-	const { networkUsersList, loading: loadingUsers } = useNetworkUsers();
+	const {
+		networkUsersList,
+		loading: loadingUsers,
+		refreshUserList,
+		fetchedAt,
+	} = useNetworkUsers();
+
+	// Fetch network users on mount if not already loaded
+	useEffect(() => {
+		if (fetchedAt === null && !loadingUsers) {
+			refreshUserList();
+		}
+	}, [fetchedAt]);
 
 	// Modal state for batch operation confirmation
 	const { isOpen, onOpen, onClose } = useDisclosure();
