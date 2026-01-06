@@ -6,7 +6,6 @@ import { usePlatform } from "hooks";
 const DEFAULT_BUTTON_STYLES = {
 	fontWeight: "bold",
 	borderRadius: { base: "none", md: "10" },
-	px: { base: 4, md: 6 },
 };
 
 interface ButtonConfig {
