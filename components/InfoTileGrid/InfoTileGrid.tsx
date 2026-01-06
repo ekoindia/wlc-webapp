@@ -57,13 +57,14 @@ interface InfoTileGridProps {
  * Each tile can be clicked to navigate to a different page or perform an action.
  * Supports selection mode for multi-select scenarios.
  * Supports toggle mode for admin enable/disable scenarios.
- * @param props Component props
- * @param props.list
- * @param props.iconStyle
- * @param props.selectable
- * @param props.showTags
- * @param props.toggleMode
- * @param props.enableDoubleClickToggle
+ * @param {InfoTileGridProps} props - Component props
+ * @param {Array} props.list - List of InfoTile items to be displayed in the grid
+ * @param {"avatar" | "square"} [props.iconStyle] - Style of the icon - avatar (circular with initials) or square (rounded rectangle)
+ * @param {boolean} [props.selectable] - Enable selection mode for all tiles, shows checkbox-style toggle
+ * @param {boolean} [props.showTags] - Whether to show category tags on tiles
+ * @param {boolean} [props.toggleMode] - Enable toggle mode for all tiles, shows a switch to enable/disable items
+ * @param {boolean} [props.enableDoubleClickToggle] - Enable double-click/double-tap gesture to toggle (only used when toggleMode=true)
+ * @returns {JSX.Element} Rendered grid of InfoTile components
  */
 const InfoTileGrid = ({
 	list,

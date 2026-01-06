@@ -16,12 +16,13 @@ import { parseJsonInput } from "./utils";
  * - ARIA tree roles for accessibility
  * - Copy to clipboard on root line
  * - Tree lines connecting parent-child nodes
- * @param props - JsonViewerProps
- * @param props.data
- * @param props.collapseAfterLevel
- * @param props.animated
- * @param props.className
- * @param props.maxHeight
+ * @param {JsonViewerProps} props - Component props
+ * @param {object | string} props.data - JSON data to display. Can be an object, array, or a valid JSON string
+ * @param {number} [props.collapseAfterLevel] - Nodes at this level and deeper are collapsed by default. Set to 0 to collapse all, or Infinity to expand all
+ * @param {boolean} [props.animated] - Enable smooth expand/collapse animations
+ * @param {string} [props.className] - Additional CSS class name for the container
+ * @param {object | string} [props.maxHeight] - Maximum height of the container. Supports responsive object notation
+ * @returns {JSX.Element} Rendered JSON tree view
  * @example
  * // Basic usage with object
  * <JsonViewer data={{ name: "John", age: 30 }} />
