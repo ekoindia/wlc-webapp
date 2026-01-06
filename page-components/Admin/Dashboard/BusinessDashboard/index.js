@@ -1,6 +1,11 @@
 export { default as BusinessDashboard } from "./BusinessDashboard";
 export { BusinessDashboardCard } from "./BusinessDashboardCard";
 export { default as BusinessDashboardFilters } from "./BusinessDashboardFilters";
+export {
+	DashboardWidget,
+	DraggableGrid,
+	resetDashboardLayout,
+} from "./DraggableGrid";
 export { default as EarningOverview } from "./EarningOverview";
 export { default as MostUsedServices } from "./MostUsedServices";
 export { default as SuccessRate } from "./SuccessRate";

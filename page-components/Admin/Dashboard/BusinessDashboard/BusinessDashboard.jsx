@@ -1,8 +1,9 @@
-import { Flex, Grid } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Endpoints, UserTypeIcon } from "constants";
 import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import {
+	DraggableGrid,
 	EarningOverview,
 	MostUsedServices,
 	SuccessRate,
@@ -116,6 +117,17 @@ const BusinessDashboard = () => {
 
 	const _currDate = dateRange === "today" ? cachedTodaysDateTo : currDate;
 
+	/** Widget props passed to each dashboard component */
+	const widgetProps = useMemo(
+		() => ({
+			dateRange,
+			dateFrom: prevDate,
+			dateTo: _currDate,
+			productFilterList,
+		}),
+		[dateRange, prevDate, _currDate, productFilterList]
+	);
+
 	return (
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
 			<TopPanel panelDataList={[...activeAgents]} />
@@ -127,35 +139,32 @@ const BusinessDashboard = () => {
 				setDateRange={setDateRange}
 			/>
 
-			<Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap="4">
-				<EarningOverview
-					dateRange={dateRange}
-					dateFrom={prevDate}
-					dateTo={_currDate}
-					productFilterList={productFilterList}
-					setTotalBusiness={setTotalBusiness}
-				/>
-
-				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
-			</Grid>
-
-			<Grid templateColumns={{ base: "1fr", lg: "1fr 2fr" }} gap="4">
-				<MostUsedServices
-					dateFrom={prevDate}
-					dateTo={_currDate}
-					productFilterList={productFilterList}
-				/>
-
-				<UsageAnalytics dateFrom={prevDate} dateTo={_currDate} />
-			</Grid>
-
-			<TopMerchants
-				dateRange={dateRange}
-				dateFrom={prevDate}
-				dateTo={_currDate}
-				productFilterList={productFilterList}
-				totalBusiness={totalBusiness}
-			/>
+			<DraggableGrid>
+				{{
+					earning: (
+						<EarningOverview
+							{...widgetProps}
+							setTotalBusiness={setTotalBusiness}
+						/>
+					),
+					success: (
+						<SuccessRate dateFrom={prevDate} dateTo={currDate} />
+					),
+					services: <MostUsedServices {...widgetProps} />,
+					analytics: (
+						<UsageAnalytics
+							dateFrom={prevDate}
+							dateTo={_currDate}
+						/>
+					),
+					merchants: (
+						<TopMerchants
+							{...widgetProps}
+							totalBusiness={totalBusiness}
+						/>
+					),
+				}}
+			</DraggableGrid>
 		</Flex>
 	);
 };
