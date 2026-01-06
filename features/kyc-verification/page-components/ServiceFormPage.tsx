@@ -507,7 +507,8 @@ export const ServiceFormPage = ({
 													md: "200px",
 												},
 											},
-											icon: "arrow-forward",
+											icon: "verified-user",
+											iconStyle: { size: "xs" },
 										},
 										{
 											variant: "link",

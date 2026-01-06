@@ -6,6 +6,7 @@ import { usePlatform } from "hooks";
 const DEFAULT_BUTTON_STYLES = {
 	fontWeight: "bold",
 	borderRadius: { base: "none", md: "10" },
+	px: { base: 4, md: 6 },
 };
 
 interface ButtonConfig {
@@ -14,6 +15,7 @@ interface ButtonConfig {
 	size?: ResponsiveValue<string>;
 	label: string;
 	icon?: string;
+	iconStyle?: object;
 	loading?: boolean;
 	disabled?: boolean;
 	onClick?: () => void;
@@ -78,6 +80,8 @@ const ActionButtonGroup = ({
 					variant,
 					size,
 					label,
+					icon,
+					iconStyle,
 					loading,
 					disabled,
 					styles,
@@ -93,6 +97,8 @@ const ActionButtonGroup = ({
 								variant,
 								size,
 								label,
+								icon,
+								iconStyle,
 								loading,
 								disabled,
 								onClick,

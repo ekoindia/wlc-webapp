@@ -393,10 +393,14 @@ export const VerificationResultsPage = ({
 														h: "64px",
 														w: {
 															base: "100%",
+															md: "auto",
+														},
+														minW: {
 															md: "200px",
 														},
 													},
 													icon: "refresh",
+													iconStyle: { size: "xs" },
 												},
 												{
 													variant: "link",
@@ -407,7 +411,10 @@ export const VerificationResultsPage = ({
 														h: "64px",
 														w: {
 															base: "100%",
-															md: "200px",
+															md: "auto",
+														},
+														minW: {
+															md: "150px",
 														},
 													},
 												},
@@ -425,6 +432,10 @@ export const VerificationResultsPage = ({
 																md: "200px",
 															},
 														},
+														icon: "verified-user",
+														iconStyle: {
+															size: "xs",
+														},
 													},
 													{
 														variant: "link",
@@ -438,6 +449,9 @@ export const VerificationResultsPage = ({
 															},
 														},
 														icon: "home",
+														iconStyle: {
+															size: "xs",
+														},
 													},
 												]
 											: [
@@ -452,7 +466,6 @@ export const VerificationResultsPage = ({
 																md: "200px",
 															},
 														},
-														icon: "arrow-back",
 													},
 												]
 								}
