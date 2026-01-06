@@ -1,6 +1,7 @@
 import { FormControl, Grid, Text } from "@chakra-ui/react";
 import {
 	Calendar,
+	Dropzone,
 	Input,
 	InputLabel,
 	OtpInput,
@@ -180,6 +181,63 @@ const Form = ({
 										{paramMetaValue ?? value}
 									</Text>
 								</div>
+							);
+
+						case ParamType.FILE:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value },
+										}) => (
+											<Dropzone
+												id={name}
+												label={label}
+												file={value}
+												setFile={onChange}
+												accept={meta?.accept || ""}
+												cameraOnly={
+													meta?.cameraOnly || false
+												}
+												watermark={
+													meta?.watermark || false
+												}
+												options={meta?.options || {}}
+												required={required}
+												disabled={disabled}
+												hideOptionalMark={
+													hideOptionalMark
+												}
+												labelStyle={labelStyle}
+												{...rest}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+												)}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
 							);
 
 						case ParamType.NUMERIC:
