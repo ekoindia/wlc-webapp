@@ -390,7 +390,6 @@ export const VerificationResultsPage = ({
 													label: retryButtonText,
 													onClick: handleRetryFailed,
 													styles: {
-														h: "64px",
 														w: {
 															base: "100%",
 															md: "auto",
@@ -408,7 +407,6 @@ export const VerificationResultsPage = ({
 													onClick:
 														handleBackToServices,
 													styles: {
-														h: "64px",
 														w: {
 															base: "100%",
 															md: "auto",
@@ -426,7 +424,6 @@ export const VerificationResultsPage = ({
 														onClick:
 															handleBackToServices,
 														styles: {
-															h: "64px",
 															w: {
 																base: "100%",
 																md: "200px",
@@ -442,7 +439,6 @@ export const VerificationResultsPage = ({
 														label: "Home",
 														onClick: handleGoHome,
 														styles: {
-															h: "64px",
 															w: {
 																base: "100%",
 																md: "200px",
@@ -456,7 +452,6 @@ export const VerificationResultsPage = ({
 														onClick:
 															handleBackToServices,
 														styles: {
-															h: "64px",
 															w: {
 																base: "100%",
 																md: "200px",

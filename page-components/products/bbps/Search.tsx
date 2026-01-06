@@ -427,7 +427,6 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			label: "Proceed",
 			loading: isSubmitting || isLoadingBills || isLoadingDynamicData,
 			disabled: !isValid,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

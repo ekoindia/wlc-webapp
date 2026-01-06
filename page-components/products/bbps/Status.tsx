@@ -137,7 +137,6 @@ export const Status = (): JSX.Element => {
 					: "Try Again",
 			onClick: nav.goSearch,
 			disabled: false,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

@@ -500,13 +500,6 @@ export const ServiceFormPage = ({
 											disabled:
 												!isValid ||
 												(!isDirty && !isRetryMode),
-											styles: {
-												h: "64px",
-												w: {
-													base: "100%",
-													md: "200px",
-												},
-											},
 											icon: "verified-user",
 											iconStyle: { size: "xs" },
 										},
