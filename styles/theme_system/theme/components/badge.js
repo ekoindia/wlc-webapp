@@ -13,6 +13,7 @@ const baseStyle = defineStyle({
 	fontSize: "xs",
 	fontWeight: "medium",
 	textTransform: "none",
+	userSelect: "none",
 });
 
 const variantPrimary = defineStyle({
