@@ -22,10 +22,15 @@ import { fetcher } from "helpers";
 import { formatDateTime } from "libs";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ANDROID_ACTION, doAndroidAction, saveDataToFile } from "utils";
+import {
+	ANDROID_ACTION,
+	doAndroidAction,
+	saveDataToFile,
+	toKebabCase,
+} from "utils";
 import { VerificationResultList } from "../components";
 import { KYC_REPORT_DOWNLOAD_INTERACTION_ID } from "../constants";
-import { useKycVerification } from "../hooks";
+import { useKycServices, useKycVerification } from "../hooks";
 import type { RetryData, VerificationService } from "../types";
 
 interface StoredVerificationData {
@@ -64,6 +69,8 @@ export const VerificationResultsPage = ({
 
 	const { accessToken } = useSession();
 	const { isAndroid } = useAppSource();
+
+	const { getServicesByCodes } = useKycServices();
 
 	const {
 		state,
@@ -236,13 +243,17 @@ export const VerificationResultsPage = ({
 		};
 		sessionStorage.setItem("kyc_retry_data", JSON.stringify(retryData));
 
-		// Navigate to form page with failed service codes
+		// Get service objects to convert codes to slugs for SEO-friendly URLs
+		const failedServices = getServicesByCodes(failedServiceCodes);
+		const failedSlugs = failedServices.map((s) => toKebabCase(s.name));
+
+		// Navigate to form page with slugified service names
 		const path =
-			failedServiceCodes.length === 1
-				? `${basePath}/${failedServiceCodes[0]}`
-				: `${basePath}/${failedServiceCodes.join("/")}`;
+			failedSlugs.length === 1
+				? `${basePath}/${failedSlugs[0]}`
+				: `${basePath}/${failedSlugs.join("/")}`;
 		router.push(path);
-	}, [state.results, state.formData, basePath, router]);
+	}, [state.results, state.formData, basePath, router, getServicesByCodes]);
 
 	// Determine button text for retry
 	const retryButtonText = useMemo(() => {

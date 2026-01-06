@@ -7,6 +7,7 @@ import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useApiFetch } from "hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toKebabCase } from "utils";
 import {
 	ALL_CATEGORIES_LABEL,
 	ALL_CATEGORIES_VALUE,
@@ -164,6 +165,14 @@ interface UseKycServicesReturn {
 	getServiceByCode: (_code: string) => VerificationService | undefined;
 	/** Get multiple services by their codes */
 	getServicesByCodes: (_codes: string[]) => VerificationService[];
+	/** Get a service by its slug (kebab-cased name) */
+	getServiceBySlug: (_slug: string) => VerificationService | undefined;
+	/** Get multiple services by their slugs */
+	getServicesBySlugs: (_slugs: string[]) => VerificationService[];
+	/** Get slug for a service code */
+	getSlugByCode: (_code: string) => string | undefined;
+	/** Get service codes from slugs */
+	getCodesBySlugs: (_slugs: string[]) => string[];
 }
 
 /**
@@ -318,6 +327,49 @@ export const useKycServices = (): UseKycServicesReturn => {
 		[services]
 	);
 
+	/**
+	 * Get a single service by its slug (kebab-cased name).
+	 */
+	const getServiceBySlug = useCallback(
+		(slug: string): VerificationService | undefined => {
+			return services.find((s) => toKebabCase(s.name) === slug);
+		},
+		[services]
+	);
+
+	/**
+	 * Get multiple services by their slugs.
+	 */
+	const getServicesBySlugs = useCallback(
+		(slugs: string[]): VerificationService[] => {
+			return services.filter((s) => slugs.includes(toKebabCase(s.name)));
+		},
+		[services]
+	);
+
+	/**
+	 * Get slug for a service code.
+	 */
+	const getSlugByCode = useCallback(
+		(code: string): string | undefined => {
+			const service = services.find((s) => s.serviceCode === code);
+			return service ? toKebabCase(service.name) : undefined;
+		},
+		[services]
+	);
+
+	/**
+	 * Get service codes from slugs.
+	 */
+	const getCodesBySlugs = useCallback(
+		(slugs: string[]): string[] => {
+			return services
+				.filter((s) => slugs.includes(toKebabCase(s.name)))
+				.map((s) => s.serviceCode);
+		},
+		[services]
+	);
+
 	return {
 		services,
 		filteredServices,
@@ -331,5 +383,9 @@ export const useKycServices = (): UseKycServicesReturn => {
 		refetch: loadServices,
 		getServiceByCode,
 		getServicesByCodes,
+		getServiceBySlug,
+		getServicesBySlugs,
+		getSlugByCode,
+		getCodesBySlugs,
 	};
 };

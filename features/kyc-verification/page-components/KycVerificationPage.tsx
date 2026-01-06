@@ -7,6 +7,7 @@ import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
+import { toKebabCase } from "utils";
 import {
 	AddUserButton,
 	AddUserModal,
@@ -87,7 +88,7 @@ export const KycVerificationPage = ({
 			name: service.serviceCode,
 			url: isMultiModeEnabled
 				? undefined
-				: `${basePath}/${service.serviceCode}`,
+				: `${basePath}/${toKebabCase(service.name)}`,
 			onClick: isMultiModeEnabled ? undefined : undefined,
 			selected: isSelected(service.serviceCode),
 			onSelect: () => toggleService(service.serviceCode),
@@ -116,8 +117,11 @@ export const KycVerificationPage = ({
 
 	// Handle continue button click
 	const handleContinue = () => {
-		// Navigate to catch-all route with selected service codes
-		const routePath = `${basePath}/${selectedServices.join("/")}`;
+		// Navigate to catch-all route with selected service slugs (kebab-cased names)
+		const selectedSlugs = selectedServiceObjects.map((s) =>
+			toKebabCase(s.name)
+		);
+		const routePath = `${basePath}/${selectedSlugs.join("/")}`;
 		router.push(routePath);
 	};
 

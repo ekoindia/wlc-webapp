@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
+import { toKebabCase } from "utils";
 import { SelectedServicesPill } from "../components";
 import { useKycServices, useServiceSelection } from "../hooks";
 import type {
@@ -254,14 +255,20 @@ export const ServiceFormPage = ({
 				return;
 			}
 
-			if (newCodes.length === 1) {
+			// Get remaining services to convert codes to slugs for URL
+			const remainingServices = selectedServiceObjects.filter(
+				(s) => s.serviceCode !== serviceCode
+			);
+			const newSlugs = remainingServices.map((s) => toKebabCase(s.name));
+
+			if (newSlugs.length === 1) {
 				// Only one service left, update URL to single service route
-				router.replace(`${basePath}/${newCodes[0]}`, undefined, {
+				router.replace(`${basePath}/${newSlugs[0]}`, undefined, {
 					shallow: true,
 				});
 			} else {
 				// Multiple services, update URL to reflect remaining services
-				router.replace(`${basePath}/${newCodes.join("/")}`, undefined, {
+				router.replace(`${basePath}/${newSlugs.join("/")}`, undefined, {
 					shallow: true,
 				});
 			}
@@ -274,11 +281,12 @@ export const ServiceFormPage = ({
 				(s) => s.serviceCode === serviceCode
 			);
 			if (removedService) {
-				const remainingServices = selectedServiceObjects.filter(
-					(s) => s.serviceCode !== serviceCode
-				);
+				const remainingServicesForFields =
+					selectedServiceObjects.filter(
+						(s) => s.serviceCode !== serviceCode
+					);
 				const remainingParamNames = new Set<string>();
-				remainingServices.forEach((service) => {
+				remainingServicesForFields.forEach((service) => {
 					service.requestParams.forEach((param) => {
 						if (param.name !== "eko_tid") {
 							remainingParamNames.add(param.name);
