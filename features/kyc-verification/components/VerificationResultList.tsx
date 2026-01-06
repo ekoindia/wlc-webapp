@@ -133,6 +133,9 @@ export const VerificationResultList = ({
 		return options;
 	}, [statusCounts]);
 
+	// Check if there are multiple distinct statuses (filter is only useful when > 1 status exists)
+	const hasMultipleStatuses = statusOptions.length > 2; // "All Status" + at least 2 actual statuses
+
 	// Filter results based on current filters, maintain original order (first at top)
 	const filteredResults = useMemo(() => {
 		let filtered = [...results];
@@ -193,25 +196,31 @@ export const VerificationResultList = ({
 							}
 							placeholder="Search services..."
 						/>
-						<Select
-							options={statusOptions}
-							value={statusOptions.find(
-								(opt) => opt.value === (filters.status || "all")
-							)}
-							onChange={(
-								option: (typeof statusOptions)[number] | null
-							) =>
-								setFilters((prev) => ({
-									...prev,
-									status: (option?.value ||
-										"all") as VerificationFilterOptions["status"],
-								}))
-							}
-							placeholder="All Status"
-							size="md"
-							w="180px"
-							required
-						/>
+						{/* Status filter - only show when multiple statuses exist */}
+						{hasMultipleStatuses && (
+							<Select
+								options={statusOptions}
+								value={statusOptions.find(
+									(opt) =>
+										opt.value === (filters.status || "all")
+								)}
+								onChange={(
+									option:
+										| (typeof statusOptions)[number]
+										| null
+								) =>
+									setFilters((prev) => ({
+										...prev,
+										status: (option?.value ||
+											"all") as VerificationFilterOptions["status"],
+									}))
+								}
+								placeholder="All Status"
+								size="md"
+								w="180px"
+								required
+							/>
+						)}
 					</Flex>
 				)}
 
