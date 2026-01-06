@@ -169,17 +169,25 @@ const InfoTile = ({
 		// Show status tag during throttle/cooldown period
 		if (isThrottled) {
 			return (
-				<Badge variant={isEnabled ? "primary" : "muted"}>
-					{isEnabled ? "Enabled ✓" : "Disabled"}
-				</Badge>
+				<Flex
+					align="center"
+					justify="flex-end"
+					flexShrink={0}
+					minW="80px"
+				>
+					<Badge variant={isEnabled ? "primary" : "muted"}>
+						{isEnabled ? "Enabled ✓" : "Disabled"}
+					</Badge>
+				</Flex>
 			);
 		}
 
 		return (
 			<Flex
 				align="center"
-				justify="center"
+				justify="flex-end"
 				flexShrink={0}
+				minW="80px"
 				onClick={handleToggleClick}
 				cursor={isToggling ? "wait" : "pointer"}
 			>
@@ -204,6 +212,7 @@ const InfoTile = ({
 			key={label}
 			w="100%"
 			h="100%"
+			minH={toggleMode ? "88px" : undefined}
 			bg={selected ? `hsl(${h},80%,96%)` : "white"}
 			p="4"
 			borderRadius="8"
