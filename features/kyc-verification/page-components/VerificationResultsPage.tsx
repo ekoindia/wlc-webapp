@@ -448,10 +448,6 @@ export const VerificationResultsPage = ({
 																md: "200px",
 															},
 														},
-														icon: "home",
-														iconStyle: {
-															size: "xs",
-														},
 													},
 												]
 											: [
