@@ -219,6 +219,7 @@ const MostUsedServices = ({
 			border="basic"
 			gap="4"
 			w="100%"
+			h="100%"
 		>
 			<DragHandle isDraggable={isDraggable}>
 				<Flex

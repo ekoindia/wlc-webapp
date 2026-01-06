@@ -225,6 +225,7 @@ const TopMerchants = ({
 			direction="column"
 			p="20px"
 			w="100%"
+			h="100%"
 			bg="white"
 			borderRadius="10"
 			border="basic"

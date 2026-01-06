@@ -261,6 +261,7 @@ const EarningOverview = ({
 			border="basic"
 			gap="4"
 			w="100%"
+			h="100%"
 		>
 			<Flex direction="column" gap={{ base: "2", md: "0" }} w="100%">
 				{/* Desktop: All in one row */}

@@ -135,7 +135,7 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 			borderRadius="10px"
 			p="5"
 			w="100%"
-			// h={{ base: "auto", xl: "280px" }}
+			h="100%"
 			overflowY="auto"
 			className="customScrollbars"
 			gap="4"

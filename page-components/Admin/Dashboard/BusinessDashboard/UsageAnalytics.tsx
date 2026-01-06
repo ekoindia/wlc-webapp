@@ -331,6 +331,7 @@ const UsageAnalytics = ({
 			border="basic"
 			gap="5"
 			w="100%"
+			h="100%"
 		>
 			<Flex justify="space-between" align="center" wrap="wrap" gap="4">
 				<DragHandle isDraggable={isDraggable}>

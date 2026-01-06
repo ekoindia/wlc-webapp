@@ -122,7 +122,7 @@ const DraggableGrid = ({
 				h="100%"
 			>
 				{/* Widget Content - clone child to inject isDraggable prop */}
-				<Box flex="1" overflow="auto">
+				<Box h="100%" overflow="auto" className="customScrollbars">
 					{isValidElement(child)
 						? cloneElement(child, {
 								isDraggable,
