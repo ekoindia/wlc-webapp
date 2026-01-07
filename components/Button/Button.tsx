@@ -122,7 +122,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			...rest
 		},
 		ref
-	): JSX.Element => {
+	): React.ReactNode => {
 		const IconComp = icon ? (
 			<Icon name={icon} size={size} {...iconStyle} />
 		) : null;

@@ -61,7 +61,7 @@ interface DocPaneProps {
 /**
  * A DocPane component that displays document previews when documents are available
  * @param {DocPaneProps} props - Properties passed to the component
- * @returns {JSX.Element | null} The rendered component or null if no documents are present
+ * @returns {React.ReactNode | null} The rendered component or null if no documents are present
  * @example
  * ```tsx
  * <DocPane documentData={agentDocuments} />

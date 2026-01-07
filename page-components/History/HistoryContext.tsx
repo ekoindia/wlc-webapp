@@ -42,7 +42,7 @@ interface HistoryProviderProps {
  * @param {Function} [props.onClearFilter] - External callback when filter is cleared
  * @param {Array} [props.historyParameterMetadata] - Metadata to compute table columns
  * @param {Array} [props.data] - Data to be displayed in the table
- * @returns {JSX.Element} The provider component
+ * @returns {React.ReactNode} The provider component
  */
 export const HistoryProvider: FC<HistoryProviderProps> = ({
 	children,

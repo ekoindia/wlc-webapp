@@ -5,7 +5,9 @@ interface GridEmptyProps {
 	onAddProduct: () => void;
 }
 
-export const GridEmpty = ({ onAddProduct }: GridEmptyProps): JSX.Element => {
+export const GridEmpty = ({
+	onAddProduct,
+}: GridEmptyProps): React.ReactNode => {
 	const bgColor = useColorModeValue("gray.50", "gray.800");
 	const textColor = useColorModeValue("gray.600", "gray.400");
 

@@ -62,7 +62,7 @@ const BasicInfoSection = ({
 	data,
 }: {
 	data: GstinResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Basic Information">
 		<Flex direction="column" gap={1}>
 			<Flex>
@@ -112,7 +112,7 @@ const BusinessDetailsSection = ({
 	data,
 }: {
 	data: GstinResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Business Details">
 		<Flex direction="column" gap={1}>
 			{data.constitution_of_business && (
@@ -160,7 +160,11 @@ const BusinessDetailsSection = ({
 );
 
 // Component for dates information
-const DatesSection = ({ data }: { data: GstinResponseData }): JSX.Element => (
+const DatesSection = ({
+	data,
+}: {
+	data: GstinResponseData;
+}): React.ReactNode => (
 	<ResponseSection heading="Dates">
 		<Flex direction="column" gap={1}>
 			{data.date_of_registration && (
@@ -196,7 +200,7 @@ const SplitAddressDisplay = ({
 	address,
 }: {
 	address: SplitAddress;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Box pl={3} mt={2}>
 		<Flex direction="column" gap={1}>
 			{address.building_name && (
@@ -256,7 +260,7 @@ const PrincipalAddressSection = ({
 	data,
 }: {
 	data: GstinResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Principal Address">
 		{data.principal_place_address && (
 			<Text mb={2}>{data.principal_place_address}</Text>
@@ -273,7 +277,7 @@ const AdditionalAddressesSection = ({
 	data,
 }: {
 	data: GstinResponseData;
-}): JSX.Element | null => {
+}): React.ReactNode | null => {
 	if (!data.additional_address_array?.length) return null;
 
 	return (
@@ -306,7 +310,7 @@ const GstinResultCard = ({
 	data: GstinResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			GSTIN Verification Result
@@ -326,7 +330,7 @@ const GstinResultCard = ({
 	</Card>
 );
 
-export const GstinVerifyForm = (): JSX.Element => {
+export const GstinVerifyForm = (): React.ReactNode => {
 	const [gstinResponse, setGstinResponse] =
 		useState<GstinResponseData | null>(null);
 	const [collapsed, setCollapsed] = useState(false);

@@ -30,7 +30,7 @@ const ExternalSelectionScreen = dynamic(
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
  * @param props.refreshAgentProfile
- * @returns {JSX.Element} The rendered RoleSelection component
+ * @returns {React.ReactNode} The rendered RoleSelection component
  */
 const RoleSelection = ({
 	setStep,

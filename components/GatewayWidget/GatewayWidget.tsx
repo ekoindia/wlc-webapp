@@ -83,7 +83,7 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
  * @param {string|number} props.start_id - The starting transaction-type-id
  * @param {Array} props.paths - The paths to the transaction
  * @param {string} props.token - The SSO token for the user to login automatically in the gateway
- * @returns {JSX.Element}
+ * @returns {React.ReactNode}
  */
 const TransactionWidget = ({ start_id, paths, token }) => {
 	const { /* accessToken, userData, */ isLoggedIn, updateUserInfo, login } =

@@ -27,7 +27,7 @@ const PersonalInfoSection = ({
 	data,
 }: {
 	data: PanAdvancedResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Personal Information">
 		<Grid templateColumns="200px 1fr" gap={1}>
 			<GridItem>
@@ -94,7 +94,7 @@ const ContactInfoSection = ({
 	data,
 }: {
 	data: PanAdvancedResponseData;
-}): JSX.Element => {
+}): React.ReactNode => {
 	// Only show this section if we have at least one contact field
 	const hasContactInfo = !!(data.email || data.mobile_number || data.address);
 
@@ -202,7 +202,7 @@ const KycStatusSection = ({
 	data,
 }: {
 	data: PanAdvancedResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="KYC Status">
 		<Grid templateColumns="200px 1fr" gap={1}>
 			{data.masked_aadhaar_number && (
@@ -240,7 +240,7 @@ const PanAdvancedResultCard = ({
 	data: PanAdvancedResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			PAN Advanced Verification Result
@@ -280,7 +280,7 @@ const formatDateForApi = (dateString: string): string => {
 	return dateString;
 };
 
-export const PanAdvancedForm = (): JSX.Element => {
+export const PanAdvancedForm = (): React.ReactNode => {
 	const [panResponse, setPanResponse] =
 		useState<PanAdvancedResponseData | null>(null);
 	const [collapsed, setCollapsed] = useState(false);

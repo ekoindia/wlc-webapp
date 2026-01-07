@@ -12,7 +12,7 @@ export const InventoryCard = ({
 	product,
 	onEdit,
 	onDelete,
-}: InventoryCardProps): JSX.Element => {
+}: InventoryCardProps): React.ReactNode => {
 	const imageBg = "gray.100"; // useColorModeValue("gray.100", "gray.700");
 	const priceColor = "blue.600"; // useColorModeValue("blue.600", "blue.300");
 	const cardBg = "white"; // useColorModeValue("white", "gray.800");

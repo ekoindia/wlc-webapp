@@ -7,13 +7,13 @@ const BBPS_LOGO_URL =
 /**
  * BBPS Logo component for displaying the Bharat Bill Payment System logo
  * Uses a CDN placeholder that can be replaced with the actual logo URL
- * @returns {JSX.Element} BBPS logo image component
+ * @returns {React.ReactNode} BBPS logo image component
  * @example
  * ```tsx
  * <BbpsLogo />
  * ```
  */
-export const BbpsLogo = (): JSX.Element => {
+export const BbpsLogo = (): React.ReactNode => {
 	const height = useBreakpointValue({ base: 32, md: 48 });
 
 	return (

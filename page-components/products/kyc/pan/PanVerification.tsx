@@ -29,6 +29,6 @@ const PanSubProducts: {
 	// },
 ];
 
-export const PanVerification = (): JSX.Element => {
+export const PanVerification = (): React.ReactNode => {
 	return <InfoTileGrid list={PanSubProducts} />;
 };

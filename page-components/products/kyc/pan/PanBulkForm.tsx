@@ -42,7 +42,7 @@ const BulkSubmitResultCard = ({
 	onCheckStatus: () => void;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			Bulk PAN Verification Submitted
@@ -97,7 +97,7 @@ const BulkStatusResultCard = ({
 	data: BulkPanStatusResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			Bulk PAN Verification Results
@@ -159,7 +159,7 @@ const BulkStatusResultCard = ({
 	</Card>
 );
 
-export const PanBulkForm = (): JSX.Element => {
+export const PanBulkForm = (): React.ReactNode => {
 	const [bulkResponse, setBulkResponse] =
 		useState<BulkPanResponseData | null>(null);
 	const [statusResponse, setStatusResponse] =

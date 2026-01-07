@@ -45,7 +45,7 @@ const DiagnosticTile = ({
 }: {
 	label: string;
 	desc: string;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Flex
 		direction="row"
 		gap="2"
@@ -106,9 +106,9 @@ const calculateStorageUsed = (storage: Storage): number => {
 /**
  * Troubleshoot tab displaying comprehensive device and browser diagnostics
  * @param {TroubleshootTabProps} props - Component props
- * @returns {JSX.Element} TroubleshootTab component
+ * @returns {React.ReactNode} TroubleshootTab component
  */
-const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
+const TroubleshootTab = ({ onBack }: TroubleshootTabProps): React.ReactNode => {
 	const { platform } = usePlatform();
 	const { orgDetail } = useOrgDetailContext();
 

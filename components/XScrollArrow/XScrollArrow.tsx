@@ -39,14 +39,14 @@ const posMapping: Record<
  *   </Flex>
  * </XScrollArrow>
  * ```
- * @returns {JSX.Element} The XScrollArrow component.
+ * @returns {React.ReactNode} The XScrollArrow component.
  */
 const XScrollArrow = ({
 	children,
 	pos = "top",
 	allowScrollbar = false,
 	...rest
-}: XScrollArrowProps): JSX.Element => {
+}: XScrollArrowProps): React.ReactNode => {
 	const scrollBoxRef = useRef<HTMLDivElement>(null);
 
 	const [scrollButtonVisibility, setScrollButtonVisibility] = useState<{

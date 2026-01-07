@@ -20,13 +20,13 @@ export type AccordionItemProps = {
  * @param {number} props.id - The unique identifier for the accordion item.
  * @param {React.ReactNode | function({isExpanded: boolean, handleOpenIndexes: Function}): React.ReactNode} props.children - The content of the accordion item. This can either be a React node or a function that takes an object containing `isExpanded` and `handleOpenIndexes` and returns a React node.
  * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
- * @returns {JSX.Element} The rendered accordion item component.
+ * @returns {React.ReactNode} The rendered accordion item component.
  */
 const AccordionItem = ({
 	id,
 	children,
 	...rest
-}: AccordionItemProps): JSX.Element => {
+}: AccordionItemProps): React.ReactNode => {
 	const { openIndex, handleOpenIndexes } = useAccordion();
 	const isExpanded = openIndex.includes(id);
 

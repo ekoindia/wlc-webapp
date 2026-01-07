@@ -52,11 +52,11 @@ interface PricingConfigProviderProps {
  * PricingConfigProvider Component
  * Provides pricing configuration data to its children.
  * @param {PricingConfigProviderProps} props - Props for the component.
- * @returns {JSX.Element} - Rendered provider component.
+ * @returns {React.ReactNode} - Rendered provider component.
  */
 const PricingConfigProvider = ({
 	children,
-}: PricingConfigProviderProps): JSX.Element => {
+}: PricingConfigProviderProps): React.ReactNode => {
 	const { networkUsersList, refreshUserList, fetchedAt, loading } =
 		useNetworkUsers();
 	const [pricingTree, setPricingTree] = useState<ProductNode[]>([]);

@@ -24,7 +24,7 @@ const AppPreview = ({
 	primaryDark,
 	accent,
 	navStyle,
-}: AppPreviewProps): JSX.Element => {
+}: AppPreviewProps): React.ReactNode => {
 	return (
 		<Flex
 			direction="column"
@@ -155,7 +155,7 @@ const MenuItem = ({
 	primaryDark,
 	accent,
 	selected = false,
-}: MenuItemProps): JSX.Element => {
+}: MenuItemProps): React.ReactNode => {
 	return (
 		<Flex
 			direction="row"

@@ -109,7 +109,7 @@ const BasicInfoSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Basic Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -187,7 +187,7 @@ const VehicleDetailsSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Vehicle Details">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -279,7 +279,7 @@ const OwnerSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Owner Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -323,7 +323,7 @@ const RegistrationSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Registration Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -367,7 +367,7 @@ const InsuranceSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Insurance & Tax Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -411,7 +411,7 @@ const PollutionSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Pollution Certificate">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -439,7 +439,7 @@ const FinanceSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Finance & Permits">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -503,7 +503,7 @@ const TechnicalSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Technical Specifications">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
@@ -563,7 +563,7 @@ const AddressSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Address Information">
 		<ResponseSection heading="Present Address">
 			<Text mb={2}>{data.present_address}</Text>
@@ -709,7 +709,7 @@ const BlacklistSection = ({
 	data,
 }: {
 	data: VehicleRcResponseData;
-}): JSX.Element | null => {
+}): React.ReactNode | null => {
 	if (data.blacklist_status.toLowerCase() !== "yes") return null;
 
 	return (
@@ -728,7 +728,7 @@ const VehicleRcResultCard = ({
 	data: VehicleRcResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			Vehicle RC Details
@@ -753,7 +753,7 @@ const VehicleRcResultCard = ({
 	</Card>
 );
 
-export const VehicleRcForm = (): JSX.Element => {
+export const VehicleRcForm = (): React.ReactNode => {
 	const [vehicleRcResponse, setVehicleRcResponse] =
 		useState<VehicleRcResponseData | null>(null);
 	const [collapsed, setCollapsed] = useState(false);

@@ -1,7 +1,7 @@
 import { BreadcrumbWrapper, PaddingBox, PageTitle } from "components";
 import { DrivingLicenseForm } from "page-components/products/kyc/driving-license/DrivingLicenseForm";
 
-const DrivingLicensePage = (): JSX.Element => {
+const DrivingLicensePage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

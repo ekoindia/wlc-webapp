@@ -22,9 +22,9 @@ type ViewType = "about" | "troubleshoot";
 /**
  * About component displaying app information with navigation to troubleshooting diagnostics
  * @param {AboutProps} _props - Component props (onClose is for DynamicPopupModuleLoader integration)
- * @returns {JSX.Element} About component
+ * @returns {React.ReactNode} About component
  */
-const About = ({ onClose }: AboutProps): JSX.Element => {
+const About = ({ onClose }: AboutProps): React.ReactNode => {
 	const [currentView, setCurrentView] = useState<ViewType>("about");
 
 	const handleNavigate = (view: ViewType): void => {

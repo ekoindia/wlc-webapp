@@ -41,7 +41,7 @@ interface OnboardingWidgetProps {
  * @param props.orgName
  * @param props.userData
  * @param props.updateUserInfo
- * @returns {JSX.Element} - The rendered OnboardingWidget component
+ * @returns {React.ReactNode} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
 const OnboardingWidget = ({
@@ -53,7 +53,7 @@ const OnboardingWidget = ({
 	assistedAgentDetails,
 	allowedMerchantTypes,
 	refreshAgentProfile,
-}: OnboardingWidgetProps): JSX.Element => {
+}: OnboardingWidgetProps): React.ReactNode => {
 	const [selectedRole, setSelectedRole] = useState<string>("");
 	const [isInitializing, setIsInitializing] = useState<boolean>(true);
 

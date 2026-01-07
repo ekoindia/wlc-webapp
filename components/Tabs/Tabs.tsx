@@ -39,7 +39,7 @@ const Tabs = ({
 	variant = "default",
 	defaultIndex = 0,
 	...rest
-}: TabProps): JSX.Element => {
+}: TabProps): React.ReactNode => {
 	const arrayChildren = Children.toArray(children);
 
 	const [_defaultIndex, setDefaultIndex] = useState(defaultIndex);

@@ -10,7 +10,7 @@ interface InventoryViewCardProps {
 export const InventoryViewCard = ({
 	product,
 	onPurchase,
-}: InventoryViewCardProps): JSX.Element => {
+}: InventoryViewCardProps): React.ReactNode => {
 	const imageBg = "gray.100";
 	const priceColor = "blue.600";
 	const cardBg = "white";

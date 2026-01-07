@@ -16,7 +16,7 @@ export interface AgentStatusCheckProps {
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
  * @param {(agentDetails: any) => void} props.onAgentDetailsFetched - Callback to update parent state with agent details
  * @param {(mobile: string) => Promise<any>} props.fetchAgentDetails - Function to fetch agent details from API
- * @returns {JSX.Element} The rendered AgentStatusCheck component
+ * @returns {React.ReactNode} The rendered AgentStatusCheck component
  * @example
  * ```tsx
  * <AgentStatusCheck
@@ -32,7 +32,7 @@ const AgentStatusCheck = ({
 	setStep,
 	onAgentDetailsFetched,
 	fetchAgentDetails,
-}: AgentStatusCheckProps): JSX.Element => {
+}: AgentStatusCheckProps): React.ReactNode => {
 	const [hasError, setHasError] = useState(false);
 
 	/**

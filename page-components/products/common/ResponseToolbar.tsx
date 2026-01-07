@@ -46,7 +46,7 @@ const ResponseToolbar = <T extends Record<string, any>>({
 	data,
 	resetButtonText = "Verify Another",
 	children,
-}: ResponseToolbarProps<T>): JSX.Element => {
+}: ResponseToolbarProps<T>): React.ReactNode => {
 	const toast = useToast();
 
 	/**

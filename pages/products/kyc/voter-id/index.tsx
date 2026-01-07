@@ -2,7 +2,7 @@
 import { BreadcrumbWrapper, PaddingBox } from "components";
 import { VoterIdForm } from "page-components/products/kyc/voter-id/VoterIdForm";
 
-const VoterIdVerifyPage = (): JSX.Element => {
+const VoterIdVerifyPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

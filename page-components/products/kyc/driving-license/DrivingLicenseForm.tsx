@@ -28,7 +28,7 @@ const PersonalInfoSection = ({
 	data,
 }: {
 	data: DrivingLicenseResponseData;
-}): JSX.Element => {
+}): React.ReactNode => {
 	const details = data.details_of_driving_licence;
 
 	return (
@@ -86,7 +86,7 @@ const LicenseDetailsSection = ({
 	data,
 }: {
 	data: DrivingLicenseResponseData;
-}): JSX.Element => {
+}): React.ReactNode => {
 	const details = data.details_of_driving_licence;
 
 	return (
@@ -142,7 +142,7 @@ const ValiditySection = ({
 	data,
 }: {
 	data: DrivingLicenseResponseData;
-}): JSX.Element => {
+}): React.ReactNode => {
 	const validity = data.dl_validity;
 
 	return (
@@ -195,7 +195,7 @@ const AddressSection = ({
 	data,
 }: {
 	data: DrivingLicenseResponseData;
-}): JSX.Element => {
+}): React.ReactNode => {
 	const addresses = data.details_of_driving_licence.address_list;
 
 	if (!addresses || addresses.length === 0) {
@@ -345,7 +345,7 @@ const VehicleClassSection = ({
 	data,
 }: {
 	data: DrivingLicenseResponseData;
-}): JSX.Element => {
+}): React.ReactNode => {
 	const covDetails = data.details_of_driving_licence.cov_details;
 	const badges = data.badge_details;
 
@@ -427,7 +427,7 @@ const DrivingLicenseResultCard = ({
 	data: DrivingLicenseResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			Driving License Verification Result
@@ -475,7 +475,7 @@ const formatDateForApi = (dateString: string): string => {
 /**
  * Main component for Driving License verification form
  */
-export const DrivingLicenseForm = (): JSX.Element => {
+export const DrivingLicenseForm = (): React.ReactNode => {
 	const [dlResponse, setDlResponse] =
 		useState<DrivingLicenseResponseData | null>(null);
 	const [collapsed, setCollapsed] = useState(false);

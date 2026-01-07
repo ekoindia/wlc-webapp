@@ -4,7 +4,7 @@ import { PassportForm } from "page-components/products/kyc/passport/PassportForm
 /**
  * Page for verifying Indian passport details
  */
-const PassportVerifyPage = (): JSX.Element => {
+const PassportVerifyPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

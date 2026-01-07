@@ -39,7 +39,7 @@ interface BreadcrumbWrapperProps {
  * @param {boolean} [props.useDynamic] - Enables dynamic breadcrumb generation via URL segments.
  * @param {LabelOverrides} [props.labelOverrides] - Optional overrides for specific URL segments (used with `useDynamic`).
  * @param {string[]} [props.omitPaths] - List of full paths to omit from the generated breadcrumbs.
- * @returns {JSX.Element} A wrapper component that renders a breadcrumb navigation bar and its children.
+ * @returns {React.ReactNode} A wrapper component that renders a breadcrumb navigation bar and its children.
  * @example
  * // Static breadcrumbs
  * <BreadcrumbWrapper
@@ -81,7 +81,7 @@ const BreadcrumbWrapper = ({
 	useDynamic = false,
 	labelOverrides = {},
 	omitPaths = [],
-}: BreadcrumbWrapperProps): JSX.Element => {
+}: BreadcrumbWrapperProps): React.ReactNode => {
 	const { asPath, pathname } = useRouter();
 
 	// Memoize the resolved breadcrumbs to avoid unnecessary recalculations

@@ -26,7 +26,7 @@ type StatusCardProps = {
 const StatusCard = ({
 	onLoadBalanceClick,
 	...rest
-}: StatusCardProps): JSX.Element => {
+}: StatusCardProps): React.ReactNode => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const [isRefreshing, setIsRefreshing] = useState(false);

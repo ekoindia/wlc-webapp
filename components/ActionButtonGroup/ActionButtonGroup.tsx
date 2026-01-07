@@ -31,7 +31,7 @@ interface ActionButtonGroupProps {
  * @param {object} props - Properties passed to the component
  * @param {ButtonConfig[]} props.buttonConfigList - List of objects containing configuration of buttons. Each object will consist of various properties like onClick, loading, disabled, variant, icon, type, etc.
  * @param {...*} rest - Rest of the props to be passed to the Flex container.
- * @returns {JSX.Element} A group of buttons rendered based on the provided configuration.
+ * @returns {React.ReactNode} A group of buttons rendered based on the provided configuration.
  * @example
  * const buttonConfigs = [
  *   {
@@ -55,7 +55,7 @@ interface ActionButtonGroupProps {
 const ActionButtonGroup = ({
 	buttonConfigList,
 	...rest
-}: ActionButtonGroupProps): JSX.Element => {
+}: ActionButtonGroupProps): React.ReactNode => {
 	const { isMac } = usePlatform();
 
 	if (!buttonConfigList?.length) return null;

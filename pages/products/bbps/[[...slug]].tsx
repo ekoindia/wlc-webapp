@@ -55,7 +55,7 @@ const parseRouteParams = (slug?: string[]): RouteParams => {
 
 /**
  * Entry point for the Bbps page.
- * @returns {JSX.Element} Bbps page
+ * @returns {React.ReactNode} Bbps page
  */
 export default function BbpsPage() {
 	const router = useRouter();

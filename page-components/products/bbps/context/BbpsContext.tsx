@@ -22,7 +22,7 @@ export const BbpsContext = createContext<{
  * @param {string} [props.initialProductId] - Initial product ID to select
  * @param {Step} props.initialStep - Initial step to display
  * @param {React.ReactNode} props.children - Child components
- * @returns {JSX.Element} Provider component
+ * @returns {React.ReactNode} Provider component
  */
 export const BbpsProvider: React.FC<{
 	initialProductId?: string;

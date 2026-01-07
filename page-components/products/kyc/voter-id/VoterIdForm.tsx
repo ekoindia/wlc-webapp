@@ -26,7 +26,7 @@ const PersonalInfoSection = ({
 	data,
 }: {
 	data: VoterIdResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Personal Information">
 		<Grid templateColumns="200px 1fr" gap={1}>
 			<GridItem>
@@ -109,7 +109,7 @@ const AddressSection = ({
 	data,
 }: {
 	data: VoterIdResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Address Information">
 		<Grid templateColumns="200px 1fr" gap={1}>
 			<GridItem>
@@ -213,7 +213,7 @@ const ElectoralSection = ({
 	data,
 }: {
 	data: VoterIdResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Electoral Information">
 		<Grid templateColumns="200px 1fr" gap={1}>
 			<GridItem>
@@ -297,7 +297,7 @@ const VoterIdResultCard = ({
 	data: VoterIdResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			Voter ID Verification Result
@@ -315,7 +315,7 @@ const VoterIdResultCard = ({
 	</Card>
 );
 
-export const VoterIdForm = (): JSX.Element => {
+export const VoterIdForm = (): React.ReactNode => {
 	const [voterIdResponse, setVoterIdResponse] =
 		useState<VoterIdResponseData | null>(null);
 	const [collapsed, setCollapsed] = useState(false);

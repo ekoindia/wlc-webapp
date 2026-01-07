@@ -18,7 +18,7 @@ import { useState } from "react";
 
 const PRODUCTS_PER_PAGE = 12;
 
-export const InventoryViewPage = (): JSX.Element => {
+export const InventoryViewPage = (): React.ReactNode => {
 	const [pagination, setPagination] = useState<ExtendedPaginationInput>({
 		page: 1,
 		limit: PRODUCTS_PER_PAGE,

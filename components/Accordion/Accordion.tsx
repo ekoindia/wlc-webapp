@@ -19,7 +19,7 @@ type AccordionProps = {
  * @param {boolean} [props.allowMultiple] - If true, multiple accordion items can be expanded at once.
  * @param {ReactElement<AccordionItemProps>} props.children - The accordion items.
  * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
- * @returns {JSX.Element} The Accordion component.
+ * @returns {React.ReactNode} The Accordion component.
  */
 const Accordion = ({
 	className = "accordion",
@@ -28,7 +28,7 @@ const Accordion = ({
 	// onChange,
 	children,
 	...rest
-}: AccordionProps): JSX.Element => {
+}: AccordionProps): React.ReactNode => {
 	return (
 		<AccordionProvider
 			allowToggle={allowToggle}

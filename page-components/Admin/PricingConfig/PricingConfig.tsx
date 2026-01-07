@@ -54,9 +54,9 @@ interface CardProps {
  * PricingConfig Component
  * Displays a hierarchical configuration interface for pricing and commissions.
  * @param {PricingConfigProps} props - Props for the component.
- * @returns {JSX.Element} - Rendered PricingConfig component.
+ * @returns {React.ReactNode} - Rendered PricingConfig component.
  */
-const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
+const PricingConfig = ({ pathArray }: PricingConfigProps): React.ReactNode => {
 	const [currentPricingTreeNode, setCurrentPricingTreeNode] = useState<
 		ProductNode[] | null
 	>(null);
@@ -126,7 +126,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	const toolComponent = pathArray?.length > 0 ? null : <DownloadPricing />;
 
 	// Render the appropriate UI based on the current pricing node
-	const renderContent = (): JSX.Element | null => {
+	const renderContent = (): React.ReactNode | null => {
 		if (pathArray == undefined) {
 			return (
 				<ConfigPageCard
@@ -187,7 +187,7 @@ export default PricingConfig;
  * @param {ConfigPageCardProps} props - Props for the component.
  * @param {ConfigCategory[]} props.configCategories - Array of configuration categories.
  * @param {boolean} props.isLoading - Flag to indicate if the data is loading.
- * @returns {JSX.Element} - Rendered ConfigPageCard component.
+ * @returns {React.ReactNode} - Rendered ConfigPageCard component.
  */
 const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
 	configCategories,
@@ -262,9 +262,9 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
  * ConfigGrid Component
  * Displays a grid of configuration items.
  * @param {ConfigGridProps} props - Props for the component.
- * @returns {JSX.Element} - Rendered ConfigGrid component.
+ * @returns {React.ReactNode} - Rendered ConfigGrid component.
  */
-const ConfigGrid = ({ product_list }: ConfigGridProps): JSX.Element => {
+const ConfigGrid = ({ product_list }: ConfigGridProps): React.ReactNode => {
 	return (
 		<Grid
 			templateColumns={{
@@ -306,9 +306,9 @@ const ConfigGrid = ({ product_list }: ConfigGridProps): JSX.Element => {
  * Card Component
  * Displays a single card for a product or configuration item.
  * @param {CardProps} props - Props for the component.
- * @returns {JSX.Element} - Rendered Card component.
+ * @returns {React.ReactNode} - Rendered Card component.
  */
-const Card = ({ name, label, desc, icon }: CardProps): JSX.Element => {
+const Card = ({ name, label, desc, icon }: CardProps): React.ReactNode => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState(false);
 
@@ -377,7 +377,7 @@ const Card = ({ name, label, desc, icon }: CardProps): JSX.Element => {
  * SkeletonLoader Component
  * Renders a reusable skeleton loader for a section with a heading and multiple boxes.
  * @param {number} count - Number of skeleton rows to render.
- * @returns {JSX.Element} - Rendered SkeletonLoader component.
+ * @returns {React.ReactNode} - Rendered SkeletonLoader component.
  */
 const SkeletonLoader: React.FC<{ count: number }> = ({ count }) => {
 	return (

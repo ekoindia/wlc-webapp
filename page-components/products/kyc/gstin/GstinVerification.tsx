@@ -23,7 +23,7 @@ const GstinSubProducts: {
 	},
 ];
 
-export const GstinVerification = (): JSX.Element => {
+export const GstinVerification = (): React.ReactNode => {
 	return <InfoTileGrid list={GstinSubProducts} />;
 
 	// const router = useRouter();

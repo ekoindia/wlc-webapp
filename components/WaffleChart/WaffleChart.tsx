@@ -33,7 +33,7 @@ interface WaffleChartProps {
  * @param {string} [gap] - Gap between squares (both horizontal and vertical)
  * @param {string} [animationDuration] - Duration of entrance animation for each square
  * @param {string} [animationDelay] - Base delay multiplied by diagonal position (row + col) for staggered effect
- * @returns {JSX.Element} WaffleChart component
+ * @returns {React.ReactNode} WaffleChart component
  * @example
  * <WaffleChart
  *   data={[
@@ -58,7 +58,7 @@ const WaffleChart = ({
 	gap = "4px",
 	animationDuration = "0.6s",
 	animationDelay = "0.02s",
-}: WaffleChartProps): JSX.Element => {
+}: WaffleChartProps): React.ReactNode => {
 	// Generate colors for each data item using useHslColor hook
 	const dataColors = useMemo(() => {
 		return data.map((item, index) => {
@@ -201,7 +201,7 @@ const WaffleChart = ({
  * @param {string} [label] - The label text (optional)
  * @param {Array} data - The data array containing values
  * @param {Array} colors - The array of colors corresponding to the data
- * @returns {JSX.Element} The custom tooltip content
+ * @returns {React.ReactNode} The custom tooltip content
  */
 const CustomTooltip = ({ label = "", data, colors }) => {
 	// Calculate tooltip content as array of { label, value, color, percentage }

@@ -13,7 +13,7 @@ interface CardProps extends FlexProps {
 /**
  * A basic card with a shadow and border
  * @param {CardProps} props - Properties passed to the component
- * @returns {JSX.Element} The rendered card component
+ * @returns {React.ReactNode} The rendered card component
  * @example `<Card>rest of the contents</Card>`
  */
 const Card = ({ className = "", children, onClick, ...rest }: CardProps) => {

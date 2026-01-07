@@ -61,7 +61,7 @@ type CameraProps = {
  * @param {string} [props.preferredFacingMode] - The preferred facing mode for the camera
  * @param {string} [props.watermark] - The watermark text to display on the captured (& edited) image
  * @param {Function} [props.onClose] - The callback function for image capture or on cancel
- * @returns {JSX.Element} - The Camera component
+ * @returns {React.ReactNode} - The Camera component
  */
 const Camera = ({
 	maxLength,
@@ -427,12 +427,12 @@ const Camera = ({
  * Rounded icon button component for the bottom toolbar
  * @param {object} props - Properties passed to the component
  * @param {IconNameType} [props.iconName] - The icon name for the button
- * @param {JSX.Element} [props.icon] - The icon to be displayed
+ * @param {React.ReactNode} [props.icon] - The icon to be displayed
  * @param {string} [props.label] - The label for the button
  * @param {boolean} [props.selected] - Whether the button is selected (toggled on)
  * @param {boolean} [props.isMain] - The main button flag
  * @param {Function} props.onClick - The callback function for the button click event
- * @returns {JSX.Element} - The JSX element
+ * @returns {React.ReactNode} - The JSX element
  */
 const IcoBtn = ({
 	iconName,

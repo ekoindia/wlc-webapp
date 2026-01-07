@@ -1,7 +1,7 @@
 import { BreadcrumbWrapper, PaddingBox } from "components";
 import { PanLiteForm } from "page-components/products/kyc/pan/PanLiteForm";
 
-const PanLitePage = (): JSX.Element => {
+const PanLitePage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

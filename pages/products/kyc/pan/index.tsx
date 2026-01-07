@@ -1,7 +1,7 @@
 import { BreadcrumbWrapper, PaddingBox, PageTitle } from "components";
 import { PanVerification } from "page-components/products/kyc/pan/PanVerification";
 
-const PanPage = (): JSX.Element => {
+const PanPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

@@ -25,7 +25,7 @@ type AccordionButtonProps = {
  * @param {object} [props.iconStyle] - The style of the icon.
  * @param {() => void} [props.handleOpenIndexes] - Callback function to handle the toggling of the accordion item's expanded state.
  * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
- * @returns {JSX.Element} The AccordionButton component.
+ * @returns {React.ReactNode} The AccordionButton component.
  */
 const AccordionButton = ({
 	children,
@@ -36,7 +36,7 @@ const AccordionButton = ({
 	iconStyle,
 	handleOpenIndexes,
 	...rest
-}: AccordionButtonProps): JSX.Element => {
+}: AccordionButtonProps): React.ReactNode => {
 	return (
 		<Flex
 			align="center"

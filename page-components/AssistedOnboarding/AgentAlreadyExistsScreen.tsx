@@ -14,12 +14,12 @@ export interface AgentAlreadyExistsScreenProps {
  * @param {AgentAlreadyExistsScreenProps} props - Component props
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
  * @param {string} props.agentMobile - The agent's mobile number
- * @returns {JSX.Element} The rendered AgentAlreadyExistsScreen component
+ * @returns {React.ReactNode} The rendered AgentAlreadyExistsScreen component
  */
 const AgentAlreadyExistsScreen = ({
 	setStep,
 	agentMobile,
-}: AgentAlreadyExistsScreenProps): JSX.Element => {
+}: AgentAlreadyExistsScreenProps): React.ReactNode => {
 	const buttonConfigList = [
 		{
 			type: "button" as const,

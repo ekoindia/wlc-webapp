@@ -23,7 +23,7 @@ import { paymentStatusMocks } from "./utils/mockData";
  * Payment component for BBPS bill payment processing
  * Handles PIN entry, payment validation, and API calls for bill payment
  * Supports both live API calls and mock data for testing
- * @returns {JSX.Element} Payment component with PIN input and payment processing
+ * @returns {React.ReactNode} Payment component with PIN input and payment processing
  * @example
  * ```tsx
  * <Payment />

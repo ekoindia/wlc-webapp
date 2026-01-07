@@ -59,7 +59,7 @@ export interface ToggleColumnsProps {
  * - Provides a reset button to restore default visibility
  * - Fully controlled component - state managed by parent
  * @param {ToggleColumnsProps} props - Component props
- * @returns {JSX.Element} The rendered component
+ * @returns {React.ReactNode} The rendered component
  * @example
  * ```tsx
  * const { hiddenColumns, toggleColumnVisibility, resetColumnVisibility } =

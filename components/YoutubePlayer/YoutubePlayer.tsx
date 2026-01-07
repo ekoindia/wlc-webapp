@@ -45,7 +45,7 @@ export const YoutubePlayer = ({
 	allowFullScreen = true,
 	aspectRatio = 16 / 9,
 	maxWidth = "100%",
-}: YoutubePlayerProps): JSX.Element => {
+}: YoutubePlayerProps): React.ReactNode => {
 	if (!videoId) {
 		return null;
 	}

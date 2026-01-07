@@ -1019,7 +1019,7 @@ const RaiseIssueCard = ({
  * @param {Function} [props.onClose] - Function to call when the close icon is clicked.
  * @param {ReactNode} props.children - Content to show inside the card.
  * @param {...*} rest - Rest of the props for the card.
- * @returns {JSX.Element} - A card container.
+ * @returns {React.ReactNode} - A card container.
  */
 const Card = ({
 	heading = "",
@@ -1122,7 +1122,7 @@ const Card = ({
  * @param {boolean} [props.disabled] - Whether the category list is disabled (default: false).
  * @param {Function} props.onSelect - Function to call when a category is selected. It receives the selected category object as an argument.
  * @param {...*} rest - Rest of the props for the outer container.
- * @returns {JSX.Element} - A list of categories to select from.
+ * @returns {React.ReactNode} - A list of categories to select from.
  */
 const CategoryList = ({
 	categoryList,
@@ -1213,7 +1213,7 @@ const CategoryList = ({
  * @param {object} props - Properties passed to the component.
  * @param {string} props.children - Label to show for the category.
  * @param {...*} rest - Rest of the props for the label.
- * @returns {JSX.Element} - A label for the category.
+ * @returns {React.ReactNode} - A label for the category.
  */
 const Label = ({ children, ...rest }) => {
 	return (
@@ -1239,7 +1239,7 @@ const Label = ({ children, ...rest }) => {
  * @param {Function} [props.onClick] - Function to call when the category is clicked.
  * @param {string} props.children - Label to show on the button.
  * @param {...*} rest - Rest of the props for the button.
- * @returns {JSX.Element} - A button to select a category.
+ * @returns {React.ReactNode} - A button to select a category.
  */
 const CategoryButton = ({
 	isSelected = false,

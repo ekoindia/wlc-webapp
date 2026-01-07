@@ -60,6 +60,6 @@ const KycTools: {
 	},
 ];
 
-export const KycVerificationTools = (): JSX.Element => {
+export const KycVerificationTools = (): React.ReactNode => {
 	return <InfoTileGrid list={KycTools} iconStyle="square" />;
 };

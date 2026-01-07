@@ -51,7 +51,7 @@ const toastDefaultOptions = {
  * @param {object} props.pageProps - The properties passed to the current page component.
  * @param {object} props.router - The Next.js router object.
  * @param {object} props.org - The organization details.
- * @returns {JSX.Element} The rendered component.
+ * @returns {React.ReactNode} The rendered component.
  */
 export default function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] Started: ", {

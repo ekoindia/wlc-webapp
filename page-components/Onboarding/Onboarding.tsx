@@ -11,7 +11,7 @@ import { useCallback } from "react";
 /**
  * An Onboarding component for self-onboarding of users.
  * Uses the OnboardingWidget with onboarding specific configuration.
- * @returns {JSX.Element} The rendered Onboarding component
+ * @returns {React.ReactNode} The rendered Onboarding component
  * @example
  * ```tsx
  * <Onboarding />

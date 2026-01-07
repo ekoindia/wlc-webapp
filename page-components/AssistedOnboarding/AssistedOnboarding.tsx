@@ -73,13 +73,13 @@ const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
 
 /**
  * AssistedOnboarding component that manages the multi-step agent onboarding flow
- * @returns {JSX.Element} The rendered AssistedOnboarding component
+ * @returns {React.ReactNode} The rendered AssistedOnboarding component
  * @example
  * ```tsx
  * <AssistedOnboarding />
  * ```
  */
-const AssistedOnboarding = (): JSX.Element => {
+const AssistedOnboarding = (): React.ReactNode => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const { accessToken } = useSession();
@@ -150,7 +150,7 @@ const AssistedOnboarding = (): JSX.Element => {
 	};
 
 	// MARK: Render Functions
-	const renderCurrentStep = (): JSX.Element => {
+	const renderCurrentStep = (): React.ReactNode => {
 		switch (step) {
 			case ASSISTED_ONBOARDING_STEPS.ADD_AGENT:
 				return (

@@ -18,7 +18,7 @@ interface NetworkToggleColumnsProps {
  * @param {Record<string, boolean>} props.hiddenColumns - Object mapping column names to hidden state
  * @param {Function} props.onToggle - Callback to toggle column visibility
  * @param {Function} props.onReset - Callback to reset column visibility
- * @returns {JSX.Element} The rendered ToggleColumns component
+ * @returns {React.ReactNode} The rendered ToggleColumns component
  */
 const NetworkToggleColumns = ({
 	columns,

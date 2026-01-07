@@ -57,7 +57,7 @@ export const CopilotSystemInstructions = `You are assisting the user with this a
  * @param {ReactNode} children - The child components to be rendered within the provider
  * @param {string} [runtimeUrl] - The runtime URL for the CopilotKit service
  * @param {boolean} [showPopup] - Whether to show the CopilotKit popup interface
- * @returns {JSX.Element} The CopilotKit provider component with optional popup, or just children if AI_CHATBOT feature flag is disabled
+ * @returns {React.ReactNode} The CopilotKit provider component with optional popup, or just children if AI_CHATBOT feature flag is disabled
  */
 export const CopilotProvider = ({
 	children,
@@ -91,7 +91,15 @@ export const CopilotProvider = ({
 export const useCopilotInfo = (config: any) => {
 	try {
 		return useCopilotReadable(config);
-	} catch (error) {
+	} catch (error: any) {
+		// Ignore error if CopilotKit context is missing (feature disabled)
+		// Error message: "Remember to wrap your app in a <CopilotKit> ..."
+		if (
+			error?.message?.includes("wrap your app in a <CopilotKit>") ||
+			error?.message?.includes("CopilotKit context not found")
+		) {
+			return null;
+		}
 		console.warn("Error using Copilot (Info):", error);
 		return null;
 	}
@@ -105,7 +113,14 @@ export const useCopilotInfo = (config: any) => {
 export const useCopilotAction = (config: any) => {
 	try {
 		return useCopilotActionHook(config);
-	} catch (error) {
+	} catch (error: any) {
+		// Ignore error if CopilotKit context is missing (feature disabled)
+		if (
+			error?.message?.includes("wrap your app in a") ||
+			error?.message?.includes("CopilotKit context not found")
+		) {
+			return null;
+		}
 		console.warn("Error using Copilot (Action):", error);
 		return null;
 	}
@@ -116,7 +131,7 @@ export const useCopilotAction = (config: any) => {
  * MARK: <Hydrate>
  * @param {object} props - The component props
  * @param {boolean} props.showPopup - Whether to show the Copilot popup
- * @returns {JSX.Element | null} The CopilotHydrate component or null
+ * @returns {React.ReactNode | null} The CopilotHydrate component or null
  */
 const CopilotHydrate = ({ showPopup }: { showPopup: boolean }) => {
 	const { orgDetail } = useOrgDetailContext();

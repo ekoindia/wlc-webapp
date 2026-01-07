@@ -14,13 +14,13 @@ type AccordionPanelProps = {
  * @param {ReactNode} props.children - The content to be displayed within the panel.
  * @param {boolean} [props.isExpanded] - Indicates whether the accordion item is expanded.
  * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
- * @returns {JSX.Element} The AccordionPanel component.
+ * @returns {React.ReactNode} The AccordionPanel component.
  */
 const AccordionPanel = ({
 	children,
 	isExpanded,
 	...rest
-}: AccordionPanelProps): JSX.Element => {
+}: AccordionPanelProps): React.ReactNode => {
 	// if (!isExpanded) return;
 	return (
 		<Collapse in={isExpanded} animateOpacity>

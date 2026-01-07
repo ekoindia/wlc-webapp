@@ -52,12 +52,12 @@ interface AddAgentFormProps {
  * @param {AddAgentFormProps} props - Component props
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setAgentMobile - Function to set the agent's mobile number
- * @returns {JSX.Element} The rendered AddAgentForm component
+ * @returns {React.ReactNode} The rendered AddAgentForm component
  */
 const AddAgentForm = ({
 	setStep,
 	setAgentMobile,
-}: AddAgentFormProps): JSX.Element => {
+}: AddAgentFormProps): React.ReactNode => {
 	const toast = useToast();
 
 	const {

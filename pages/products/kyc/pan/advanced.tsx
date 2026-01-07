@@ -1,7 +1,7 @@
 import { BreadcrumbWrapper, PaddingBox } from "components";
 import { PanAdvancedForm } from "page-components/products/kyc/pan/PanAdvancedForm";
 
-const PanAdvancedPage = (): JSX.Element => {
+const PanAdvancedPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

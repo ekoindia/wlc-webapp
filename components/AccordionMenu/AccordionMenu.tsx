@@ -25,7 +25,7 @@ import {
  * @param {object} props - The component props
  * @param {Array} props.list - The list of interaction items to be displayed.
  * @param {Function} props.onMenuItemClick - Function to be called when a menu item is clicked.
- * @returns {JSX.Element} The rendered AccordionMenu component.
+ * @returns {React.ReactNode} The rendered AccordionMenu component.
  * @example
  * const list = [
  *   { id: 1, label: 'Label 1', icon: 'icon1', link: 'link1' },
@@ -35,7 +35,7 @@ import {
  *   <AccordionMenu list={list} onMenuItemClick={handleClose} />
  * )
  */
-const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
+const AccordionMenu = ({ list, onMenuItemClick }): React.ReactNode => {
 	return (
 		<Accordion px="4" allowToggle>
 			{list?.map(
@@ -111,7 +111,7 @@ type MenuItemProps = {
  * @param {string} props.icon - The icon for the MenuItem.
  * @param {string} [props.link] - The link associated with the MenuItem.
  * @param {Function} [props.onMenuItemClick] - Function to be called when the menu item is clicked.
- * @returns {JSX.Element} The rendered MenuItem component.
+ * @returns {React.ReactNode} The rendered MenuItem component.
  */
 const MenuItem = ({
 	id,
@@ -120,7 +120,7 @@ const MenuItem = ({
 	link,
 	onMenuItemClick,
 	isBeta,
-}: MenuItemProps): JSX.Element => {
+}: MenuItemProps): React.ReactNode => {
 	const router = useRouter();
 	const { h } = useHslColor(label);
 
@@ -178,7 +178,7 @@ type MenuPanelProps = {
  * @param {boolean} props.showAll - Whether to show all sub-items or limit the number shown.
  * @param {boolean} [props.isPanelExpanded] - Whether the panel is expanded by default.
  * @param {Function} [props.onMenuItemClick] - Function to be called when a sub-item is clicked.
- * @returns {JSX.Element} The rendered MenuPanel component.
+ * @returns {React.ReactNode} The rendered MenuPanel component.
  */
 const MenuPanel = ({
 	id,
@@ -188,7 +188,7 @@ const MenuPanel = ({
 	showAll,
 	isPanelExpanded,
 	onMenuItemClick,
-}: MenuPanelProps): JSX.Element => {
+}: MenuPanelProps): React.ReactNode => {
 	const { h } = useHslColor(label);
 
 	const { isAdmin } = useUser();
@@ -292,7 +292,7 @@ type MenuPanelItemProps = {
  * @param {string} props.link - The link associated with the sub-item.
  * @param {string} props.theme - The theme for the sub-item's appearance.
  * @param {Function} [props.onMenuItemClick] - Function to be called when the sub-item is clicked.
- * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
+ * @returns {React.ReactNode} A `Flex` component containing an `Avatar` and a `Text` component.
  */
 const MenuPanelItem = ({
 	label,
@@ -300,7 +300,7 @@ const MenuPanelItem = ({
 	link,
 	theme,
 	onMenuItemClick,
-}: MenuPanelItemProps): JSX.Element => {
+}: MenuPanelItemProps): React.ReactNode => {
 	const router = useRouter();
 	// TODO create common func for getting theme object
 	// for avatar bg & color
@@ -366,7 +366,7 @@ type IconWithLabelProps = {
  * @param {number} props.hue - Hue value for the icon color.
  * @param {string} props.label - Text label to display next to the icon.
  * @param {boolean} props.isBeta - If true, the "Beta" tag is displayed next to the label.
- * @returns {JSX.Element} The rendered IconWithLabel component.
+ * @returns {React.ReactNode} The rendered IconWithLabel component.
  * @example
  * <IconWithLabel icon="home" hue={120} label="Home" />
  */
@@ -375,7 +375,7 @@ const IconWithLabel = ({
 	hue,
 	label,
 	isBeta,
-}: IconWithLabelProps): JSX.Element => (
+}: IconWithLabelProps): React.ReactNode => (
 	<Flex py="1" w="100%" align="center" gap="4" cursor="pointer">
 		<Icon name={icon} size="sm" color={`hsl(${hue},80%,30%)`} />
 		<Flex align="center" gap="2">

@@ -5,7 +5,7 @@ import { CinForm } from "page-components/products/kyc/cin/CinForm";
 /**
  * Page for verifying Corporate Identification Number (CIN) details
  */
-const CinVerifyPage = (): JSX.Element => {
+const CinVerifyPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

@@ -236,7 +236,6 @@ const nextConfig = {
 	// },
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
-	swcMinify: true,
 	eslint: {
 		dirs: [
 			"components",

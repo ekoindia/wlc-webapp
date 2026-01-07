@@ -25,7 +25,7 @@ export const PaymentQRModal = ({
 	isOpen,
 	onClose,
 	product,
-}: PaymentQRModalProps): JSX.Element => {
+}: PaymentQRModalProps): React.ReactNode => {
 	// Static dummy QR code image - using a public QR code generator
 	const qrCodeUrl =
 		"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Payment%20for%20" +

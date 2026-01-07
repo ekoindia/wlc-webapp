@@ -50,7 +50,7 @@ const IcoButton = ({
 	title,
 	onClick,
 	...rest
-}: IcoButtonProps): JSX.Element => {
+}: IcoButtonProps): React.ReactNode => {
 	const clickable: boolean = onClick && typeof onClick === "function";
 
 	const IconElement = icon;

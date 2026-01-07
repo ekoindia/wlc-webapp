@@ -10,7 +10,7 @@ export type BottomAppBarItem = {
 	icon?: string;
 	path?: string;
 	action?: () => void;
-	component?: () => JSX.Element;
+	component?: () => React.ReactNode;
 	visible: boolean; // Is this item visible?
 	disabled?: boolean; // Is this item disabled?
 	hideInSideBar?: boolean; // Is this item hidden in Compact SideBar Mode?

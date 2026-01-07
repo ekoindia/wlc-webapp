@@ -31,7 +31,7 @@ export const ConfirmDialog = ({
 	confirmText = "Confirm",
 	cancelText = "Cancel",
 	isLoading = false,
-}: ConfirmDialogProps): JSX.Element => {
+}: ConfirmDialogProps): React.ReactNode => {
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} isCentered>
 			<ModalOverlay />

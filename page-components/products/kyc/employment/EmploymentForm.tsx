@@ -25,7 +25,7 @@ const InputSection = ({
 	data,
 }: {
 	data: EmploymentResponseData;
-}): JSX.Element | null => {
+}): React.ReactNode | null => {
 	if (!data?.input) return null;
 
 	return (
@@ -110,7 +110,7 @@ const UanDetailsSections = ({
 	data,
 }: {
 	data: EmploymentResponseData;
-}): JSX.Element | null => {
+}): React.ReactNode | null => {
 	if (!data?.uan_details || data.uan_details.length === 0) return null;
 
 	return (
@@ -600,7 +600,7 @@ const RecentEmploymentSection = ({
 	data,
 }: {
 	data: EmploymentResponseData;
-}): JSX.Element | null => {
+}): React.ReactNode | null => {
 	if (!data?.recent_employment_details) return null;
 	const { employee_details, employer_details } =
 		data.recent_employment_details;
@@ -1009,7 +1009,7 @@ const EmploymentResultCard = ({
 	data: EmploymentResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={6} bg="white" boxShadow="md" borderRadius="md">
 		<Text fontWeight="bold" fontSize="2xl" mb={6} color="#1A365D">
 			Employee Verification Result
@@ -1033,7 +1033,7 @@ const EmploymentResultCard = ({
 /**
  * Form component for verifying employee details
  */
-export const EmploymentForm = (): JSX.Element => {
+export const EmploymentForm = (): React.ReactNode => {
 	// State management
 	const [employmentResponse, setEmploymentResponse] =
 		useState<EmploymentResponseData | null>(null);

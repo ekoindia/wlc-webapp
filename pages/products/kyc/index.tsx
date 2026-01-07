@@ -2,7 +2,7 @@
 import { PaddingBox, PageTitle } from "components";
 import { KycVerificationTools } from "page-components/products/kyc/KycVerificationTools";
 
-const KycPage = (): JSX.Element => {
+const KycPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<PageTitle title="KYC & Verification" isBeta hideBackIcon />

@@ -47,7 +47,7 @@ interface CinResponseData {
 /**
  * Component for CIN verification form
  */
-export const CinForm = (): JSX.Element => {
+export const CinForm = (): React.ReactNode => {
 	const [cin, setCin] = useState<string>("");
 	const [error, setError] = useState<string>("");
 	const [cinResponse, setCinResponse] = useState<CinResponseData | null>(
@@ -229,7 +229,7 @@ const CompanyInfoSection = ({
 	data,
 }: {
 	data: CinResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Company Information">
 		<Grid templateColumns="200px 1fr" gap={1}>
 			<GridItem>
@@ -289,7 +289,7 @@ const DirectorDetailsSection = ({
 	directors,
 }: {
 	directors: DirectorDetail[];
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Director Details">
 		{directors.map((director, index) => (
 			<Box

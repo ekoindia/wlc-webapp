@@ -20,7 +20,7 @@ export interface OnboardingCompletedProps {
  * OnboardingCompleted component displays a success message when agent onboarding is complete
  * Provides CTAs to onboard another agent or navigate to home
  * @param {OnboardingCompletedProps} props - Component props
- * @returns {JSX.Element} The rendered OnboardingCompleted component
+ * @returns {React.ReactNode} The rendered OnboardingCompleted component
  * @example
  * ```tsx
  * <OnboardingCompleted setStep={setStep} agentMobile="9876543210" />
@@ -29,7 +29,7 @@ export interface OnboardingCompletedProps {
 const OnboardingCompleted = ({
 	setStep,
 	agentMobile,
-}: OnboardingCompletedProps): JSX.Element => {
+}: OnboardingCompletedProps): React.ReactNode => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const isAdmin = userData?.isAdmin ?? false;

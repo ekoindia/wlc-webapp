@@ -7,7 +7,7 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 // Declare the props interface
 interface ChatInputProps {
 	placeholder?: string;
-	inputLeftElement?: JSX.Element;
+	inputLeftElement?: React.ReactNode;
 	maxLength?: number;
 	loading?: boolean;
 	disabled?: boolean;
@@ -21,7 +21,7 @@ interface ChatInputProps {
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} [prop.placeholder] - The placeholder text for the input
- * @param {JSX.Element} [prop.inputLeftElement] - The left element for the input
+ * @param {React.ReactNode} [prop.inputLeftElement] - The left element for the input
  * @param {number} [prop.maxLength] - The maximum length of the input
  * @param {boolean} [prop.loading] - Whether the input is in loading state
  * @param {boolean} [prop.disabled] - Whether the input is disabled

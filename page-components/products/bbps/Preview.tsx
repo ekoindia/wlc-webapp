@@ -86,7 +86,7 @@ interface PaymentOptionCardProps {
 /**
  * Reusable PaymentOptionCard component
  * @param {PaymentOptionCardProps} props - The component props
- * @returns {JSX.Element} PaymentOptionCard component
+ * @returns {React.ReactNode} PaymentOptionCard component
  */
 const PaymentOptionCard = ({
 	config,
@@ -94,7 +94,7 @@ const PaymentOptionCard = ({
 	paymentOption,
 	onOptionChange,
 	children,
-}: PaymentOptionCardProps): JSX.Element => {
+}: PaymentOptionCardProps): React.ReactNode => {
 	const isSelected = paymentOption === config.id;
 	const isAvailable = config.isAvailable(bill);
 
@@ -150,13 +150,13 @@ const PaymentOptionCard = ({
 /**
  * Reusable BillDetailItem component
  * @param {BillDetailItemProps} props - The component props
- * @returns {JSX.Element} BillDetailItem component
+ * @returns {React.ReactNode} BillDetailItem component
  */
 const BillDetailItem = ({
 	config,
 	bill,
 	billNumber,
-}: BillDetailItemProps): JSX.Element => {
+}: BillDetailItemProps): React.ReactNode => {
 	if (!config.isVisible(bill)) return <></>;
 
 	return (
@@ -172,7 +172,7 @@ const BillDetailItem = ({
 /**
  * BillCard component for displaying individual bill information
  * @param {BillCardProps} props - The component props
- * @returns {JSX.Element} BillCard component
+ * @returns {React.ReactNode} BillCard component
  */
 const BillCard = ({
 	bill,
@@ -182,7 +182,7 @@ const BillCard = ({
 	onAmountChange,
 	amountError,
 	arePartialPaymentsAllowed,
-}: BillCardProps): JSX.Element => {
+}: BillCardProps): React.ReactNode => {
 	const [paymentOption, setPaymentOption] = useState<
 		"full" | "minimum" | "partial"
 	>("full");
@@ -580,13 +580,13 @@ const BillCard = ({
  * Preview component for BBPS bill selection and payment amount input
  * Displays fetched bills with selection controls (radio/checkbox) based on payment mode
  * Handles amount validation and calculates total payment amount
- * @returns {JSX.Element} Preview component with bill selection and amount input
+ * @returns {React.ReactNode} Preview component with bill selection and amount input
  * @example
  * ```tsx
  * <Preview />
  * ```
  */
-export const Preview = (): JSX.Element => {
+export const Preview = (): React.ReactNode => {
 	const nav = useBbpsNavigation();
 	const { state, dispatch } = useContext(BbpsContext);
 	const { billFetchResult, selectedBills, totalAmount, useMockData } = state;

@@ -30,7 +30,11 @@ interface PanFormValues {
 // }
 
 // Component for PAN information section
-const PanInfoSection = ({ data }: { data: PanResponseData }): JSX.Element => (
+const PanInfoSection = ({
+	data,
+}: {
+	data: PanResponseData;
+}): React.ReactNode => (
 	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
 		<Text fontWeight="medium" fontSize="md" mb={2}>
 			PAN Information
@@ -45,7 +49,7 @@ const PanInfoSection = ({ data }: { data: PanResponseData }): JSX.Element => (
 );
 
 // Component for GSTIN list header
-const GstinListHeader = (): JSX.Element => (
+const GstinListHeader = (): React.ReactNode => (
 	<Flex bg="gray.100" p={2} borderRadius="md" mb={2} fontWeight="medium">
 		<Text flex="1">GSTIN</Text>
 		<Text width="100px">Status</Text>
@@ -54,7 +58,7 @@ const GstinListHeader = (): JSX.Element => (
 );
 
 // Component for individual GSTIN item
-const GstinListItem = ({ item }: { item: GstinItem }): JSX.Element => (
+const GstinListItem = ({ item }: { item: GstinItem }): React.ReactNode => (
 	<Flex
 		p={2}
 		borderBottomWidth="1px"
@@ -80,7 +84,7 @@ const GstinListItem = ({ item }: { item: GstinItem }): JSX.Element => (
 );
 
 // Component for empty GSTIN list state
-const EmptyGstinList = (): JSX.Element => (
+const EmptyGstinList = (): React.ReactNode => (
 	<Flex
 		direction="column"
 		align="center"
@@ -96,7 +100,11 @@ const EmptyGstinList = (): JSX.Element => (
 );
 
 // Component for GSTIN list section
-const GstinListSection = ({ data }: { data: PanResponseData }): JSX.Element => (
+const GstinListSection = ({
+	data,
+}: {
+	data: PanResponseData;
+}): React.ReactNode => (
 	<Box borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
 		<Text fontWeight="medium" fontSize="md" mb={3}>
 			Linked GSTINs
@@ -123,7 +131,7 @@ const PanResultCard = ({
 	data: PanResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			GSTINs Linked to PAN
@@ -140,7 +148,7 @@ const PanResultCard = ({
 	</Card>
 );
 
-export const GstinPanForm = (): JSX.Element => {
+export const GstinPanForm = (): React.ReactNode => {
 	const [panResponse, setPanResponse] = useState<PanResponseData | null>(
 		null
 	);

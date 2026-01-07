@@ -39,7 +39,7 @@ const InfoTile = ({
 	iconStyle = "avatar",
 	onClick,
 	url,
-}: InfoTileProps): JSX.Element => {
+}: InfoTileProps): React.ReactNode => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState<boolean>(false);
 	const router = useRouter();

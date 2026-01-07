@@ -24,12 +24,12 @@ export interface OtpVerificationFormProps {
  * @param {OtpVerificationFormProps} props - Component props
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
  * @param {string} props.agentMobile - The agent's mobile number
- * @returns {JSX.Element} The rendered OtpVerificationForm component
+ * @returns {React.ReactNode} The rendered OtpVerificationForm component
  */
 const OtpVerificationForm = ({
 	setStep,
 	agentMobile,
-}: OtpVerificationFormProps): JSX.Element => {
+}: OtpVerificationFormProps): React.ReactNode => {
 	const {
 		handleSubmit,
 		register,

@@ -23,7 +23,7 @@ import { PassportFormValues, PassportResponseData } from "./types";
 /**
  * Form for verifying Indian passport details
  */
-export const PassportForm = (): JSX.Element => {
+export const PassportForm = (): React.ReactNode => {
 	const router = useRouter();
 	const [passportResponse, setPassportResponse] =
 		useState<PassportResponseData | null>(null);
@@ -225,7 +225,7 @@ const PassportResponseCard = ({
 	data: PassportResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4}>
 		<Box mb={4}>
 			<Text fontSize="lg" fontWeight="semibold" mb={2}>
@@ -254,7 +254,7 @@ const PassportDetailsSection = ({
 	data,
 }: {
 	data: PassportResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="Passport Information">
 		<Grid templateColumns="150px 1fr" gap={2}>
 			<GridItem>

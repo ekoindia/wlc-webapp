@@ -18,7 +18,7 @@ const PanLiteInfoSection = ({
 	data,
 }: {
 	data: PanLiteResponseData;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<ResponseSection heading="PAN Verification Results">
 		<Flex direction="column" gap={1}>
 			<Flex>
@@ -113,7 +113,7 @@ const PanLiteResultCard = ({
 	data: PanLiteResponseData;
 	onReset: () => void;
 	onBack: () => void;
-}): JSX.Element => (
+}): React.ReactNode => (
 	<Card p={4} bg="gray.50">
 		<Text fontWeight="bold" fontSize="lg" mb={4}>
 			PAN Lite Verification Result
@@ -148,7 +148,7 @@ const formatDateForApi = (dateString: string): string => {
 	return dateString;
 };
 
-export const PanLiteForm = (): JSX.Element => {
+export const PanLiteForm = (): React.ReactNode => {
 	const [panResponse, setPanResponse] = useState<PanLiteResponseData | null>(
 		null
 	);

@@ -4,7 +4,7 @@ import { EmploymentForm } from "page-components/products/kyc/employment/Employme
 /**
  * Page for verifying employee details
  */
-const EmploymentVerifyPage = (): JSX.Element => {
+const EmploymentVerifyPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

@@ -14,9 +14,9 @@ interface AboutTabProps {
 /**
  * About tab displaying app logo, name, version, and menu items
  * @param {AboutTabProps} props - Component props
- * @returns {JSX.Element} AboutTab component
+ * @returns {React.ReactNode} AboutTab component
  */
-const AboutTab = ({ onNavigate }: AboutTabProps): JSX.Element => {
+const AboutTab = ({ onNavigate }: AboutTabProps): React.ReactNode => {
 	const { orgDetail } = useOrgDetailContext();
 
 	return (

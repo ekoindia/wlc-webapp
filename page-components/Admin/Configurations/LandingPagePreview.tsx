@@ -24,7 +24,7 @@ const LandingPagePreview = ({
 	primary,
 	accent,
 	accentLight,
-}: LandingPagePreviewProps): JSX.Element => {
+}: LandingPagePreviewProps): React.ReactNode => {
 	return (
 		<Flex
 			direction="row"

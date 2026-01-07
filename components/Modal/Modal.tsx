@@ -57,7 +57,7 @@ const Modal = ({
 	isCentered = true,
 	motionPreset = "slideInBottom",
 	...rest
-}: ModalProps): JSX.Element => {
+}: ModalProps): React.ReactNode => {
 	return (
 		<ChakraModal
 			{...{

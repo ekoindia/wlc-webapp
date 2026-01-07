@@ -2,7 +2,7 @@
 import { BreadcrumbWrapper, PaddingBox } from "components";
 import { VehicleRcForm } from "page-components/products/kyc/vehicle-rc/VehicleRcForm";
 
-const VehicleRcPage = (): JSX.Element => {
+const VehicleRcPage = (): React.ReactNode => {
 	return (
 		<PaddingBox>
 			<BreadcrumbWrapper

@@ -71,7 +71,7 @@ const ExternalOnboardingWidget =
  * @param {any} props.userData - user data object (server/context)
  * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
  * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
- * @returns {JSX.Element} ExternalOnboardingWidget wrapped with local orchestration
+ * @returns {React.ReactNode} ExternalOnboardingWidget wrapped with local orchestration
  */
 const OnboardingSteps = ({
 	isAssistedOnboarding,

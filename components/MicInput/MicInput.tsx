@@ -22,7 +22,7 @@ interface MicInputProps {
  * @param {Function} props.onCapture - Callback function to handle captured audio blob and URL.
  * @param {Function} [props.onStatusChange] - Callback function to handle status changes (e.g., "idle", "recording", "stopped").
  * @param props.onCancel
- * @returns {JSX.Element} The rendered mic input component
+ * @returns {React.ReactNode} The rendered mic input component
  */
 const MicInput = ({
 	maxDurationMs,

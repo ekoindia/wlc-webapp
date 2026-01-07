@@ -11,7 +11,9 @@ interface GridSkeletonProps {
 	count?: number;
 }
 
-export const GridSkeleton = ({ count = 8 }: GridSkeletonProps): JSX.Element => {
+export const GridSkeleton = ({
+	count = 8,
+}: GridSkeletonProps): React.ReactNode => {
 	return (
 		<SimpleGrid columns={{ base: 1, md: 2, lg: 3, xl: 4 }} spacing={6}>
 			{Array.from({ length: count }).map((_, index) => (

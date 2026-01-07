@@ -32,9 +32,9 @@ const BBPS_LOGO_URL =
 
 /**
  * Status component for displaying BBPS payment status and transaction details
- * @returns {JSX.Element} Status component
+ * @returns {React.ReactNode} Status component
  */
-export const Status = (): JSX.Element => {
+export const Status = (): React.ReactNode => {
 	const nav = useBbpsNavigation();
 	const { state } = useContext(BbpsContext);
 	const { paymentStatus, selectedBills, useMockData } = state;

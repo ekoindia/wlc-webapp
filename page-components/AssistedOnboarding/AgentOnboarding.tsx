@@ -19,7 +19,7 @@ export interface AgentOnboardingProps {
  * @param {string} [props.agentMobile] - The agent's mobile number
  * @param {any} [props.agentDetails] - Pre-fetched agent details to avoid redundant API calls
  * @param {(mobile: string) => Promise<any>} [props.fetchAgentDetails] - Function to fetch agent details from API
- * @returns {JSX.Element} The rendered AgentOnboarding component
+ * @returns {React.ReactNode} The rendered AgentOnboarding component
  * @example
  * ```tsx
  * <AgentOnboarding agentMobile="XXXXXXXXXX" agentDetails={details} fetchAgentDetails={fetchAgentDetails} />

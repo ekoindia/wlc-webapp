@@ -74,13 +74,13 @@ export const useNetworkUsers = (): NetworkUsersContextValue => {
  * It also generates a tree structure from the list of users and provides various utility functions.
  * MARK: Context
  * @param {ReactNode} children - The child components that will have access to the NetworkUsers context.
- * @returns {JSX.Element} The NetworkUsersProvider component that wraps its children
+ * @returns {React.ReactNode} The NetworkUsersProvider component that wraps its children
  */
 export const NetworkUsersProvider = ({
 	children,
 }: {
 	children: ReactNode;
-}): JSX.Element => {
+}): React.ReactNode => {
 	const [networkUsers, setNetworkUsers, isValid] = useDailyCacheState(
 		"inf-netusrs",
 		{

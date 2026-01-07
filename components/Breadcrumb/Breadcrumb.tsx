@@ -30,7 +30,7 @@ interface BreadcrumbProps {
  * @param {BreadcrumbProps} props - Properties passed to the component.
  * @param {BreadcrumbItemProps[]} [props.crumbs] - Array of breadcrumbs to be displayed. Each item should have a `href` and `label`. The latest item should have `isCurrent` flag set to true.
  * @param {boolean} [props.hideHome] Optional flag to hide the first home breadcrumb.
- * @returns {JSX.Element} The rendered Breadcrumb component.
+ * @returns {React.ReactNode} The rendered Breadcrumb component.
  */
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
 	crumbs = [],

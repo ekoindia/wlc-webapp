@@ -46,7 +46,7 @@ export const InventoryFormModal = ({
 	onSubmit,
 	product,
 	title,
-}: InventoryFormModalProps): JSX.Element => {
+}: InventoryFormModalProps): React.ReactNode => {
 	const [isLoading, setIsLoading] = useState(false);
 	const toast = useToast();
 
