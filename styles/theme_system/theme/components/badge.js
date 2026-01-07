@@ -21,11 +21,6 @@ const variantPrimary = defineStyle({
 	color: "white",
 });
 
-const variantMuted = defineStyle({
-	bg: "shade",
-	color: "light",
-});
-
 const variantSuccess = defineStyle({
 	bg: "success",
 	color: "white",
@@ -36,6 +31,37 @@ const variantError = defineStyle({
 	color: "white",
 });
 
+const variantHighlight = defineStyle({
+	bg: "highlight",
+	color: "white",
+});
+
+const variantMuted = defineStyle({
+	bg: "shade",
+	color: "light",
+});
+
+// Outline variants - white background with colored text
+const variantOutlinePrimary = defineStyle({
+	bg: "white",
+	color: "primary.DEFAULT",
+});
+
+const variantOutlineSuccess = defineStyle({
+	bg: "white",
+	color: "success",
+});
+
+const variantOutlineError = defineStyle({
+	bg: "white",
+	color: "error",
+});
+
+const variantOutlineHighlight = defineStyle({
+	bg: "white",
+	color: "highlight",
+});
+
 export const badgeTheme = defineStyleConfig({
 	baseStyle,
 	variants: {
@@ -43,5 +69,10 @@ export const badgeTheme = defineStyleConfig({
 		muted: variantMuted,
 		success: variantSuccess,
 		error: variantError,
+		highlight: variantHighlight,
+		outlineSuccess: variantOutlineSuccess,
+		outlineError: variantOutlineError,
+		outlinePrimary: variantOutlinePrimary,
+		outlineHighlight: variantOutlineHighlight,
 	},
 });

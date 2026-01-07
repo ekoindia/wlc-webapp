@@ -36,25 +36,17 @@ interface VerificationResultCardProps {
  */
 const getStatusBadgeProps = (
 	status: VerificationStatus
-): { bg: string; color: string; label: string } => {
+): { variant: string; label: string } => {
 	switch (status) {
 		case "success":
-			return {
-				bg: "rgba(0, 195, 65, 0.25)",
-				color: "success",
-				label: "SUCCESS",
-			};
+			return { variant: "outlineSuccess", label: "SUCCESS" };
 		case "failed":
-			return {
-				bg: "rgba(255, 64, 129, 0.25)",
-				color: "error",
-				label: "FAILED",
-			};
+			return { variant: "outlineError", label: "FAILED" };
 		case "in_progress":
-			return { bg: "blue.100", color: "blue.700", label: "IN PROGRESS" };
+			return { variant: "highlight", label: "IN PROGRESS" };
 		case "pending":
 		default:
-			return { bg: "gray.100", color: "gray.600", label: "PENDING" };
+			return { variant: "muted", label: "PENDING" };
 	}
 };
 
@@ -158,7 +150,7 @@ export const VerificationResultCard = ({
 
 				{/* Status Badge and Expand Icon */}
 				<Flex align="center" gap={2}>
-					<Badge color={statusBadge.color} bg="white" fontSize="xs">
+					<Badge variant={statusBadge.variant}>
 						{statusBadge.label}
 					</Badge>
 					<Icon
