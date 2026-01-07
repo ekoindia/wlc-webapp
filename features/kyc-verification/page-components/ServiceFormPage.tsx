@@ -317,8 +317,8 @@ export const ServiceFormPage = ({
 			setSubmitError(null);
 
 			try {
-				console.log("Form submitted with data:", data);
-				console.log("Services to verify:", selectedServiceObjects);
+				// console.log("Form submitted with data:", data);
+				// console.log("Services to verify:", selectedServiceObjects);
 
 				// Store verification data in sessionStorage for results page
 				const verificationData = {

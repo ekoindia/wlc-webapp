@@ -235,7 +235,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 					},
 				});
 
-				console.log("[useAgentServices] response", response);
+				// console.log("[useAgentServices] response", response);
 
 				if (
 					response?.data?.status === 0 &&
@@ -258,11 +258,12 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 					});
 				}
 			} catch (err) {
-				console.error(
-					"[useAgentServices] Error fetching services:",
-					err
-				);
-				const errorMessage = "Failed to fetch services";
+				// console.error(
+				// 	"[useAgentServices] Error fetching services:",
+				// 	err
+				// );
+				const errorMessage =
+					err?.data?.message || "Failed to fetch services";
 				setError(errorMessage);
 				toast({
 					title: "Error",
@@ -333,9 +334,7 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 						"tf-req-uri": endpoint,
 						"tf-req-method": "PUT",
 					},
-					body: {
-						// Add any required body params here
-					},
+					body: {},
 				});
 
 				if (response?.data?.status === 0) {

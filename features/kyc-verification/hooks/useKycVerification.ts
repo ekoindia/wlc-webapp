@@ -141,10 +141,10 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 					body: filteredData,
 				});
 
-				console.log(
-					`[useKycVerification] Response for ${service.name}:`,
-					response
-				);
+				// console.log(
+				// 	`[useKycVerification] Response for ${service.name}:`,
+				// 	response
+				// );
 
 				// Check response
 				if (response?.data?.status === 0 && response.data.data) {

@@ -107,14 +107,6 @@ export const KycVerificationPage = ({
 		basePath,
 	]);
 
-	// Debug logging
-	console.log("[KycVerificationPage] Services:", filteredServices.length);
-	console.log(
-		"[KycVerificationPage] isMultiModeEnabled:",
-		isMultiModeEnabled
-	);
-	console.log("[KycVerificationPage] gridItems sample:", gridItems[0]);
-
 	// Handle continue button click
 	const handleContinue = () => {
 		// Navigate to catch-all route with selected service slugs (kebab-cased names)
