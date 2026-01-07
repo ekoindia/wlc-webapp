@@ -25,7 +25,7 @@ export const getCalculatorAction = ({
 	// Lazy load the math parser
 	if (parseLoadState === "") {
 		setParseLoadState("loading");
-		import("/utils/exprParser.js")
+		import("utils/exprParser.js")
 			.then((exprParser) => {
 				// Update context values once exprParser is loaded
 				setParse(() => exprParser.parse);

@@ -236,22 +236,24 @@ const nextConfig = {
 	// },
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
-	eslint: {
-		dirs: [
-			"components",
-			"page-components",
-			"tf-components",
-			"layout-components",
-			"pages",
-			"features",
-			"libs",
-			"utils",
-			"helpers",
-			"hooks",
-			"contexts",
-			"constants",
-		],
-	},
+	// NOTE: eslint config in next.config.js is deprecated in Next.js 16
+	// Use eslint.config.js or .eslintrc for ESLint configuration
+	// eslint: {
+	// 	dirs: [
+	// 		"components",
+	// 		"page-components",
+	// 		"tf-components",
+	// 		"layout-components",
+	// 		"pages",
+	// 		"features",
+	// 		"libs",
+	// 		"utils",
+	// 		"helpers",
+	// 		"hooks",
+	// 		"contexts",
+	// 		"constants",
+	// 	],
+	// },
 	compiler: {
 		reactRemoveProperties: true, // removes ^data-test properties in build
 		removeConsole: removeConsoleOptions,
