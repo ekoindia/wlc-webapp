@@ -66,6 +66,7 @@ const OtpVerificationForm = ({
 					message: "Required",
 				},
 			},
+			meta: { length: 3 },
 		},
 	];
 
