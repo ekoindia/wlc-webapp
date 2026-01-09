@@ -106,7 +106,7 @@ export const useCopilotAction = (config: any) => {
 	try {
 		return useCopilotActionHook(config);
 	} catch (error) {
-		console.error("Error using Copilot (Action):", error);
+		console.warn("Error using Copilot (Action):", error);
 		return null;
 	}
 };

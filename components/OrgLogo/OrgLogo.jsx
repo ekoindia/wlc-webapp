@@ -10,11 +10,18 @@ const fallbackLogo =
  * @param	{object}	props
  * @param	{string}	[props.size]	Size of the logo. `lg` for large, `md` for medium
  * @param	{boolean}	[props.dark]	Show logo on dark background
+ * @param	{boolean}	[props.onlyImageLogo]	Show only the image, even for small logos. If true, app name won't be shown alongside small logos.
  * @param	{object}	[props.imageStyles]	Additional styles for the logo image
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<OrgLogo size="lg" />`
  */
-const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
+const OrgLogo = ({
+	size = "md",
+	dark = false,
+	onlyImageLogo = false,
+	imageStyles = {},
+	...rest
+}) => {
 	const [imageState, setImageState] = useState("loading");
 	const [isSmallLogo, setIsSmallLogo] = useState(false); // Is it a circular/squarish logo?
 	const { orgDetail } = useOrgDetailContext();
@@ -109,6 +116,7 @@ const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
 				{...imageStyles}
 			/>
 			{isSmallLogo &&
+			onlyImageLogo !== true &&
 			(imageState === "loaded" || imageState === "failed") ? (
 				<TextLogo
 					app_name={orgDetail.app_name}

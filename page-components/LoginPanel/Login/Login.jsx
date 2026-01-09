@@ -1,7 +1,7 @@
 import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import { Button, Input, OrgLogo } from "components";
 import { useAppSource, useOrgDetailContext } from "contexts";
-import { RemoveFormatted, sendOtpRequest } from "helpers";
+import { sendOtpRequest } from "helpers";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 // import { GoogleButton } from "./GoogleButton";
@@ -49,9 +49,9 @@ const Login = ({
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 	const mobileMappedUserIdLabel = login_meta?.user_id_label || "User ID";
 
-	const [value, setValue] = useState(number.formatted || "");
-	const [errorMsg, setErrorMsg] = useState(false);
-	const [invalid, setInvalid] = useState("");
+	const [value, setValue] = useState(number.original || "");
+	const [errorMsg, setErrorMsg] = useState("");
+	const [invalid, setInvalid] = useState(false);
 
 	const UserIdType = isMobileMappedUserId
 		? mobileMappedUserIdLabel
@@ -59,7 +59,7 @@ const Login = ({
 
 	useEffect(() => {
 		if (lastMobileFormatted && !value) {
-			setValue(lastMobileFormatted);
+			setValue(lastMobileFormatted?.replaceAll(" ", ""));
 		}
 		// WARNING: Do not add "value" as a dependency here (as it will always auto-fill the last number whenever the user deletes the filled number & therefore the value becomes empty)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,36 +72,56 @@ const Login = ({
 			? true
 			: false;
 
-	const onChangeHandler = (val) => {
-		setValue(val);
+	const onChangeHandler = (e) => {
+		if (e === null || typeof e === "undefined") return;
+
+		if (typeof e === "string") {
+			setValue(e);
+			return;
+		}
+
+		if (
+			typeof e === "object" &&
+			e.target &&
+			typeof e.target.value === "string"
+		) {
+			setValue(e.target.value);
+		}
 	};
 
 	const sendOtp = async () => {
 		if (previewMode === true) return;
 
 		// check based on the isMobileMappedUserId,
-		// if isMobileMappedUserId is true, then allow digits 5 to 12
-		// else exactly 12 digits are required
+		// if isMobileMappedUserId is true, then allow digits 5 to 10
+		// else exactly 10 digits are required
 		if (
-			(isMobileMappedUserId && value.length >= 5 && value.length <= 12) ||
-			(!isMobileMappedUserId && value.length === 12)
+			(isMobileMappedUserId && value.length >= 5 && value.length <= 10) ||
+			(!isMobileMappedUserId && value.length === 10)
 		) {
-			let originalNum = RemoveFormatted(value);
+			// Input component now returns unformatted value directly
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
 
 			const { otp_sent, verifiedMobileNumber } = await sendOtpRequest(
 				orgDetail.org_id,
-				originalNum,
+				value,
 				toast,
 				"send",
 				isAndroid,
-				isMobileMappedUserId
+				isMobileMappedUserId,
+				orgDetail.org_token
+			);
+
+			// Format the value for display purposes
+			const formattedValue = value.replace(
+				/(\d{3})(\d{3})(\d{4})/,
+				"$1 $2 $3"
 			);
 
 			setNumber({
-				original: originalNum,
-				formatted: value,
+				original: value,
+				formatted: formattedValue,
 				verified: verifiedMobileNumber,
 			});
 
@@ -209,7 +229,7 @@ const Login = ({
 				borderRadius={10}
 				maxW="100%"
 				onChange={onChangeHandler}
-				maxLength={12}
+				maxLength={10}
 				isNumInput={true}
 				labelStyle={{
 					color: "light",

@@ -2,7 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
-import { GeneralConfig, LandingPageConfig, ThemeConfig } from ".";
+import { GeneralConfig, LandingPageEditor, ThemeConfig } from ".";
 
 /**
  * A Configurations page-component
@@ -21,7 +21,7 @@ const Configurations = () => {
 		},
 		{
 			label: "Landing Page",
-			component: <LandingPageConfig />,
+			component: <LandingPageEditor />,
 			visible: isCmsLandingPageEnabled,
 		},
 		{ label: "General", component: <GeneralConfig />, visible: false },

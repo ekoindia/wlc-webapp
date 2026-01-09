@@ -6,6 +6,7 @@ import {
 	Spinner,
 	Text,
 	Textarea,
+	useMediaQuery,
 	useToast,
 } from "@chakra-ui/react";
 import { Dropzone, IcoButton, Icon, InputLabel } from "components";
@@ -79,6 +80,8 @@ const RaiseIssueCard = ({
 		useUser();
 	const { generateNewToken } = useRefreshToken();
 	const onboarding = userData?.user_details?.onboarding || 0; // Is the user onboarding?
+
+	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
 
 	// Issue list...
 	const [statusIssueListMap, setStatusIssueListMap] = useState([]); // List of possible issues to raise
@@ -888,6 +891,9 @@ const RaiseIssueCard = ({
 											isDisabled={disableInputs}
 											focusBorderColor="primary.light"
 											placeholder="Please enter your comments or any additional details here..."
+											autoFocus={
+												isSmallScreen ? false : true
+											}
 											onChange={(e) =>
 												setComment(e.target.value)
 											}

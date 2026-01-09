@@ -309,6 +309,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							bottom="0"
 							left="0"
 							right="0"
+							pointerEvents="none"
 							sx={{
 								"@media print": {
 									display: "none",

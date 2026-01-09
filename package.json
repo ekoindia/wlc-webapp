@@ -1,6 +1,6 @@
 {
 	"name": "eloka-webapp",
-	"version": "4.39.0",
+	"version": "4.40.0",
 	"private": true,
 	"description": "Eko's white-labelled financial platform service",
 	"keywords": [
@@ -41,14 +41,14 @@
 		"test:watch": "jest --coverage=false --watch",
 		"test:coverage": "jest --coverage",
 		"test:update:snapshots": "jest --updateSnapshot",
-		"check-updates": "npm-check -u",
 		"check-deps": "node check-deps.js",
 		"docker:dev": "docker compose up dev",
 		"docker:prod": "docker compose up prod",
 		"docker:dev:build": "docker compose up dev --build",
 		"docker:prod:build": "docker compose up prod --build",
 		"docker:stop": "docker compose down",
-		"docker:clean": "docker compose down -v --rmi all"
+		"docker:clean": "docker compose down -v --rmi all",
+		"check-updates": "npm-check -u"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx}": [
@@ -67,10 +67,10 @@
 		"@copilotkit/react-core": "^1.10.3",
 		"@copilotkit/react-textarea": "^1.10.3",
 		"@copilotkit/react-ui": "^1.10.3",
-		"@ekoindia/oaas-widget": "^4.2.0",
+		"@ekoindia/oaas-widget": "^4.5.0",
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",
-		"@measured/puck": "^0.15.0",
+		"@measured/puck": "^0.20.2",
 		"@mediapipe/tasks-text": "^0.10.14",
 		"@mediapipe/tasks-vision": "^0.10.14",
 		"@next/third-parties": "^14.2.3",
@@ -91,7 +91,7 @@
 		"next": "^14.2.20",
 		"react": "^18.3.1",
 		"react-color": "^2.19.3",
-		"react-complex-tree": "^2.4.5",
+		"react-complex-tree": "^2.6.1",
 		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.62.0",
 		"react-icons": "^5.4.0",

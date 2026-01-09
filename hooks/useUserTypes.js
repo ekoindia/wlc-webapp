@@ -45,9 +45,11 @@ export const useUserTypes = () => {
 	 * @returns {string} - The label for the user type.
 	 */
 	const getUserTypeLabel = (user_type_id) =>
-		userTypeLabels[+user_type_id] ||
-		userTypeLabels[user_type_id] ||
-		user_type_id;
+		user_type_id == -1 // user_type_id = -1 is for New/Unknown User (during onboarding)
+			? ""
+			: userTypeLabels[+user_type_id] ||
+				userTypeLabels[user_type_id] ||
+				user_type_id;
 
 	/**
 	 * Get the custom label for User Code based on user type ID. If no custom label is defined, it returns the default "User Code".

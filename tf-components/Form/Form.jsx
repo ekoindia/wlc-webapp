@@ -3,6 +3,7 @@ import {
 	Calenders,
 	Input,
 	InputLabel,
+	OtpInput,
 	Radio,
 	Select,
 	Textarea,
@@ -22,6 +23,7 @@ import { getFormErrorMessage } from "utils";
  * @param prop.errors
  * @param {string} [prop.size] Size of the form components: "sm" | "md" | "lg"
  * @param {boolean} [prop.hideOptionalMark] Hide the optional mark on the form fields.
+ * @param {Function} [prop.onEnter] Function to be called when Enter key is pressed.
  * @param {...*} rest Rest of the props passed to this component.
  */
 const Form = ({
@@ -32,8 +34,11 @@ const Form = ({
 	errors,
 	size = "md",
 	hideOptionalMark = false,
+	onEnter,
 	...rest
 }) => {
+	// console.log("[Form] State::  ", { formValues, errors, parameter_list });
+
 	return (
 		<Grid gap="8" w="100%" {...rest}>
 			{parameter_list?.map(
@@ -43,11 +48,12 @@ const Form = ({
 						label,
 						labelStyle,
 						required = true,
-						value,
+						value: paramMetaValue,
 						disabled,
 						list_elements,
 						defaultValue,
-						parameter_type_id = ParamType.TEXT,
+						parameter_type_id,
+						paramType,
 						is_multi,
 						meta = {},
 						multiSelectRenderer,
@@ -67,6 +73,12 @@ const Form = ({
 						? { ...validations, required: true }
 						: { ...validations, required: false };
 
+					const value =
+						formValues?.[name] ??
+						paramMetaValue ??
+						defaultValue ??
+						"";
+
 					const { force_dropdown } = meta || {};
 
 					if (is_inactive) return;
@@ -79,14 +91,14 @@ const Form = ({
 						if (!_shouldBeVisible) return;
 					}
 
-					switch (parameter_type_id) {
+					switch (parameter_type_id || paramType) {
 						case ParamType.FIXED:
 							// A fixed value that is not editable: use a hidden input
 							return (
 								<input
 									key={`${name}-${label}-${index}`}
 									type="hidden"
-									value={value}
+									value={paramMetaValue ?? value}
 									{...register(name)}
 								/>
 							);
@@ -158,7 +170,7 @@ const Form = ({
 										</InputLabel>
 									) : null}
 									<Text fontSize={{ base: "xs", md: "sm" }}>
-										{value}
+										{paramMetaValue ?? value}
 									</Text>
 								</div>
 							);
@@ -170,22 +182,197 @@ const Form = ({
 									id={name}
 									maxW="500px"
 								>
-									<Input
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value, ref },
+										}) => (
+											<Input
+												ref={ref}
+												id={name}
+												name={name}
+												label={label}
+												required={required}
+												// isNumInput={true}
+												hideOptionalMark={
+													hideOptionalMark
+												}
+												value={value}
+												step="0.01"
+												type="number"
+												disabled={disabled}
+												labelStyle={labelStyle}
+												size={size}
+												invalid={!!errors[name]}
+												onChange={onChange}
+												{...rest}
+												// {...register(name, {
+												// 	..._validations,
+												// })}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+												)}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
+
+						case ParamType.MOBILE:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value, ref },
+										}) => (
+											<Input
+												ref={ref}
+												id={name}
+												name={name}
+												label={label}
+												placeholder="XXX XXX XXXX"
+												required={required}
+												hideOptionalMark={
+													hideOptionalMark
+												}
+												leftAddon="+91" // TODO: Make dynamic based on country code
+												value={value}
+												// maxW="100%"
+												// onChange={onChangeHandler}
+												maxLength={12}
+												isNumInput={true}
+												inputmode="tel"
+												disabled={disabled}
+												labelStyle={labelStyle}
+												size={size}
+												invalid={!!errors[name]}
+												onChange={onChange}
+												// labelStyle={{
+												// 	color: "light",
+												// }}
+												{...rest}
+												// {...register(name, {
+												// 	..._validations,
+												// })}
+											/>
+										)}
+									/>
+									{/* <TfInput
 										id={name}
 										label={label}
+										paramType={
+											paramType || parameter_type_id
+										}
 										required={required}
 										hideOptionalMark={hideOptionalMark}
 										value={value}
-										step="0.01"
+										step="1"
 										type="number"
-										fontSize="sm"
 										disabled={disabled}
 										labelStyle={labelStyle}
 										size={size}
+										hideErrorMessage
+										// invalid={!!errors[name]}
+										// errorMessage={getFormErrorMessage(
+										// 	name,
+										// 	errors
+										// )}
 										{...rest}
 										{...register(name, {
 											..._validations,
 										})}
+									/> */}
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+												)}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
+
+						case ParamType.OTP:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									{label ? (
+										<InputLabel
+											required={required}
+											hideOptionalMark={hideOptionalMark}
+											{...labelStyle}
+										>
+											{label}
+										</InputLabel>
+									) : null}
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value, ref },
+										}) => (
+											<OtpInput
+												// inputStyle={{
+												// 	w: { base: 12, sm: 14 },
+												// 	h: { base: 12 },
+												// 	fontSize: "sm",
+												// }}
+												ref={ref}
+												id={name}
+												name={name}
+												// label={label}
+												value={value}
+												length={4}
+												onChange={onChange}
+												size={size}
+												disabled={disabled}
+												invalid={!!errors[name]}
+												onEnter={onEnter}
+												onComplete={onEnter}
+												// onComplete={(otp) => {
+												// 	verifyOtpHandler(otp);
+												// }}
+												// onKeyDown={onkeyHandler}
+											/>
+										)}
 									/>
 									<Text
 										fontSize="xs"
@@ -533,15 +720,16 @@ const Form = ({
 									>
 										<Input
 											id={name}
+											name={name}
 											label={label}
 											required={required}
 											value={value}
 											type="text"
 											size={size}
-											fontSize="sm"
 											disabled={disabled}
 											labelStyle={labelStyle}
 											hideOptionalMark={hideOptionalMark}
+											invalid={!!errors[name]}
 											{...rest}
 											{...register(name, {
 												..._validations,

@@ -17,10 +17,12 @@ import { useLogin } from "hooks";
  * @param root0.setLoginType
  * @param root0.setNumber
  * @param root0.setEmail
+ * @param root0.org_token
  * @example	`<GoogleButton></GoogleButton>`
  */
 const GoogleButtonContent = ({
 	org_id,
+	org_token,
 	setStep,
 	setLoginType,
 	setNumber,
@@ -37,6 +39,7 @@ const GoogleButtonContent = ({
 			id_type: "Google",
 			id_token: response?.credential || response?.code,
 			org_id: org_id, // orgDetail?.org_id,
+			org_token: org_token, // orgDetail?.org_token,
 			google_token_type: response?.credential ? "credential" : "code",
 		};
 
@@ -44,7 +47,7 @@ const GoogleButtonContent = ({
 		sessionStorage.setItem("login_type", "Google");
 
 		// Submit login request...
-		submitLogin(postData, "Google");
+		submitLogin(postData);
 		setLoginType("Google");
 		setNumber({
 			original: "",
@@ -129,6 +132,7 @@ const GoogleButtonContent = ({
 const GoogleButton = (args) => {
 	const { orgDetail } = useOrgDetailContext();
 	const org_id = orgDetail?.org_id;
+	const org_token = orgDetail?.org_token;
 
 	const useDefaultGoogleLogin = orgDetail?.login_types?.google?.default
 		? true
@@ -147,7 +151,11 @@ const GoogleButton = (args) => {
 					: orgDetail?.login_types?.google?.client_id
 			}
 		>
-			<GoogleButtonContent org_id={org_id} {...args} />
+			<GoogleButtonContent
+				org_id={org_id}
+				org_token={org_token}
+				{...args}
+			/>
 		</GoogleOAuthProvider>
 	);
 };

@@ -25,7 +25,7 @@ interface ModalProps extends Omit<ChakraModalProps, "children"> {
  * @component
  * @param {ModalProps} props - Properties passed to the component.
  * @param {string} [props.id] - The ID of the modal.
- * @param {string} [props.size] - The size of the modal. Can be 'xs', 'sm', 'md', 'lg', or a custom size string.
+ * @param {string} [props.size] - The size of the modal. Can be 'xs', 'sm', 'md', 'lg', 'full' or a custom size string.
  * @param {React.ReactNode} props.children - The content to be displayed inside the modal.
  * @param {string} props.title - The title of the modal header.
  * @param {boolean} props.isOpen - Boolean indicating whether the modal is open.

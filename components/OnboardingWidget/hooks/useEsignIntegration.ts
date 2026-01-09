@@ -6,7 +6,7 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
-import { ANDROID_ACTION, doAndroidAction } from "utils";
+import { ANDROID_ACTION, doAndroidAction, isAndroidApp } from "utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 interface UseEsignIntegrationProps {
@@ -22,6 +22,7 @@ interface UseEsignIntegrationProps {
 interface UseEsignIntegrationReturn {
 	getSignUrl: () => void;
 	openEsign: () => void;
+	checkEsignStatus: () => void;
 	handleLeegalityCallback: (_res: any) => void;
 	initializeEsignScript: () => void;
 }
@@ -51,7 +52,26 @@ export const useEsignIntegration = ({
 	const toast = useToast();
 
 	/**
+	 * Call EPS API to manually check the eSign status (if no response from eSign library/SDK)
+	 */
+	const checkEsignStatus = useCallback(() => {
+		console.log(
+			"checkEsignStatus:: ",
+			state?.esign?.signUrlData?.document_id
+		);
+
+		onStepSubmit({
+			id: 12,
+			form_data: {
+				document_id: state?.esign?.signUrlData?.document_id,
+				agreement_id: agreementId,
+			},
+		});
+	}, [state]);
+
+	/**
 	 * Fetches the e-signature URL from the backend
+	 * MARK: Get URL
 	 */
 	const getSignUrl = useCallback(() => {
 		fetcher(
@@ -92,9 +112,12 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Handles the leegality callback response
+	 * MARK: Callback
 	 */
 	const handleLeegalityCallback = useCallback(
 		(res) => {
+			console.log("[Esign] Leegality Callback: ", res);
+
 			if (res.error) {
 				toast({
 					title:
@@ -118,8 +141,15 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Opens the e-signature interface based on provider (Signzy/Karza)
+	 * MARK: Open eSign
 	 */
 	const openEsign = useCallback(() => {
+		console.log(
+			"[Esign] openEsign: ",
+			state?.esign?.signUrlData,
+			isAndroidApp()
+		);
+
 		if (
 			state.esign.signUrlData &&
 			state.esign.signUrlData.pipe === agreementProvider.SIGNZY
@@ -130,7 +160,19 @@ export const useEsignIntegration = ({
 			);
 		} else if (
 			state.esign.signUrlData &&
-			state.esign.signUrlData.pipe === agreementProvider.KARZA
+			state.esign.signUrlData.pipe === agreementProvider.LEEGALITY &&
+			(isAndroid || isAndroidApp())
+		) {
+			// HACK 19 NOV 2025: LEEGALITY ANDROID: Temporarily open directly in browser for testing...
+			// TODO: FIX............
+			window.open(
+				state.esign.signUrlData.short_url,
+				"SignAgreementWindow"
+			);
+		} else if (
+			state.esign.signUrlData &&
+			(state.esign.signUrlData.pipe === agreementProvider.KARZA ||
+				state.esign.signUrlData.pipe === agreementProvider.LEEGALITY)
 		) {
 			if (!state.esign.signUrlData.short_url) {
 				toast({
@@ -141,7 +183,13 @@ export const useEsignIntegration = ({
 				return;
 			}
 
-			if (isAndroid) {
+			if (isAndroid || isAndroidApp()) {
+				toast({
+					title: "Please select Leegality Helper App to complete eSign.",
+					status: "info",
+					duration: 2000,
+				});
+
 				doAndroidAction(
 					ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
 					JSON.stringify({
@@ -150,6 +198,11 @@ export const useEsignIntegration = ({
 					})
 				);
 			} else {
+				toast({
+					title: "Continuing to eSign...",
+					status: "info",
+					duration: 2000,
+				});
 				const leegality = new (window as any).Leegality({
 					callback: handleLeegalityCallback,
 					logo: logo,
@@ -162,6 +215,7 @@ export const useEsignIntegration = ({
 
 	/**
 	 * Initializes the leegality script
+	 * MARK: Init Script
 	 */
 	const initializeEsignScript = useCallback(() => {
 		const script = document.createElement("script");
@@ -184,6 +238,7 @@ export const useEsignIntegration = ({
 	return {
 		getSignUrl,
 		openEsign,
+		checkEsignStatus,
 		handleLeegalityCallback,
 		initializeEsignScript,
 	};

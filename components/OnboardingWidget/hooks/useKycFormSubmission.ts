@@ -1,4 +1,5 @@
 import { TransactionIds } from "constants/EpsTransactions";
+import { ONBOARDING_STEP_IDS } from "constants/OnboardingSteps";
 import { useCallback } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
 import { useOnboardingApiSubmission } from "./useOnboardingApiSubmission";
@@ -10,23 +11,23 @@ import { useOnboardingApiSubmission } from "./useOnboardingApiSubmission";
  */
 const getKycInteractionTypeId = (data: FormSubmissionData): number => {
 	switch (data.id) {
-		case 5:
+		case ONBOARDING_STEP_IDS.AADHAAR_CONSENT:
 			return TransactionIds.USER_AADHAR_CONSENT;
-		case 6:
+		case ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER:
 			return TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
-		case 7:
+		case ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY:
 			return TransactionIds.USER_AADHAR_OTP_CONFIRM;
-		case 9:
+		case ONBOARDING_STEP_IDS.BUSINESS:
 			return TransactionIds.USER_ONBOARDING_BUSINESS;
-		case 10:
+		case ONBOARDING_STEP_IDS.SECRET_PIN:
 			return TransactionIds.USER_ONBOARDING_SECRET_PIN;
-		case 12:
+		case ONBOARDING_STEP_IDS.SIGN_AGREEMENT:
 			return TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT;
-		case 16:
+		case ONBOARDING_STEP_IDS.PAN_VERIFICATION_DISTRIBUTOR:
 			return TransactionIds.USER_ONBOARDING_PAN_VERIFICATION;
-		case 20:
+		case ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION:
 			return TransactionIds.USER_AADHAR_OTP_CONFIRM;
-		case 25:
+		case ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT:
 			return TransactionIds.ADD_BANK_ACCOUNT;
 		default:
 			return TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE;
@@ -98,7 +99,7 @@ interface UseKycFormSubmissionProps {
  * Return type for useKycFormSubmission hook
  */
 interface UseKycFormSubmissionReturn {
-	submitForm: (_data: FormSubmissionData) => Promise<void>;
+	submitForm: (_data: FormSubmissionData) => Promise<boolean>;
 	isSubmitting: boolean;
 }
 
@@ -137,30 +138,32 @@ export const useKycFormSubmission = ({
 			// console.log("[AgentOnboarding] processFormData data", bodyData);
 
 			switch (data.id) {
-				case 5: // Aadhaar consent
+				case ONBOARDING_STEP_IDS.AADHAAR_CONSENT:
 					bodyData.form_data.company_name = mobile;
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
-				case 6: // Aadhaar number confirmation
-				case 7: // Aadhaar OTP confirmation
+				case ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER:
+				case ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY:
 					bodyData.form_data.caseId = state.aadhaar.userCode;
 					bodyData.form_data.hold_timeout = "";
 					bodyData.form_data.access_key = state.aadhaar.accessKey;
 
-					if (data.id === 6) {
+					if (
+						data.id === ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER
+					) {
 						actions.setAadhaarNumber(bodyData.form_data.aadhar);
 					} else {
 						bodyData.form_data.aadhar = state.aadhaar.number;
 					}
 					break;
 
-				case 9: // Business details
+				case ONBOARDING_STEP_IDS.BUSINESS:
 					bodyData.form_data.latlong = state.latLong;
 					bodyData.form_data.communication = 1;
 					break;
 
-				case 10: // Pintwin secret PIN
+				case ONBOARDING_STEP_IDS.SECRET_PIN:
 					// Process first OKE key
 					if (
 						data.form_data?.first_okekey &&
@@ -199,12 +202,12 @@ export const useKycFormSubmission = ({
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
-				case 12: // Agreement signing
+				case ONBOARDING_STEP_IDS.SIGN_AGREEMENT:
 					bodyData.form_data.agreement_id = agreementId || "";
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
-				case 20: // Digilocker OTP confirmation
+				case ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION:
 					bodyData.form_data.is_consent = "Y";
 					bodyData.form_data.token_id =
 						state.digilocker.data?.requestId;
