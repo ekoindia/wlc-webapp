@@ -275,7 +275,7 @@ const UsageAnalytics = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, fetchTrendsData]);
+	}, [dateFrom, dateTo]);
 
 	// Transform API data for chart display
 	const chartData = useMemo((): ChartDataItem[] => {

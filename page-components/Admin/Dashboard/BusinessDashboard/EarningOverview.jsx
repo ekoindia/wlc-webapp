@@ -186,7 +186,6 @@ const EarningOverview = ({
 		dateTo,
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
-		fetchEarningOverviewData,
 		setTotalBusiness,
 	]);
 

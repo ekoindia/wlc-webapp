@@ -174,7 +174,7 @@ const MostUsedServices = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, fetchMostUsedServices]);
+	}, [dateFrom, dateTo, productFilter]);
 
 	// Transform API data to display format with labels from productFilterList
 	const servicesDisplayData = useMemo((): ServiceDisplayItem[] => {

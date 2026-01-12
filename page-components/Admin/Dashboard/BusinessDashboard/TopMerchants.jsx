@@ -215,7 +215,6 @@ const TopMerchants = ({
 		productFilter,
 		totalBusiness,
 		businessDashboardData.topMerchantsCache,
-		fetchTopMerchantsOverviewData,
 	]);
 
 	const router = useRouter();

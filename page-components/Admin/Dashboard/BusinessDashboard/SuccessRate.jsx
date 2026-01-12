@@ -125,8 +125,6 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 		cachedSuccessRate,
 		isCacheValid,
 		successRateCache,
-		fetchSuccessRateData,
-		updateSuccessRateCache,
 	]);
 
 	// MARK: jsx
