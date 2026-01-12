@@ -1,5 +1,6 @@
 import { Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
@@ -7,7 +8,6 @@ import { useEffect, useState } from "react";
 import { LuTrophy } from "react-icons/lu";
 import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
-import { DragHandle } from "./DraggableGrid";
 
 /**
  * Process top merchants data for the dashboard
@@ -15,8 +15,9 @@ import { DragHandle } from "./DraggableGrid";
  * MARK: Process
  * @param {Array} merchants - Array of merchant objects
  * @param {number} totalGtv - Total GTV for all merchants
- * @param totalCount
- * @param {0|1|2} decimalPrecision - Decimal precision for percentage calculations. 0 by default.
+ * @param {number} totalCount - Total count of merchants
+ * @param {0|1|2} [decimalPrecision] - Decimal precision for percentage calculations. 0 by default.
+ * @returns {Array} Processed array of merchant data
  */
 const processTopMerchantsData = (
 	merchants,
@@ -110,7 +111,8 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
  * @param {object} props.totalBusiness - Total business data (total GTV, Transaction count, etc).
- * @param props.isDraggable
+ * @param {boolean} [props.isDraggable] - Whether the component is draggable in the grid.
+ * @returns {JSX.Element} The rendered top merchants component
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -207,13 +209,21 @@ const TopMerchants = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, totalBusiness]);
+	}, [
+		dateFrom,
+		dateTo,
+		productFilter,
+		totalBusiness,
+		businessDashboardData.topMerchantsCache,
+		fetchTopMerchantsOverviewData,
+	]);
 
 	const router = useRouter();
 
 	/**
 	 * Open a user's profile by using their registered mobile number
-	 * @param mobile
+	 * @param {string} mobile - The mobile number of the user
+	 * @returns {void}
 	 */
 	const onViewProfile = (mobile) => {
 		router.push(`/admin/my-network/profile?mobile=${mobile}`);
