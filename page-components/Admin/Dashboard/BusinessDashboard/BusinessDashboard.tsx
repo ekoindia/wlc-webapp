@@ -111,11 +111,17 @@ const BusinessDashboard = (): JSX.Element => {
 	>([{ label: "All Products", value: "" }]);
 
 	// Use the shared draggable grid hook
-	const { layouts, handleLayoutChange, containerRef, width, mounted } =
-		useDraggableGrid({
-			storageKey: LAYOUT_STORAGE_KEY,
-			defaultLayouts: DEFAULT_LAYOUTS,
-		});
+	const {
+		layouts,
+		handleLayoutChange,
+		handleDragStop,
+		containerRef,
+		width,
+		mounted,
+	} = useDraggableGrid({
+		storageKey: LAYOUT_STORAGE_KEY,
+		defaultLayouts: DEFAULT_LAYOUTS,
+	});
 
 	// MARK: Fetching Product Filter List from API
 	const [fetchProductFilterList] = useApiFetch(Endpoints.TRANSACTION, {
@@ -196,6 +202,7 @@ const BusinessDashboard = (): JSX.Element => {
 				containerRef={containerRef}
 				mounted={mounted}
 				onLayoutChange={handleLayoutChange}
+				onDragStop={handleDragStop}
 			>
 				{/* Widget components receive isDraggable via cloneElement from DraggableGrid */}
 				{{

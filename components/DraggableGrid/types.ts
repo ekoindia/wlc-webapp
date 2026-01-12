@@ -70,6 +70,8 @@ export interface UseDraggableGridReturn {
 		_currentLayout: Layout,
 		_allLayouts: Partial<Record<string, Layout>>
 	) => void;
+	/** Handler for drag stop - syncs order across breakpoints with debounce */
+	handleDragStop: (_layout: LayoutItem[]) => void;
 	/** Reset layout to default configuration */
 	resetLayout: () => void;
 	/** Ref to attach to container element for width measurement */
@@ -99,6 +101,8 @@ export interface DraggableGridProps {
 		_currentLayout: Layout,
 		_allLayouts: Partial<Record<string, Layout>>
 	) => void;
+	/** Drag stop handler for syncing order across breakpoints */
+	onDragStop?: (_layout: LayoutItem[]) => void;
 	/** Whether grid items are draggable */
 	isDraggable?: boolean;
 	/** Whether grid items are resizable */

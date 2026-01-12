@@ -46,6 +46,7 @@ export const DraggableGrid = ({
 	containerRef,
 	mounted,
 	onLayoutChange,
+	onDragStop,
 	isDraggable = true,
 	isResizable = true,
 	rowHeight = 80,
@@ -75,6 +76,23 @@ export const DraggableGrid = ({
 			</Flex>
 		));
 	}, [children, isDraggable]);
+
+	// Memoize config objects to prevent unnecessary re-renders
+	const dragConfig = useMemo(
+		() => ({
+			enabled: isDraggable,
+			handle: ".drag-handle",
+			cancel: "select, button, input, a, [data-no-drag]",
+		}),
+		[isDraggable]
+	);
+
+	const resizeConfig = useMemo(
+		() => ({
+			enabled: isResizable,
+		}),
+		[isResizable]
+	);
 
 	// Show placeholder while measuring container width
 	if (!mounted || !width) {
@@ -110,15 +128,10 @@ export const DraggableGrid = ({
 				width={width}
 				margin={margin}
 				containerPadding={containerPadding}
-				dragConfig={{
-					enabled: isDraggable,
-					handle: ".drag-handle",
-					cancel: "select, button, input, a, [data-no-drag]",
-				}}
-				resizeConfig={{
-					enabled: isResizable,
-				}}
+				dragConfig={dragConfig}
+				resizeConfig={resizeConfig}
 				onLayoutChange={onLayoutChange}
+				onDragStop={onDragStop}
 			>
 				{gridItems}
 			</ResponsiveGridLayout>
