@@ -10,6 +10,7 @@ import {
 } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
+import { Pintwin } from "tf-components";
 import { getFormErrorMessage } from "utils";
 
 /**
@@ -100,6 +101,60 @@ const Form = ({
 									value={paramMetaValue ?? value}
 									{...register(name)}
 								/>
+							);
+
+						case ParamType.PINTWIN:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{
+											..._validations,
+											validate: (value) => {
+												if (value.length >= 4) {
+													return true;
+												}
+												return false;
+											},
+										}}
+										render={({ field: { onChange } }) => (
+											<Pintwin
+												{...{
+													label,
+													disabled,
+													onPinChange: (
+														pin,
+														encodedPin
+													) => {
+														onChange(
+															encodedPin || pin
+														);
+													},
+													...rest,
+												}}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (Required) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
 							);
 
 						case ParamType.LABEL:

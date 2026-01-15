@@ -11,9 +11,8 @@ import { useRef, useState } from "react";
  * // Custom length OTP input
  * <OtpInput length={4} />
  *
- * // With value and change handlers
+ * // With change handlers
  * <OtpInput
- *   value="1234"
  *   onChange={(value) => console.log('OTP changed:', value)}
  *   onComplete={(value) => console.log('OTP completed:', value)}
  * />
@@ -31,8 +30,6 @@ import { useRef, useState } from "react";
 interface OtpInputProps {
 	/** Number of input fields to display (default: 6) */
 	length?: number;
-	/** Initial OTP value */
-	value?: string;
 	/** Placeholder text for input fields */
 	placeholder?: string;
 	/** Styles for the container Flex component */
@@ -77,7 +74,6 @@ interface OtpInputProps {
  * // Styled OTP input with custom handlers
  * <OtpInput
  *   length={6}
- *   value="123"
  *   onChange={handleOtpChange}
  *   onComplete={handleOtpComplete}
  *   inputStyle={{
@@ -101,7 +97,6 @@ interface OtpInputProps {
  * ```
  */
 const OtpInput: React.FC<OtpInputProps> = ({
-	value,
 	length = 6,
 	placeholder = "",
 	mask = false,
@@ -115,7 +110,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	...rest
 }) => {
 	const inputRef = useRef<(HTMLInputElement | null)[]>([]);
-	const [otp, setOtp] = useState("");
+	const [currentOtp, setCurrentOtp] = useState("");
 	const [activeInputIndex, setActiveInputIndex] = useState<number | null>(
 		null
 	);
@@ -124,7 +119,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	const inputFocusBg =
 		(inputStyle?.focus as Record<string, any>)?.background ||
 		"var(--chakra-colors-focusbg)";
-	const inputBg = (inputStyle?.background as string) || " ";
+	const inputBg = (inputStyle?.background as string) || "";
 
 	/**
 	 * Determines the background color for a specific input field
@@ -133,7 +128,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	 */
 	const getInputBackground = (index: number): string => {
 		// If input has a value, use focus background
-		if (otp[index]) {
+		if (currentOtp[index]) {
 			return inputFocusBg;
 		}
 
@@ -156,13 +151,13 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	 * @param {React.FocusEvent} _e - The focus event
 	 * @param {number} index - The index of the focused input
 	 */
-	const handleFocus = (_e: React.FocusEvent, index: number) => {
+	const handleFocus = (_e: React.FocusEvent, index: number): void => {
 		setActiveInputIndex(index);
 		setIsBackspacePressed(false);
 
 		// Auto-focus to first empty field if clicking on a field beyond current OTP length
-		if (!otp.length || index > otp.length - 1) {
-			const firstEmptyIndex = otp.length;
+		if (!currentOtp.length || index > currentOtp.length - 1) {
+			const firstEmptyIndex = currentOtp.length;
 			if (firstEmptyIndex < length) {
 				inputRef.current[firstEmptyIndex]?.focus();
 				setActiveInputIndex(firstEmptyIndex);
@@ -175,11 +170,11 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	 * @param {React.KeyboardEvent} e - The keyboard event
 	 * @param {number} index - The index of the input field
 	 */
-	const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+	const handleKeyDown = (e: React.KeyboardEvent, index: number): void => {
 		setActiveInputIndex(index);
 
 		if (e.code === "Enter") {
-			onEnter(otp);
+			onEnter(currentOtp);
 		} else if (e.code === "Backspace") {
 			setIsBackspacePressed(true);
 		} else {
@@ -189,20 +184,26 @@ const OtpInput: React.FC<OtpInputProps> = ({
 		onKeyDown(e);
 	};
 
+	/**
+	 * Handles OTP value changes
+	 * @param {string} value - The new OTP value
+	 */
+	const handleChange = (value: string): void => {
+		setCurrentOtp(value);
+		onChange(value);
+	};
+
 	return (
 		<Flex minW={"10rem"} columnGap={"10px"} wrap="wrap" {...containerStyle}>
 			<PinInput
 				autoFocus
 				type="number"
 				otp
-				value={value}
+				value={currentOtp}
 				placeholder={placeholder}
 				manageFocus={true}
 				isDisabled={isDisabled}
-				onChange={(e) => {
-					setOtp(e);
-					onChange(e);
-				}}
+				onChange={handleChange}
 				onComplete={onComplete}
 				mask={mask}
 				{...rest}
@@ -218,7 +219,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 							borderColor="hint"
 							bg={getInputBackground(idx)}
 							borderRadius="10"
-							boxShadow={otp[idx] ? "sh-otpfocus" : ""}
+							boxShadow={currentOtp[idx] ? "sh-otpfocus" : ""}
 							_focus={{
 								boxShadow: "sh-otpfocus",
 								borderColor: "hint",

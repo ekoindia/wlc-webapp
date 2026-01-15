@@ -20,23 +20,55 @@ Object.defineProperty(window, "sessionStorage", {
 });
 
 describe("usePinTwin", () => {
+	const mockResponse = {
+		response_status_id: 0,
+		data: {
+			customer_id_type: "mobile_number",
+			key_id: 39,
+			pintwin_key: "1974856302",
+			id_type: "mobile_number",
+			customer_id: "9002333333",
+		},
+		response_type_id: 2,
+		message: "Success!",
+		status: 0,
+	};
+
+	const mockResponseDifferentKey = {
+		response_status_id: 0,
+		data: {
+			customer_id_type: "mobile_number",
+			key_id: 55,
+			pintwin_key: "0123456789",
+			id_type: "mobile_number",
+			customer_id: "9002333333",
+		},
+		response_type_id: 2,
+		message: "Success!",
+		status: 0,
+	};
+
 	beforeEach(() => {
 		mockedFetcher.mockClear();
+		mockedFetcher.mockReset();
 		mockSessionStorage.clear();
 		mockSessionStorage.getItem.mockReturnValue("test-token");
 		jest.clearAllTimers();
+		jest.useRealTimers();
 	});
 
-	it("should return initial state with loading true", () => {
+	afterEach(() => {
+		jest.useRealTimers();
+		jest.clearAllTimers();
+	});
+
+	it("should return initial state with loading status", () => {
 		const { result } = renderHook(() => usePinTwin());
 
 		expect(result.current).toBeDefined();
-		expect(result.current.pintwinKey).toEqual([]);
-		expect(result.current.loading).toBe(true);
-		expect(result.current.keyLoaded).toBe(false);
-		expect(result.current.keyLoadError).toBe(false);
-		expect(result.current.retryCount).toBe(0);
-		expect(result.current.keyId).toBe("");
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loading");
+		expect(typeof result.current.refreshPinTwinKey).toBe("function");
+		expect(typeof result.current.encodePinTwin).toBe("function");
 	});
 
 	it("should return empty string for encoding if key is not loaded", () => {
@@ -47,26 +79,31 @@ describe("usePinTwin", () => {
 		expect(encodedPin).toBe("");
 	});
 
-	it("should encode pin correctly when key is loaded via mock data", async () => {
+	it("should encode pin correctly when key is loaded", async () => {
 		jest.useFakeTimers();
-		const { result } = renderHook(() => usePinTwin({ useMockData: true }));
+
+		mockedFetcher.mockResolvedValue(mockResponse);
+
+		const { result } = renderHook(() => usePinTwin());
 		expect(result.current).toBeDefined();
+
 		await act(async () => {
 			jest.runAllTimers();
 		});
-		expect(result.current.loading).toBe(false);
-		expect(result.current.keyLoaded).toBe(true);
-		expect(result.current.pintwinKey).toEqual("1974856302".split(""));
-		expect(result.current.keyId).toBe("39");
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loaded");
 		const encodedPin = result.current.encodePinTwin("1234");
-		expect(encodedPin).toBe("8765|39");
+		expect(encodedPin).toBe("9748|39");
 		jest.useRealTimers();
 	});
 
 	it("should encode pin without key ID when pin is empty", async () => {
 		jest.useFakeTimers();
-		const { result } = renderHook(() => usePinTwin({ useMockData: true }));
+
+		mockedFetcher.mockResolvedValue(mockResponse);
+
+		const { result } = renderHook(() => usePinTwin());
 		expect(result.current).toBeDefined();
+
 		await act(async () => {
 			jest.runAllTimers();
 		});
@@ -75,31 +112,50 @@ describe("usePinTwin", () => {
 		jest.useRealTimers();
 	});
 
-	it("should reload key manually with reloadKey", async () => {
+	it("should reload key manually with refreshPinTwinKey", async () => {
 		jest.useFakeTimers();
 		const { result } = renderHook(() => usePinTwin());
 		expect(result.current).toBeDefined();
-		const mockResponse = {
-			response_status_id: 0,
-			data: {
-				customer_id_type: "mobile_number",
-				key_id: 55,
-				pintwin_key: "0123456789",
-				id_type: "mobile_number",
-				customer_id: "9002333333",
-			},
-			response_type_id: 2,
-			message: "Success!",
-			status: 0,
-		};
-		mockedFetcher.mockResolvedValue(mockResponse);
+		mockedFetcher.mockResolvedValue(mockResponseDifferentKey);
 		await act(async () => {
-			await result.current.reloadKey();
+			await result.current.refreshPinTwinKey();
 			jest.runAllTimers();
 		});
-		expect(result.current.keyLoaded).toBe(true);
-		expect(result.current.pintwinKey).toEqual("0123456789".split(""));
-		expect(result.current.keyId).toBe("55");
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loaded");
+		const encodedPin = result.current.encodePinTwin("0123");
+		expect(encodedPin).toBe("0123|55");
 		jest.useRealTimers();
 	});
+
+	it("should handle API error and set error status when manually refreshing", async () => {
+		// Start with a successful mock to let the hook initialize properly
+		mockedFetcher.mockResolvedValue(mockResponse);
+
+		const { result } = renderHook(() => usePinTwin());
+		expect(result.current).toBeDefined();
+
+		// Wait for initial load to complete
+		await act(async () => {
+			await new Promise((resolve) => setTimeout(resolve, 100));
+		});
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loaded");
+
+		// Now mock an error and trigger manual refresh
+		mockedFetcher.mockRejectedValue(new Error("API Error"));
+
+		// Suppress console.error for this test since we expect error logs
+		const originalError = console.error;
+		console.error = jest.fn();
+
+		await act(async () => {
+			await result.current.refreshPinTwinKey();
+			// Wait for all retries to complete (8 retries with 1000ms delays)
+			await new Promise((resolve) => setTimeout(resolve, 9000));
+		});
+
+		// Restore console.error
+		console.error = originalError;
+
+		expect(result.current.pinTwinKeyLoadStatus).toBe("error");
+	}, 15000); // Increase timeout for this test
 });

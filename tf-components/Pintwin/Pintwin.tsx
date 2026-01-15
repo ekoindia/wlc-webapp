@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Tooltip } from "@chakra-ui/react";
+import { Flex, Text, Tooltip } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
 import { OtpInput } from "components/OtpInput";
@@ -8,131 +8,45 @@ import React, { useCallback } from "react";
 
 /**
  * Props for the Pintwin component
- * @example
- * ```typescript
- * // Basic usage with automatic key loading
- * <Pintwin />
- *
- * // Disabled state (non-interactive)
- * <Pintwin disabled={true} />
- *
- * // Using mock data for testing/development
- * <Pintwin useMockData={true} />
- *
- * // Hidden mode (no lookup table shown)
- * <Pintwin noLookup={true} />
- *
- * // With PIN change handler
- * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
- *
- * // Combined configuration
- * <Pintwin
- *   useMockData={true}
- *   disabled={false}
- *   noLookup={false}
- *   onPinChange={handlePinEntry}
- * />
- * ```
  */
 interface PintwinProps {
-	/** Whether the component is disabled and non-interactive */
-	disabled?: boolean;
-	/** Whether to use mock data instead of making API calls */
-	useMockData?: boolean;
-	/** Whether to show the lookup table (if true, component returns null) */
-	noLookup?: boolean;
-	/** Callback function called when PIN is entered or changed */
-	onPinChange?: (_pin: string, _encodedPin?: string) => void;
-	/** Maximum length of PIN (default: 4) */
-	maxLength?: number;
-	/** Placeholder text for PIN input */
-	placeholder?: string;
 	/** Label for the PIN input field */
 	label?: string;
+	/** Whether the component is disabled and non-interactive */
+	disabled?: boolean;
+	/** Callback function called when PIN is entered or changed */
+	onPinChange?: (_pin: string, _encodedPin?: string) => void;
 }
 
 /**
- * Color palette for PinTwin key display
- */
-const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
-
-/**
- * Pintwin Component
+ * A secure PIN input component that uses a PinTwin key grid for entry.
  *
- * A secure PIN lookup display component that shows a PinTwin key grid for secure PIN entry.
- * This is a pure presentational component that uses the `usePinTwin` hook for all business logic
- * including API calls, state management, and PIN encoding functionality.
- *
- * Key Features:
- * - Displays a 10-digit lookup table with colored indicators
- * - Automatic key fetching with retry logic
- * - Manual reload capability with visual feedback
- * - Loading states and error handling
- * - Mock data support for testing
- * - Responsive design with proper accessibility
- *
- * The component shows a grid where each digit (0-9) maps to a randomly generated digit from the server.
- * Users can use this visual lookup table to securely enter their PIN by referencing the corresponding digits.
- * @param {PintwinProps} props Component properties
- * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface, or null if noLookup is true
+ * It relies on the `usePinTwin` hook for its logic, including API calls,
+ * state management, and PIN encoding, functioning as a presentational component.
+ * @param {PintwinProps} props - The props for the component.
+ * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface.
  * @example
- * ```typescript
- * // Basic usage - automatically fetches and displays PinTwin key
+ * ```tsx
+ * Basic usage with automatic key loading
  * <Pintwin />
  *
- * // Development/testing mode with mock data
- * <Pintwin useMockData={true} />
- *
- * // Disabled state (user cannot reload key)
- * <Pintwin disabled={true} />
- *
- * // Hidden mode (useful for secure transactions where visual lookup should be disabled)
- * <Pintwin noLookup={true} />
- *
- * // Complete form integration example
- * import { useState } from 'react';
- * import { Pintwin } from 'tf-components/Pintwin/Pintwin';
- *
- * const PinEntryForm = () => {
- *   const [encodedPin, setEncodedPin] = useState('');
- *
- *   const handlePinChange = (pin, encoded) => {
- *     console.log('PIN entered:', pin);
- *     console.log('Encoded PIN:', encoded);
- *     setEncodedPin(encoded);
- *   };
- *
- *   return (
- *     <form>
- *       <Pintwin
- *         onPinChange={handlePinChange}
- *         maxLength={6}
- *         placeholder="Enter your secure PIN"
- *       />
- *       <input type="hidden" value={encodedPin} name="encoded_pin" />
- *     </form>
- *   );
- * };
- *
- * // Advanced usage with custom configuration
- * <Pintwin
- *   useMockData={process.env.NODE_ENV === 'development'}
- *   disabled={isSubmitting}
- * />
+ * With a PIN change handler
+ * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
  * ```
  */
 const Pintwin: React.FC<PintwinProps> = ({
-	disabled = false,
-	useMockData = false,
-	noLookup = true,
-	onPinChange,
-	maxLength = 4,
 	label = "Secret PIN",
+	disabled = false,
+	onPinChange,
 }) => {
-	const { pintwinKey, reloadKey, encodePinTwin, loading, keyLoadError } =
-		usePinTwin({
-			useMockData,
-		});
+	const { refreshPinTwinKey, encodePinTwin, pinTwinKeyLoadStatus } =
+		usePinTwin();
+
+	// Derive individual status flags from consolidated state for component logic
+	// This maintains component readability while using the cleaner hook interface
+	const loading = pinTwinKeyLoadStatus === "loading";
+	const keyLoadError = pinTwinKeyLoadStatus === "error";
+
 	/**
 	 * Handles PIN input changes (for length tracking only, no encoding)
 	 */
@@ -175,7 +89,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 				<Flex align="center" gap="4">
 					<OtpInput
 						mask={true}
-						length={maxLength}
+						length={4}
 						onChange={handlePinInputChange}
 						onComplete={handlePinComplete}
 						inputStyle={{
@@ -227,7 +141,9 @@ const Pintwin: React.FC<PintwinProps> = ({
 											? "retry"
 											: "insurance"
 								}
-								onClick={keyLoadError ? reloadKey : undefined}
+								onClick={
+									keyLoadError ? refreshPinTwinKey : undefined
+								}
 								iconSize="sm"
 								size="xs"
 								theme="ghost"
@@ -244,38 +160,6 @@ const Pintwin: React.FC<PintwinProps> = ({
 							/>
 						</span>
 					</Tooltip>
-
-					{noLookup ? null : (
-						<Flex
-							align="center"
-							gap={1}
-							opacity={loading ? 0.4 : 1}
-						>
-							{pintwinKey?.map((digit, index) => (
-								<React.Fragment key={index}>
-									<Flex direction="column" align="center">
-										<Text fontSize="sm">{index}</Text>
-										<Box
-											w="1.5em"
-											h="1.5em"
-											border="1px solid"
-											borderRadius="50%"
-											borderColor={PIN_COLORS[index % 2]}
-											bg={PIN_COLORS[index % 2]}
-											display="flex"
-											alignItems="center"
-											justifyContent="center"
-											fontWeight="bold"
-											fontSize="sm"
-											color="gray.800"
-										>
-											{digit}
-										</Box>
-									</Flex>
-								</React.Fragment>
-							))}
-						</Flex>
-					)}
 				</Flex>
 			</Flex>
 		</Flex>
