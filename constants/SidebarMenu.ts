@@ -245,15 +245,16 @@ export const sidebarMenu: sidebarMenuType[] = [
 			"Onboard new users to your network in a assisted manner, one at a time.",
 		featureFlag: "ASSISTED_FULL_ONBOARDING",
 	},
-	{
-		id: 16,
-		label: "Bulk Payout",
-		icon: "send",
-		link: "/products/bulk-payout",
-		summary: "Process bulk fund transfers via Excel upload.",
-		fullDescription:
-			"Upload an Excel file with recipient details to process multiple payouts at once. Track batch status and download reports.",
-	},
+	// {
+	// 	id: 16,
+	// 	label: "Bulk Payout",
+	// 	icon: "send",
+	// 	link: "/products/bulk-payout",
+	// 	summary: "Process bulk fund transfers via Excel upload.",
+	// 	fullDescription:
+	// 		"Upload an Excel file with recipient details to process multiple payouts at once. Track batch status and download reports.",
+	// 	beta: true,
+	// },
 	{
 		id: 215,
 		label: "Product Catalogue",

@@ -1,4 +1,6 @@
 import {
+	Box,
+	Card,
 	Flex,
 	Tab,
 	TabList,
@@ -6,8 +8,8 @@ import {
 	TabPanels,
 	Tabs,
 } from "@chakra-ui/react";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { EkoConnectWidget } from "components/EkoConnectWidget";
+import { useEffect, useState } from "react";
 import BatchHistory from "./components/BatchHistory";
 import UploadRecipients from "./components/UploadRecipients";
 import { BulkPayoutProvider, useBulkPayout } from "./context/BulkPayoutContext";
@@ -17,48 +19,57 @@ import { BulkPayoutProvider, useBulkPayout } from "./context/BulkPayoutContext";
  * Reads customer params from URL query params on mount.
  */
 const BulkPayoutContent = () => {
-	const { activeTab, setTab, setCustomerParams, customerParams } =
-		useBulkPayout();
-	const searchParams = useSearchParams();
+	const { activeTab, setTab, setCustomerParams } = useBulkPayout();
 
-	// Read customer params from URL on mount
+	const [ekoResponseTypeId, setEkoResponseTypeId] = useState<number | null>(
+		null
+	);
+
 	useEffect(() => {
-		const customerId = searchParams.get("customer_id");
-		const customerName = searchParams.get("customer_name");
-		const userCode = searchParams.get("user_code");
+		const onEkoResponse = (event: Event) => {
+			const detail = (event as CustomEvent)?.detail;
+			console.log(
+				"EkoConnect response detail:",
+				detail?.response?.data?.customer_profile?.name,
+				detail?.response?.data?.customer_profile?.mobile
+			);
 
-		if (customerId && customerName && userCode) {
-			setCustomerParams({
-				customerId,
-				customerName: decodeURIComponent(customerName),
-				userCode,
-			});
-		}
-	}, [searchParams, setCustomerParams]);
+			const customerName = detail?.response?.data?.customer_profile?.name;
+			const customerNumber =
+				detail?.response?.data?.customer_profile?.mobile;
+
+			if (customerName && customerNumber) {
+				setCustomerParams({
+					customerName,
+					customerNumber,
+				});
+			}
+
+			const responseTypeId = detail?.response?.response_type_id;
+			const parsedResponseId =
+				typeof responseTypeId === "string"
+					? Number(responseTypeId)
+					: responseTypeId;
+
+			if (Number.isFinite(parsedResponseId)) {
+				setEkoResponseTypeId(parsedResponseId as number);
+			}
+		};
+
+		window.addEventListener(
+			"eko-response",
+			onEkoResponse as unknown as EventListener
+		);
+
+		return () =>
+			window.removeEventListener(
+				"eko-response",
+				onEkoResponse as unknown as EventListener
+			);
+	}, []);
 
 	return (
 		<Flex direction="column" gap="6" w="100%">
-			{/* Show customer info if available */}
-			{customerParams && (
-				<Flex
-					bg="primary.50"
-					p="4"
-					borderRadius="12px"
-					justify="space-between"
-					align="center"
-				>
-					<Flex direction="column" gap="1">
-						<Flex fontSize="sm" color="gray.600">
-							Customer
-						</Flex>
-						<Flex fontWeight="semibold" color="dark">
-							{customerParams.customerName} (
-							{customerParams.customerId})
-						</Flex>
-					</Flex>
-				</Flex>
-			)}
-
 			<Tabs
 				index={activeTab === "upload" ? 0 : 1}
 				onChange={(index) => setTab(index === 0 ? "upload" : "history")}
@@ -92,9 +103,23 @@ const BulkPayoutContent = () => {
 					</Tab>
 				</TabList>
 
-				<TabPanels>
+				<TabPanels p={1}>
 					<TabPanel p="0">
-						<UploadRecipients />
+						<Card
+							maxW="100%"
+							w="100%"
+							h="auto"
+							p={{ base: 2, md: 0 }}
+						>
+							<EkoConnectWidget start_id={10035} paths={[]} />
+						</Card>
+
+						{/* Only show UploadRecipients  when response is 309 */}
+						{ekoResponseTypeId === 309 && (
+							<Box mt="6" mb={{ base: "30%", md: 0 }}>
+								<UploadRecipients />
+							</Box>
+						)}
 					</TabPanel>
 					<TabPanel p="0">
 						<BatchHistory />
@@ -112,7 +137,12 @@ const BulkPayoutContent = () => {
 const BulkPayout = () => {
 	return (
 		<BulkPayoutProvider>
-			<Flex direction="column" w="100%" p={{ base: 4, md: 6 }}>
+			<Flex
+				direction="column"
+				w="100%"
+				py={{ base: 2, md: 6 }}
+				px={{ base: 3, md: 2.5 }}
+			>
 				<BulkPayoutContent />
 			</Flex>
 		</BulkPayoutProvider>

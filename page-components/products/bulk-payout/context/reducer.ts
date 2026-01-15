@@ -5,7 +5,7 @@
  * @module bulk-payout/context/reducer
  */
 
-import { Action, BulkPayoutState, initialState } from "./types";
+import { Action, BulkPayoutState } from "./types";
 
 /**
  * Reducer function for managing Bulk Payout state transitions.
@@ -22,15 +22,6 @@ import { Action, BulkPayoutState, initialState } from "./types";
  * @example
  * // Switch to history tab
  * dispatch({ type: "SET_TAB", tab: "history" });
- * @example
- * // Update batch status during polling
- * dispatch({
- *   type: "UPDATE_BATCH_STATUS",
- *   batchNumber: "BATCH123",
- *   status: "SUCCESS",
- *   successCount: 10,
- *   failureCount: 0
- * });
  */
 export const bulkPayoutReducer = (
 	state: BulkPayoutState,
@@ -57,122 +48,13 @@ export const bulkPayoutReducer = (
 			};
 
 		/**
-		 * SET_UPLOAD_STATUS - Update the current upload operation status.
-		 * Used to track file upload progress.
+		 * SET_PROCESSING_BATCH_COUNT - Update count of batches in PROCESSING status.
+		 * Used when fetching batch history to determine upload availability.
 		 */
-		case "SET_UPLOAD_STATUS":
+		case "SET_PROCESSING_BATCH_COUNT":
 			return {
 				...state,
-				uploadStatus: action.status,
-			};
-
-		/**
-		 * SET_VALIDATION_ERRORS - Set validation errors from file upload.
-		 * Automatically sets uploadStatus to 'error' if errors exist.
-		 */
-		case "SET_VALIDATION_ERRORS":
-			return {
-				...state,
-				validationErrors: action.errors,
-				uploadStatus:
-					action.errors.length > 0 ? "error" : state.uploadStatus,
-			};
-
-		/**
-		 * SET_CURRENT_BATCH - Set batch number after successful upload.
-		 * Automatically sets uploadStatus to 'success' if batch number is set.
-		 */
-		case "SET_CURRENT_BATCH":
-			return {
-				...state,
-				currentBatchNumber: action.batchNumber,
-				uploadStatus: action.batchNumber
-					? "success"
-					: state.uploadStatus,
-			};
-
-		/**
-		 * SET_BATCHES - Replace the entire batch history list.
-		 * Used when fetching batch history from API.
-		 * Also resets isLoadingHistory to false.
-		 */
-		case "SET_BATCHES":
-			return {
-				...state,
-				batches: action.batches,
-				isLoadingHistory: false,
-			};
-
-		/**
-		 * UPDATE_BATCH_STATUS - Update status of a specific batch.
-		 * Used for polling to update batch processing status.
-		 * Only updates the matching batch, preserves others.
-		 */
-		case "UPDATE_BATCH_STATUS":
-			return {
-				...state,
-				batches: state.batches.map((batch) =>
-					batch.batchNumber === action.batchNumber
-						? {
-								...batch,
-								status: action.status,
-								successCount:
-									action.successCount ?? batch.successCount,
-								failureCount:
-									action.failureCount ?? batch.failureCount,
-							}
-						: batch
-				),
-			};
-
-		/**
-		 * SET_LOADING_HISTORY - Set loading state for batch history API.
-		 */
-		case "SET_LOADING_HISTORY":
-			return {
-				...state,
-				isLoadingHistory: action.value,
-			};
-
-		/**
-		 * SET_LOADING - Set general loading state for API calls.
-		 */
-		case "SET_LOADING":
-			return {
-				...state,
-				isLoading: action.value,
-			};
-
-		/**
-		 * SET_ERROR - Set error message to display to user.
-		 * Also sets isLoading to false.
-		 */
-		case "SET_ERROR":
-			return {
-				...state,
-				error: action.message,
-				isLoading: false,
-			};
-
-		/**
-		 * RESET_UPLOAD - Reset only upload-related state.
-		 * Used when user wants to upload another file.
-		 */
-		case "RESET_UPLOAD":
-			return {
-				...state,
-				uploadStatus: "idle",
-				validationErrors: [],
-				currentBatchNumber: null,
-				error: null,
-			};
-
-		/**
-		 * RESET_STATE - Reset entire state to initial values.
-		 */
-		case "RESET_STATE":
-			return {
-				...initialState,
+				processingBatchCount: action.count,
 			};
 
 		/**

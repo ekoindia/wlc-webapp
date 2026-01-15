@@ -114,11 +114,9 @@ export interface BatchDetails extends BatchHistoryItem {
  */
 export interface CustomerParams {
 	/** Customer ID (mobile number) */
-	customerId: string;
+	customerNumber: string;
 	/** Customer display name */
 	customerName: string;
-	/** User code for the customer */
-	userCode: string;
 }
 
 /**
@@ -141,38 +139,8 @@ export interface BulkPayoutState {
 	/** Currently active tab in the main view */
 	activeTab: ActiveTab;
 
-	// =====================
-	// Upload State
-	// =====================
-
-	/** Current upload operation status */
-	uploadStatus: UploadStatus;
-
-	/** Validation errors from file upload */
-	validationErrors: ValidationError[];
-
-	/** Batch number after successful upload */
-	currentBatchNumber: string | null;
-
-	// =====================
-	// History State
-	// =====================
-
-	/** List of batch history records */
-	batches: BatchHistoryItem[];
-
-	/** Loading state for batch history API */
-	isLoadingHistory: boolean;
-
-	// =====================
-	// General UI State
-	// =====================
-
-	/** General loading state for API calls */
-	isLoading: boolean;
-
-	/** Error message to display to user */
-	error: string | null;
+	/** Count of batches currently in PROCESSING status */
+	processingBatchCount: number;
 }
 
 /**
@@ -183,41 +151,21 @@ export interface BulkPayoutState {
 export const initialState: BulkPayoutState = {
 	customerParams: null,
 	activeTab: "upload",
-	uploadStatus: "idle",
-	validationErrors: [],
-	currentBatchNumber: null,
-	batches: [],
-	isLoadingHistory: false,
-	isLoading: false,
-	error: null,
+	processingBatchCount: 0,
 };
 
-/**
- * Action union type for Bulk Payout reducer.
- * Defines all possible actions that can be dispatched to update state.
- * @typedef {object} Action
- * @description Actions available:
- * @property
- * - `SET_CUSTOMER_PARAMS` - Set customer params from URL query params
- * - `SET_TAB` - Switch between upload and history tabs
- * - `SET_UPLOAD_STATUS` - Update file upload status
- * - `SET_VALIDATION_ERRORS` - Set validation errors from file upload
- * - `SET_CURRENT_BATCH` - Set batch number after successful upload
- * - `SET_BATCHES` - Set batch history list
- * - `UPDATE_BATCH_STATUS` - Update status of a specific batch (for polling)
- * - `SET_LOADING_HISTORY` - Set loading state for history API
- * - `SET_LOADING` - Set general loading state
- * - `SET_ERROR` - Set error message
- * - `RESET_STATE` - Reset to initial state
- * - `RESET_UPLOAD` - Reset only upload-related state
- */
 export type Action =
 	| { type: "SET_CUSTOMER_PARAMS"; params: CustomerParams }
 	| { type: "SET_TAB"; tab: ActiveTab }
 	| { type: "SET_UPLOAD_STATUS"; status: UploadStatus }
 	| { type: "SET_VALIDATION_ERRORS"; errors: ValidationError[] }
 	| { type: "SET_CURRENT_BATCH"; batchNumber: string | null }
-	| { type: "SET_BATCHES"; batches: BatchHistoryItem[] }
+	| {
+			type: "SET_BATCHES";
+			batches: BatchHistoryItem[];
+			totalPages: number;
+			totalRecords: number;
+	  }
 	| {
 			type: "UPDATE_BATCH_STATUS";
 			batchNumber: string;
@@ -228,5 +176,8 @@ export type Action =
 	| { type: "SET_LOADING_HISTORY"; value: boolean }
 	| { type: "SET_LOADING"; value: boolean }
 	| { type: "SET_ERROR"; message: string | null }
+	| { type: "SET_CURRENT_PAGE"; page: number }
+	| { type: "SET_PAGE_SIZE"; pageSize: number }
+	| { type: "SET_PROCESSING_BATCH_COUNT"; count: number }
 	| { type: "RESET_STATE" }
 	| { type: "RESET_UPLOAD" };

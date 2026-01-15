@@ -28,4 +28,5 @@
     }
   ],
   "chat.promptFiles": true,
+  "liveServer.settings.port": 5501,
 }

@@ -292,11 +292,11 @@ const Pintwin: React.FC<PintwinProps> = ({
 				retryCountRef.current = newRetryCount;
 				setRetryCount(newRetryCount);
 
-				toast({
-					title: `Failed to load key. Retrying... (${newRetryCount}/${MAX_RETRY_COUNT})`,
-					status: "warning",
-					duration: 3000,
-				});
+				// toast({
+				// 	title: `Failed to load key. Retrying... (${newRetryCount}/${MAX_RETRY_COUNT})`,
+				// 	status: "warning",
+				// 	duration: 3000,
+				// });
 
 				// Clear any existing timeout
 				if (retryTimeoutRef.current) {
@@ -309,19 +309,20 @@ const Pintwin: React.FC<PintwinProps> = ({
 						handleKeyReload();
 					}
 				}, RETRY_DELAY);
-			} else if (isMountedRef.current) {
-				toast({
-					title: "Failed to load PinTwin key after multiple attempts",
-					status: "error",
-					duration: 5000,
-				});
 			}
+			// else if (isMountedRef.current) {
+			// 	toast({
+			// 		title: "Failed to load PinTwin key after multiple attempts",
+			// 		status: "error",
+			// 		duration: 5000,
+			// 	});
+			// }
 		} finally {
 			// if (isMountedRef.current) {
 			setLoading(false);
 			// }
 		}
-	}, [useMockData, onKeyLoadStateChange, onKeyReloaded, toast]);
+	}, [useMockData, onKeyLoadStateChange, onKeyReloaded]);
 
 	/**
 	 * Encodes a PIN using the current PinTwin key

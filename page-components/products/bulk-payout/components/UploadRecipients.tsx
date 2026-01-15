@@ -1,96 +1,188 @@
-import { Box, Flex, Link, Text } from "@chakra-ui/react";
-import { ActionButtonGroup, Dropzone, Icon, InputLabel } from "components";
-import { ParamType } from "constants/trxnFramework";
-import { useUser } from "contexts";
+import { Box, Flex, Link, useToast } from "@chakra-ui/react";
+import {
+	ActionButtonGroup,
+	Card,
+	Dropzone,
+	Icon,
+	InputLabel,
+} from "components";
+import { Endpoints } from "constants/EndPoints";
+import { useSession, useUser } from "contexts";
 import { useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { Form } from "tf-components/Form";
+import { useForm } from "react-hook-form";
+import InputPintwin from "tf-components/InputPintwin";
 import { useBulkPayout } from "../context/BulkPayoutContext";
-import { useBulkPayoutApi } from "../hooks/useBulkPayoutApi";
 
 const SAMPLE_DOWNLOAD_LINK =
-	"https://files.eko.co.in/docs/bulk_payout/sample_bulk_payout.xlsx";
+	"https://files.eko.co.in/docs/sample_files/bulk-upload/bulk_imps_sample.xlsx";
 
-interface UploadFormData {
-	pintwin: string;
-}
+const BULK_PAYOUT_TF_URIS = {
+	PROCESS_RECORDS: "/bulk-payout/process-records",
+} as const;
+
+const TF_ROOT_PATH = "/api/v1";
 
 /**
  * UploadRecipients component for uploading Excel file with recipient data
  * Tab 1 in the main view
+ * @returns {JSX.Element} Upload form component
  */
-const UploadRecipients = () => {
+const UploadRecipients: React.FC = (): JSX.Element => {
 	const [file, setFile] = useState<File | null>(null);
-	const {
-		customerParams,
-		uploadStatus,
-		validationErrors,
-		currentBatchNumber,
-		error,
-		resetUpload,
-	} = useBulkPayout();
-	const { processRecords } = useBulkPayoutApi();
+	const [isUploading, setIsUploading] = useState(false);
+	const { setTab } = useBulkPayout();
+	const { accessToken } = useSession();
 	const { userData } = useUser();
+	const toast = useToast();
+	const [pintwinEncoded, setPintwinEncoded] = useState<string>("");
+	const [pinLength, setPinLength] = useState(0);
+	const { customerParams, processingBatchCount } = useBulkPayout();
+	const [pinResetTrigger, setPinResetTrigger] = useState(0);
 
 	const {
 		handleSubmit,
-		register,
-		control,
 		reset,
-		formState: { errors, isValid },
-	} = useForm<UploadFormData>({
+		formState: { isValid },
+	} = useForm({
 		mode: "onChange",
 	});
 
-	const watcher = useWatch({ control });
+	const canUpload = processingBatchCount < 10;
 
-	const pintwinkParameterList = [
-		{
-			name: "pintwin",
-			label: "Enter Pintwin to Confirm",
-			parameter_type_id: ParamType.PINTWIN,
-			placeholder: "Enter 4-digit pintwin",
-		},
-	];
+	// Limit to 10 concurrent processing batches
+	const uploadLimit = 10;
 
-	const isUploading = uploadStatus === "uploading";
-	const isSuccess = uploadStatus === "success";
-	const hasErrors = uploadStatus === "error";
+	const handleFormSubmit = async () => {
+		if (!file || !accessToken) return;
 
-	const handleFormSubmit = async (data: UploadFormData) => {
-		if (!file) return;
+		// Check if we've exceeded the processing batch limit
+		if (processingBatchCount >= uploadLimit) {
+			toast({
+				title: "Upload Limit Reached",
+				description:
+					"You cannot upload more than 10 files at a time. Please wait for some files to finish processing before uploading another file.",
+				status: "warning",
+				duration: 5000,
+				isClosable: true,
+			});
+			return;
+		}
 
-		// Use customerParams from URL if available, fallback to userData
-		const customerId = customerParams?.customerId || userData?.mobile || "";
-		const userCode = customerParams?.userCode || userData?.user_code || "";
-		const senderName =
-			customerParams?.customerName || userData?.userDetails?.name || "";
+		setIsUploading(true);
 
-		const payload = {
-			bc: "1",
-			sender_name: senderName,
-			source: "NEWCONNECT",
-			locale: "en",
-			user_code: userCode,
-			pintwin: data.pintwin,
-			is_consent: "1",
-			latlong: "0,0,0",
-			version: "v2",
-			client_ref_id:
-				Date.now() + "" + Math.floor(Math.random() * 1000000000),
-			initiator_id: userData?.initiator_id || "",
-			org_id: userData?.org_id || "1",
-			customer_id: customerId,
-			service_code: "45",
-		};
+		try {
+			const userCode = userData?.userDetails?.code;
 
-		await processRecords(file, payload);
-	};
+			const payload = {
+				sender_name: customerParams.customerName,
+				user_code: userCode,
+				pintwin: pintwinEncoded,
+				client_ref_id:
+					Date.now() + "" + Math.floor(Math.random() * 1000),
+				customer_id: customerParams.customerNumber,
+				service_code: "45",
+			};
 
-	const handleNewUpload = () => {
-		setFile(null);
-		reset();
-		resetUpload();
+			const formData = new FormData();
+			formData.append(
+				"formdata",
+				new URLSearchParams(payload).toString()
+			);
+			formData.append("file", file);
+
+			const response = await fetch(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+						"tf-req-uri-root-path": TF_ROOT_PATH,
+						"tf-req-uri": BULK_PAYOUT_TF_URIS.PROCESS_RECORDS,
+						"tf-req-method": "POST",
+						"x-forwarded-proto":
+							process.env.NEXT_PUBLIC_ENV !== "production"
+								? "http"
+								: "https",
+					},
+					body: formData,
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(
+					`HTTP ${response.status}: ${response.statusText}`
+				);
+			}
+
+			const data = await response.json();
+
+			// Handle success case (status: 0)
+			if (data?.status === 0) {
+				toast({
+					title: "Success",
+					description:
+						data?.message || "File upload processed successfully",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+
+				// === RESET STATES AFTER SUCCESS ===
+				setFile(null); // Clear selected file
+				setPintwinEncoded(""); // Clear encoded PIN
+				setPinLength(0); // Reset PIN length
+				setPinResetTrigger((prev) => prev + 1);
+				reset(); // Reset react-hook-form if you add fields later
+
+				// Redirect to batch history tab
+				setTimeout(() => {
+					setTab("history");
+				}, 500);
+			} else if (data?.status === 1) {
+				// Handle failure case (status: 1)
+				const errorMessage = data?.message || "File upload failed";
+
+				// Check if error is PIN-related based on response_type_id
+				// 2413 = Invalid PIN error
+				const isPinError = data?.response_type_id === 2413;
+
+				toast({
+					title: "Upload Failed",
+					description: errorMessage,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+
+				// Always clear the file on failure
+				setFile(null);
+
+				// Only reset PIN if it's a PIN-related error (2413)
+				// For other errors (2410 = duplicate file, etc.), keep PIN valid
+				if (isPinError) {
+					setPintwinEncoded("");
+					setPinLength(0);
+					setPinResetTrigger((prev) => prev + 1);
+				}
+
+				reset();
+			} else {
+				// Unexpected response
+				throw new Error(data?.message || "Unexpected response format");
+			}
+		} catch (error) {
+			const errorMsg =
+				error instanceof Error ? error.message : "Upload failed";
+			toast({
+				title: "Error",
+				description: errorMsg,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsUploading(false);
+		}
 	};
 
 	const buttonConfigList = [
@@ -98,176 +190,88 @@ const UploadRecipients = () => {
 			type: "submit" as const,
 			size: "lg",
 			label: "Upload",
+
 			loading: isUploading,
-			disabled: !file || !isValid || isUploading,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			disabled:
+				pinLength < 4 || !file || !isValid || isUploading || !canUpload,
+			styles: {
+				h: "45px",
+				w: { base: "100%", md: "50%" },
+			},
 		},
 	];
 
-	// Success state
-	if (isSuccess && currentBatchNumber) {
-		return (
-			<Flex direction="column" gap="6" maxW="600px">
-				<Flex
-					bg="green.50"
-					p="6"
-					borderRadius="12px"
-					direction="column"
-					gap="3"
-				>
-					<Flex align="center" gap="2">
-						<Icon name="check-circle" color="green.500" size="md" />
-						<Text fontWeight="semibold" color="green.700">
-							Upload Successful
-						</Text>
-					</Flex>
-					<Text fontSize="sm" color="green.700">
-						Your batch has been submitted for processing.
-					</Text>
-					<Flex
-						bg="green.100"
-						p="3"
-						borderRadius="8px"
-						justify="space-between"
-					>
-						<Text fontSize="sm" color="green.800">
-							Batch Number:
-						</Text>
-						<Text
-							fontSize="sm"
-							fontWeight="semibold"
-							color="green.800"
-						>
-							{currentBatchNumber}
-						</Text>
-					</Flex>
-				</Flex>
-				<ActionButtonGroup
-					buttonConfigList={[
-						{
-							size: "lg",
-							label: "Upload Another File",
-							onClick: handleNewUpload,
-							variant: "outline",
-							styles: { h: "56px", w: "100%" },
-						},
-					]}
-				/>
-			</Flex>
-		);
-	}
-
 	return (
-		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex direction="column" gap="6" maxW="600px">
-				{/* Sample file download */}
-				<Flex direction="column" gap="2">
-					<InputLabel textTransform="none">
-						Download Sample File
-					</InputLabel>
-					<Link
-						href={SAMPLE_DOWNLOAD_LINK}
-						w="fit-content"
-						fontWeight="semibold"
-						isExternal
-						_hover={{ textDecoration: "none" }}
-					>
-						<Flex
-							as="span"
-							align="center"
-							gap="2"
-							color="primary.DEFAULT"
-							fontSize="sm"
+		<form
+			onSubmit={handleSubmit(handleFormSubmit)}
+			onKeyDown={(e) => {
+				if (e.key === "Enter") {
+					e.preventDefault();
+				}
+			}}
+		>
+			<Card maxW="100%" w="100%" h="auto" p={{ base: 4, md: 6 }}>
+				<Flex direction="column" gap="6">
+					{/* Sample file download */}
+					<Flex direction="column" gap="2">
+						<InputLabel textTransform="none">
+							Download Sample File
+						</InputLabel>
+						<Link
+							href={SAMPLE_DOWNLOAD_LINK}
+							w="fit-content"
+							fontWeight="semibold"
+							isExternal
+							_hover={{ textDecoration: "none" }}
 						>
-							<Icon name="file-download" size="sm" />
-							sample_bulk_payout.xlsx
-						</Flex>
-					</Link>
-				</Flex>
-
-				{/* File upload */}
-				<Flex direction="column" gap="2">
-					<InputLabel textTransform="none" required>
-						Upload Recipients List
-					</InputLabel>
-					<Dropzone
-						file={file}
-						setFile={setFile}
-						accept=".xlsx,.xls"
-					/>
-				</Flex>
-
-				{/* Pintwin */}
-				<Form
-					parameter_list={pintwinkParameterList}
-					formValues={watcher}
-					control={control}
-					register={register}
-					errors={errors}
-				/>
-
-				{/* Validation Errors */}
-				{hasErrors && validationErrors.length > 0 && (
-					<Flex
-						bg="red.50"
-						p="4"
-						borderRadius="12px"
-						direction="column"
-						gap="2"
-					>
-						<Flex align="center" gap="2">
-							<Icon
-								name="alert-circle"
-								color="red.500"
-								size="sm"
-							/>
-							<Text
-								fontWeight="semibold"
-								color="red.600"
+							<Flex
+								as="span"
+								align="center"
+								gap="2"
+								color="primary.DEFAULT"
 								fontSize="sm"
 							>
-								Validation Errors
-							</Text>
-						</Flex>
-						<Box maxH="200px" overflowY="auto">
-							{validationErrors.map((err, idx) => (
-								<Flex
-									key={idx}
-									fontSize="xs"
-									color="red.600"
-									py="1"
-									borderBottom={
-										idx < validationErrors.length - 1
-											? "1px solid"
-											: "none"
-									}
-									borderColor="red.100"
-								>
-									<Text minW="60px">
-										Row {err.rowNumber}:
-									</Text>
-									<Text>{err.errors.join(", ")}</Text>
-								</Flex>
-							))}
-						</Box>
+								<Icon name="file-download" size="sm" />
+								sample_bulk_payout.xlsx
+							</Flex>
+						</Link>
 					</Flex>
-				)}
 
-				{/* General Error */}
-				{error && validationErrors.length === 0 && (
-					<Flex
-						bg="red.50"
-						color="red.600"
-						p="3"
-						borderRadius="8px"
-						fontSize="sm"
-					>
-						{error}
+					{/* File upload */}
+					<Flex direction="column" gap="2">
+						<InputLabel textTransform="none" required>
+							Upload File
+						</InputLabel>
+						<Dropzone
+							file={file}
+							setFile={setFile}
+							accept=".xlsx,.xls"
+						/>
 					</Flex>
-				)}
 
-				<ActionButtonGroup buttonConfigList={buttonConfigList} />
-			</Flex>
+					{/* Pintwin */}
+					<Box maxW={{ base: "100%", md: "300px" }}>
+						<InputPintwin
+							label="Secret PIN"
+							lengthMin={4}
+							lengthMax={4}
+							required={true}
+							pintwinApp={true}
+							resetTrigger={pinResetTrigger}
+							// useMockData={true}
+							onChange={(value, masked) => {
+								// if (value.includes("|")) {
+								setPintwinEncoded(value);
+								// }
+								// Track PIN length based on masked value (which shows actual digit count)
+								setPinLength(masked.length);
+							}}
+						/>
+					</Box>
+
+					<ActionButtonGroup buttonConfigList={buttonConfigList} />
+				</Flex>
+			</Card>
 		</form>
 	);
 };

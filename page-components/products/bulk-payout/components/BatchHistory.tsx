@@ -1,7 +1,13 @@
+import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
 import {
+	Avatar,
 	Badge,
 	Box,
 	Flex,
+	HStack,
+	IconButton,
+	keyframes,
+	Spinner,
 	Table,
 	Tbody,
 	Td,
@@ -10,107 +16,335 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import { Button, Icon } from "components";
-import { useUser } from "contexts";
-import { getDateDistance } from "libs/dateFormat";
-import { useCallback, useEffect, useRef } from "react";
-import { useBulkPayout } from "../context/BulkPayoutContext";
-import { BatchStatus } from "../context/types";
-import { useBulkPayoutApi } from "../hooks/useBulkPayoutApi";
+import { Button, Card, Icon, Pagination } from "components";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts";
+import { fetcher } from "helpers/apiHelper";
+import { formatDateTime } from "libs/dateFormat";
+import { useCallback, useEffect, useState } from "react";
+import { saveDataToFile } from "utils";
+import {
+	useBulkPayout,
+	useBulkPayoutContext,
+} from "../context/BulkPayoutContext";
 
-const POLLING_INTERVAL = 5000; // 5 seconds
+// Blinking animation for watch icon
+const blinkAnimation = keyframes`
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.3; }
+`;
+
+interface ApiBatch {
+	batchNumber: string;
+	batchUploadDate: string;
+	customerName: string;
+	totalRecords: number;
+	totalAmount: number;
+	invalidRecords: number;
+	successCount: number;
+	failureCount: number;
+	pendingCount: number;
+	totalRecordsApproved: number;
+}
+
+type BatchStatus = "PROCESSING" | "PROCESSED";
 
 /**
- * Status badge color mapping
- * @param status
+ * Derive batch status from success/failure/pending counts
+ * @param {ApiBatch} batch - Batch data from API
+ * @returns {BatchStatus} Status derived from counts
  */
-const getStatusBadgeProps = (status: BatchStatus) => {
+const deriveBatchStatus = (batch: ApiBatch): BatchStatus => {
+	const processedTotal =
+		batch.successCount +
+		batch.failureCount +
+		batch.pendingCount +
+		batch.invalidRecords;
+
+	if (processedTotal !== batch.totalRecords) return "PROCESSING";
+	return "PROCESSED";
+};
+
+/**
+ * Status badge color mapping with icons
+ * @param {BatchStatus} status - Batch status
+ * @returns {Record<string, string>} Badge props with color scheme, label, and icon
+ */
+const getStatusBadgeProps = (
+	status: BatchStatus
+): { colorScheme: string; label: string; icon: string } => {
 	switch (status) {
-		case "SUCCESS":
-			return { colorScheme: "green", label: "Success" };
 		case "PROCESSING":
-			return { colorScheme: "blue", label: "Processing" };
-		case "FAILED":
-			return { colorScheme: "red", label: "Failed" };
-		case "PARTIAL":
-			return { colorScheme: "yellow", label: "Partial" };
-		case "INITIATED":
+			return {
+				colorScheme: "blue",
+				label: "Processing",
+				icon: "access-time",
+			};
+		case "PROCESSED":
 		default:
-			return { colorScheme: "gray", label: "Initiated" };
+			return {
+				colorScheme: "green",
+				label: "Processed",
+				icon: "check",
+			};
 	}
 };
 
 /**
  * BatchHistory component displaying list of batch uploads
- * Tab 2 in the main view
+ * Shows real data fetched from API with upload date and download functionality
+ * @returns {JSX.Element} Batch history table
  */
-const BatchHistory = () => {
-	const { batches, isLoadingHistory } = useBulkPayout();
-	const { fetchBatchList, fetchBatchStatus, downloadReport } =
-		useBulkPayoutApi();
-	const { userData } = useUser();
-	const pollingRef = useRef<NodeJS.Timeout | null>(null);
+const BatchHistory: React.FC = (): JSX.Element => {
+	const pageSize = 8;
+	const [batches, setBatches] = useState<ApiBatch[]>([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [isLoading, setIsLoading] = useState(false);
+	const [pollingBatchNumbers, setPollingBatchNumbers] = useState<Set<string>>(
+		new Set()
+	);
+	const { accessToken } = useSession();
+	const {
+		state: { activeTab },
+	} = useBulkPayoutContext();
 
-	// Fetch batch list on mount
-	useEffect(() => {
-		if (userData?.user_code && userData?.org_id) {
-			fetchBatchList(userData.user_code, userData.org_id);
-		}
-	}, [userData?.user_code, userData?.org_id, fetchBatchList]);
+	const { setProcessingBatchCount } = useBulkPayout();
 
-	// Polling for PROCESSING batches
-	const pollProcessingBatches = useCallback(() => {
-		const processingBatches = batches.filter(
-			(batch) => batch.status === "PROCESSING"
-		);
-		processingBatches.forEach((batch) => {
-			fetchBatchStatus(batch.batchNumber);
+	/**
+	 * Sort batches: Processing first, then by upload date (newest first)
+	 * @param batchList
+	 */
+	const sortBatches = (batchList: ApiBatch[]): ApiBatch[] => {
+		return [...batchList].sort((a, b) => {
+			const statusA = deriveBatchStatus(a);
+			const statusB = deriveBatchStatus(b);
+
+			// Processing status comes first
+			if (statusA === "PROCESSING" && statusB !== "PROCESSING") return -1;
+			if (statusA !== "PROCESSING" && statusB === "PROCESSING") return 1;
+
+			// Otherwise, sort by date (newest first)
+			const dateA = new Date(a.batchUploadDate).getTime();
+			const dateB = new Date(b.batchUploadDate).getTime();
+			return dateB - dateA;
 		});
-	}, [batches, fetchBatchStatus]);
+	};
 
+	/**
+	 * Fetch single batch data for polling
+	 * @param {string} batchNumber - Batch number to fetch
+	 */
+	const fetchSingleBatch = useCallback(
+		async (batchNumber: string): Promise<ApiBatch | null> => {
+			try {
+				if (!accessToken) return null;
+
+				const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}${Endpoints.TRANSACTION}`;
+				const response = await fetcher(url, {
+					headers: {
+						"tf-req-uri-root-path": "/api/v1",
+						"tf-req-uri": `/bulk-payout/batch?batchNumber=${batchNumber}`,
+						"tf-req-method": "GET",
+					},
+					body: {},
+					token: accessToken,
+				});
+
+				if (response?.status === 0 && response?.batch) {
+					return response.batch;
+				}
+				return null;
+			} catch (error) {
+				console.error(` Failed to fetch batch ${batchNumber}:`, error);
+				return null;
+			}
+		},
+		[accessToken]
+	);
+
+	/**
+	 * Update a single batch in the batches array
+	 * @param {ApiBatch} updatedBatch - Updated batch data
+	 */
+	const updateBatchInList = useCallback(
+		(updatedBatch: ApiBatch) => {
+			setBatches((prevBatches) => {
+				const updatedList = prevBatches.map((batch) =>
+					batch.batchNumber === updatedBatch.batchNumber
+						? updatedBatch
+						: batch
+				);
+				const sortedList = sortBatches(updatedList);
+
+				// Recalculate processing batch count after update
+				const processingCount = sortedList.filter(
+					(batch) => deriveBatchStatus(batch) === "PROCESSING"
+				).length;
+				setProcessingBatchCount(processingCount);
+
+				return sortedList;
+			});
+		},
+		[setProcessingBatchCount]
+	);
+
+	// fetch batches from API
+	const fetchBatches = useCallback(async () => {
+		// const userCode = userData.userDetails.code;
+		// const orgId = userData.userDetails.org_id;
+
+		setIsLoading(true);
+
+		try {
+			if (!accessToken) throw new Error("Access token not found");
+
+			const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}${Endpoints.TRANSACTION}`;
+
+			const response = await fetcher(url, {
+				headers: {
+					"tf-req-uri-root-path": "/api/v1",
+					"tf-req-uri": `/bulk-payout/batch-list?service_code=45`,
+					"tf-req-method": "GET",
+				},
+				body: {},
+				token: accessToken,
+			});
+
+			// console.log("response", response);
+
+			if (response?.status === 0 && Array.isArray(response?.batchList)) {
+				console.log(
+					"Batches received:",
+					response.batchList.length,
+					"items"
+				);
+				const sortedBatches = sortBatches(response.batchList);
+				setBatches(sortedBatches);
+
+				// Identify processing batches and start polling
+				const processingBatches = sortedBatches.filter(
+					(batch) => deriveBatchStatus(batch) === "PROCESSING"
+				);
+				const processingBatchNumbers = new Set(
+					processingBatches.map((batch) => batch.batchNumber)
+				);
+				setPollingBatchNumbers(processingBatchNumbers);
+
+				// Update context with processing batch count
+				setProcessingBatchCount(processingBatches.length);
+			} else {
+				console.warn(
+					" Unexpected response format (no batchList or status != 1)",
+					response
+				);
+				setBatches([]);
+				setProcessingBatchCount(0);
+			}
+		} catch (error) {
+			console.error("Fetch failed:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	}, [accessToken]);
+
+	// ──────────────────────────────────────────────────────────────
+	// Initial load - only when activeTab is "history"
+	// ──────────────────────────────────────────────────────────────
 	useEffect(() => {
-		const hasProcessingBatches = batches.some(
-			(batch) => batch.status === "PROCESSING"
-		);
-
-		if (hasProcessingBatches) {
-			// Start polling
-			pollingRef.current = setInterval(
-				pollProcessingBatches,
-				POLLING_INTERVAL
-			);
-		} else {
-			// Stop polling
-			if (pollingRef.current) {
-				clearInterval(pollingRef.current);
-				pollingRef.current = null;
-			}
+		if (activeTab === "history") {
+			fetchBatches();
 		}
+	}, [fetchBatches, activeTab]);
 
+	// ──────────────────────────────────────────────────────────────
+	// Polling effect for processing batches
+	// ──────────────────────────────────────────────────────────────
+	useEffect(() => {
+		// Only poll if on history tab and have batches to poll
+		if (activeTab !== "history" || pollingBatchNumbers.size === 0) return;
+
+		const intervals: Record<string, NodeJS.Timeout> = {};
+
+		pollingBatchNumbers.forEach((batchNumber) => {
+			intervals[batchNumber] = setInterval(async () => {
+				const updatedBatch = await fetchSingleBatch(batchNumber);
+
+				if (updatedBatch) {
+					updateBatchInList(updatedBatch);
+
+					// Check if batch is now processed
+					const status = deriveBatchStatus(updatedBatch);
+					if (status === "PROCESSED") {
+						// Stop polling for this batch
+						setPollingBatchNumbers((prev) => {
+							const newSet = new Set(prev);
+							newSet.delete(batchNumber);
+							return newSet;
+						});
+					}
+				}
+			}, 5000); // Poll every 5 seconds
+		});
+
+		// Cleanup intervals on unmount or when polling list changes
 		return () => {
-			if (pollingRef.current) {
-				clearInterval(pollingRef.current);
-			}
+			Object.values(intervals).forEach((interval) =>
+				clearInterval(interval)
+			);
 		};
-	}, [batches, pollProcessingBatches]);
+	}, [activeTab, pollingBatchNumbers, fetchSingleBatch, updateBatchInList]);
 
-	const handleDownload = (batchNumber: string) => {
-		downloadReport(batchNumber);
-	};
+	// ──────────────────────────────────────────────────────────────
+	// Refresh handler – now uses the same logic
+	// ──────────────────────────────────────────────────────────────
+	const handleRefresh = useCallback(() => {
+		setCurrentPage(1);
+		fetchBatches();
+	}, [fetchBatches]);
 
-	const handleRefresh = () => {
-		if (userData?.user_code && userData?.org_id) {
-			fetchBatchList(userData.user_code, userData.org_id);
-		}
-	};
+	// Download report for a given batch number
+	const downloadReport = useCallback(
+		async (batchNumber: string) => {
+			try {
+				const data = await fetcher(
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}${Endpoints.TRANSACTION}`,
+					{
+						headers: {
+							"tf-req-uri-root-path": "/api/v1",
+							"tf-req-uri": `/bulk-payout/download?batchNumber=${batchNumber}`,
+							"tf-req-method": "GET",
+						},
+						body: {},
+						token: accessToken,
+					}
+				);
 
-	if (isLoadingHistory) {
-		return (
-			<Flex justify="center" align="center" minH="200px">
-				<Text color="light">Loading batch history...</Text>
-			</Flex>
-		);
-	}
+				const blob = data?.file?.blob;
+				const filename = data?.file?.name ?? "report.xlsx";
+				const type = data?.file?.["content-type"];
+
+				if (blob) {
+					saveDataToFile(blob, filename, type, true);
+				}
+			} catch (error) {
+				console.error("Error downloading batch report", error);
+			}
+		},
+		[accessToken]
+	);
+
+	const handleDownload = useCallback(
+		(batchNumber: string) => {
+			downloadReport(batchNumber);
+		},
+		[downloadReport]
+	);
+
+	// Convert Batches to Paginated Batches Render logic
+	const paginatedBatches = batches.slice(
+		(currentPage - 1) * pageSize,
+		currentPage * pageSize
+	);
 
 	if (batches.length === 0) {
 		return (
@@ -118,13 +352,13 @@ const BatchHistory = () => {
 				direction="column"
 				align="center"
 				justify="center"
-				minH="200px"
+				minH="400px"
 				gap="4"
 			>
 				<Icon name="inbox" size="xl" color="gray.300" />
 				<Text color="light">No batch uploads yet</Text>
 				<Button onClick={handleRefresh} size="sm" variant="ghost">
-					<Icon name="refresh-cw" size="sm" />
+					<Icon name="refresh" size="sm" />
 					&nbsp; Refresh
 				</Button>
 			</Flex>
@@ -132,145 +366,227 @@ const BatchHistory = () => {
 	}
 
 	return (
-		<Flex direction="column" gap="4">
-			{/* Header with refresh */}
+		<Flex direction="column" gap="6">
 			<Flex justify="space-between" align="center">
-				<Text fontWeight="semibold" color="dark">
-					Recent Uploads (Last 30 days)
+				<Text fontWeight="semibold" fontSize="lg" color="dark">
+					Bulk Payout History
 				</Text>
-				<Button onClick={handleRefresh} size="sm" variant="ghost">
-					<Icon name="refresh-cw" size="sm" />
-				</Button>
+				<IconButton
+					aria-label="Refresh"
+					onClick={handleRefresh}
+					icon={<RepeatIcon />}
+					size="sm"
+					variant="ghost"
+					isLoading={isLoading}
+				></IconButton>
 			</Flex>
 
-			{/* Table */}
-			<Box
-				overflowX="auto"
-				borderRadius="12px"
-				border="1px solid"
-				borderColor="divider"
-			>
-				<Table variant="simple" size="sm">
-					<Thead bg="gray.50">
-						<Tr>
-							<Th>Date</Th>
-							<Th>Customer</Th>
-							<Th isNumeric>Records</Th>
-							<Th isNumeric>Amount</Th>
-							<Th>Status</Th>
-							<Th isNumeric>Success</Th>
-							<Th isNumeric>Failed</Th>
-							<Th>Action</Th>
-						</Tr>
-					</Thead>
-					<Tbody>
-						{batches.map((batch) => {
-							const statusProps = getStatusBadgeProps(
-								batch.status
-							);
-							const isProcessing = batch.status === "PROCESSING";
-							const canDownload =
-								batch.status !== "PROCESSING" &&
-								batch.status !== "INITIATED";
+			<Card maxW="100%" w="100%" h="auto" p={{ base: 4, md: 6 }}>
+				<Box overflowX="auto">
+					<Table variant="simple" size="sm">
+						<Thead bg="shade">
+							<Tr>
+								<Th>Upload Date</Th>
+								<Th>Customer</Th>
+								<Th isNumeric>Records</Th>
+								<Th isNumeric>Amount</Th>
+								<Th>Status</Th>
+								<Th isNumeric>Approved</Th>
+								<Th isNumeric>Invalid</Th>
+								<Th isNumeric>Success</Th>
+								<Th isNumeric>Pending</Th>
+								<Th isNumeric>Failed</Th>
+								<Th textAlign="center">Action</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{paginatedBatches.map((batch) => {
+								const totalCount =
+									batch.successCount +
+									batch.failureCount +
+									batch.invalidRecords +
+									batch.pendingCount;
+								const status = deriveBatchStatus(batch);
+								const statusProps = getStatusBadgeProps(status);
+								const isProcessing = status === "PROCESSING";
+								const processedCount = Math.min(
+									totalCount,
+									batch.totalRecords
+								);
+								const canDownload = status === "PROCESSED";
 
-							return (
-								<Tr key={batch.batchNumber}>
-									<Td>
-										<Text fontSize="xs" color="dark">
-											{getDateDistance(
-												batch.createdDate,
-												new Date().toISOString()
-											)}
-										</Text>
-									</Td>
-									<Td>
-										<Text
-											fontSize="xs"
-											fontWeight="medium"
-											color="dark"
-										>
-											{batch.customerName}
-										</Text>
-										<Text fontSize="xs" color="light">
-											{batch.customerNumber}
-										</Text>
-									</Td>
-									<Td isNumeric>
-										<Text fontSize="xs">
-											{batch.totalRecords}
-										</Text>
-									</Td>
-									<Td isNumeric>
-										<Text fontSize="xs" fontWeight="medium">
-											₹
-											{batch.totalAmount.toLocaleString(
-												"en-IN"
-											)}
-										</Text>
-									</Td>
-									<Td>
-										<Badge
-											colorScheme={
-												statusProps.colorScheme
-											}
-											fontSize="xs"
-											px="2"
-											py="0.5"
-											borderRadius="full"
-										>
-											{isProcessing && (
+								return (
+									<Tr key={batch.batchNumber}>
+										<Td>
+											<Text fontSize="sm">
+												{formatDateTime(
+													batch.batchUploadDate
+												)}
+											</Text>
+										</Td>
+										<Td>
+											<HStack gap="3" spacing={0}>
+												<Avatar
+													name={batch.customerName}
+													size="sm"
+													bg="primary.light"
+													color="white"
+													fontSize="xs"
+												/>
+												<Text
+													fontSize="sm"
+													fontWeight="medium"
+													color="dark"
+												>
+													{batch.customerName}
+												</Text>
+											</HStack>
+										</Td>
+										<Td isNumeric>
+											<Text fontSize="sm">
+												{batch.totalRecords}
+											</Text>
+										</Td>
+										<Td isNumeric>
+											<Text
+												fontSize="sm"
+												fontWeight="medium"
+											>
+												₹
+												{batch.totalAmount.toLocaleString(
+													"en-IN"
+												)}
+											</Text>
+										</Td>
+										<Td>
+											<Badge
+												colorScheme={
+													statusProps.colorScheme
+												}
+												justifyContent="center"
+												fontSize="xs"
+												px="2"
+												py="1"
+												borderRadius="full"
+												whiteSpace="nowrap"
+												display="inline-flex"
+												alignItems="center"
+												gap="1"
+											>
 												<Box
 													as="span"
-													display="inline-block"
-													w="6px"
-													h="6px"
-													borderRadius="full"
-													bg="blue.500"
-													mr="1"
-													animation="pulse 1.5s infinite"
-												/>
-											)}
-											{statusProps.label}
-										</Badge>
-									</Td>
-									<Td isNumeric>
-										<Text fontSize="xs" color="green.600">
-											{batch.successCount}
-										</Text>
-									</Td>
-									<Td isNumeric>
-										<Text fontSize="xs" color="red.600">
-											{batch.failureCount}
-										</Text>
-									</Td>
-									<Td>
-										{canDownload ? (
-											<Button
-												size="xs"
-												variant="ghost"
-												onClick={() =>
-													handleDownload(
-														batch.batchNumber
-													)
-												}
+													display="inline-flex"
+													alignItems="center"
+													animation={
+														isProcessing
+															? `${blinkAnimation} 1.5s infinite`
+															: "none"
+													}
+												>
+													<Icon
+														name={statusProps.icon}
+														size="xs"
+													/>
+												</Box>
+												<Text as="span">
+													{statusProps.label}
+												</Text>
+												{isProcessing && (
+													<Text
+														as="span"
+														ml="1"
+														fontWeight="semibold"
+													>
+														{processedCount
+															.toString()
+															.padStart(2, "0")}
+														|
+														{batch.totalRecords
+															.toString()
+															.padStart(2, "0")}
+													</Text>
+												)}
+											</Badge>
+										</Td>
+										<Td isNumeric>
+											<Text
+												fontSize="xs"
+												color="green.600"
 											>
-												<Icon
-													name="download"
-													size="sm"
-												/>
-											</Button>
-										) : (
-											<Text fontSize="xs" color="light">
-												-
+												{batch.totalRecordsApproved}
 											</Text>
-										)}
-									</Td>
-								</Tr>
-							);
-						})}
-					</Tbody>
-				</Table>
-			</Box>
+										</Td>
+										<Td isNumeric>
+											<Text fontSize="xs" color="red.600">
+												{batch.invalidRecords}
+											</Text>
+										</Td>
+										<Td isNumeric>
+											<Text
+												fontSize="xs"
+												color="green.600"
+											>
+												{batch.successCount}
+											</Text>
+										</Td>
+										<Td isNumeric>
+											<Text
+												fontSize="xs"
+												color="yellow.600"
+											>
+												{batch.pendingCount}
+											</Text>
+										</Td>
+										<Td isNumeric>
+											<Text fontSize="xs" color="red.600">
+												{batch.failureCount}
+											</Text>
+										</Td>
+										<Td>
+											<Flex justify="center">
+												{isProcessing ? (
+													<Spinner
+														size="sm"
+														color="blue.500"
+														thickness="2px"
+													/>
+												) : canDownload ? (
+													<IconButton
+														aria-label="Download Report"
+														icon={<DownloadIcon />}
+														size="xs"
+														variant="ghost"
+														onClick={() =>
+															handleDownload(
+																batch.batchNumber
+															)
+														}
+														title="Download Report"
+													/>
+												) : (
+													<Text
+														fontSize="xs"
+														color="light"
+													>
+														-
+													</Text>
+												)}
+											</Flex>
+										</Td>
+									</Tr>
+								);
+							})}
+						</Tbody>
+					</Table>
+				</Box>
+			</Card>
+
+			<Pagination
+				pageSize={pageSize}
+				totalCount={batches.length}
+				currentPage={currentPage}
+				onPageChange={setCurrentPage}
+			/>
 		</Flex>
 	);
 };

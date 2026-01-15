@@ -10,12 +10,9 @@ import { bulkPayoutReducer } from "./reducer";
 import {
 	Action,
 	ActiveTab,
-	BatchHistoryItem,
 	BulkPayoutState,
 	CustomerParams,
 	initialState,
-	UploadStatus,
-	ValidationError,
 } from "./types";
 
 /**
@@ -72,44 +69,8 @@ export const useBulkPayout = () => {
 
 			setTab: (tab: ActiveTab) => dispatch({ type: "SET_TAB", tab }),
 
-			setUploadStatus: (status: UploadStatus) =>
-				dispatch({ type: "SET_UPLOAD_STATUS", status }),
-
-			setValidationErrors: (errors: ValidationError[]) =>
-				dispatch({ type: "SET_VALIDATION_ERRORS", errors }),
-
-			setCurrentBatch: (batchNumber: string | null) =>
-				dispatch({ type: "SET_CURRENT_BATCH", batchNumber }),
-
-			setBatches: (batches: BatchHistoryItem[]) =>
-				dispatch({ type: "SET_BATCHES", batches }),
-
-			updateBatchStatus: (
-				batchNumber: string,
-				status: BatchHistoryItem["status"],
-				successCount?: number,
-				failureCount?: number
-			) =>
-				dispatch({
-					type: "UPDATE_BATCH_STATUS",
-					batchNumber,
-					status,
-					successCount,
-					failureCount,
-				}),
-
-			setLoadingHistory: (value: boolean) =>
-				dispatch({ type: "SET_LOADING_HISTORY", value }),
-
-			setLoading: (value: boolean) =>
-				dispatch({ type: "SET_LOADING", value }),
-
-			setError: (message: string | null) =>
-				dispatch({ type: "SET_ERROR", message }),
-
-			resetUpload: () => dispatch({ type: "RESET_UPLOAD" }),
-
-			resetState: () => dispatch({ type: "RESET_STATE" }),
+			setProcessingBatchCount: (count: number) =>
+				dispatch({ type: "SET_PROCESSING_BATCH_COUNT", count }),
 		}),
 		[dispatch]
 	);
