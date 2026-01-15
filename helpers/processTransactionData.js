@@ -144,6 +144,7 @@ export const processTransactionData = (tmp_lst) => {
 
 		// Remove duplicates...
 		if (
+			interaction_list &&
 			interaction_list.length > 1 &&
 			tmp_lst[i].id === interaction_list[interaction_list.length - 1].id
 		) {
@@ -245,7 +246,7 @@ export const filterTransactionLists = (
 	const trxnList = [];
 	const otherList = [];
 
-	interaction_list.forEach((tx) => {
+	interaction_list?.forEach((tx) => {
 		if (isAdmin) {
 			if (AdminOtherMenuItems.includes(tx.id)) {
 				otherList.push(tx);

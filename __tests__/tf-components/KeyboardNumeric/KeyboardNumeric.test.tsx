@@ -2,7 +2,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
-import { KeyConfig } from "tf-components/KeyboardNumeric/KeyboardNumeric";
+import KeyboardNumeric, {
+	KeyConfig,
+} from "tf-components/KeyboardNumeric/KeyboardNumeric";
 
 // Mock navigator.vibrate
 Object.defineProperty(navigator, "vibrate", {

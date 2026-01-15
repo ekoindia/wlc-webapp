@@ -3,12 +3,13 @@ import { Endpoints } from "constants/EndPoints";
 import { useAppSource, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 
 /**
- *
- * @param login
- * @param setStep
- * @param setEmail
+ * A custom hook to submit login request to the server process the login response (user profile data, tokens, etc)
+ * @param {Function} login - The login function to call
+ * @param {Function} setStep - Function to set the current step in the login process
+ * @param {Function} setEmail - Function to set the email address for social login
  */
 function useLogin(login, setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
@@ -105,6 +106,23 @@ function useLogin(login, setStep, setEmail) {
 						title: "Login failed.",
 						status: "error",
 						duration: 5000,
+					});
+					setStep("LOGIN");
+					return;
+				}
+
+				// Disable onboarding if Self-Onboarding is not allowed
+				if (
+					responseData?.details?.onboarding == 1 &&
+					!responseData?.details?.code &&
+					parseEnvBoolean(
+						process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING
+					)
+				) {
+					toast({
+						title: "User not found!",
+						status: "error",
+						duration: 6000,
 					});
 					setStep("LOGIN");
 					return;

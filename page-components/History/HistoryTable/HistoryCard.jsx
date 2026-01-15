@@ -12,6 +12,7 @@ import {
 	showInPrint,
 	showOnScreen,
 } from ".";
+import { useHistory } from "../HistoryContext";
 
 const animSlideDown = keyframes`
 	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
@@ -26,21 +27,16 @@ const animSlideDown = keyframes`
  * @param {Array} prop.renderer - The renderer functions or components
  * @param {boolean} prop.expanded - Flag indicating if the card is expanded
  * @param {Function} prop.toggleExpand - Function to toggle the expanded state
- * @param {number} prop.visibleColumns - Number of visible columns
+ * @returns {JSX.Element|null} The rendered card component or null if no item
  */
-const HistoryCard = ({
-	item,
-	renderer,
-	expanded,
-	toggleExpand,
-	visibleColumns,
-}) => {
+const HistoryCard = ({ item, renderer, expanded, toggleExpand }) => {
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions || {};
 	const txicon = trxn_type_prod_map?.[item?.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item?.tx_name);
 	const { isAndroid } = useAppSource();
 	const { orgDetail } = useOrgDetailContext();
+	const { mainColumns } = useHistory();
 
 	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
 	const { showRaiseIssueDialog } = useRaiseIssue();
@@ -49,8 +45,11 @@ const HistoryCard = ({
 		return null;
 	}
 
-	const visible = visibleColumns > 0;
-	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
+	// Calculate the number of visible columns from mainColumns in the context
+	// The renderer array corresponds to all columns, mainColumns are the visible ones
+	const visibleColumnsCount = mainColumns?.length || 0;
+	const extraColumns =
+		visibleColumnsCount > 0 ? renderer?.slice(visibleColumnsCount) : [];
 
 	return (
 		<>

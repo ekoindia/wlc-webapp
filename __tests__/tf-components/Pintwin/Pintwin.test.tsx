@@ -8,6 +8,23 @@ jest.mock("hooks/usePinTwin", () => ({
 	usePinTwin: () => mockUsePinTwin(),
 }));
 
+// Mock API helper
+const mockFetcher = jest.fn();
+jest.mock("helpers/apiHelper", () => ({
+	fetcher: (...args) => mockFetcher(...args),
+}));
+
+// Mock sessionStorage
+const mockSessionStorage = {
+	getItem: jest.fn(),
+	setItem: jest.fn(),
+	removeItem: jest.fn(),
+	clear: jest.fn(),
+};
+Object.defineProperty(window, "sessionStorage", {
+	value: mockSessionStorage,
+	writable: true,
+});
 // Mock the OtpInput component
 const MockOtpInput = jest.fn();
 jest.mock("components/OtpInput", () => ({

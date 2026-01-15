@@ -1,9 +1,9 @@
-import React from "react";
-import { Flex, Text, ButtonGroup, IconButton, Box } from "@chakra-ui/react";
-import { Button, Icon, Modal } from "components";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { Button, Icon, Modal, SegmentedControl } from "components";
 import { useFeatureFlag } from "hooks";
-import { Form } from "tf-components";
+import React from "react";
 import { MdAccountTree, MdOutlineTableRows } from "react-icons/md";
+import { Form } from "tf-components";
 
 /**
  * A NetworkToolbar page-component
@@ -42,7 +42,7 @@ const NetworkToolbar = ({
 
 	return (
 		<Flex
-			gap="2"
+			gap={{ base: "2px", md: 2 }}
 			w="100%"
 			wrap={true}
 			// justify="space-between"
@@ -56,57 +56,29 @@ const NetworkToolbar = ({
 		>
 			{/* MARK: Switch View */}
 			{isTreeViewEnabled ? (
-				<ButtonGroup
-					size={size}
-					borderColor="primary.DEFAULT"
-					borderWidth={2}
-					borderRadius={8}
-					isAttached
-					variant="outline"
-				>
-					<IconButton
-						aria-label="Show List View"
-						title="List View"
-						icon={<MdOutlineTableRows />}
-						borderRadius={8}
-						color={viewType === "list" ? "#FFF" : "#666"}
-						// borderColor="#999"
-						borderWidth={2}
-						bg={
-							viewType === "list"
-								? "primary.DEFAULT"
-								: "transparent"
-						}
-						_hover={{
-							bg:
-								viewType === "list"
-									? "primary.DEFAULT"
-									: "white",
-						}}
-						onClick={() => setViewType("list")}
-					/>
-					<IconButton
-						aria-label="Show Tree View"
-						title="Tree View"
-						icon={<MdAccountTree />}
-						borderRadius={8}
-						color={viewType === "list" ? "#666" : "#FFF"}
-						// borderColor="#999"
-						borderWidth={2}
-						bg={
-							viewType === "tree"
-								? "primary.DEFAULT"
-								: "transparent"
-						}
-						_hover={{
-							bg:
-								viewType === "tree"
-									? "primary.DEFAULT"
-									: "white",
-						}}
-						onClick={() => setViewType("tree")}
-					/>
-				</ButtonGroup>
+				<SegmentedControl
+					segments={[
+						{
+							id: 0,
+							value: "list",
+							label: "List View",
+							icon: <MdOutlineTableRows />,
+						},
+						{
+							id: 1,
+							value: "tree",
+							label: "Tree View",
+							icon: <MdAccountTree />,
+						},
+					]}
+					value={viewType}
+					onChange={(value) => setViewType(value)}
+					equalWidth={false}
+					minSegmentWidth={"40px"}
+					size="md"
+					minWidth="80px"
+					hideLabelsOnMobile
+				/>
 			) : null}
 
 			{/* MARK: Spacer */}
@@ -153,6 +125,11 @@ const NetworkToolbar = ({
 							icon,
 							parameter_list,
 							handleSubmit,
+							Component,
+							columns,
+							hiddenColumns,
+							onToggle,
+							onReset,
 							register,
 							control,
 							errors,
@@ -163,6 +140,7 @@ const NetworkToolbar = ({
 							secondaryButtonAction,
 							secondaryButtonText,
 							styles,
+							desktopOnly,
 						}) => (
 							<React.Fragment key={id}>
 								<Button
@@ -174,6 +152,11 @@ const NetworkToolbar = ({
 										)
 									}
 									{...styles}
+									display={
+										desktopOnly
+											? { base: "none", md: "flex" }
+											: "flex"
+									}
 								>
 									<Icon name={icon} size="sm" />
 									&nbsp;
@@ -189,50 +172,59 @@ const NetworkToolbar = ({
 									onClose={() => setOpenModalId(null)}
 									title={label}
 								>
-									<form
-										onSubmit={handleSubmit(
-											handleFormSubmit
-										)}
-									>
-										<Flex
-											direction="column"
-											w="100%"
-											gap="8"
-											mb="4"
+									{Component ? (
+										<Component
+											columns={columns}
+											hiddenColumns={hiddenColumns}
+											onToggle={onToggle}
+											onReset={onReset}
+										/>
+									) : (
+										<form
+											onSubmit={handleSubmit(
+												handleFormSubmit
+											)}
 										>
-											<Form
-												{...{
-													parameter_list,
-													register,
-													control,
-													formValues,
-													errors,
-													hideOptionalMark: true,
-												}}
-											/>
-											<Flex gap="4">
-												<Button
-													w="100%"
-													size="lg"
-													variant="link"
-													color="primary.dark"
-													onClick={
-														secondaryButtonAction
-													}
-												>
-													{secondaryButtonText}
-												</Button>
-												<Button
-													w="100%"
-													size="lg"
-													type="submit"
-													loading={isSubmitting}
-												>
-													{submitButtonText}
-												</Button>
+											<Flex
+												direction="column"
+												w="100%"
+												gap="8"
+												mb="4"
+											>
+												<Form
+													{...{
+														parameter_list,
+														register,
+														control,
+														formValues,
+														errors,
+														hideOptionalMark: true,
+													}}
+												/>
+												<Flex gap="4">
+													<Button
+														w="100%"
+														size="lg"
+														variant="link"
+														color="primary.dark"
+														onClick={
+															secondaryButtonAction
+														}
+													>
+														{secondaryButtonText}
+													</Button>
+													<Button
+														w="100%"
+														size="lg"
+														type="submit"
+														loading={isSubmitting}
+													>
+														{submitButtonText}
+													</Button>
+												</Flex>
 											</Flex>
-										</Flex>
-									</form>
+										</form>
+									)}
 								</Modal>
 							</React.Fragment>
 						)

@@ -51,7 +51,6 @@ const Table = ({
 	const {
 		mainColumns,
 		extraColumns,
-		visibleColumns,
 		expandedRow,
 		aggregatedData,
 		setExpandedRow,
@@ -99,7 +98,6 @@ const Table = ({
 					renderer={renderer}
 					expanded={expandedRow === index}
 					toggleExpand={() => toggleExpand(index)}
-					visibleColumns={visibleColumns}
 				/>
 			</Box>
 		));

@@ -1,9 +1,24 @@
 import { Head, Html, Main, NextScript } from "next/document";
+import Script from "next/script";
 
+/**
+ *
+ */
 export default function Document() {
 	return (
 		<Html lang="en" className="customScrollbars">
-			<Head />
+			<Head>
+				{/* Copy React UI context for AI Prompts in Development (Hold Ctrl/Cmd + C): https://github.com/aidenybai/react-grab */}
+				{process.env.NEXT_PUBLIC_ENV === "development" ? (
+					<Script
+						src="//unpkg.com/react-grab/dist/index.global.js"
+						crossOrigin="anonymous"
+						strategy="beforeInteractive"
+					/>
+				) : (
+					""
+				)}
+			</Head>
 			<body>
 				<Main />
 				<NextScript />

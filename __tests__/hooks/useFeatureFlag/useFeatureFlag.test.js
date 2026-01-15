@@ -341,4 +341,22 @@ describe("useFeatureFlag hook", () => {
 		expect(result1.current[0]).toBe(true);
 		expect(result2.current[0]).toBe(true);
 	});
+
+	test("handles inverted feature name via hook parameter", () => {
+		const { result } = renderHook(() => useFeatureFlag("!TEST_FEATURE"));
+		// TEST_FEATURE is enabled hence inverted should be false
+		expect(result.current[0]).toBe(false);
+	});
+
+	test("checkFeatureFlag supports inverted logic", () => {
+		const { result } = renderHook(() => useFeatureFlag("TEST_FEATURE"));
+		const [, checkFeatureFlag] = result.current;
+
+		// Underlying TEST_FEATURE true => inverted false
+		expect(checkFeatureFlag("!TEST_FEATURE")).toBe(false);
+		// Underlying DISABLED_FEATURE false => inverted true
+		expect(checkFeatureFlag("!DISABLED_FEATURE")).toBe(true);
+		// Undefined feature returns false internally => inverted true
+		expect(checkFeatureFlag("!UNDEFINED_FEATURE")).toBe(true);
+	});
 });

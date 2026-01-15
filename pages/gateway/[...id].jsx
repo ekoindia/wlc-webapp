@@ -1,5 +1,5 @@
+import { GatewayWidget } from "components/GatewayWidget";
 import { LayoutGateway } from "layout-components";
-import { GatewayWidget } from "components";
 import { useRouter } from "next/router";
 
 const GatewayPage = () => {

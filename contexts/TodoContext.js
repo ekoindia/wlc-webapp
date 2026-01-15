@@ -1,4 +1,4 @@
-import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
+import { useCopilotAction, useCopilotInfo } from "libs";
 import React, {
 	createContext,
 	useContext,
@@ -110,7 +110,7 @@ export const TodoProvider = ({ children }) => {
 
 	// MARK: Copilot
 	// Define AI Copilot readable state for the todo list
-	useCopilotReadable({
+	useCopilotInfo({
 		description: "List of notes or todos created by the user",
 		value: JSON.stringify(todos),
 	});
@@ -141,55 +141,61 @@ export const TodoProvider = ({ children }) => {
 		},
 	});
 	// Add Copilot action to toggle a todo's done state
-	useCopilotAction({
-		name: "toggle-todo-done",
-		description:
-			"Toggle the done state of a todo. Provide the `id` of the todo to toggle.",
-		parameters: [
-			{
-				name: "id",
-				type: "number",
-				description: "The ID of the todo to toggle.",
-				required: true,
+	useCopilotAction(
+		{
+			name: "toggle-todo-done",
+			description:
+				"Toggle the done state of a todo. Provide the `id` of the todo to toggle.",
+			parameters: [
+				{
+					name: "id",
+					type: "number",
+					description: "The ID of the todo to toggle.",
+					required: true,
+				},
+			],
+			handler: async ({ id }) => {
+				console.log("[Copilot] Toggling todo with ID:", id);
+				if (typeof id !== "number" || id < 1) {
+					throw new Error("Invalid ID provided.");
+				}
+				const todo = getTodo(id);
+				if (!todo) {
+					throw new Error("Note not found.");
+				}
+				toggleTodoDone(id);
 			},
-		],
-		handler: async ({ id }) => {
-			console.log("[Copilot] Toggling todo with ID:", id);
-			if (typeof id !== "number" || id < 1) {
-				throw new Error("Invalid ID provided.");
-			}
-			const todo = getTodo(id);
-			if (!todo) {
-				throw new Error("Note not found.");
-			}
-			toggleTodoDone(id);
 		},
-	});
+		todos && todos.length > 0 ? false : true // Disable action if no todos exist
+	);
 	// Add Copilot action to delete a todo
-	useCopilotAction({
-		name: "delete-todo",
-		description:
-			"Delete a note/todo from the list. Provide the `id` of the todo to delete.",
-		parameters: [
-			{
-				name: "id",
-				type: "number",
-				description: "The ID of the todo to delete.",
-				required: true,
+	useCopilotAction(
+		{
+			name: "delete-todo",
+			description:
+				"Delete a note/todo from the list. Provide the `id` of the todo to delete.",
+			parameters: [
+				{
+					name: "id",
+					type: "number",
+					description: "The ID of the todo to delete.",
+					required: true,
+				},
+			],
+			handler: async ({ id }) => {
+				console.log("[Copilot] Deleting todo with ID:", id);
+				if (typeof id !== "number" || id < 1) {
+					throw new Error("Invalid ID provided.");
+				}
+				const todo = getTodo(id);
+				if (!todo) {
+					throw new Error("Note not found.");
+				}
+				deleteTodo(id);
 			},
-		],
-		handler: async ({ id }) => {
-			console.log("[Copilot] Deleting todo with ID:", id);
-			if (typeof id !== "number" || id < 1) {
-				throw new Error("Invalid ID provided.");
-			}
-			const todo = getTodo(id);
-			if (!todo) {
-				throw new Error("Note not found.");
-			}
-			deleteTodo(id);
 		},
-	});
+		todos && todos.length > 0 ? false : true // Disable action if no todos exist
+	);
 
 	/**
 	 * The value provided to the todo context.

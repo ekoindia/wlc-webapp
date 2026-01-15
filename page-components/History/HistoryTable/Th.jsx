@@ -45,7 +45,8 @@ const Th = ({ columns, isExpandable }) => {
 					xl: isMultiLine ? "4px 1em" : "8px 1em",
 				}}
 				w={item.width || "auto"}
-				fontSize={{ base: "xxs", lg: "xs" }}
+				fontSize={{ base: "xxs", xl: "0.7em" }}
+				fontWeight="semibold"
 				cursor="default"
 			>
 				<Tooltip

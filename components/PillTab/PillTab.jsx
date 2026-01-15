@@ -1,16 +1,18 @@
 import { Flex } from "@chakra-ui/react";
 /**
- * Function to add id to each object of the list
+ * Function to add id to each object of the list & filter out objects which are not visible
  * @param {Array} list
  * @returns {Array}
  */
 const getProcessedList = (list) => {
-	return list?.map((item, index) => {
-		return {
-			...item,
-			_id: index,
-		};
-	});
+	return list
+		?.map((item, index) => {
+			return {
+				...item,
+				_id: index,
+			};
+		})
+		.filter((item) => item.visible !== false);
 };
 
 /**
@@ -24,12 +26,14 @@ const getProcessedList = (list) => {
  */
 const PillTab = ({ list, currTab, onClick, ...rest }) => {
 	const tabList = getProcessedList(list);
-	const visibleTabList = tabList.filter((item) => item.visible !== false);
+
+	if (!tabList?.length) return null;
+
 	return (
 		<Flex
 			p="0.5"
-			gap={{ base: visibleTabList?.length > 2 ? "2" : "0", md: "4" }}
-			// w={visibleTabList?.length > 2 ? "auto" : "100%"}
+			gap={{ base: tabList?.length > 2 ? "2" : "0", md: "4" }}
+			// w={tabList?.length > 2 ? "auto" : "100%"}
 			minW="100%"
 			h={{ base: "36px", md: "40px" }}
 			bg={{ base: "divider", md: "inherit" }}
@@ -37,7 +41,7 @@ const PillTab = ({ list, currTab, onClick, ...rest }) => {
 			justify={{ base: "space-between", md: "flex-start" }}
 			{...rest}
 		>
-			{visibleTabList?.map(({ label, visible = true }, index) => {
+			{tabList?.map(({ label, visible = true }, index) => {
 				if (!visible) return;
 				const isActive = index === currTab;
 				return (
@@ -46,7 +50,7 @@ const PillTab = ({ list, currTab, onClick, ...rest }) => {
 						justify="center"
 						align="center"
 						minW={{
-							base: visibleTabList?.length > 2 ? "100px" : "50%",
+							base: tabList?.length > 2 ? "100px" : "50%",
 							md: "120px",
 						}}
 						p="0 1em"

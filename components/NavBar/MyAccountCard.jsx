@@ -3,9 +3,15 @@ import { TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import { getChatGptAgentUrl } from "helpers";
-import { useClipboard, useFeatureFlag, useRaiseIssue } from "hooks";
+import {
+	useAbout,
+	useClipboard,
+	useFeatureFlag,
+	useRaiseIssue,
+	useUserTypes,
+} from "hooks";
 import { useRouter } from "next/router";
-import { clearCacheAndReload } from "utils";
+import { clearCacheAndReload, formatMobile } from "utils";
 import { AdminViewToggleCard, IcoButton, Icon } from "..";
 
 /**
@@ -106,13 +112,16 @@ const ContactItem = ({ iconName, value, onCopy, isCopied, actionButton }) => (
  * @param {object} props - Component props
  * @param {() => void} props.onLogout - Logout handler function
  * @param {() => void} props.onClearCache - Clear cache and reload handler function
+ * @param {() => void} props.showAbout - Show About dialog handler function
+ * @param {() => void} props.onClose - Close handler function
  * @returns {JSX.Element} - Rendered logout section component
  */
-const LogoutSection = ({ onLogout, onClearCache }) => (
+const LogoutSection = ({ onLogout, onClearCache, showAbout, onClose }) => (
 	<Flex
 		w="100%"
 		align="center"
 		justify="space-between"
+		gap="3"
 		cursor="pointer"
 		px="4"
 		py="3"
@@ -137,6 +146,8 @@ const LogoutSection = ({ onLogout, onClearCache }) => (
 				Logout
 			</Text>
 		</Flex>
+
+		{/* Clear Cache & Reload */}
 		<Tooltip label="Clear Cache & Reload" placement="left" hasArrow>
 			<Flex
 				w="36px"
@@ -153,6 +164,29 @@ const LogoutSection = ({ onLogout, onClearCache }) => (
 				onClick={onClearCache}
 			>
 				<Icon name="reload" size="16px" color="gray.600" />
+			</Flex>
+		</Tooltip>
+
+		{/* Show About Dialog */}
+		<Tooltip label="About This App" placement="left" hasArrow>
+			<Flex
+				w="36px"
+				h="36px"
+				align="center"
+				justify="center"
+				bg="gray.100"
+				borderRadius="10px"
+				transition="all 0.2s ease"
+				_hover={{
+					bg: "gray.200",
+					transform: "scale(1.05)",
+				}}
+				onClick={() => {
+					showAbout();
+					onClose();
+				}}
+			>
+				<Icon name="info-outline" size="16px" color="gray.600" />
 			</Flex>
 		</Tooltip>
 	</Flex>
@@ -174,23 +208,36 @@ const MyAccountCard = ({ onClose }) => {
 		isAdmin,
 		logout,
 		isOnboarding,
-		UserTypeLabel,
+		userType,
+		userTypeLabel,
 		userData,
 		isLoggedIn,
 	} = useUser();
 	const { showRaiseIssueDialog } = useRaiseIssue();
-	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE_GENERIC");
 	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
-		"RAISE_ISSUE_SBIKIOSK"
+		"RAISE_ISSUE_GENERIC_SBIKIOSK"
 	);
 	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT_LINK");
 	const { orgDetail } = useOrgDetailContext();
 
-	const { userDetails } = userData;
-	const { name, code, email, mobile } = userDetails ?? {};
+	const { userDetails } = userData ?? {};
+	const { name, code, email, mobile, user_id } = userDetails ?? {};
 	const router = useRouter();
 	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
+
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
+	const userIdLabel = login_meta?.user_id_label ?? "User ID";
+
+	const { getUserCodeLabel } = useUserTypes();
+	const userCodeLabel = getUserCodeLabel(userType);
+
+	const { showAbout } = useAbout();
+
+	// const effective_user_id = user_id || code;
 
 	const gptAgentUrl = isChatGptAgentAllowed
 		? getChatGptAgentUrl({
@@ -329,7 +376,7 @@ const MyAccountCard = ({ onClose }) => {
 									</Text>
 								) : null}
 
-								{UserTypeLabel ? (
+								{userTypeLabel ? (
 									<Text
 										fontSize="12px"
 										color="rgba(255, 255, 255, 0.8)"
@@ -338,15 +385,62 @@ const MyAccountCard = ({ onClose }) => {
 										whiteSpace="nowrap"
 										overflow="hidden"
 										textOverflow="ellipsis"
-										title={UserTypeLabel || ""}
+										title={userTypeLabel || ""}
 										letterSpacing="0.5px"
 										lineHeight="1.2"
 									>
-										{UserTypeLabel}
+										{userTypeLabel}
 									</Text>
 								) : null}
 
-								{code && code > 1 ? (
+								{/* Custom User-ID (Employee Code, etc) */}
+								{isMobileMappedUserId && user_id ? (
+									<Flex
+										align="center"
+										gap="2"
+										bg="rgba(255, 255, 255, 0.2)"
+										px="3"
+										py="1.5"
+										borderRadius="full"
+										cursor="pointer"
+										transition="all 0.2s ease"
+										border="1px solid rgba(255, 255, 255, 0.2)"
+										backdropFilter="blur(10px)"
+										boxShadow="0 4px 12px rgba(0, 0, 0, 0.2)"
+										w="fit-content"
+										_hover={{
+											bg: "rgba(255, 255, 255, 0.3)",
+											transform: "translateY(-2px)",
+											boxShadow:
+												"0 6px 16px rgba(0, 0, 0, 0.25)",
+										}}
+										onClick={() => copy(user_id)}
+									>
+										<Text
+											fontSize="11px"
+											color="rgba(255, 255, 255, 0.95)"
+											fontWeight="semibold"
+											textShadow="0 1px 2px rgba(0, 0, 0, 0.3)"
+										>
+											{userIdLabel}: {user_id}
+										</Text>
+										<Icon
+											name={
+												state[user_id]
+													? "check"
+													: "content-copy"
+											}
+											size="12px"
+											color="rgba(255, 255, 255, 0.95)"
+											filter="drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
+										/>
+									</Flex>
+								) : null}
+
+								{/* User Code (Show only when a custom User-ID is not available) */}
+								{isMobileMappedUserId !== true &&
+								code &&
+								("" + code).length > 2 ? (
 									<Flex
 										align="center"
 										gap="2"
@@ -374,7 +468,7 @@ const MyAccountCard = ({ onClose }) => {
 											fontWeight="semibold"
 											textShadow="0 1px 2px rgba(0, 0, 0, 0.3)"
 										>
-											ID: {code}
+											{userCodeLabel}: {code}
 										</Text>
 										<Icon
 											name={
@@ -391,7 +485,7 @@ const MyAccountCard = ({ onClose }) => {
 							</Flex>
 						</Flex>
 
-						{/* Contact Information - Below dual-tone overlay */}
+						{/* Contact Information — Below dual-tone overlay */}
 						<Flex
 							direction="column"
 							gap="3"
@@ -402,7 +496,7 @@ const MyAccountCard = ({ onClose }) => {
 							{mobile && mobile > 1 ? (
 								<ContactItem
 									iconName="phone"
-									value={`+91 ${mobile.slice(0, 5)} ${mobile.slice(5)}`}
+									value={formatMobile(mobile)}
 									onCopy={() => copy(mobile)}
 									isCopied={state[mobile]}
 									actionButton={
@@ -587,6 +681,8 @@ const MyAccountCard = ({ onClose }) => {
 					<LogoutSection
 						onLogout={() => logout({ isForced: true })}
 						onClearCache={() => clearCacheAndReload(true)}
+						showAbout={showAbout}
+						onClose={onClose}
 					/>
 				</Flex>
 			</Box>

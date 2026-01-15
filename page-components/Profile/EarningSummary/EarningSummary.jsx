@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
-import { useEarningSummary } from "contexts";
+import { useEarningSummary, useWallet } from "contexts";
 import { WidgetBase } from "page-components/Home";
 import { Fragment } from "react";
 
@@ -12,9 +12,14 @@ import { Fragment } from "react";
  */
 const EarningSummary = ({ ...rest }) => {
 	const data = useEarningSummary();
+	const { isWalletVisible } = useWallet();
 	// console.log("DataAtEarn", data);
 
 	if (!data) {
+		return null;
+	}
+
+	if (!isWalletVisible) {
 		return null;
 	}
 

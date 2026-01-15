@@ -16,10 +16,13 @@ import { useCallback, useEffect, useState } from "react";
  */
 const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 	const { login } = useUser();
-	const { orgDetail } = useOrgDetailContext();
 	const [loading, submitLogin] = useLogin(login, setStep);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail ?? {};
+	const { login_meta } = metadata ?? {};
+	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 
 	const [Otp, setOtp] = useState("");
 	const [timer, setTimer] = useState(30);
@@ -35,6 +38,9 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 
 	// console.log(timer);
 
+	/**
+	 * Helper function to reset the OTP resend timer
+	 */
 	const resetTimer = function () {
 		if (!timer || timer <= 0) {
 			setTimer(30);
@@ -44,12 +50,14 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 	const resendOtpHandler = async () => {
 		if (previewMode === true) return;
 		resetTimer();
-		const otp_sent = await sendOtpRequest(
+		const { otp_sent } = await sendOtpRequest(
 			orgDetail.org_id,
 			number.original,
 			toast,
 			"resend",
-			isAndroid
+			isAndroid,
+			isMobileMappedUserId,
+			orgDetail.org_token
 		);
 		if (!otp_sent) {
 			// OTP failed..back to previous screen
@@ -62,11 +70,15 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 		if (loading) return;
 		if (!(_otp || Otp)) return;
 
+		const _mobile = number?.verified ?? number?.original;
+
 		submitLogin({
 			id_type: "Mobile",
-			mobile: number.original,
+			mobile: _mobile,
 			id_token: _otp || Otp,
 			org_id: orgDetail.org_id,
+			org_token: orgDetail.org_token,
+			// ...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
 		});
 	};
 
@@ -106,25 +118,28 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 				fontSize={{ base: "sm", "2xl": "lg" }}
 				align="center"
 			>
-				<Flex align="center" wrap="wrap" userSelect="none">
-					<Text>Sent on&nbsp;</Text>
-					<Center as="b">
-						+91 {number.formatted}
-						<IcoButton
-							iconName="mode-edit"
-							size="sm"
-							theme="primary"
-							ml={2}
-							onClick={() =>
-								setStep(
-									loginType === "Mobile"
-										? "LOGIN"
-										: "GOOGLE_VERIFY"
-								)
-							}
-						/>
-					</Center>
-				</Flex>
+				{/* Hide "Sent on +91 ...." if the number is a user-id instead of mobile number */}
+				{isMobileMappedUserId ? null : (
+					<Flex align="center" wrap="wrap" userSelect="none">
+						<Text>Sent on&nbsp;</Text>
+						<Center as="b">
+							+91 {number.formatted}
+							<IcoButton
+								iconName="mode-edit"
+								size="sm"
+								theme="primary"
+								ml={2}
+								onClick={() =>
+									setStep(
+										loginType === "Mobile"
+											? "LOGIN"
+											: "GOOGLE_VERIFY"
+									)
+								}
+							/>
+						</Center>
+					</Flex>
+				)}
 			</Flex>
 
 			<Flex w="full" align="center" justify="center">

@@ -6,7 +6,7 @@
  * @see https://date-fns.org/v2.30.0/docs/I18n
  * @see https://date-fns.org/v2.30.0/docs/Unicode-Tokens
  */
-import { format } from "date-fns";
+import { format, formatDistance } from "date-fns";
 
 const DEFAULT_FORMAT = "dd/MM/yyyy";
 
@@ -70,4 +70,28 @@ export const getWhenString = (date) => {
 	}
 
 	return "";
+};
+
+/**
+ * Return the distance between the given dates in words.
+ * @param {string} date - The date to compare
+ * @param {string} baseDate - The base date to compare against
+ * @param {object} [options] - Options to pass to formatter function
+ * @param {boolean} [options.addSuffix] - Whether to add suffix to the result like "ago" or "in"
+ * @param {boolean} [options.includeSeconds] - Whether to include seconds in the output
+ * @param {string} [options.locale] - Locale to use for formatting
+ * @returns {string} - The distance between the dates in words
+ * @example
+ * getDateDistance("2022-01-01", "2022-01-02"); // "1 day ago"
+ * getDateDistance("2022-01-02", "2022-01-01", { addSuffix: false }); // "in 1"
+ */
+export const getDateDistance = (date, baseDate, options = {}) => {
+	if (!date || !baseDate) return "";
+
+	const distance = formatDistance(new Date(date), new Date(baseDate), {
+		addSuffix: true,
+		includeSeconds: false,
+		...options,
+	});
+	return distance;
 };

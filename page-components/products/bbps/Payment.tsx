@@ -128,7 +128,7 @@ export const Payment = () => {
 		const paymentRequest = {
 			...searchFormData,
 			amount: totalAmount,
-			payment_amount_breakup: selectedBills.map((bill) => ({
+			paymentamountbreakup: selectedBills.map((bill) => ({
 				billid: bill.billid,
 				bill_payment_amount: bill.amount,
 			})),
@@ -143,7 +143,7 @@ export const Payment = () => {
 		}
 
 		// Validate that the sum of bill amounts equals total amount
-		const sumOfBillAmounts = paymentRequest.payment_amount_breakup.reduce(
+		const sumOfBillAmounts = paymentRequest.paymentamountbreakup.reduce(
 			(sum, item) => sum + item.bill_payment_amount,
 			0
 		);

@@ -1,4 +1,8 @@
-import { formatCurrency, getCurrencySymbol } from "utils/numberFormat";
+import {
+	formatCurrency,
+	formatMobile,
+	getCurrencySymbol,
+} from "utils/numberFormat";
 
 describe("formatCurrency", () => {
 	describe("default arguments", () => {
@@ -58,5 +62,43 @@ describe("getCurrencySymbol", () => {
 
 	it("should return empty string for unknown currency code", () => {
 		expect(getCurrencySymbol("XXX")).toBe("");
+	});
+});
+
+describe("formatMobile", () => {
+	it("formats number with default country code", () => {
+		expect(formatMobile(8765432345)).toBe("+91 876 543 2345");
+	});
+
+	it("formats string with default country code", () => {
+		expect(formatMobile("8765432345")).toBe("+91 876 543 2345");
+	});
+
+	it("formats with custom country code (string)", () => {
+		expect(formatMobile(8765432345, "1")).toBe("+1 876 543 2345");
+	});
+
+	it("formats with custom country code (number)", () => {
+		expect(formatMobile("8765432345", 44)).toBe("+44 876 543 2345");
+	});
+
+	it("handles numbers shorter than 10 digits", () => {
+		expect(formatMobile(12345)).toBe("+91 12345");
+	});
+
+	it("handles null/undefined/empty/0 input", () => {
+		expect(formatMobile(null)).toBe("");
+		expect(formatMobile(undefined)).toBe("");
+		expect(formatMobile("")).toBe("");
+		expect(formatMobile(0)).toBe("");
+	});
+
+	it("strips non-digit characters", () => {
+		expect(formatMobile("(876)543-2345")).toBe("+91 876 543 2345");
+	});
+
+	it("handles countryCode = null/undefined", () => {
+		expect(formatMobile(8765432345, null)).toBe("+91 876 543 2345");
+		expect(formatMobile(8765432345, undefined)).toBe("+91 876 543 2345");
 	});
 });

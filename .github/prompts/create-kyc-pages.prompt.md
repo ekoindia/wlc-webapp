@@ -1,6 +1,6 @@
 ---
 mode: 'agent'
-tools: ['codebase','file:KycVerificationTools.tsx']
+tools: ['file:KycVerificationTools.tsx']
 description: 'Generate a new React page for a KYC API integration'
 ---
 Your goal is to generate new pages with forms to integrate a KYC API.

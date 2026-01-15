@@ -35,7 +35,7 @@ const AiChatWidget = dynamic(() => import("./AiChatWidget"), {
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Home></Home>` TODO: Fix example
  */
-const Home = () => {
+const Home = ({ ...rest }) => {
 	const { isLoggedIn } = useSession();
 	const { todos, deleteTodo, toggleTodoDone } = useTodos();
 
@@ -120,14 +120,15 @@ const Home = () => {
 
 			<Grid
 				templateColumns={{
-					base: "repeat(auto-fit,minmax(280px,1fr))",
-					md: "repeat(auto-fit,minmax(340px,1fr))",
+					base: "repeat(auto-fill,minmax(280px,1fr))",
+					md: "repeat(auto-fill,minmax(340px,1fr))",
 					// xl: "repeat(auto-fit,minmax(440px,1fr))",
 				}}
 				justifyContent="center"
 				py={{ base: "20px", md: "0px" }}
 				gap={{ base: 4, lg: 5, "2xl": 8 }}
 				width={"100%"}
+				{...rest}
 			>
 				{widgets.map(({ id, component: Component }) => (
 					<Component key={id} />

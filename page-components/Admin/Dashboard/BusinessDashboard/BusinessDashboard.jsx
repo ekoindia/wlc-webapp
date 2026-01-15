@@ -1,12 +1,7 @@
 import { Flex, Grid } from "@chakra-ui/react";
-import {
-	Endpoints,
-	ProductRoleConfiguration,
-	UserTypeIcon,
-	UserTypeLabel,
-} from "constants";
+import { Endpoints, ProductRoleConfiguration, UserTypeIcon } from "constants";
 import { useUser } from "contexts";
-import { useApiFetch, useDailyCacheState } from "hooks";
+import { useApiFetch, useDailyCacheState, useUserTypes } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
@@ -26,6 +21,7 @@ const BusinessDashboard = () => {
 	const { role_list } = userDetails;
 
 	const [dateRange, setDateRange] = useState("today");
+	const [totalBusiness, setTotalBusiness] = useState({});
 
 	const { cachedTodaysDateTo, setCachedTodaysDateTo } = useDashboard();
 
@@ -38,11 +34,13 @@ const BusinessDashboard = () => {
 		[dateRange]
 	);
 
+	const { getUserTypeLabel } = useUserTypes();
+
 	const productFilterList = useMemo(() => {
 		const productListWithRoleList =
 			ProductRoleConfiguration?.products ?? [];
 
-		const allOption = { label: "All", value: "" };
+		const allOption = { label: "All Products", value: "" };
 
 		if (!role_list || productListWithRoleList.length === 0) {
 			return [allOption];
@@ -71,7 +69,8 @@ const BusinessDashboard = () => {
 		},
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.totalActiveData || [];
-			const activeAgentsList = transformActiveAgentsData(_data) ?? [];
+			const activeAgentsList =
+				transformActiveAgentsData(_data, getUserTypeLabel) ?? [];
 			setActiveAgents(activeAgentsList);
 		},
 	});
@@ -106,6 +105,7 @@ const BusinessDashboard = () => {
 					dateFrom={prevDate}
 					dateTo={_currDate}
 					productFilterList={productFilterList}
+					setTotalBusiness={setTotalBusiness}
 				/>
 
 				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
@@ -115,6 +115,7 @@ const BusinessDashboard = () => {
 				dateFrom={prevDate}
 				dateTo={_currDate}
 				productFilterList={productFilterList}
+				totalBusiness={totalBusiness}
 			/>
 		</Flex>
 	);
@@ -125,26 +126,63 @@ export default BusinessDashboard;
 /**
  * Transforms API response into a format compatible with the component.
  * @param {object} apiData - The raw data from the API response.
+ * @param {Function} getUserTypeLabel - Function to get user type label by ID.
  * @returns {Array} A formatted array of objects for rendering.
  */
-const transformActiveAgentsData = (apiData) => {
+const transformActiveAgentsData = (apiData, getUserTypeLabel) => {
 	if (!apiData || typeof apiData !== "object") return [];
 
-	return Object.entries(apiData)
+	const agentsData = Object.entries(apiData)
 		.map(([key, data]) => {
-			const userType = UserTypeLabel[key]; // Get label from mapping
+			const userType = getUserTypeLabel(key); // Get label from mapping
 			const userTypeIcon = UserTypeIcon[key];
 			if (!userType) return null; // Ignore unknown user types
+			if (!data) return null; // Ignore if no data is present
+
+			const activeCount = parseInt(data.activecount, 10);
+			const totalCount = parseInt(data.totalcount, 10);
+
+			if (!activeCount) return null;
 
 			return {
 				key: `active${userType.replace(/\s+/g, "")}`, // Convert to camelCase
 				label: `Active ${userType}(s)`,
-				value: parseInt(data.activecount, 10), // Ensure numeric value
+				value: activeCount, // Ensure numeric value
 				type: "number",
 				// variation: `${(data.activecount / data.totalcount) * 100}`,
-				info: `of ${data.totalcount} Total`,
+				total: totalCount,
+				info: `of ${totalCount} Total`,
 				icon: userTypeIcon ?? "person",
 			};
 		})
 		.filter(Boolean); // Remove null values
+
+	// If only one data point, don't calculate total...
+	if (agentsData?.length <= 1) {
+		return agentsData;
+	}
+
+	// Calculate total active & total overall agents...
+	const totalAgents = agentsData.reduce(
+		(sum, agent) => {
+			sum.active += agent.value;
+			sum.total += agent.total;
+			return sum;
+		},
+		{ active: 0, total: 0 }
+	);
+
+	return [
+		{
+			key: `activeOverall`,
+			label: `Total Active Users`,
+			value: totalAgents.active,
+			type: "number",
+			// variation: `${(data.activecount / data.totalcount) * 100}`,
+			info: `of ${totalAgents.total} Total`,
+			total: totalAgents.total,
+			icon: "",
+		},
+		...agentsData,
+	];
 };

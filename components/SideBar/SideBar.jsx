@@ -246,6 +246,7 @@ const SideBarMenu = ({
 
 						{/* {isAdmin && <AdminViewToggleCard />} */}
 
+						{/* Show status card (auto-hides if `Add E-value` is not allowed and balance is 0) */}
 						<StatusCard />
 
 						{/* Fixed menu items */}

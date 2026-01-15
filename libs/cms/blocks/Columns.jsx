@@ -1,5 +1,4 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import { DropZone } from "@measured/puck";
 import { bgColors } from "../options";
 import { Section } from "../Section";
 
@@ -27,6 +26,9 @@ export const Columns = {
 					col.span ? Math.max(Math.min(col.span, 12), 1) : "auto"
 				}`,
 			arrayFields: {
+				content: {
+					type: "slot",
+				},
 				span: {
 					label: "Span (1-12)",
 					type: "number",
@@ -43,7 +45,7 @@ export const Columns = {
 	},
 	defaultProps: {
 		dist: "auto",
-		cols: [{}, {}],
+		cols: [{ content: [] }, { content: [] }],
 	},
 	render: ({ cols, dist, bg }) => {
 		return (
@@ -61,7 +63,7 @@ export const Columns = {
 					// minH="0"
 					// minW="0"
 				>
-					{cols.map(({ span }, idx) => (
+					{cols.map(({ content: Content, span }, idx) => (
 						<GridItem
 							// minH="50px"
 							// minW="100px"
@@ -73,7 +75,11 @@ export const Columns = {
 									: 1
 							}
 						>
-							<DropZone zone={`column-${idx}`} />
+							<Content minEmptyHeight={256} />
+							{/* <DropZone
+								zone={`column-${idx}`}
+								minEmptyHeight={128}
+							/> */}
 						</GridItem>
 					))}
 				</Grid>

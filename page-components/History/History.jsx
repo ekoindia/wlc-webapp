@@ -18,8 +18,12 @@ import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { ANDROID_ACTION, calculateDateBefore, doAndroidAction } from "utils";
-import { saveDataToFile } from "utils/FileSave";
+import {
+	ANDROID_ACTION,
+	calculateDateBefore,
+	doAndroidAction,
+	saveDataToFile,
+} from "utils";
 import { HistoryTable, HistoryToolbar, ToggleColumns } from ".";
 import { HistoryProvider } from "./HistoryContext";
 import {
@@ -720,10 +724,6 @@ const History = ({ forNetwork = false }) => {
 		watcherExport.tx_date,
 	]);
 
-	// How many columns to show in the table (for self or network history)
-	// TODO: REDUNDANT. Calculate visible columns in HistoryCard (mobile view) directly from history_parameter_metadata
-	const visibleColumns = forNetwork ? 7 : 11;
-
 	const processedData = useMemo(
 		() => getHistoryTableProcessedData(transactionList),
 		[transactionList]
@@ -752,7 +752,6 @@ const History = ({ forNetwork = false }) => {
 			<HistoryProvider
 				historyParameterMetadata={history_parameter_metadata}
 				data={trxn_data}
-				initialVisibleColumns={visibleColumns}
 				initialIsFiltered={isFiltered}
 				forNetwork={forNetwork}
 				onClearFilter={clearFilter}
@@ -761,7 +760,7 @@ const History = ({ forNetwork = false }) => {
 					w="full"
 					h="auto"
 					p={{
-						base: "0px",
+						base: "16px",
 						md: "20px",
 						"2xl": "14px 30px 30px 30px",
 					}}
@@ -771,7 +770,6 @@ const History = ({ forNetwork = false }) => {
 					boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
 					align="center"
 					bg={{ base: "none", md: "white" }}
-					px="16px"
 					sx={{
 						"@media print": {
 							padding: "0 !important",

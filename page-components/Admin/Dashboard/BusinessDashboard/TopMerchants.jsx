@@ -1,10 +1,63 @@
-import { Divider, Flex, Select, Text } from "@chakra-ui/react";
+import { Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
 import { Endpoints } from "constants";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useFeatureFlag } from "hooks";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { LuTrophy } from "react-icons/lu";
+import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
 
+/**
+ * Process top merchants data for the dashboard
+ * - Add cumulative GTV, and other relevant metrics like percentages
+ * MARK: Process
+ * @param {Array} merchants - Array of merchant objects
+ * @param {number} totalGtv - Total GTV for all merchants
+ * @param totalCount
+ * @param {0|1|2} decimalPrecision - Decimal precision for percentage calculations. 0 by default.
+ */
+const processTopMerchantsData = (
+	merchants,
+	totalGtv,
+	totalCount,
+	decimalPrecision = 0
+) => {
+	// Calculate cumulative metrics
+	let cumulativeGtv = 0;
+
+	const processedData = merchants.map((m) => {
+		cumulativeGtv += +m?.gtv ?? 0;
+
+		return {
+			...m,
+			gtvPercent:
+				totalGtv > 0
+					? (((+m?.gtv ?? 0) / totalGtv) * 100).toFixed(
+							decimalPrecision
+						)
+					: 0,
+			countPercent:
+				totalCount > 0
+					? (
+							((+m?.totalTransactions ?? 0) / totalCount) *
+							100
+						).toFixed(decimalPrecision)
+					: 0,
+			gtvCumulative: cumulativeGtv,
+			gtvCumulativePercent:
+				totalGtv > 0 && cumulativeGtv > 0
+					? ((cumulativeGtv / totalGtv) * 100).toFixed(
+							decimalPrecision
+						)
+					: 0,
+		};
+	});
+
+	return processedData;
+};
+
+// TODO: Redundant. used only for the old generic table
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
@@ -55,6 +108,7 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
+ * @param {object} props.totalBusiness - Total business data (total GTV, Transaction count, etc).
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -62,10 +116,36 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
+const TopMerchants = ({
+	dateFrom,
+	dateTo,
+	productFilterList,
+	totalBusiness,
+}) => {
 	const [productFilter, setProductFilter] = useState("");
-	const [topMerchantsData, setTopMerchantsData] = useState([]);
+	const [topMerchantsData, setTopMerchantsData] = useState([]); // Actual/cached list of top merchants
+	const [processedMerchantData, setProcessedMerchantData] = useState([]); // Processed list of top-merchants with pre-calculated cumulative sum. percentage, etc
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+
+	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+
+	/**
+	 * Prepare the topMerchantData for dashboard...
+	 */
+	useEffect(() => {
+		if (!topMerchantsData || topMerchantsData.length === 0) {
+			setProcessedMerchantData([]);
+			return;
+		}
+
+		setProcessedMerchantData(
+			processTopMerchantsData(
+				topMerchantsData,
+				totalBusiness?.gtv?.amount ?? 0,
+				totalBusiness?.transactions?.transactions ?? 0
+			)
+		);
+	}, [topMerchantsData, totalBusiness]);
 
 	// Fetching Top Merchants Data
 	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
@@ -96,6 +176,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 		}
 	);
 
+	// Init the component by fetching data from cache or API
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
@@ -123,8 +204,19 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter]);
+	}, [dateFrom, dateTo, productFilter, totalBusiness]);
 
+	const router = useRouter();
+
+	/**
+	 * Open a user's profile by using their registered mobile number
+	 * @param mobile
+	 */
+	const onViewProfile = (mobile) => {
+		router.push(`/admin/my-network/profile?mobile=${mobile}`);
+	};
+
+	// MARK: jsx
 	return (
 		<Flex
 			direction="column"
@@ -141,16 +233,22 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				gap={{ base: "2", md: "4" }}
 				w="100%"
 			>
-				<Text fontSize="xl" fontWeight="semibold">
-					GTV-wise Top Retailers
-				</Text>
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuTrophy color="#e27c7c" />
+					GTV Leaderboard
+				</Flex>
 
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
-						size="sm"
+						size="xs"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>
@@ -160,14 +258,40 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 					</Select>
 				</Flex>
 			</Flex>
-			<Divider />
-			<Flex direction="column">
-				{topMerchantsData?.length > 0 ? (
-					<Table
-						data={topMerchantsData}
-						renderer={topMerchantsTableParameterList}
-						isLoading={isLoading}
-					/>
+			{/* <Divider /> */}
+
+			{/* Top-merchants horizontal dual bar chart (GTV % & Transactions %) */}
+
+			<Flex direction="column" align="center" gap="4">
+				{processedMerchantData?.length > 0 ? (
+					showNewDashboard ? (
+						// New table with graphs & enhanced UI
+						<>
+							<TopMerchantsChart
+								agentList={processedMerchantData}
+								onViewProfile={onViewProfile}
+							/>
+							<TopMerchantsTable
+								data={processedMerchantData}
+								totalGtv={+totalBusiness?.gtv?.amount ?? 0}
+								totalTransactions={
+									+totalBusiness?.transactions
+										?.transactions ?? 0
+								}
+								isLoading={isLoading}
+								onViewProfile={onViewProfile}
+							/>
+						</>
+					) : (
+						// Old generic table
+						<Table
+							data={topMerchantsData}
+							renderer={topMerchantsTableParameterList}
+							isLoading={isLoading}
+							width="100%"
+							maxWidth="100%"
+						/>
+					)
 				) : (
 					<Text
 						color="gray.500"

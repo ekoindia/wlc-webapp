@@ -13,8 +13,9 @@ import {
 } from "helpers";
 import { useAppLink, useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
-import { useCopilotAction, useCopilotReadable } from "libs";
+import { useCopilotAction, useCopilotInfo } from "libs";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { parseEnvBoolean } from "utils/envUtils";
 import { limitText } from "utils/textFormat";
 import { useSession } from ".";
 
@@ -164,17 +165,18 @@ const MenuProvider = ({ children }) => {
 	// Also generate KBar actions for transactions and menu links.
 	// MARK: Process Interactions
 	useEffect(() => {
-		const interactionList = interactions?.interaction_list;
-		const roleTxList = interactions?.role_tx_list;
+		const interactionList = interactions?.interaction_list ?? [];
+		const roleTxList = interactions?.role_tx_list ?? {};
 
-		if (!interactionList || !roleTxList) {
-			setAppLists({
-				menuList: [],
-				trxnList: [],
-				otherList: [],
-			});
-			return;
-		}
+		// FIX: Commenting out the following code to allow generation of menu even if no interactions are available...
+		// if (!interactionList || !roleTxList) {
+		// 	setAppLists({
+		// 		menuList: [],
+		// 		trxnList: [],
+		// 		otherList: [],
+		// 	});
+		// 	return;
+		// }
 
 		let _filteredMenuList = [];
 		const _menuList =
@@ -216,18 +218,30 @@ const MenuProvider = ({ children }) => {
 		const { trxnList: _trxnList, otherList: _otherList } =
 			filterTransactionLists(interactionList, isAdmin, isAdminAgentMode);
 
+		const isDisableAllTxns = parseEnvBoolean(
+			process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS
+		);
+		const isDisableAllOthers = parseEnvBoolean(
+			process.env.NEXT_PUBLIC_DISABLE_OTHERS
+		);
+
+		// Set the final lists
+
 		setAppLists({
 			menuList: _filteredMenuList,
-			trxnList: _trxnList,
-			otherList: [
-				{
-					icon: "transaction-history",
-					label: "Transaction History",
-					description: "Statement of your previous transactions",
-					link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
-				},
-				..._otherList,
-			],
+			trxnList: isDisableAllTxns ? [] : _trxnList,
+			otherList: isDisableAllOthers
+				? []
+				: [
+						{
+							icon: "transaction-history",
+							label: "Transaction History",
+							description:
+								"Statement of your previous transactions",
+							link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
+						},
+						..._otherList,
+					],
 		});
 		// setIsLoading(false);
 
@@ -273,7 +287,7 @@ const MenuProvider = ({ children }) => {
 
 	// MARK: Copilot
 	// Define AI Copilot readable state for the main left menu items
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Main features (menu items) available to the user for managing their business, account, network, etc. The `link` field contains the relative URL for this feature.",
 		value: appLists.menuList.map((item) => ({
@@ -285,7 +299,7 @@ const MenuProvider = ({ children }) => {
 	});
 
 	// Define AI Copilot readable state for the transaction list
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Financial transactions (products and services) available for the user. These are the main transactions that the user can perform. The `link` field contains the relative URL for this feature." +
 			(isAdmin && isAdminAgentMode !== true
@@ -302,7 +316,7 @@ const MenuProvider = ({ children }) => {
 	console.log("[COPILOT] Adding data...");
 
 	// Define AI Copilot readable state for the other items list
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Other options available to the user. These are not the main transactions, but still important to view their transaction history, manage their account, etc. The `link` field contains the relative URL for this feature.",
 		value: appLists.otherList.map((item) => ({
@@ -386,12 +400,12 @@ const generateTransactionActions = (
 	// Helper inner function to get the transaction action object
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
-		const desc = tx.description || tx.desc || "";
+		const desc = tx.description || tx.desc || tx.summary || "";
 
 		return {
 			id: "tx/" + _id,
 			name: tx.label,
-			subtitle: limitText(desc, 60),
+			subtitle: limitText(desc, 80),
 			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
 			icon: (
 				<ActionIcon
@@ -454,11 +468,15 @@ const generateTransactionActions = (
 
 	// Process main transactions
 	let trxn_found = false;
-	interaction_list.forEach((tx) => {
+	interaction_list?.forEach((tx) => {
 		if (!tx) {
 			return;
 		}
-		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
+		if (
+			role_tx_list &&
+			tx.id in role_tx_list &&
+			!(tx.id in processedTrxns)
+		) {
 			let is_group = false;
 			processedTrxns[tx.id] = true;
 			trxn_found = true;
@@ -545,6 +563,10 @@ const generateMenuLinkActions = (menu_list, router) => {
 			menuLinkActions.push({
 				id: "menulnk/" + (menu.name || menu.label),
 				name: menu.name || menu.label,
+				subtitle: limitText(
+					menu.summary || menu.description || menu.desc || "",
+					80
+				),
 				icon: (
 					<ActionIcon
 						icon={menu.icon}

@@ -66,17 +66,18 @@ export const AdminBlacklistMenuItems: number[] = [
 
 /**
  * Fixed menu items for admin left-menu.
+ * MARK: For Admin
  */
 export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 1,
-		label: "Dashboard",
-		icon: "dashboard",
+		label: "Home",
+		icon: "menu-home",
 		link: "/admin",
 		summary:
-			"View your dashboard with key metrics and insights about your business.",
+			"View your home page & dashboard with key metrics and insights about your business.",
 		fullDescription:
-			"The dashboard provides an overview of your business performance, including key metrics such as total transactions, revenue, and user engagement. It helps you monitor your product health at a glance. You also get insights about the onboarding status of your agents.",
+			"The home page provides multiple dashboard tabs with an overview of your business performance, including key metrics such as total transactions, revenue, and user engagement. It helps you monitor your product health at a glance. You also get insights about the onboarding status of your agents.",
 	},
 	{
 		id: 5,
@@ -110,6 +111,17 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	link: "/admin/invoicing",
 	// },
 	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/admin/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		featureFlag: "ASSISTED_FULL_ONBOARDING",
+	},
+	{
 		id: 20,
 		label: "Business Settings",
 		icon: "business-center",
@@ -119,21 +131,13 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 			"Manage your business settings, including enabling or disabling services, make account verification mandatory or optional, setup agreement signing with your users, setup frequency of commission payment, manage cash-eposit charges for your agents, setup how refunds to the end-customers work, etc.",
 	},
 	{
-		id: 25,
-		label: "Pricing & Commissions",
-		icon: "commission-percent",
-		link: "/admin/pricing",
-	},
-	{
 		id: 30,
-		label: "Pricing Configuration",
+		label: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing-config",
 		summary: "Configure dynamic pricing and commissions for your products.",
 		fullDescription:
 			"Set up and manage dynamic pricing rules and commission structures for your products. This includes defining pricing tiers, setting commission rates for different user roles, etc.",
-		featureFlag: "DYNAMIC_PRICING_COMMISSION",
-		beta: true,
 	},
 	// {
 	// 	id: 30,
@@ -201,6 +205,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 
 /**
  * Fixed menu items for agents left-menu.
+ * MARK: For Agent
  */
 export const sidebarMenu: sidebarMenuType[] = [
 	{
@@ -211,6 +216,52 @@ export const sidebarMenu: sidebarMenuType[] = [
 		dynamicAdminView: true,
 		summary:
 			"View your homepage and dashboard with key metrics and insights about your business.",
+	},
+	{
+		id: 5,
+		label: "My Network",
+		icon: "refer",
+		link: "/my-network",
+		summary: "View all users in your network.",
+		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
+	},
+	{
+		id: 10,
+		label: "Network Transactions",
+		icon: "swap-horiz",
+		link: "/network-statement",
+		summary: "View transactions of agents in your network.",
+		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 15,
+		label: "Agent Onboarding",
+		icon: "person-add",
+		link: "/agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		featureFlag: "ASSISTED_FULL_ONBOARDING",
+	},
+	{
+		id: 215,
+		label: "Product Catalogue",
+		icon: "shopping-cart",
+		link: "/products/inventory",
+		summary: "View and purchase products from the inventory.",
+		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 215,
+		label: "Manage Inventory",
+		icon: "shopping-cart",
+		link: "/products/inventory/manage",
+		summary: "Manage inventory for your agents",
+		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
 	},
 	// {
 	// 	id: 220,

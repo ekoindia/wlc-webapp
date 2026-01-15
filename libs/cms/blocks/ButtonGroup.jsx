@@ -4,7 +4,7 @@ import { iconField, pixelSizeOptions, quickSizeOptions } from "../options";
 import { Section } from "../Section";
 
 export const ButtonGroup = {
-	label: "Button Group",
+	label: "Buttons",
 	fields: {
 		buttons: {
 			type: "array",

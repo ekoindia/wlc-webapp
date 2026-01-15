@@ -1,15 +1,23 @@
-import { Flex } from "@chakra-ui/react";
-import { DateView } from "components";
+import { Flex, Text } from "@chakra-ui/react";
+import { DateView, SegmentedControl } from "components";
 import { formatDateTime } from "libs/dateFormat";
 import { calculateDateBefore } from "utils";
 
-const _dateFilterList = [
+/**
+ * Default date filter options
+ */
+const defaultDateFilterList = [
 	{ id: 0, value: "today", label: "Today" },
 	{ id: 1, value: "yesterday", label: "Yesterday" },
 	{ id: 2, value: "last7", label: "Last 7 Days" },
 	{ id: 3, value: "last30", label: "Last 30 Days" },
 ];
 
+/**
+ * Checks if the given date is today.
+ * @param {*} date - The date to check.
+ * @returns {boolean} - True if the date is today, false otherwise.
+ */
 export const isToday = (date) => {
 	const today = new Date();
 	const givenDate = new Date(date);
@@ -20,8 +28,18 @@ export const isToday = (date) => {
 	);
 };
 
+/**
+ * Dashboard date filter component.
+ * @param {object} props - Component props
+ * @param {Array} props.dateFilterList - List of date filter options
+ * @param {string} props.prevDate - Previous date in ISO format
+ * @param {string} props.currDate - Current date in ISO format
+ * @param {string} props.dateRange - Selected date range
+ * @param {Function} props.setDateRange - Function to update the date range
+ * @returns {JSX.Element}
+ */
 const DashboardDateFilter = ({
-	dateFilterList = _dateFilterList,
+	dateFilterList = defaultDateFilterList,
 	prevDate,
 	currDate,
 	dateRange,
@@ -34,6 +52,7 @@ const DashboardDateFilter = ({
 	// Check if current date is equal to today
 	const isCurrentDateToday = isToday(_currDate);
 
+	// MARK: jsx
 	return (
 		<Flex
 			w="100%"
@@ -43,7 +62,7 @@ const DashboardDateFilter = ({
 			fontSize="sm"
 			gap={{ base: "2", md: "0" }}
 		>
-			<span>
+			<Text fontSize="0.85em" opacity={0.8}>
 				{isSameDay ? (
 					<>
 						Showing stats for{" "}
@@ -91,26 +110,18 @@ const DashboardDateFilter = ({
 						) : null}
 					</>
 				)}
-			</span>
+			</Text>
 
-			<Flex align="center" gap="4">
-				{dateFilterList?.map((item) => {
-					const isActive = dateRange === item.value;
-					return (
-						<Flex
-							key={item.id}
-							bg={isActive ? "white" : "initial"}
-							p="6px 8px"
-							borderRadius="10px"
-							border="card"
-							cursor="pointer"
-							onClick={() => setDateRange(item.value)}
-						>
-							{item.label}
-						</Flex>
-					);
-				})}
-			</Flex>
+			<SegmentedControl
+				segments={dateFilterList}
+				value={dateRange}
+				onChange={(value) => setDateRange(value)}
+				equalWidth={false}
+				minSegmentWidth={"50px"}
+				size="sm"
+				showDividers
+				// color="accent.dark"
+			/>
 		</Flex>
 	);
 };

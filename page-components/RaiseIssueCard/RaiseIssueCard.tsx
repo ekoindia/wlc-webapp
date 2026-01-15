@@ -6,11 +6,12 @@ import {
 	Spinner,
 	Text,
 	Textarea,
+	useMediaQuery,
 	useToast,
 } from "@chakra-ui/react";
 import { Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
-import { useUser } from "contexts";
+import { useAppSource, useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
 import {
 	useDebouncedState,
@@ -80,6 +81,8 @@ const RaiseIssueCard = ({
 	const { generateNewToken } = useRefreshToken();
 	const onboarding = userData?.user_details?.onboarding || 0; // Is the user onboarding?
 
+	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
+
 	// Issue list...
 	const [statusIssueListMap, setStatusIssueListMap] = useState([]); // List of possible issues to raise
 	const [categoryList, setCategoryList] = useState([]); // List of categories
@@ -113,7 +116,7 @@ const RaiseIssueCard = ({
 	// Check if the feature is enabled...
 	const [isFeatureEnabled] = useFeatureFlag("RAISE_ISSUE");
 	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
-		"RAISE_ISSUE_SBIKIOSK"
+		"RAISE_ISSUE_GENERIC_SBIKIOSK"
 	);
 
 	// Experimental text-classifier for user comments...
@@ -121,6 +124,8 @@ const RaiseIssueCard = ({
 	const [isTextClassifierEnabled] = useFeatureFlag("TEXT_CLASSIFIER");
 	const [textClassifier, setTextClassifier] = useState<any>(null);
 	const [classifierResult, setClassifierResult] = useState("");
+
+	const { appSource, nativeVersion } = useAppSource();
 
 	// Init Text Classifier...
 	useEffect(() => {
@@ -535,6 +540,8 @@ const RaiseIssueCard = ({
 			tid,
 			tx_typeid,
 			transaction_metadata: metadata,
+			appSource,
+			androidAppVersion: nativeVersion,
 			controller,
 			generateNewToken,
 		})
@@ -884,6 +891,9 @@ const RaiseIssueCard = ({
 											isDisabled={disableInputs}
 											focusBorderColor="primary.light"
 											placeholder="Please enter your comments or any additional details here..."
+											autoFocus={
+												isSmallScreen ? false : true
+											}
 											onChange={(e) =>
 												setComment(e.target.value)
 											}
