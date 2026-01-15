@@ -45,7 +45,7 @@ const UpdateSellerAddress = () => {
 		formState: { errors, isSubmitting, isDirty, isValid },
 		control,
 		reset,
-	} = useForm();
+	} = useForm({ mode: "onChange" });
 
 	const watcher = useWatch({ control });
 
@@ -178,6 +178,9 @@ const UpdateSellerAddress = () => {
 		{
 			name: "address_line1",
 			label: "Address Line 1",
+			validations: {
+				required: true,
+			},
 		},
 		{
 			name: "address_line2",
@@ -186,14 +189,37 @@ const UpdateSellerAddress = () => {
 		},
 		{
 			name: "pincode",
-			label: "Postel Code",
+			label: "Postal Code",
 			parameter_type_id: ParamType.NUMERIC,
 			step: "1",
 			maxLength: 6,
+			max: 999999,
+			validations: {
+				required: "Postal code is required",
+				pattern: {
+					value: /^[1-9][0-9]{5}$/,
+					message: "Enter a valid 6-digit postal code",
+				},
+				minLength: {
+					value: 6,
+					message: "Postal code must be 6 digits",
+				},
+				maxLength: {
+					value: 6,
+					message: "Postal code must be 6 digits",
+				},
+			},
 		},
 		{
 			name: "city",
 			label: "City",
+			validations: {
+				required: "City is required",
+				pattern: {
+					value: /^[a-zA-Z\s]+$/,
+					message: "City name can only contain letters and spaces",
+				},
+			},
 		},
 		{
 			name: "country_state",
@@ -331,6 +357,7 @@ const UpdateSellerAddress = () => {
 										base: "100%",
 										lg: "90%",
 									},
+									size: "md",
 								}}
 							/>
 
