@@ -17,7 +17,7 @@ const SAMPLE_DOWNLOAD_LINK =
 	"https://files.eko.co.in/docs/sample_files/bulk-upload/bulk_imps_sample.xlsx";
 
 const BULK_PAYOUT_TF_URIS = {
-	PROCESS_RECORDS: "/bulk-payout/process-records",
+	PROCESS_RECORDS: "/bulk-payment/process-records",
 } as const;
 
 const TF_ROOT_PATH = "/api/v1";

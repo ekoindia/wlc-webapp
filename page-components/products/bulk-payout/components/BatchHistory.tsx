@@ -143,7 +143,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 				const response = await fetcher(url, {
 					headers: {
 						"tf-req-uri-root-path": "/api/v1",
-						"tf-req-uri": `/bulk-payout/batch?batchNumber=${batchNumber}`,
+						"tf-req-uri": `/bulk-payment/batch?batchNumber=${batchNumber}`,
 						"tf-req-method": "GET",
 					},
 					body: {},
@@ -203,7 +203,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 			const response = await fetcher(url, {
 				headers: {
 					"tf-req-uri-root-path": "/api/v1",
-					"tf-req-uri": `/bulk-payout/batch-list?service_code=45`,
+					"tf-req-uri": `/bulk-payment/batch-list?service_code=45`,
 					"tf-req-method": "GET",
 				},
 				body: {},
@@ -311,7 +311,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 					{
 						headers: {
 							"tf-req-uri-root-path": "/api/v1",
-							"tf-req-uri": `/bulk-payout/download?batchNumber=${batchNumber}`,
+							"tf-req-uri": `/bulk-payment/download?batchNumber=${batchNumber}`,
 							"tf-req-method": "GET",
 						},
 						body: {},
