@@ -1,11 +1,11 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints, ProductRoleConfiguration } from "constants";
 import { useApiFetch, useDailyCacheState, useFeatureFlag } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 import { Cell, Label, Pie, PieChart } from "recharts";
 import { useDashboard } from "..";
-import { DragHandle } from "./DraggableGrid";
 
 const successRateLocalCacheKey = "inf-dashboard-success-rate";
 

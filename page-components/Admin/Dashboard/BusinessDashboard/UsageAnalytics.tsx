@@ -1,4 +1,5 @@
 import { Divider, Flex, Grid, Skeleton, Text } from "@chakra-ui/react";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants/EndPoints";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -14,7 +15,6 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { DragHandle } from "./DraggableGrid";
 
 /**
  * Chart color scheme for Area + Histogram hybrid.
@@ -78,9 +78,9 @@ interface CustomTooltipProps {
 
 /**
  * Determines if the date range is 24 hours or less (hourly data).
- * @param dateFrom - Start date string
- * @param dateTo - End date string
- * @returns true if the range is 24 hours or less
+ * @param {string} dateFrom - Start date string
+ * @param {string} dateTo - End date string
+ * @returns {boolean} true if the range is 24 hours or less
  */
 const isHourlyRange = (dateFrom: string, dateTo: string): boolean => {
 	const from = new Date(dateFrom);
@@ -92,9 +92,9 @@ const isHourlyRange = (dateFrom: string, dateTo: string): boolean => {
 
 /**
  * Formats the date for display based on whether it's hourly or daily data.
- * @param startDate - The start date string from API
- * @param isHourly - Whether the data is hourly
- * @returns Formatted label for display
+ * @param {string} startDate - The start date string from API
+ * @param {boolean} isHourly - Whether the data is hourly
+ * @returns {string} Formatted label for display
  */
 const formatLabel = (startDate: string, isHourly: boolean): string => {
 	const date = new Date(startDate);
@@ -117,10 +117,11 @@ const formatLabel = (startDate: string, isHourly: boolean): string => {
 /**
  * Custom tooltip component for the chart.
  * Displays both the daily volume (Bar) and the cumulative trend (Area).
- * @param root0
- * @param root0.active
- * @param root0.payload
- * @param root0.label
+ * @param {CustomTooltipProps} root0 - The tooltip props
+ * @param {boolean} root0.active - Whether the tooltip is active
+ * @param {Array} root0.payload - The data payload for the tooltip
+ * @param {string} root0.label - The label for the tooltip
+ * @returns {JSX.Element | null} The rendered tooltip or null
  */
 const CustomTooltip = ({
 	active,
@@ -180,10 +181,11 @@ const CustomTooltip = ({
 
 /**
  * Summary stat card component.
- * @param root0
- * @param root0.label
- * @param root0.value
- * @param root0.color
+ * @param {object} root0 - Component props
+ * @param {string} root0.label - The label for the stat
+ * @param {string | number} root0.value - The value to display
+ * @param {string} [root0.color] - The color for the value text
+ * @returns {JSX.Element} The rendered stat card
  */
 const StatCard = ({
 	label,
@@ -221,10 +223,11 @@ const StatCard = ({
  * Uses a "Premium Hybrid" style:
  * - Bars for Volume (Deep Blue)
  * - Area with Gradient for Cumulative Trend (Purple)
- * @param root0
- * @param root0.dateFrom
- * @param root0.dateTo
- * @param root0.isDraggable
+ * @param {UsageAnalyticsProps} root0 - Component props
+ * @param {string} root0.dateFrom - Start date for the data range
+ * @param {string} root0.dateTo - End date for the data range
+ * @param {boolean} [root0.isDraggable] - Whether the component is draggable in the grid
+ * @returns {JSX.Element} The rendered usage analytics component
  */
 const UsageAnalytics = ({
 	dateFrom,

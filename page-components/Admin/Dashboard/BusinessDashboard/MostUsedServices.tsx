@@ -1,4 +1,5 @@
 import { Divider, Flex, Skeleton, Text } from "@chakra-ui/react";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants/EndPoints";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -13,7 +14,6 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { DragHandle } from "./DraggableGrid";
 
 /** Chart colors - matching project color scheme */
 const CHART_COLORS = [

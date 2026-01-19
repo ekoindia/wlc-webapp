@@ -27,8 +27,8 @@ describe("Calendar", () => {
 	});
 
 	it("renders with a placeholder", () => {
-render(<Calendar placeholder="From" />);
-expect(screen.getByText("From")).toBeInTheDocument();
+		render(<Calendar placeholder="From" />);
+		expect(screen.getByText("From")).toBeInTheDocument();
 	});
 
 	it("displays the value when provided", () => {

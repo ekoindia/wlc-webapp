@@ -8,12 +8,12 @@ import {
 	useBreakpointValue,
 } from "@chakra-ui/react";
 import { Currency, Icon, WaffleChart } from "components";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
 import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
-import { DragHandle } from "./DraggableGrid";
 
 // Product Chart Colors
 const COLORS = [
@@ -53,7 +53,8 @@ const calculateVariation = (current, lastMonth) => {
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
  * @param {Function} props.setTotalBusiness - Function to set total business data (total GTV & Transaction count) in parent component.
- * @param props.isDraggable
+ * @param {boolean} [props.isDraggable] - Whether the component is draggable in the grid.
+ * @returns {JSX.Element} The rendered earning overview component
  * @example
  * <EarningOverview
  *   dateFrom="2023-01-01"
@@ -180,7 +181,13 @@ const EarningOverview = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter]);
+	}, [
+		dateFrom,
+		dateTo,
+		productFilter,
+		businessDashboardData?.earningOverviewCache,
+		setTotalBusiness,
+	]);
 
 	const earningOverviewList = [
 		{
