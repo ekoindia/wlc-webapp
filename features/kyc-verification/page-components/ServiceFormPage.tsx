@@ -147,6 +147,7 @@ export const ServiceFormPage = ({
 	const router = useRouter();
 	const [submitError, setSubmitError] = useState<string | null>(null);
 	const [isRetryMode, setIsRetryMode] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	// Local state to track active service codes - allows dynamic removal
 	const [activeServiceCodes, setActiveServiceCodes] =
@@ -199,7 +200,7 @@ export const ServiceFormPage = ({
 		watch,
 		unregister,
 		reset,
-		formState: { errors, isValid, isDirty, isSubmitting },
+		formState: { errors, isValid, isDirty },
 	} = useForm();
 
 	const formValues = watch();
@@ -315,6 +316,7 @@ export const ServiceFormPage = ({
 	const onSubmit = useCallback(
 		async (data: Record<string, unknown>) => {
 			setSubmitError(null);
+			setIsSubmitting(true);
 
 			try {
 				// console.log("Form submitted with data:", data);
@@ -339,16 +341,25 @@ export const ServiceFormPage = ({
 				// Clear selection state
 				resetAll();
 
+				// Artificial delay for UX feedback (500ms)
+				// This ensures:
+				// 1. Users see the loading state (visual confirmation)
+				// 2. Prevents accidental double-clicks
+				// 3. Allows React state updates to settle before navigation
+				await new Promise((resolve) => setTimeout(resolve, 300));
+
 				// Navigate to results page
 				router.push(`${basePath}/results`);
+				// Keep loading state - will be cleared when component unmounts on navigation
 			} catch (err) {
 				setSubmitError(
 					"Failed to submit verification. Please try again."
 				);
 				console.error("Submission error:", err);
+				setIsSubmitting(false);
 			}
 		},
-		[selectedServiceObjects, resetAll, router]
+		[selectedServiceObjects, resetAll, router, basePath]
 	);
 
 	// Handle back button
@@ -501,7 +512,7 @@ export const ServiceFormPage = ({
 												!isValid ||
 												(!isDirty && !isRetryMode),
 											icon: "verified-user",
-											iconStyle: { size: "xs" },
+											iconStyle: { size: "sm" },
 										},
 										{
 											variant: "link",
