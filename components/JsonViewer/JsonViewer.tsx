@@ -16,12 +16,18 @@ import { parseJsonInput } from "./utils";
  * - ARIA tree roles for accessibility
  * - Copy to clipboard on root line
  * - Tree lines connecting parent-child nodes
+ * - Configurable key formatting with override support
+ * - Value transformation with key-based and path-based rules
+ * - Optional bracket visibility
  * @param {JsonViewerProps} props - Component props
  * @param {object | string} props.data - JSON data to display. Can be an object, array, or a valid JSON string
  * @param {number} [props.collapseAfterLevel] - Nodes at this level and deeper are collapsed by default. Set to 0 to collapse all, or Infinity to expand all
  * @param {boolean} [props.animated] - Enable smooth expand/collapse animations
  * @param {string} [props.className] - Additional CSS class name for the container
  * @param {object | string} [props.maxHeight] - Maximum height of the container. Supports responsive object notation
+ * @param {boolean} [props.showBrackets] - Show or hide curly/square brackets. Default is true
+ * @param {Record<string, string>} [props.keyOverrides] - Override specific key display names. Falls back to default formatting (underscore removal + capitalize)
+ * @param {ValueTransformConfig} [props.valueTransforms] - Value transformation config with byKey and byPath rules
  * @returns {JSX.Element} Rendered JSON tree view
  * @example
  * // Basic usage with object
@@ -32,6 +38,13 @@ import { parseJsonInput } from "./utils";
  * @example
  * // Custom collapse level and no animation
  * <JsonViewer data={complexObject} collapseAfterLevel={1} animated={false} />
+ * @example
+ * // With key overrides and value transforms
+ * <JsonViewer
+ *   data={{ pan_number: "BNKPJ3499L", dob_match: "Y" }}
+ *   keyOverrides={{ pan_number: "PAN Number", dob_match: "DOB Match" }}
+ *   valueTransforms={{ byKey: { Y: "Yes", N: "No" } }}
+ * />
  */
 const JsonViewer = ({
 	data,
@@ -39,7 +52,10 @@ const JsonViewer = ({
 	animated = true,
 	maxHeight = { base: "200px", md: "350px" },
 	className,
-}: JsonViewerProps) => {
+	showBrackets = true,
+	keyOverrides,
+	valueTransforms,
+}: JsonViewerProps): JSX.Element => {
 	// Parse input data
 	const parseResult = useMemo(() => parseJsonInput(data), [data]);
 
@@ -89,6 +105,9 @@ const JsonViewer = ({
 					ancestors={initialAncestors}
 					isLast={true}
 					onCopyRoot={() => {}}
+					showBrackets={showBrackets}
+					keyOverrides={keyOverrides}
+					valueTransforms={valueTransforms}
 				/>
 			</Box>
 		</Box>

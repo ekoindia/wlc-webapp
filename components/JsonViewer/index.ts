@@ -4,4 +4,6 @@ export type {
 	JsonObject,
 	JsonValue,
 	JsonViewerProps,
+	ValueTransformConfig,
 } from "./types";
+export { formatKeyLabel, transformDisplayValue } from "./utils";

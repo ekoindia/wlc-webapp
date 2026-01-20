@@ -1,4 +1,86 @@
-import { JsonValue, JsonValueType, ParseResult } from "./types";
+import {
+	JsonValue,
+	JsonValueType,
+	ParseResult,
+	ValueTransformConfig,
+} from "./types";
+
+/**
+ * Capitalizes the first letter of each word in a string.
+ * @param str - The string to capitalize
+ * @returns Capitalized string
+ */
+export const capitalizeWords = (str: string): string => {
+	return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+/**
+ * Formats a key for display by applying default transformation or using override.
+ * Default: removes underscores and capitalizes each word.
+ * @param key - The original key name
+ * @param overrides - Optional override mappings for specific keys
+ * @returns Formatted key string
+ * @example
+ * formatKeyLabel("pan_number") // "Pan Number"
+ * formatKeyLabel("pan_number", { pan_number: "PAN Number" }) // "PAN Number"
+ */
+export const formatKeyLabel = (
+	key: string,
+	overrides?: Record<string, string>
+): string => {
+	// Check for explicit override first
+	if (overrides?.[key]) {
+		return overrides[key];
+	}
+
+	// Default: replace underscores with spaces and capitalize each word
+	return capitalizeWords(key.replace(/_/g, " "));
+};
+
+/**
+ * Transforms a display value based on configuration.
+ * Resolution order: byPath (exact path match) > byKey (any matching key) > original value
+ * @param value - The original value
+ * @param key - The key name of this value
+ * @param path - The full JSON path (e.g., "root.permanent_address.city")
+ * @param config - Optional transformation configuration
+ * @returns Transformed value or original if no transformation applies
+ * @example
+ * // byKey transformation
+ * transformDisplayValue("Y", "status", "root.status", { byKey: { Y: "Yes" } }) // "Yes"
+ *
+ * // byPath transformation (takes precedence)
+ * transformDisplayValue("delhi", "city", "root.permanent_address.city", {
+ *   byKey: { delhi: "Delhi" },
+ *   byPath: { "permanent_address.city": { delhi: "Delhi (Permanent)" } }
+ * }) // "Delhi (Permanent)"
+ */
+export const transformDisplayValue = (
+	value: unknown,
+	key: string | number,
+	path: string,
+	config?: ValueTransformConfig
+): unknown => {
+	// Only transform string values
+	if (typeof value !== "string" || !config) {
+		return value;
+	}
+
+	// Remove "root." prefix from path for cleaner config keys
+	const cleanPath = path.startsWith("root.") ? path.slice(5) : path;
+
+	// Check byPath first (higher priority)
+	if (config.byPath?.[cleanPath]?.[value] !== undefined) {
+		return config.byPath[cleanPath][value];
+	}
+
+	// Check byKey (lower priority, applies to any matching key)
+	if (typeof key === "string" && config.byKey?.[value] !== undefined) {
+		return config.byKey[value];
+	}
+
+	return value;
+};
 
 /**
  * Determines the type of a JSON value for styling purposes.

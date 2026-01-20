@@ -20,6 +20,31 @@ import {
 import { Icon, JsonViewer } from "components";
 import type { VerificationResult, VerificationStatus } from "../types";
 
+/**
+ * Key display name overrides for JSON viewer
+ */
+const JSON_KEY_OVERRIDES = {
+	dob: "Date of Birth",
+	dob_match: "Date of Birth Match",
+	pan: "PAN",
+	pan_number: "PAN",
+	pan_status: "PAN Status",
+	tid: "Transaction ID",
+	name_match: "Name Match",
+	aadhaar_seeding_status: "Aadhaar Seeding Status",
+	aadhaar_seeding_status_desc: "Aadhaar Seeding Status Description",
+} as const;
+
+/**
+ * Value transformations for JSON viewer
+ */
+const JSON_VALUE_TRANSFORMS = {
+	byKey: {
+		Y: "Yes",
+		N: "No",
+	},
+} as const;
+
 interface VerificationResultCardProps {
 	/** Verification result data */
 	result: VerificationResult;
@@ -194,6 +219,8 @@ export const VerificationResultCard = ({
 								<JsonViewer
 									data={result.requestData}
 									collapseAfterLevel={2}
+									showBrackets={false}
+									keyOverrides={JSON_KEY_OVERRIDES}
 								/>
 							</Box>
 
@@ -242,6 +269,9 @@ export const VerificationResultCard = ({
 									<JsonViewer
 										data={result.responseData}
 										collapseAfterLevel={2}
+										showBrackets={false}
+										keyOverrides={JSON_KEY_OVERRIDES}
+										valueTransforms={JSON_VALUE_TRANSFORMS}
 									/>
 								</Box>
 							) : (

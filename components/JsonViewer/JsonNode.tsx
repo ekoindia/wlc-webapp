@@ -5,12 +5,14 @@ import { JsonNodeProps, JsonValue } from "./types";
 import {
 	addToAncestors,
 	BRACKET_COLOR,
+	formatKeyLabel,
 	formatPrimitiveValue,
 	getCollectionInfo,
 	getTypeColor,
 	getValueType,
 	isCircularReference,
 	KEY_COLOR,
+	transformDisplayValue,
 } from "./utils";
 
 // Tree line color
@@ -33,6 +35,9 @@ const JsonNode = memo(function JsonNode({
 	ancestors,
 	isLast = true,
 	onCopyRoot,
+	showBrackets,
+	keyOverrides,
+	valueTransforms,
 }: JsonNodeProps & { onCopyRoot?: (_jsonString: string) => void }) {
 	// Determine initial expanded state based on level
 	const shouldStartExpanded = level < collapseAfterLevel;
@@ -104,7 +109,7 @@ const JsonNode = memo(function JsonNode({
 			typeof nodeKey === "number" ? null : (
 				<>
 					<Text as="span" color={KEY_COLOR} fontWeight="500">
-						{nodeKey}
+						{formatKeyLabel(nodeKey, keyOverrides)}
 					</Text>
 					<Text as="span" color={BRACKET_COLOR}>
 						:{" "}
@@ -117,7 +122,13 @@ const JsonNode = memo(function JsonNode({
 
 	// Render primitive value
 	const renderPrimitiveValue = () => {
-		const formatted = formatPrimitiveValue(value, valueType);
+		const transformedValue = transformDisplayValue(
+			value,
+			nodeKey ?? "",
+			path,
+			valueTransforms
+		);
+		const formatted = formatPrimitiveValue(transformedValue, valueType);
 		return (
 			<Text as="span" color={getTypeColor(valueType)}>
 				{formatted}
@@ -196,8 +207,8 @@ const JsonNode = memo(function JsonNode({
 
 	// Render expandable nodes (objects/arrays)
 	const isArray = valueType === "array";
-	const openBracket = isArray ? "[" : "{";
-	const closeBracket = isArray ? "]" : "}";
+	const openBracket = showBrackets ? (isArray ? "[" : "{") : "";
+	const closeBracket = showBrackets ? (isArray ? "]" : "}") : "";
 	const isEmpty = children.length === 0;
 	const collectionInfo = getCollectionInfo(value as object);
 
@@ -302,6 +313,9 @@ const JsonNode = memo(function JsonNode({
 									animated={animated}
 									ancestors={childAncestors}
 									isLast={index === children.length - 1}
+									showBrackets={showBrackets}
+									keyOverrides={keyOverrides}
+									valueTransforms={valueTransforms}
 								/>
 							))}
 					</Box>

@@ -32,6 +32,26 @@ export type JsonValueType =
 	| "circular";
 
 /**
+ * Configuration for transforming display values.
+ * Supports both key-based (applies to all matching keys) and
+ * path-based (applies to specific JSON paths) transformations.
+ */
+export interface ValueTransformConfig {
+	/**
+	 * Key-based value mappings. Applies to all occurrences of a key.
+	 * Example: { Y: "Yes", N: "No" } transforms "Y" to "Yes" everywhere
+	 */
+	byKey?: Record<string, string>;
+
+	/**
+	 * Path-based value mappings. Applies only to specific JSON paths.
+	 * Path uses dot notation without "root." prefix.
+	 * Example: { "permanent_address.city": { delhi: "Delhi (Permanent)" } }
+	 */
+	byPath?: Record<string, Record<string, string>>;
+}
+
+/**
  * Props for the main JsonViewer component
  */
 export interface JsonViewerProps {
@@ -69,6 +89,25 @@ export interface JsonViewerProps {
 	 * Additional CSS class name for the container
 	 */
 	className?: string;
+
+	/**
+	 * Show or hide the curly brackets and square brackets.
+	 * Default is true.
+	 */
+	showBrackets?: boolean;
+
+	/**
+	 * Override specific key display names.
+	 * Keys not in this object will use default formatting (underscore removal + capitalize).
+	 * Example: { pan_number: "PAN Number", dob: "Date of Birth" }
+	 */
+	keyOverrides?: Record<string, string>;
+
+	/**
+	 * Configuration for transforming display values.
+	 * Supports key-based and path-based transformations.
+	 */
+	valueTransforms?: ValueTransformConfig;
 }
 
 /**
@@ -115,6 +154,21 @@ export interface JsonNodeProps {
 	 * Whether this is the last item in a collection (for trailing comma logic)
 	 */
 	isLast?: boolean;
+
+	/**
+	 * Show or hide the curly brackets and square brackets.
+	 */
+	showBrackets: boolean;
+
+	/**
+	 * Override specific key display names.
+	 */
+	keyOverrides?: Record<string, string>;
+
+	/**
+	 * Configuration for transforming display values.
+	 */
+	valueTransforms?: ValueTransformConfig;
 }
 
 /**
