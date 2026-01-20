@@ -39,6 +39,10 @@ interface UseServiceSelectionReturn {
 	isSelected: (_serviceCode: string) => boolean;
 	/** Clear all selections */
 	clearSelection: () => void;
+	/** Select multiple services at once (bulk select) */
+	selectAll: (_serviceCodes: string[]) => void;
+	/** Deselect all services (alias for clearSelection) */
+	deselectAll: () => void;
 	/** Reset all state (mode + selection) */
 	resetAll: () => void;
 	/** Validate if current state is valid for form navigation */
@@ -178,6 +182,30 @@ export const useServiceSelection = (): UseServiceSelectionReturn => {
 	}, [updateState]);
 
 	/**
+	 * Select multiple services at once (bulk select).
+	 * Adds all provided service codes to the selection.
+	 * @param {string[]} serviceCodes - Array of service codes to select
+	 */
+	const selectAll = useCallback(
+		(serviceCodes: string[]) => {
+			// Merge with existing selections, avoiding duplicates
+			const merged = new Set([
+				...currentState.selectedServices,
+				...serviceCodes,
+			]);
+			updateState({ selectedServices: Array.from(merged) });
+		},
+		[updateState, currentState.selectedServices]
+	);
+
+	/**
+	 * Deselect all services (alias for clearSelection).
+	 */
+	const deselectAll = useCallback(() => {
+		clearSelection();
+	}, [clearSelection]);
+
+	/**
 	 * Reset everything to default.
 	 */
 	const resetAll = useCallback(() => {
@@ -202,6 +230,8 @@ export const useServiceSelection = (): UseServiceSelectionReturn => {
 		removeService,
 		isSelected,
 		clearSelection,
+		selectAll,
+		deselectAll,
 		resetAll,
 		isValidForNavigation,
 	};

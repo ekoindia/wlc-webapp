@@ -35,6 +35,9 @@ export {
 	VerificationResultList,
 } from "./components";
 
+// Contexts
+export { KycServicesProvider, useKycServicesContext } from "./contexts";
+
 // Hooks
 export {
 	useAgentServices,
@@ -75,9 +78,9 @@ export {
 
 // Mocks (for development)
 export {
+	getMockServiceByCode,
+	getMockServicesByCodes,
 	MOCK_KYC_SERVICES,
 	MOCK_KYC_SERVICES_RESPONSE,
 	USE_MOCK_DATA,
-	getMockServiceByCode,
-	getMockServicesByCodes,
 } from "./mocks/mockServices";

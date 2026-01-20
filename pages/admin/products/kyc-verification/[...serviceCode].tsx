@@ -6,11 +6,18 @@
 
 import { Breadcrumb, PaddingBox } from "components";
 import { BreadcrumbItem } from "components/BreadcrumbWrapper/breadcrumbUtils";
-import { ServiceFormPage, useKycServices } from "features/kyc-verification";
+import {
+	KycServicesProvider,
+	ServiceFormPage,
+	useKycServices,
+} from "features/kyc-verification";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-const AdminServiceFormRoute = (): JSX.Element => {
+/**
+ * Inner component that uses the KYC services context.
+ */
+const AdminServiceFormRouteInner = (): JSX.Element => {
 	const router = useRouter();
 	const { getCodesBySlugs, getServicesBySlugs } = useKycServices();
 
@@ -71,12 +78,22 @@ const AdminServiceFormRoute = (): JSX.Element => {
 	}, [serviceObjects, router.asPath]);
 
 	return (
-		<PaddingBox>
+		<>
 			<Breadcrumb crumbs={crumbs} />
 			<ServiceFormPage
 				serviceCodes={serviceCodes}
 				basePath="/admin/products/kyc-verification"
 			/>
+		</>
+	);
+};
+
+const AdminServiceFormRoute = (): JSX.Element => {
+	return (
+		<PaddingBox>
+			<KycServicesProvider>
+				<AdminServiceFormRouteInner />
+			</KycServicesProvider>
 		</PaddingBox>
 	);
 };

@@ -20,6 +20,7 @@ import {
 } from "../components";
 import { ALL_CATEGORIES_VALUE } from "../constants";
 import { useKycServices, useServiceSelection } from "../hooks";
+import type { VerificationService } from "../types";
 import { ManageAgentServicesPage } from "./ManageAgentServicesPage";
 
 interface KycVerificationPageProps {
@@ -71,6 +72,8 @@ export const KycVerificationPage = ({
 		toggleService,
 		removeService,
 		isSelected,
+		selectAll,
+		clearSelection,
 	} = useServiceSelection();
 
 	// Get full service objects for selected services
@@ -195,22 +198,26 @@ export const KycVerificationPage = ({
 						onCategoryChange={setSelectedCategory}
 					/>
 
-					{/* Controls Row: Multi-service toggle, Search, Continue button */}
 					<Flex
 						direction={{ base: "column", md: "row" }}
 						justify="space-between"
 						align={{ base: "stretch", md: "center" }}
 						gap="4"
-						flexWrap="wrap"
 					>
-						<Flex align="center" gap="4" flexWrap="wrap">
-							<MultiServiceToggle
-								isEnabled={isMultiModeEnabled}
-								onToggle={toggleMultiMode}
-							/>
-						</Flex>
+						<MultiServiceToggle
+							isEnabled={isMultiModeEnabled}
+							onToggle={toggleMultiMode}
+						/>
 
-						<Flex align="center" gap="4" flexWrap="wrap">
+						<Flex
+							align="center"
+							gap="4"
+							flexWrap="wrap"
+							justify={{
+								base: "space-between",
+								md: "flex-end",
+							}}
+						>
 							<ServiceSearch
 								value={searchQuery}
 								onChange={setSearchQuery}
@@ -226,6 +233,7 @@ export const KycVerificationPage = ({
 									iconPosition="right"
 									iconStyle={{ size: "xs" }}
 									disabled={selectedCount === 0}
+									minW="140px"
 								>
 									Continue ({selectedCount})
 								</Button>
@@ -235,11 +243,26 @@ export const KycVerificationPage = ({
 
 					{/* Selected services pills - show when multi-mode */}
 					{isMultiModeEnabled ? (
-						<SelectedServicesPill
-							services={selectedServiceObjects}
-							onRemove={removeService}
-							removable
-						/>
+						<Flex
+							direction={{ base: "column", md: "row" }}
+							justify="space-between"
+							align={{ base: "flex-start", md: "center" }}
+							gap="4"
+							w="100%"
+						>
+							<SelectedServicesPill
+								services={selectedServiceObjects}
+								onRemove={removeService}
+								removable
+							/>
+
+							<SelectAllButton
+								filteredServices={filteredServices}
+								selectedServices={selectedServices}
+								onSelectAll={selectAll}
+								onDeselectAll={clearSelection}
+							/>
+						</Flex>
 					) : null}
 
 					{/* Service Grid */}
@@ -265,3 +288,77 @@ export const KycVerificationPage = ({
 };
 
 export default KycVerificationPage;
+
+interface SelectAllButtonProps {
+	/** Current filtered services list */
+	filteredServices: VerificationService[];
+	/** Currently selected service codes */
+	selectedServices: string[];
+	/** Callback to select all services */
+	onSelectAll: (_codes: string[]) => void;
+	/** Callback to deselect all services */
+	onDeselectAll: () => void;
+}
+
+/**
+ * Toggle button for bulk selection of services.
+ * Displays "Select All (X)" showing remaining unselected count, or "Deselect All (X)" showing selected count.
+ * X represents the count of unselected/selected services in the current filtered view.
+ * @param {SelectAllButtonProps} props - Component props
+ * @returns {JSX.Element} Rendered button component
+ */
+const SelectAllButton = ({
+	filteredServices,
+	selectedServices,
+	onSelectAll,
+	onDeselectAll,
+}: SelectAllButtonProps): JSX.Element => {
+	// Get the service codes from filtered services
+	const filteredCodes = useMemo(
+		() => filteredServices.map((s) => s.serviceCode),
+		[filteredServices]
+	);
+
+	// Check if all filtered services are selected
+	const allSelected = useMemo(() => {
+		if (filteredCodes.length === 0) return false;
+		return filteredCodes.every((code) => selectedServices.includes(code));
+	}, [filteredCodes, selectedServices]);
+
+	// Count of selected services in current filtered view
+	const selectedInFilterCount = useMemo(
+		() =>
+			filteredCodes.filter((code) => selectedServices.includes(code))
+				.length,
+		[filteredCodes, selectedServices]
+	);
+
+	// Count of unselected services in current filtered view
+	const unselectedCount = filteredCodes.length - selectedInFilterCount;
+
+	// Handle button click
+	const handleClick = (): void => {
+		if (allSelected) {
+			onDeselectAll();
+		} else {
+			onSelectAll(filteredCodes);
+		}
+	};
+
+	// Don't render if no services to select
+	if (filteredCodes.length === 0) return <></>;
+
+	return (
+		<Button
+			variant="ghost"
+			size="sm"
+			color="primary.DEFAULT"
+			onClick={handleClick}
+			flexShrink={0}
+		>
+			{allSelected
+				? `Deselect All (${selectedInFilterCount})`
+				: `Select All (${unselectedCount})`}
+		</Button>
+	);
+};

@@ -5,7 +5,10 @@
 
 import { Breadcrumb, PaddingBox } from "components";
 import { generateBreadcrumbs } from "components/BreadcrumbWrapper/breadcrumbUtils";
-import { KycVerificationPage } from "features/kyc-verification";
+import {
+	KycServicesProvider,
+	KycVerificationPage,
+} from "features/kyc-verification";
 import { useRouter } from "next/router";
 
 const KycVerificationRoute = (): JSX.Element => {
@@ -28,7 +31,9 @@ const KycVerificationRoute = (): JSX.Element => {
 	return (
 		<PaddingBox>
 			<Breadcrumb crumbs={crumbs} />
-			<KycVerificationPage basePath="/admin/products/kyc-verification" />
+			<KycServicesProvider>
+				<KycVerificationPage basePath="/admin/products/kyc-verification" />
+			</KycServicesProvider>
 		</PaddingBox>
 	);
 };

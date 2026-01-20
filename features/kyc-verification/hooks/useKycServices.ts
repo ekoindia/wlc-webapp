@@ -1,6 +1,9 @@
 /**
  * Hook for fetching and managing KYC verification services.
  * Provides filtering by category and search functionality.
+ *
+ * Uses KycServicesContext for caching when available, with fallback
+ * to direct API fetching for backward compatibility.
  */
 
 import { useToast } from "@chakra-ui/react";
@@ -17,6 +20,7 @@ import {
 	UNCATEGORIZED_LABEL,
 	UNCATEGORIZED_VALUE,
 } from "../constants";
+import { useKycServicesContext } from "../contexts";
 import { MOCK_KYC_SERVICES, USE_MOCK_DATA } from "../mocks/mockServices";
 import type {
 	CategoryOption,
@@ -178,22 +182,33 @@ interface UseKycServicesReturn {
 /**
  * Hook for fetching and managing KYC verification services.
  * Provides category filtering, search functionality, and service lookup.
+ * Uses KycServicesContext for caching when available (recommended).
+ * Falls back to direct API fetching for backward compatibility.
  * @returns {UseKycServicesReturn} Object with services data, filters, and utility functions
  */
 export const useKycServices = (): UseKycServicesReturn => {
+	// Try to use context first (recommended - provides caching)
+	const contextValue = useKycServicesContext();
+
+	// Local state for fallback mode (when context is not available)
 	const toast = useToast();
-	const [services, setServices] = useState<VerificationService[]>([]);
+	const [localServices, setLocalServices] = useState<VerificationService[]>(
+		[]
+	);
+	const [localError, setLocalError] = useState<string | null>(null);
+	const [hasFetched, setHasFetched] = useState<boolean>(false);
+
+	// Filter state (always local)
 	const [selectedCategory, setSelectedCategory] =
 		useState<string>(ALL_CATEGORIES_VALUE);
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [error, setError] = useState<string | null>(null);
 
-	const [fetchServices, loading] = useApiFetch(Endpoints.TRANSACTION, {
+	const [fetchServices, localLoading] = useApiFetch(Endpoints.TRANSACTION, {
 		method: "POST",
 		onError: (err) => {
 			const errorMessage =
 				err?.data?.message || "Failed to fetch services";
-			setError(errorMessage);
+			setLocalError(errorMessage);
 			toast({
 				title: "Error",
 				description: errorMessage,
@@ -205,11 +220,11 @@ export const useKycServices = (): UseKycServicesReturn => {
 	});
 
 	/**
-	 * Fetch services from API or use mock data.
+	 * Fetch services from API or use mock data (fallback mode only).
 	 */
 	const loadServices = useCallback(async () => {
 		console.log(
-			"[useKycServices] Loading services, USE_MOCK_DATA:",
+			"[useKycServices] Loading services (fallback), USE_MOCK_DATA:",
 			USE_MOCK_DATA
 		);
 		if (USE_MOCK_DATA) {
@@ -218,8 +233,8 @@ export const useKycServices = (): UseKycServicesReturn => {
 				"[useKycServices] Using mock data, services count:",
 				MOCK_KYC_SERVICES.length
 			);
-			setServices(normalizeServices(MOCK_KYC_SERVICES));
-			setError(null);
+			setLocalServices(normalizeServices(MOCK_KYC_SERVICES));
+			setLocalError(null);
 			return;
 		}
 
@@ -244,12 +259,12 @@ export const useKycServices = (): UseKycServicesReturn => {
 					"[useKycServices] Loaded services:",
 					normalizedServices.length
 				);
-				setServices(normalizedServices);
-				setError(null);
+				setLocalServices(normalizedServices);
+				setLocalError(null);
 			} else {
 				const errorMessage =
 					response?.data?.message || "Failed to fetch services";
-				setError(errorMessage);
+				setLocalError(errorMessage);
 				toast({
 					title: "Error",
 					description: errorMessage,
@@ -261,7 +276,7 @@ export const useKycServices = (): UseKycServicesReturn => {
 		} catch (err) {
 			console.error("[useKycServices] Error fetching services:", err);
 			const errorMessage = "Failed to fetch services";
-			setError(errorMessage);
+			setLocalError(errorMessage);
 			toast({
 				title: "Error",
 				description: errorMessage,
@@ -270,18 +285,41 @@ export const useKycServices = (): UseKycServicesReturn => {
 				isClosable: true,
 			});
 		}
+		setHasFetched(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Load services on mount
+	// Load services on mount - only if context is not available (fallback mode)
 	useEffect(() => {
-		loadServices();
-	}, [loadServices]);
+		// Skip fetching if context is available (services are cached there)
+		if (contextValue) {
+			console.log("[useKycServices] Using cached services from context");
+			return;
+		}
+
+		// Fallback: fetch directly if not already fetched
+		if (!hasFetched) {
+			console.log(
+				"[useKycServices] Context not available, fetching directly (fallback mode)"
+			);
+			loadServices();
+		}
+	}, [contextValue, hasFetched, loadServices]);
+
+	// Determine which data source to use
+	const services = contextValue?.services ?? localServices;
+	const error = contextValue?.error ?? localError;
+	const loading = contextValue?.loading ?? localLoading;
+	const refetch = contextValue?.refetch ?? loadServices;
 
 	/**
 	 * Categories derived from services.
+	 * Uses context categories if available, otherwise computes locally.
 	 */
-	const categories = useMemo(() => extractCategories(services), [services]);
+	const categories = useMemo(
+		() => contextValue?.categories ?? extractCategories(services),
+		[contextValue?.categories, services]
+	);
 
 	/**
 	 * Filter services by category and search query.
@@ -308,66 +346,90 @@ export const useKycServices = (): UseKycServicesReturn => {
 	}, [services, selectedCategory, searchQuery]);
 
 	/**
-	 * Get a single service by code.
-	 */
-	const getServiceByCode = useCallback(
-		(code: string): VerificationService | undefined => {
-			return services.find((s) => s.serviceCode === code);
-		},
-		[services]
-	);
-
-	/**
-	 * Get multiple services by codes.
-	 */
-	const getServicesByCodes = useCallback(
-		(codes: string[]): VerificationService[] => {
-			return services.filter((s) => codes.includes(s.serviceCode));
-		},
-		[services]
-	);
-
-	/**
-	 * Get a single service by its slug (kebab-cased name).
-	 */
-	const getServiceBySlug = useCallback(
-		(slug: string): VerificationService | undefined => {
-			return services.find((s) => toKebabCase(s.name) === slug);
-		},
-		[services]
-	);
-
-	/**
-	 * Get multiple services by their slugs.
-	 */
-	const getServicesBySlugs = useCallback(
-		(slugs: string[]): VerificationService[] => {
-			return services.filter((s) => slugs.includes(toKebabCase(s.name)));
-		},
-		[services]
-	);
-
-	/**
-	 * Get slug for a service code.
-	 */
-	const getSlugByCode = useCallback(
-		(code: string): string | undefined => {
-			const service = services.find((s) => s.serviceCode === code);
-			return service ? toKebabCase(service.name) : undefined;
-		},
-		[services]
-	);
-
-	/**
 	 * Get service codes from slugs.
+	 * Uses context utility if available, otherwise computes locally.
 	 */
 	const getCodesBySlugs = useCallback(
 		(slugs: string[]): string[] => {
+			if (contextValue?.getCodesBySlugs) {
+				return contextValue.getCodesBySlugs(slugs);
+			}
 			return services
 				.filter((s) => slugs.includes(toKebabCase(s.name)))
 				.map((s) => s.serviceCode);
 		},
-		[services]
+		[contextValue, services]
+	);
+
+	/**
+	 * Get a single service by code.
+	 * Uses context utility if available, otherwise computes locally.
+	 */
+	const getServiceByCode = useCallback(
+		(code: string): VerificationService | undefined => {
+			if (contextValue?.getServiceByCode) {
+				return contextValue.getServiceByCode(code);
+			}
+			return services.find((s) => s.serviceCode === code);
+		},
+		[contextValue, services]
+	);
+
+	/**
+	 * Get multiple services by codes.
+	 * Uses context utility if available, otherwise computes locally.
+	 */
+	const getServicesByCodes = useCallback(
+		(codes: string[]): VerificationService[] => {
+			if (contextValue?.getServicesByCodes) {
+				return contextValue.getServicesByCodes(codes);
+			}
+			return services.filter((s) => codes.includes(s.serviceCode));
+		},
+		[contextValue, services]
+	);
+
+	/**
+	 * Get a single service by its slug (kebab-cased name).
+	 * Uses context utility if available, otherwise computes locally.
+	 */
+	const getServiceBySlug = useCallback(
+		(slug: string): VerificationService | undefined => {
+			if (contextValue?.getServiceBySlug) {
+				return contextValue.getServiceBySlug(slug);
+			}
+			return services.find((s) => toKebabCase(s.name) === slug);
+		},
+		[contextValue, services]
+	);
+
+	/**
+	 * Get multiple services by their slugs.
+	 * Uses context utility if available, otherwise computes locally.
+	 */
+	const getServicesBySlugs = useCallback(
+		(slugs: string[]): VerificationService[] => {
+			if (contextValue?.getServicesBySlugs) {
+				return contextValue.getServicesBySlugs(slugs);
+			}
+			return services.filter((s) => slugs.includes(toKebabCase(s.name)));
+		},
+		[contextValue, services]
+	);
+
+	/**
+	 * Get slug for a service code.
+	 * Uses context utility if available, otherwise computes locally.
+	 */
+	const getSlugByCode = useCallback(
+		(code: string): string | undefined => {
+			if (contextValue?.getSlugByCode) {
+				return contextValue.getSlugByCode(code);
+			}
+			const service = services.find((s) => s.serviceCode === code);
+			return service ? toKebabCase(service.name) : undefined;
+		},
+		[contextValue, services]
 	);
 
 	return {
@@ -380,7 +442,7 @@ export const useKycServices = (): UseKycServicesReturn => {
 		setSearchQuery,
 		loading,
 		error,
-		refetch: loadServices,
+		refetch,
 		getServiceByCode,
 		getServicesByCodes,
 		getServiceBySlug,
