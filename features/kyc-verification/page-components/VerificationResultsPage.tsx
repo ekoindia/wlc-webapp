@@ -399,7 +399,7 @@ export const VerificationResultsPage = ({
 														},
 													},
 													icon: "refresh",
-													iconStyle: { size: "xs" },
+													iconStyle: { size: "sm" },
 												},
 												{
 													variant: "link",
