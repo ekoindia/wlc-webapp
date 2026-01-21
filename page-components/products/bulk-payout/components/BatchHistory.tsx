@@ -34,6 +34,14 @@ const blinkAnimation = keyframes`
 	50% { opacity: 0.3; }
 `;
 
+const BULK_PAYOUT_TF_URIS = {
+	SINGLE_BATCH: "/bulk/upload/batch",
+	DOWNLOAD_REPORT: "/bulk/upload/report",
+	BATCH_LIST: "/bulk/upload/batch/list",
+} as const;
+
+const TF_ROOT_PATH = "/api/v1";
+
 interface ApiBatch {
 	batchNumber: string;
 	batchUploadDate: string;
@@ -142,8 +150,8 @@ const BatchHistory: React.FC = (): JSX.Element => {
 				const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}${Endpoints.TRANSACTION}`;
 				const response = await fetcher(url, {
 					headers: {
-						"tf-req-uri-root-path": "/api/v1",
-						"tf-req-uri": `/bulk-payment/batch?batchNumber=${batchNumber}`,
+						"tf-req-uri-root-path": TF_ROOT_PATH,
+						"tf-req-uri": `${BULK_PAYOUT_TF_URIS.SINGLE_BATCH}?batchNumber=${batchNumber}`,
 						"tf-req-method": "GET",
 					},
 					body: {},
@@ -202,8 +210,8 @@ const BatchHistory: React.FC = (): JSX.Element => {
 
 			const response = await fetcher(url, {
 				headers: {
-					"tf-req-uri-root-path": "/api/v1",
-					"tf-req-uri": `/bulk-payment/batch-list?service_code=45`,
+					"tf-req-uri-root-path": TF_ROOT_PATH,
+					"tf-req-uri": `${BULK_PAYOUT_TF_URIS.BATCH_LIST}?service_code=45`,
 					"tf-req-method": "GET",
 				},
 				body: {},
@@ -310,8 +318,8 @@ const BatchHistory: React.FC = (): JSX.Element => {
 					`${process.env.NEXT_PUBLIC_API_BASE_URL}${Endpoints.TRANSACTION}`,
 					{
 						headers: {
-							"tf-req-uri-root-path": "/api/v1",
-							"tf-req-uri": `/bulk-payment/download?batchNumber=${batchNumber}`,
+							"tf-req-uri-root-path": TF_ROOT_PATH,
+							"tf-req-uri": `${BULK_PAYOUT_TF_URIS.DOWNLOAD_REPORT}?batchNumber=${batchNumber}`,
 							"tf-req-method": "GET",
 						},
 						body: {},

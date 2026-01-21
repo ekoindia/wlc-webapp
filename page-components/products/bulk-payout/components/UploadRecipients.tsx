@@ -17,7 +17,7 @@ const SAMPLE_DOWNLOAD_LINK =
 	"https://files.eko.co.in/docs/sample_files/bulk-upload/bulk_imps_sample.xlsx";
 
 const BULK_PAYOUT_TF_URIS = {
-	PROCESS_RECORDS: "/bulk-payment/process-records",
+	UPLOAD: "/bulk/upload",
 } as const;
 
 const TF_ROOT_PATH = "/api/v1";
@@ -97,7 +97,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 					headers: {
 						Authorization: `Bearer ${accessToken}`,
 						"tf-req-uri-root-path": TF_ROOT_PATH,
-						"tf-req-uri": BULK_PAYOUT_TF_URIS.PROCESS_RECORDS,
+						"tf-req-uri": BULK_PAYOUT_TF_URIS.UPLOAD,
 						"tf-req-method": "POST",
 						"x-forwarded-proto":
 							process.env.NEXT_PUBLIC_ENV !== "production"
@@ -260,9 +260,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 							resetTrigger={pinResetTrigger}
 							// useMockData={true}
 							onChange={(value, masked) => {
-								// if (value.includes("|")) {
 								setPintwinEncoded(value);
-								// }
 								// Track PIN length based on masked value (which shows actual digit count)
 								setPinLength(masked.length);
 							}}
