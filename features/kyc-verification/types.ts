@@ -85,6 +85,8 @@ export interface VerificationService {
 	requestParams: RequestParam[];
 	/** Whether this service supports bulk verification uploads */
 	supports_bulk_verification?: boolean;
+	/** Whether this service is enabled for the agent */
+	is_enabled: boolean;
 }
 
 /**

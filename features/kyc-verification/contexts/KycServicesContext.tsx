@@ -102,18 +102,21 @@ const getServiceDescription = (service: VerificationService): string => {
 /**
  * Normalizes services to ensure all required fields are present.
  * Adds default icons, descriptions, and categories where missing.
+ * Filters out disabled services.
  * @param {VerificationService[]} services - Array of services to normalize
  * @returns {VerificationService[]} Normalized services with all fields populated
  */
 const normalizeServices = (
 	services: VerificationService[]
 ): VerificationService[] => {
-	return services.map((service) => ({
-		...service,
-		icon: getServiceIcon(service),
-		description: getServiceDescription(service),
-		category: service.category || UNCATEGORIZED_VALUE,
-	}));
+	return services
+		.filter((service) => service.is_enabled)
+		.map((service) => ({
+			...service,
+			icon: getServiceIcon(service),
+			description: getServiceDescription(service),
+			category: service.category || UNCATEGORIZED_VALUE,
+		}));
 };
 
 /**
