@@ -110,23 +110,15 @@ export interface KycServicesResponse {
 }
 
 /**
- * A verification service with enabled status for agent management.
- * Extends VerificationService with is_enabled flag from API 1043.
- * @interface AgentService
- */
-export interface AgentService extends VerificationService {
-	/** Whether this service is enabled for the agent */
-	is_enabled: boolean;
-}
-
-/**
  * API response structure for fetching agent services (interaction_type_id: 1043).
  * @interface AgentServicesResponse
+ * @deprecated Use KycServicesResponse with VerificationService[] instead.
+ * AgentService was merged into VerificationService since both have is_enabled.
  */
 export interface AgentServicesResponse {
 	response_status_id: number;
 	data: {
-		service_list: AgentService[];
+		service_list: VerificationService[];
 	};
 	message: string;
 	status: number;

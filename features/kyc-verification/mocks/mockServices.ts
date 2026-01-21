@@ -60,6 +60,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				placeholder: "YYYY-MM-DD",
 			},
 		],
+		is_enabled: true,
 		supports_bulk_verification: true,
 	},
 	{
@@ -96,6 +97,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 		supports_bulk_verification: true,
 	},
 	{
@@ -120,6 +122,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 		supports_bulk_verification: true,
 	},
 	{
@@ -151,6 +154,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				placeholder: "YYYY-MM-DD",
 			},
 		],
+		is_enabled: true,
 		supports_bulk_verification: true,
 	},
 	{
@@ -187,6 +191,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 	},
 	{
 		serviceCode: "87043",
@@ -227,6 +232,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 		supports_bulk_verification: true,
 	},
 	{
@@ -253,6 +259,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 	},
 	{
 		serviceCode: "78302",
@@ -318,6 +325,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 	},
 	{
 		serviceCode: "86064",
@@ -353,6 +361,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 		supports_bulk_verification: true,
 	},
 	{
@@ -376,6 +385,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 	},
 	{
 		serviceCode: "80557",
@@ -409,6 +419,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 	},
 	{
 		serviceCode: "40768",
@@ -440,6 +451,7 @@ export const MOCK_KYC_SERVICES: VerificationService[] = [
 				},
 			},
 		],
+		is_enabled: true,
 	},
 ];
 

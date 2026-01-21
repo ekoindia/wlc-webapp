@@ -7,17 +7,9 @@ import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useApiFetch, useEpsV3Fetch } from "hooks";
 import { useCallback, useMemo, useRef, useState } from "react";
-import {
-	ALL_CATEGORIES_VALUE,
-	DEFAULT_ICON,
-	DEFAULT_SERVICE_ICONS,
-	UNCATEGORIZED_VALUE,
-} from "../constants";
-import type {
-	AgentService,
-	CategoryOption,
-	VerificationService,
-} from "../types";
+import { ALL_CATEGORIES_VALUE } from "../constants";
+import type { CategoryOption, VerificationService } from "../types";
+import { extractCategories, normalizeServices } from "../utils";
 
 /** Interaction type ID for fetching agent services */
 const AGENT_SERVICES_INTERACTION_ID = 1043;
@@ -39,84 +31,11 @@ interface BatchProgress {
 	operation: "enable" | "disable" | null;
 }
 
-/**
- * Derives an icon for a service based on its category or name.
- * @param {VerificationService} service - The service to get icon for
- * @returns {string} Icon name from the icon library
- */
-const getServiceIcon = (service: VerificationService): string => {
-	if (service.icon) return service.icon;
-
-	if (service.category && DEFAULT_SERVICE_ICONS[service.category]) {
-		return DEFAULT_SERVICE_ICONS[service.category];
-	}
-
-	for (const [keyword, icon] of Object.entries(DEFAULT_SERVICE_ICONS)) {
-		if (service.name.toLowerCase().includes(keyword.toLowerCase())) {
-			return icon;
-		}
-	}
-
-	return DEFAULT_ICON;
-};
-
-/**
- * Normalizes services to ensure all required fields are present.
- * @param {AgentService[]} services - Services from API with is_enabled status
- * @returns {AgentService[]} Normalized services with icons and categories
- */
-const normalizeServices = (services: AgentService[]): AgentService[] => {
-	return services.map((service) => ({
-		...service,
-		icon: getServiceIcon(service),
-		category: service.category || UNCATEGORIZED_VALUE,
-	}));
-};
-
-/**
- * Extracts unique categories from services for filtering.
- * Returns array with "All" option first, followed by sorted categories.
- * @param {AgentService[]} services - Array of services to extract categories from
- * @returns {CategoryOption[]} Array of category options with counts
- */
-const extractCategories = (services: AgentService[]): CategoryOption[] => {
-	const categoryMap = new Map<string, number>();
-
-	services.forEach((service) => {
-		const category = service.category || UNCATEGORIZED_VALUE;
-		categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
-	});
-
-	const categories: CategoryOption[] = [
-		{
-			value: ALL_CATEGORIES_VALUE,
-			label: "All",
-			count: services.length,
-		},
-	];
-
-	const sortedCategories = Array.from(categoryMap.entries()).sort((a, b) => {
-		if (a[0] === UNCATEGORIZED_VALUE) return 1;
-		if (b[0] === UNCATEGORIZED_VALUE) return -1;
-		return a[0].localeCompare(b[0]);
-	});
-
-	sortedCategories.forEach(([category, count]) => {
-		categories.push({
-			value: category,
-			label: category === UNCATEGORIZED_VALUE ? "Other" : category,
-			count,
-		});
-	});
-
-	return categories;
-};
-
 interface UseAgentServicesReturn {
 	/** All services for the selected agent */
-	services: AgentService[];
+	services: VerificationService[];
 	/** Filtered services based on category and search */
-	filteredServices: AgentService[];
+	filteredServices: VerificationService[];
 	/** Available categories for filtering */
 	categories: CategoryOption[];
 	/** Currently selected category */
@@ -171,7 +90,7 @@ interface UseAgentServicesReturn {
  */
 export const useAgentServices = (): UseAgentServicesReturn => {
 	const toast = useToast();
-	const [services, setServices] = useState<AgentService[]>([]);
+	const [services, setServices] = useState<VerificationService[]>([]);
 	const [selectedCategory, setSelectedCategory] =
 		useState<string>(ALL_CATEGORIES_VALUE);
 	const [searchQuery, setSearchQuery] = useState<string>("");
@@ -235,14 +154,14 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 					},
 				});
 
-				// console.log("[useAgentServices] response", response);
-
 				if (
 					response?.data?.status === 0 &&
 					response?.data?.data?.verification_service_list
 				) {
+					// Don't filter disabled services - we need to show all for management
 					const normalizedServices = normalizeServices(
-						response?.data?.data?.verification_service_list
+						response?.data?.data?.verification_service_list,
+						{ filterDisabled: false }
 					);
 					setServices(normalizedServices);
 				} else {
@@ -258,10 +177,6 @@ export const useAgentServices = (): UseAgentServicesReturn => {
 					});
 				}
 			} catch (err) {
-				// console.error(
-				// 	"[useAgentServices] Error fetching services:",
-				// 	err
-				// );
 				const errorMessage =
 					err?.data?.message || "Failed to fetch services";
 				setError(errorMessage);

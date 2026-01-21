@@ -48,7 +48,6 @@ export {
 
 // Types
 export type {
-	AgentService,
 	AgentServicesResponse,
 	CategoryOption,
 	FormField,
@@ -62,6 +61,14 @@ export type {
 	VerificationState,
 	VerificationStatus,
 } from "./types";
+
+// Utilities
+export {
+	extractCategories,
+	getServiceDescription,
+	getServiceIcon,
+	normalizeServices,
+} from "./utils";
 
 // Constants
 export {
