@@ -55,14 +55,14 @@ const OtpVerificationForm = ({
 		{
 			name: "otp",
 			label: `Enter OTP`,
-			parameter_type_id: ParamType.TEXT,
+			parameter_type_id: ParamType.OTP,
 			maxLength: 3,
-			minLength: 3,
+			minLength: 4,
 			placeholder: "Enter OTP",
 			validations: {
 				required: "OTP is required",
 				pattern: {
-					value: /^[0-9]{3}$/,
+					value: /^[0-9]{3,4}$/,
 					message: "Required",
 				},
 			},
@@ -132,32 +132,31 @@ const OtpVerificationForm = ({
 					return;
 				}
 
-				// Handle OTP verification error (check invalid_params
-				if (
-					response?.invalid_params &&
-					Object.keys(response.invalid_params).length > 0
-				) {
-					// console.log(
-					// 	"[AgentOnboarding] OTP INVALID - invalid_params:",
-					// 	response.invalid_params
-					// );
-					toast({
-						title: "Invalid OTP",
-						description:
-							response.invalid_params?.otp ??
-							"Please enter the correct OTP sent to the agent's mobile number.",
-						status: "error",
-						duration: 5000,
-						isClosable: true,
-					});
-					return;
-				}
+				// Handle OTP verification error
+				console.log("[AgentOnboarding] OTP INVALID: ", {
+					response,
+				});
+				toast({
+					title: "Invalid OTP",
+					description:
+						responseTypeId ===
+							RESPONSE_TYPE_IDS.OTP_VERIFICATION_ERROR ||
+						// EPS BUG: response_type_id is coming as status (which should be 0 for success)
+						response?.status ===
+							RESPONSE_TYPE_IDS.OTP_VERIFICATION_ERROR
+							? "Please enter the correct OTP sent to the agent's mobile number."
+							: response.message || "Invalid OTP.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		} catch (error: any) {
 			console.error("Error verifying OTP:", error);
 			toast({
 				title: "Error",
-				description: "Something went wrong. Please try again.",
+				description:
+					error?.message || "Something went wrong. Please try again.",
 				status: "error",
 				duration: 5000,
 				isClosable: true,
@@ -201,9 +200,11 @@ const OtpVerificationForm = ({
 							register,
 							errors,
 						}}
+						size="lg"
+						onEnter={handleSubmit(handleFormSubmit)}
 					/>
 
-					<ActionButtonGroup {...{ buttonConfigList }} />
+					<ActionButtonGroup {...{ buttonConfigList }} mt="1em" />
 				</Flex>
 			</form>
 		</Flex>

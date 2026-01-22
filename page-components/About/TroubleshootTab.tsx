@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { CopyButton, IcoButton } from "components";
 import { useAppSource, useMenuContext, useOrgDetailContext } from "contexts";
-import { usePlatform } from "hooks";
+import { useNetworkState, usePlatform } from "hooks";
 import { useEffect, useState } from "react";
 import packageJson from "../../package.json";
 import { parseBrowserInfo } from "./utils";
@@ -119,6 +119,8 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions || {};
 
+	const { online, effectiveType, downlink } = useNetworkState();
+
 	/**
 	 * Initialize diagnostic data on mount
 	 * MARK: Init Data
@@ -204,7 +206,11 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 					source: appSource || "Unknown",
 					nativeVersion: nativeVersion || "N/A",
 					env: process.env.NEXT_PUBLIC_ENV || "Unknown",
-					trxnRoles: role_tx_list?.join(", ") ?? "N/A",
+					trxnRoles:
+						// comma separated list of all keys of the object `role_tx_list`:
+						role_tx_list
+							? Object.keys(role_tx_list || {}).join(", ")
+							: "N/A",
 				},
 			});
 			setErrorMessage(null);
@@ -215,6 +221,23 @@ const TroubleshootTab = ({ onBack }: TroubleshootTabProps): JSX.Element => {
 			);
 		}
 	}, []);
+
+	useEffect(() => {
+		// Listen for changes in network state and update diagnostics accordingly
+		setDiagnostics((prevDiagnostics) => {
+			if (!prevDiagnostics) return prevDiagnostics;
+
+			return {
+				...prevDiagnostics,
+				network: {
+					...prevDiagnostics.network,
+					online: online ? "Yes" : "No",
+					connectionType: effectiveType,
+					downlink: `${downlink} Mb/s`,
+				},
+			};
+		});
+	}, [online, effectiveType, downlink]);
 
 	if (errorMessage) {
 		return (

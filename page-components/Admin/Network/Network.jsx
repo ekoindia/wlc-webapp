@@ -331,7 +331,6 @@ const Network = () => {
 			inputLeftElement: <Icon name="search" size="sm" color="light" />,
 			onEnter: handleSubmitSearch(onSearchSubmit),
 			required: false,
-			w: { base: "auto", md: "400px" },
 		},
 	];
 
@@ -472,7 +471,7 @@ const Network = () => {
 			<Flex
 				direction="column"
 				gap="4"
-				mx={{ base: "4", md: "0" }}
+				p={{ base: "4", md: "0" }}
 				// align="center"
 			>
 				<NetworkToolbar

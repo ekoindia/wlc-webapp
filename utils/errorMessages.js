@@ -19,7 +19,7 @@ const errorTypeMessages = {
  */
 export const getFormErrorMessage = (name, errors) => {
 	//TODO add provision for custom messages
-	const errorType = errors[name]?.type;
+	const { type, message } = errors[name] || {};
 
-	return errorTypeMessages[errorType] || "";
+	return message || errorTypeMessages[type] || "";
 };
