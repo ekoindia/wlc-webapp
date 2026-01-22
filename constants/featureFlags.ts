@@ -60,6 +60,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// KYC Verification
+	KYC_VERIFICATION: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
