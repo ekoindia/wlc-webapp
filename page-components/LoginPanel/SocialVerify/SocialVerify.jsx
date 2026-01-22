@@ -1,7 +1,7 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Button, IcoButton, Icon, Input } from "components";
 import { useAppSource, useOrgDetailContext } from "contexts";
-import { RemoveFormatted, sendOtpRequest } from "helpers";
+import { sendOtpRequest } from "helpers";
 import { useState } from "react";
 
 /**
@@ -23,27 +23,45 @@ const SocialVerify = ({ email, number, previewMode, setNumber, setStep }) => {
 	const [errorMsg, setErrorMsg] = useState(false);
 	const { orgDetail } = useOrgDetailContext();
 
-	const onChangeHandler = (val) => {
-		setValue(val);
+	const onChangeHandler = (e) => {
+		if (e === null || typeof e === "undefined") return;
+
+		if (typeof e === "string") {
+			setValue(e);
+			return;
+		}
+
+		if (
+			typeof e === "object" &&
+			e.target &&
+			typeof e.target.value === "string"
+		) {
+			setValue(e.target.value);
+		}
 	};
 
 	const onVerifyOtp = async () => {
 		if (previewMode === true) return;
 
-		if (value.length === 12) {
-			let originalNum = RemoveFormatted(value);
+		if (value.length === 10) {
+			// Input component now returns unformatted value directly
+			const formattedValue = value.replace(
+				/(\d{3})(\d{3})(\d{4})/,
+				"$1 $2 $3"
+			);
 			setNumber({
-				original: originalNum,
-				formatted: value,
+				original: value,
+				formatted: formattedValue,
 			});
 
 			setStep("VERIFY_OTP");
 			const { otp_sent } = await sendOtpRequest(
 				orgDetail.org_id,
-				originalNum,
+				value,
 				toast,
 				"send",
-				isAndroid
+				isAndroid,
+				orgDetail.org_token
 			);
 
 			if (!otp_sent) {
@@ -124,7 +142,7 @@ const SocialVerify = ({ email, number, previewMode, setNumber, setStep }) => {
 				// 	pos: "relative",
 				// }}
 				isNumInput={true}
-				maxLength={12}
+				maxLength={10}
 				onFocus={() => {
 					setInvalid(false);
 				}}

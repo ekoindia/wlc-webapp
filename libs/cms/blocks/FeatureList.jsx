@@ -2,6 +2,7 @@ import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import useHslColor from "hooks/useHslColor";
 import { useEffect, useState } from "react";
+import { extractTextContent } from "utils";
 import { extendedSizeOptions, iconField, paddingSizeMap } from "../options";
 import { Section } from "../Section";
 
@@ -21,8 +22,12 @@ export const FeatureList = {
 			getItemSummary: (item, i) => item.title || `Feature #${i}`,
 			defaultItemProps: DEFAULTS,
 			arrayFields: {
-				title: { type: "text" },
-				desc: { type: "textarea", label: "description" },
+				title: { type: "text", contentEditable: true },
+				desc: {
+					type: "textarea",
+					label: "description",
+					contentEditable: true,
+				},
 				ico: iconField,
 			},
 		},
@@ -124,13 +129,15 @@ export const FeatureList = {
  * Feature Item component
  * @param {object} props
  * @param {string} props.icon - Icon name
- * @param {string} props.title - Title
- * @param {string} props.desc - Description
+ * @param {React.ReactNode} props.title - Title (string or React node containing the string/number/etc)
+ * @param {React.ReactNode} props.desc - Description (string or React node containing the string/number/etc)
  * @param {string} props.color - Icon color
  * @param {boolean} props.cardMode - Card mode
  */
 const FeatureItem = ({ icon, title, desc, color, cardMode = false }) => {
-	const { h } = useHslColor(title);
+	const titleStr = extractTextContent(title);
+
+	const { h } = useHslColor(titleStr);
 	const isLightAutoColor = color === "light";
 	const isDarkAutoColor = !color || color === "dark";
 	const isAutoColor = isLightAutoColor || isDarkAutoColor;

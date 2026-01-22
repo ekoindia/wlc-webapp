@@ -65,12 +65,23 @@ const IMG_SRC_DOMAINS = [
 	"img.youtube.com", // YouTube thumbnails
 ];
 
+// Domains for media (audio/video) can be added to img-src if needed
+const MEDIA_SRC_DOMAINS = [
+	SELF,
+	"blob:",
+	"data:",
+	"*.eko.in",
+	"files.eko.co.in",
+	"*.youtube.com",
+];
+
 // Domains for font-src directive (fonts)
 const FONT_SRC_DOMAINS = [SELF];
 
 // Domains for connect-src directive (XHR, fetch, WebSocket)
 const CONNECT_SRC_DOMAINS = [
 	SELF,
+	"data:", // Required for media (camera) stream capture
 	"*.eko.in", // Eko platform APIs
 	"files.eko.co.in", // Eko file server
 	"*.digitaloceanspaces.com", // DigitalOcean CDN
@@ -104,6 +115,8 @@ const cspHeaders = [
 	`style-src ${STYLE_SRC_DOMAINS.join(" ")}`,
 	// Allow images from self, blob, data, and trusted domains (e.g., for logos and static assets).
 	`img-src ${IMG_SRC_DOMAINS.join(" ")}`,
+	// Allow media (audio/video) from self, blob, data, and trusted domains.
+	`media-src ${MEDIA_SRC_DOMAINS.join(" ")}`,
 	// Allow fonts from self only.
 	`font-src ${FONT_SRC_DOMAINS.join(" ")}`,
 	// Allow XHR/fetch/WebSocket connections to trusted domains.

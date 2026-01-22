@@ -11,7 +11,10 @@ import {
 	forwardRef,
 	ReactElement,
 	useCallback,
+	useEffect,
 	useId,
+	useRef,
+	useState,
 } from "react";
 import { InputLabel, InputMsg } from "..";
 
@@ -138,6 +141,41 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 	): ReactElement => {
 		const _id = useId();
 
+		// Track unformatted value for isNumInput mode
+		const unformattedValueRef = useRef<string>("");
+
+		// Internal state for formatted display value when isNumInput is true
+		const [displayValue, setDisplayValue] = useState<string>("");
+
+		// Determine the actual display value
+		// For numeric inputs: use internal displayValue (formatted)
+		// For regular inputs or when controlled: use value prop
+		const actualDisplayValue = isNumInput
+			? displayValue
+			: value !== undefined
+				? value
+				: undefined;
+
+		// Auto-adjust maxLength when isNumInput to account for formatting spaces
+		// formatNum adds spaces after positions 2 and 5 (0-indexed), so max 2 spaces
+		// Examples: "123" → "123 " (1 space), "1234567890" → "123 456 7890" (2 spaces)
+		// Formula: min(2, floor((maxLength + 2) / 3))
+		const adjustedMaxLength = isNumInput
+			? maxLength + Math.min(2, Math.floor((maxLength + 2) / 3))
+			: maxLength;
+
+		// Sync display value with controlled value prop for numeric inputs
+		useEffect(() => {
+			if (isNumInput) {
+				if (value !== undefined) {
+					const cleanValue = String(value).replace(/[^0-9\.]+/g, "");
+					const formatted = formatNum(cleanValue);
+					setDisplayValue(formatted);
+					unformattedValueRef.current = cleanValue;
+				}
+			}
+		}, [value, isNumInput]);
+
 		const default_radius =
 			size === "lg"
 				? "10px"
@@ -149,23 +187,33 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
 		const onChangeHandler = useCallback(
 			(e) => {
+				if (typeof e?.target?.value === "undefined") {
+					onChange(e);
+					return;
+				}
+
 				let val = e?.target?.value;
 				if (isNumInput) {
-					if (
-						// TODO: FIX
-						val == "" ||
-						/^[1-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
-							val
-						)
-					) {
-						let formatted = formatNum(value, val);
-						onChange(formatted);
-					}
+					// Strip non-numeric characters to get unformatted value
+					val = String(val).replace(/[^0-9\.]+/g, "");
+
+					// Format for display
+					let formatted = String(formatNum(val));
+
+					// Store unformatted value
+					unformattedValueRef.current = val;
+
+					// Update display state (for uncontrolled mode or internal display)
+					setDisplayValue(formatted);
+
+					// Dispatch UNFORMATTED value to parent
+					onChange({ target: { name: name, value: val } });
 				} else onChange(e);
 			},
-			[isNumInput, onChange]
+			[isNumInput, onChange, name]
 		);
 
+		// MARK: jsx
 		return (
 			<Flex
 				flexDirection="column"
@@ -195,11 +243,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 					{leftAddon ? (
 						<InputLeftAddon
 							pointerEvents="none"
-							bg="transparent"
+							// bg="transparent"
 							borderLeftRadius={
 								borderRadius || default_radius || size
 							}
-							borderColor={errorMsg && invalid ? "error" : "hint"}
+							borderColor={invalid ? "error" : "hint"}
 						>
 							{leftAddon}
 						</InputLeftAddon>
@@ -219,16 +267,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 						type={type}
 						disabled={disabled}
 						hidden={hidden}
-						value={value}
-						// required={required}
+						value={actualDisplayValue}
 						borderRadius={borderRadius || default_radius || size}
-						borderColor={errorMsg && invalid ? "error" : "hint"}
-						bg={errorMsg && invalid ? "#fff7fa" : ""}
+						borderColor={invalid ? "error" : "hint"}
 						w="100%"
+						bg="#FFF"
 						inputMode={isNumInput ? "numeric" : "text"}
 						onChange={(e) => onChangeHandler(e)}
 						onKeyDown={(e) => {
-							if (e.code === "Enter" && onEnter) onEnter(value);
+							if (e.code === "Enter" && onEnter) {
+								// Pass unformatted value to onEnter
+								const unformatted = isNumInput
+									? unformattedValueRef.current
+									: value;
+								onEnter(unformatted);
+							}
 							onKeyDown && onKeyDown(e);
 						}}
 						_hover={{
@@ -237,13 +290,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 						_focus={{
 							bg: "focusbg",
 							boxShadow: "0px 3px 6px #0000001A",
-							borderColor: "hint",
+							borderColor: invalid ? "error" : "hint",
 							transition: "box-shadow 0.3s ease-out",
 						}}
 						min={min}
 						max={max}
 						minLength={minLength}
-						maxLength={maxLength}
+						maxLength={adjustedMaxLength}
 						focusBorderColor="primary.light"
 						errorBorderColor="error"
 						{...inputAttributes}
@@ -275,23 +328,19 @@ export default Input;
 
 /**
  * Format the number to add space after every 3 digits
- * @param {*} value
- * @param {*} num
- * @returns
+ * MARK: formatNum
+ * @param {string|number} num - The number to be formatted
+ * @returns {string}
  */
-function formatNum(value, num) {
+function formatNum(num) {
 	let formatted_num = "";
-	// This is for space removal when user removes the input
-	if (value.slice(0, value.length - 1) === num && num !== "") {
-		return num;
-	} else {
-		for (let i in num) {
-			if (num[i] !== " ") {
-				if (i === "2" || i === "6") {
-					formatted_num += num[i] + " ";
-				} else formatted_num += num[i];
-			}
-		}
-		return formatted_num;
+
+	if (typeof num === "undefined" || num === null) return "";
+
+	for (let i in num) {
+		if (i === "2" || i === "5") {
+			formatted_num += num[i] + " ";
+		} else formatted_num += num[i];
 	}
+	return formatted_num.trim();
 }

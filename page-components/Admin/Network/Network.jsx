@@ -280,7 +280,7 @@ const Network = () => {
 			name: "parent_user_code",
 			label: "Show Sub-Network of a User",
 			parameter_type_id: ParamType.TEXT,
-			placeholder: "Enter User Code",
+			placeholder: "Enter Code",
 			required: false,
 		},
 		{
@@ -331,7 +331,6 @@ const Network = () => {
 			inputLeftElement: <Icon name="search" size="sm" color="light" />,
 			onEnter: handleSubmitSearch(onSearchSubmit),
 			required: false,
-			w: { base: "auto", md: "400px" },
 		},
 	];
 
@@ -448,6 +447,7 @@ const Network = () => {
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
 
+	// MARK: JSX
 	return (
 		<>
 			<PageTitle
@@ -471,7 +471,7 @@ const Network = () => {
 			<Flex
 				direction="column"
 				gap="4"
-				mx={{ base: "4", md: "0" }}
+				p={{ base: "4", md: "0" }}
 				// align="center"
 			>
 				<NetworkToolbar

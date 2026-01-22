@@ -15,6 +15,7 @@ const EKO_RESPONSE_TYPE_ID = {
  * @param {string} sendState	"send" or "resend" for showing proper toast message
  * @param {boolean} isAndroid	Is the user using the Android wrapper app?
  * @param {boolean} isMobileMappedUserId Is the user mobile mapped?
+ * @param {string} org_token	A JWT token with org details (including org_id)
  * @returns {boolean} Is SEND-OTP request successful?
  */
 async function sendOtpRequest(
@@ -23,7 +24,8 @@ async function sendOtpRequest(
 	toast,
 	sendState = "send",
 	isAndroid = false,
-	isMobileMappedUserId = false
+	isMobileMappedUserId = false,
+	org_token = ""
 ) {
 	let success = false;
 	let errMsg = "";
@@ -42,6 +44,7 @@ async function sendOtpRequest(
 		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Eloka",
 		org_id: org_id,
+		org_token: org_token,
 		...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
 	};
 

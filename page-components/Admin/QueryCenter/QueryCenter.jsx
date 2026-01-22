@@ -14,7 +14,7 @@ import {
 import { Button, ChatInput, PageTitle } from "components";
 import { ParamType, TransactionTypes } from "constants";
 import { Endpoints } from "constants/EndPoints";
-import { useApiFetch, useFeatureFlag } from "hooks";
+import { useApiFetch, useFeatureFlag, useRaiseIssue } from "hooks";
 import { useEffect, useState } from "react";
 import { Value } from "tf-components";
 // import { FaRegUser } from "react-icons/fa6";
@@ -35,6 +35,10 @@ const QueryCenter = () => {
 	const [data, setData] = useState(null);
 	const [selectedTicketIndex, setSelectedTicketIndex] = useState(-1);
 	const [commentsCache, setCommentsCache] = useState({});
+
+	const { showRaiseIssueDialog } = useRaiseIssue();
+
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE_GENERIC");
 
 	/**
 	 * MARK: Fetch Issues
@@ -142,7 +146,24 @@ const QueryCenter = () => {
 	// MARK: Main JSX
 	return (
 		<>
-			<PageTitle title="Query Center" hideBackIcon />
+			<PageTitle
+				title="Query Center"
+				hideBackIcon
+				toolComponent={
+					isRaiseIssueAllowed ? (
+						<Button
+							size={{ base: "sm", md: "md" }}
+							onClick={() =>
+								showRaiseIssueDialog({
+									origin: "Global-Help",
+								})
+							}
+						>
+							Raise Query
+						</Button>
+					) : null
+				}
+			/>
 
 			<Box mx={{ base: "4", md: "0" }}>
 				{data?.length > 0 ? (

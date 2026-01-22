@@ -77,8 +77,9 @@ export const MockOrgDetails = {
 	},
 	login_types: {
 		google: {
-			default: process.env.USE_DEFAULT_GOOGLE_LOGIN === "true",
+			default: process.env.USE_DEFAULT_GOOGLE_LOGIN === "true", // REDUNDANT
 			client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || undefined,
+			client_secret: "", // Must be set on server side. Not fetched on client-side
 		},
 	},
 };
@@ -341,7 +342,7 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 
 		if (data?.data?.org_id) {
 			// Org details found
-			return data.data;
+			return { ...data.data, org_token: data.org_token };
 		} else if (data?.response_type_id == ORG_NOT_FOUND_RESPONSE_TYPE_ID) {
 			// Org details not found
 			console.debug(

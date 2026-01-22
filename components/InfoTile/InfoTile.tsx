@@ -14,6 +14,8 @@ interface InfoTileProps {
 	desc: string;
 	/** Icon for the tile */
 	icon?: string;
+	/** Style of the icon - avatar (default) or square */
+	iconStyle?: "avatar" | "square";
 	/** Function to call when the tile is clicked */
 	onClick?: () => void;
 	/** URL to navigate to when the tile is clicked. This is used if the `onClick` function is not provided */
@@ -28,11 +30,13 @@ interface InfoTileProps {
  * @param root0.icon
  * @param root0.onClick
  * @param root0.url
+ * @param root0.iconStyle
  */
 const InfoTile = ({
 	label,
 	desc,
 	icon,
+	iconStyle = "avatar",
 	onClick,
 	url,
 }: InfoTileProps): JSX.Element => {
@@ -69,20 +73,38 @@ const InfoTile = ({
 			onClick={handleClick}
 		>
 			<Flex align="center" gap="4" w="100%">
-				<Avatar
-					size={{ base: "sm", md: "md" }}
-					name={icon ? null : label}
-					border={`2px solid hsl(${h},80%,90%)`}
-					bg={`hsl(${h},80%,95%)`}
-					color={`hsl(${h},80%,30%)`}
-					icon={
+				{iconStyle === "avatar" ? (
+					<Avatar
+						size={{ base: "sm", md: "md" }}
+						name={icon ? null : label}
+						border={`2px solid hsl(${h},80%,90%)`}
+						bg={`hsl(${h},80%,95%)`}
+						color={`hsl(${h},80%,30%)`}
+						icon={
+							<Icon
+								size={{ base: "sm", md: "md" }}
+								name={icon}
+								color={`hsl(${h},80%,30%)`}
+							/>
+						}
+					/>
+				) : iconStyle === "square" ? (
+					<Flex
+						w="32px"
+						h="32px"
+						bg={`hsl(${h},80%,60%)`}
+						borderRadius="6px"
+						align="center"
+						justify="center"
+						// border={`2px solid hsl(${h},80%,90%)`}
+					>
 						<Icon
-							size={{ base: "sm", md: "md" }}
+							size="sm"
 							name={icon}
-							color={`hsl(${h},80%,30%)`}
+							color="#FFF" // {`hsl(${h},80%,98%)`}
 						/>
-					}
-				/>
+					</Flex>
+				) : null}
 				<Flex direction="column" w="80%" gap="1">
 					{label?.length > 0 ? (
 						<Text

@@ -4,7 +4,7 @@ export const Endpoints = {
 	UPLOAD: "/transactions/upload",
 	UPLOAD_CUSTOM_URL: "/transactions/customupload", //TODO: merge functionality into upload in node.js app
 	LOGIN: "/authentication/login",
-	GOOGLELOGIN: "/authentication/wlc-login",
+	GOOGLELOGIN: "/authentication/google-login",
 	LOGOUT: "/authentication/revoke",
 	SENDOTP: "/authentication/sendotp",
 	GENERATE_TOKEN: "/authentication/token",

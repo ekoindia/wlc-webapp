@@ -39,6 +39,7 @@ export { printPage } from "./print";
 export { obj2queryparams } from "./queryBuilder";
 export {
 	capitalize,
+	extractTextContent,
 	getFirstWord,
 	getInitials,
 	limitText,
