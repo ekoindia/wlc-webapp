@@ -148,6 +148,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
 		beta: true,
+		featureFlag: "KYC_VERIFICATION",
 	},
 	// {
 	// 	id: 30,
@@ -264,6 +265,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
 		beta: true,
+		featureFlag: "KYC_VERIFICATION",
 	},
 	{
 		id: 215,
