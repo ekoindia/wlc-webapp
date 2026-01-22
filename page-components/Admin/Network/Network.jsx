@@ -456,7 +456,9 @@ const Network = () => {
 				toolComponent={
 					isAdmin ? (
 						<Button
-							size={{ base: "sm", md: "md" }}
+							size="sm"
+							icon="person"
+							iconStyle={{ size: "xs" }}
 							onClick={() =>
 								router.push(
 									"/admin/my-network/profile/change-role"

@@ -351,13 +351,6 @@ const UpdatePersonalInfo = () => {
 			type: "submit",
 			size: "lg",
 			label: "Preview",
-			styles: {
-				h: "64px",
-				w: {
-					base: "100%",
-					md: "200px",
-				},
-			},
 		},
 		{
 			variant: "link",
@@ -391,7 +384,6 @@ const UpdatePersonalInfo = () => {
 			label: "Save",
 			onClick: () => handleFormSubmit(),
 			loading: isSubmitting,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

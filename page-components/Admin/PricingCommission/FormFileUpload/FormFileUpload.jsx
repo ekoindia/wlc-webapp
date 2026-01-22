@@ -92,7 +92,6 @@ const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 			label: "Upload",
 			onClick: () => handleFileUpload(),
 			disabled: file === null || file === undefined,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

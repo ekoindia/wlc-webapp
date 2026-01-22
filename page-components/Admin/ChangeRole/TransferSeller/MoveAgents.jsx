@@ -141,7 +141,6 @@ const MoveAgents = ({
 			label: "Move",
 			onClick: () => handleMoveAgent(),
 			disabled: !selectedAgentsToTransfer?.length > 0,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
