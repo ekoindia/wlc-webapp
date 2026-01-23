@@ -26,7 +26,7 @@ export const BbpsProducts: BbpsProduct[] = [
 			{
 				name: "confirmation_mobile_no",
 				label: "Customer's Mobile",
-				parameter_type_id: ParamType.NUMERIC,
+				parameter_type_id: ParamType.MOBILE,
 				validations: {
 					minLength: {
 						value: 10,
