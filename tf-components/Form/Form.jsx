@@ -736,6 +736,7 @@ const Form = ({
 									</FormControl>
 								);
 							} else {
+								// Default to ParamType.TEXT
 								return (
 									<FormControl
 										key={`${name}-${label}-${index}`}
