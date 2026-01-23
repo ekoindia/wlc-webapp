@@ -736,28 +736,40 @@ const Form = ({
 									</FormControl>
 								);
 							} else {
+								// Default to ParamType.TEXT
 								return (
 									<FormControl
 										key={`${name}-${label}-${index}`}
 										id={name}
 										maxW="500px"
 									>
-										<Input
-											id={name}
+										<Controller
 											name={name}
-											label={label}
-											required={required}
-											value={value}
-											type="text"
-											size={size}
-											disabled={disabled}
-											labelStyle={labelStyle}
-											hideOptionalMark={hideOptionalMark}
-											invalid={!!errors[name]}
-											{...rest}
-											{...register(name, {
-												..._validations,
-											})}
+											control={control}
+											defaultValue={defaultValue}
+											rules={{ ..._validations }}
+											render={({
+												field: { onChange, value, ref },
+											}) => (
+												<Input
+													ref={ref}
+													id={name}
+													name={name}
+													label={label}
+													required={required}
+													value={value}
+													type="text"
+													size={size}
+													disabled={disabled}
+													labelStyle={labelStyle}
+													hideOptionalMark={
+														hideOptionalMark
+													}
+													invalid={!!errors[name]}
+													onChange={onChange}
+													{...rest}
+												/>
+											)}
 										/>
 										<Text
 											fontSize="xs"

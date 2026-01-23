@@ -22,11 +22,17 @@ export const BbpsProducts: BbpsProduct[] = [
 				name: "sender_name",
 				label: "Customer Name",
 				parameter_type_id: ParamType.TEXT,
+				validations: {
+					pattern: {
+						value: /^(?!(?:(?:([a-z]) *\1(?: *\1)*)|(?:.*?(?:(?:(?:^|[^d])([a-z])\2\2)|(?:d([a-df-z])\3\3)).*)|(?:.*?([a-z]{3,})\4\4).*|(?:.*(?:^|[^a-z])[^aeiou \.]{4,}(?:$|[^a-z]).*))$)(?:[a-z]+\.? ){0,2}[a-z]+$/i,
+						message: "Please enter a valid name",
+					},
+				},
 			},
 			{
 				name: "confirmation_mobile_no",
 				label: "Customer's Mobile",
-				parameter_type_id: ParamType.NUMERIC,
+				parameter_type_id: ParamType.MOBILE,
 				validations: {
 					minLength: {
 						value: 10,
