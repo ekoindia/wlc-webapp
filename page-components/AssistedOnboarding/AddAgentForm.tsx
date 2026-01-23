@@ -193,7 +193,7 @@ const AddAgentForm = ({
 			label: "Proceed",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+
 			// onClick: () => handleSubmit(handleFormSubmit, handleFormErrors)(),
 		},
 		{

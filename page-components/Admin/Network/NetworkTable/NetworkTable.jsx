@@ -82,6 +82,14 @@ export const useNetworkTableParameterList = () => {
 			hide_by_default: true,
 		},
 		{
+			name: "agent_balance",
+			label: "Agent\nBalance",
+			show: "Amount",
+			sorting: true,
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{
 			name: "commission_type",
 			label: "Commission\nFrequency",
 			sorting: true,
@@ -155,7 +163,9 @@ const NetworkTable = ({
 
 	agentDetails?.forEach((agent) => {
 		const commission_type = agent?.commission_duration;
+		const agent_balance = agent?.profile?.wallet_balance || 0;
 		agent.commission_type = getCommissionType(commission_type);
+		agent.agent_balance = agent_balance;
 	});
 
 	const networkTableDataSize = agentDetails?.length ?? 0;

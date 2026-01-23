@@ -123,7 +123,6 @@ const OptionalVerification = () => {
 			disabled:
 				accountVerificationStatus &&
 				accountVerificationStatus == watcher.otp_verification_token,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

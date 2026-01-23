@@ -167,7 +167,6 @@ const TransferSeller = ({
 			label: "Select Agents",
 			onClick: () => setShowSelectAgent(true),
 			disabled: !transferAgentsTo,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
@@ -192,7 +191,6 @@ const TransferSeller = ({
 			disabled: showOrgChangeRoleView
 				? !selectedAgentsToTransfer?.length > 0
 				: default_agent_code && !transferAgentsTo,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
