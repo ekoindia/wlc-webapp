@@ -61,14 +61,14 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 	return [..._list];
 };
 
-const getStatus = (status) => {
-	switch (status) {
-		case 0:
-			return "success";
-		default:
-			return "error";
-	}
-};
+// const getStatus = (status) => {
+// 	switch (status) {
+// 		case 0:
+// 			return "success";
+// 		default:
+// 			return "error";
+// 	}
+// };
 
 /**
  * A NetworkMenuWrapper component
@@ -78,6 +78,7 @@ const getStatus = (status) => {
  * @param prop.eko_code
  * @param prop.account_status_id
  * @param prop.agent_type
+ * @param prop.onStatusUpdate
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
 const NetworkMenuWrapper = ({
@@ -85,6 +86,7 @@ const NetworkMenuWrapper = ({
 	eko_code,
 	account_status_id,
 	agent_type,
+	onStatusUpdate,
 }) => {
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
@@ -224,6 +226,18 @@ const NetworkMenuWrapper = ({
 					? reason_input
 					: reason?.label;
 
+		// Store previous status for rollback on failure
+		const previousStatusId = account_status_id;
+		const newStatusId = accountStatusId;
+
+		// Close modal immediately - don't block user
+		setOpen(false);
+
+		// Optimistic update: Update UI immediately for all status changes
+		if (onStatusUpdate) {
+			onStatusUpdate(eko_code, newStatusId);
+		}
+
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
 			{
@@ -241,19 +255,43 @@ const NetworkMenuWrapper = ({
 			}
 		)
 			.then((res) => {
-				toast({
-					title: res.message,
-					status: getStatus(res.status),
-					duration: 6000,
-					isClosable: true,
-				});
-				if (res.status === 0) {
-					setOpen(false);
-					router.reload(window.location.pathname);
+				// Check for successful response: response_type_id = 1831 and status = 0
+				const isSuccess =
+					res.response_type_id === 1831 && res.status === 0;
+
+				if (isSuccess) {
+					toast({
+						title: res.message || "Updated Status Successfully!",
+						status: "success",
+						duration: 6000,
+						isClosable: true,
+					});
+				} else {
+					// API returned error - revert optimistic update
+					toast({
+						title: res.message || "Failed to update status",
+						status: "error",
+						duration: 6000,
+						isClosable: true,
+					});
+					// Revert the optimistic update
+					if (onStatusUpdate) {
+						onStatusUpdate(eko_code, previousStatusId);
+					}
 				}
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
+				// Revert optimistic update on network error
+				toast({
+					title: "Network error. Please try again.",
+					status: "error",
+					duration: 6000,
+					isClosable: true,
+				});
+				if (onStatusUpdate) {
+					onStatusUpdate(eko_code, previousStatusId);
+				}
 			});
 	};
 

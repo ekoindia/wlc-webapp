@@ -147,6 +147,7 @@ export const useNetworkTableParameterList = () => {
  * @param {Array} prop.agentDetails - Array of agent data
  * @param {Function} prop.setPageNumber - Function to set page number
  * @param {Array} [prop.visibleColumns] - Optional array of visible columns
+ * @param prop.onStatusUpdate
  * @returns {JSX.Element} The rendered NetworkTable component
  * @example	`<NetworkTable></NetworkTable>`
  */
@@ -157,6 +158,7 @@ const NetworkTable = ({
 	agentDetails,
 	setPageNumber,
 	visibleColumns,
+	onStatusUpdate,
 }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
@@ -166,6 +168,8 @@ const NetworkTable = ({
 		const agent_balance = agent?.profile?.wallet_balance || 0;
 		agent.commission_type = getCommissionType(commission_type);
 		agent.agent_balance = agent_balance;
+		// Inject the callback for optimistic UI updates
+		agent._onStatusUpdate = onStatusUpdate;
 	});
 
 	const networkTableDataSize = agentDetails?.length ?? 0;
