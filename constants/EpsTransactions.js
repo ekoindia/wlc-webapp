@@ -34,6 +34,13 @@ export const TransactionTypes = {
 };
 
 /**
+ * Response Type IDs returned by API responses.
+ */
+export const ResponseTypes = {
+	SUCCESSFUL_STATUS_UPDATE: 1831,
+};
+
+/**
  * Transaction-ids for different transactions/product routes.
  * Eg: To open "Manage My Account" transaction page, open the "/transaction/536" route.
  */

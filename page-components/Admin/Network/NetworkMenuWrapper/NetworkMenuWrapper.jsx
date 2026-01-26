@@ -4,6 +4,7 @@ import {
 	ChangeRoleMenuList,
 	Endpoints,
 	ParamType,
+	ResponseTypes,
 	TransactionTypes,
 } from "constants";
 import { useSession } from "contexts";
@@ -255,9 +256,11 @@ const NetworkMenuWrapper = ({
 			}
 		)
 			.then((res) => {
-				// Check for successful response: response_type_id = 1831 and status = 0
+				// Check for successful response: response_type_id = SUCCESSFUL_STATUS_UPDATE and status = 0
 				const isSuccess =
-					res.response_type_id === 1831 && res.status === 0;
+					res.response_type_id ===
+						ResponseTypes.SUCCESSFUL_STATUS_UPDATE &&
+					res.status === 0;
 
 				if (isSuccess) {
 					toast({
