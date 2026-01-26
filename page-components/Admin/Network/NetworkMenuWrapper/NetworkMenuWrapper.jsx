@@ -72,15 +72,23 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 // };
 
 /**
- * A NetworkMenuWrapper component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.mobile_number
- * @param prop.eko_code
- * @param prop.account_status_id
- * @param prop.agent_type
- * @param prop.onStatusUpdate
- * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
+ * NetworkMenuWrapper component that provides a menu for managing agent network status and actions.
+ * Allows admins to mark agents as Active/Inactive, change roles, view details, and download agreements.
+ * @param {object} props - Component properties
+ * @param {string} props.mobile_number - Mobile number of the agent
+ * @param {string} props.eko_code - Unique EKO code identifier for the agent
+ * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive)
+ * @param {string} props.agent_type - Type/role of the agent
+ * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
+ * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
+ * @example
+ * <NetworkMenuWrapper
+ *   mobile_number="9876543210"
+ *   eko_code="EKO123"
+ *   account_status_id={16}
+ *   agent_type="retailer"
+ *   onStatusUpdate={(code, status) => console.log(code, status)}
+ * />
  */
 const NetworkMenuWrapper = ({
 	mobile_number,
