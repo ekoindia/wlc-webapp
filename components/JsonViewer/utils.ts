@@ -227,15 +227,17 @@ export const BRACKET_COLOR = "gray.600";
  * Formats a primitive value for display.
  * @param value - The primitive value
  * @param type - The value type
+ * @param variant - Display variant: "plain" hides quotes, "json" shows full syntax
  * @returns Formatted string representation
  */
 export const formatPrimitiveValue = (
 	value: unknown,
-	type: JsonValueType
+	type: JsonValueType,
+	variant: "plain" | "json" = "plain"
 ): string => {
 	switch (type) {
 		case "string":
-			return `"${value}"`;
+			return variant === "json" ? `"${value}"` : String(value);
 		case "null":
 			return "null";
 		case "undefined":

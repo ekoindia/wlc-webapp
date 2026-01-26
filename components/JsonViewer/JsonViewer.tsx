@@ -25,7 +25,7 @@ import { parseJsonInput } from "./utils";
  * @param {boolean} [props.animated] - Enable smooth expand/collapse animations. Default is true
  * @param {string} [props.className] - Additional CSS class name for the container
  * @param {object | string} [props.maxHeight] - Maximum height of the container. Supports responsive object notation. Default is { base: "200px", md: "350px" }
- * @param {boolean} [props.showBrackets] - Show or hide curly/square brackets. Default is true
+ * @param {"plain" | "json"} [props.variant] - Display variant. "plain" for clean human-readable format (default), "json" for full syntax with brackets/quotes/commas
  * @param {Record<string, string>} [props.keyOverrides] - Override specific key display names. Falls back to default formatting (underscore removal + capitalize)
  * @param {import("./types").ValueTransformConfig} [props.valueTransforms] - Value transformation config with byKey and byPath rules
  * @returns {JSX.Element} Rendered JSON tree view
@@ -52,7 +52,7 @@ const JsonViewer = ({
 	animated = true,
 	maxHeight = { base: "200px", md: "350px" },
 	className,
-	showBrackets = true,
+	variant = "plain",
 	keyOverrides,
 	valueTransforms,
 }: JsonViewerProps): JSX.Element => {
@@ -105,7 +105,7 @@ const JsonViewer = ({
 					ancestors={initialAncestors}
 					isLast={true}
 					onCopyRoot={() => {}}
-					showBrackets={showBrackets}
+					variant={variant}
 					keyOverrides={keyOverrides}
 					valueTransforms={valueTransforms}
 				/>
