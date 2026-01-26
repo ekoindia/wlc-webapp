@@ -21,13 +21,13 @@ import { parseJsonInput } from "./utils";
  * - Optional bracket visibility
  * @param {JsonViewerProps} props - Component props
  * @param {object | string} props.data - JSON data to display. Can be an object, array, or a valid JSON string
- * @param {number} [props.collapseAfterLevel] - Nodes at this level and deeper are collapsed by default. Set to 0 to collapse all, or Infinity to expand all
- * @param {boolean} [props.animated] - Enable smooth expand/collapse animations
+ * @param {number} [props.collapseAfterLevel] - Nodes at this level and deeper are collapsed by default. Set to 0 to collapse all, or Infinity to expand all. Default is 2
+ * @param {boolean} [props.animated] - Enable smooth expand/collapse animations. Default is true
  * @param {string} [props.className] - Additional CSS class name for the container
- * @param {object | string} [props.maxHeight] - Maximum height of the container. Supports responsive object notation
+ * @param {object | string} [props.maxHeight] - Maximum height of the container. Supports responsive object notation. Default is { base: "200px", md: "350px" }
  * @param {boolean} [props.showBrackets] - Show or hide curly/square brackets. Default is true
  * @param {Record<string, string>} [props.keyOverrides] - Override specific key display names. Falls back to default formatting (underscore removal + capitalize)
- * @param {ValueTransformConfig} [props.valueTransforms] - Value transformation config with byKey and byPath rules
+ * @param {import("./types").ValueTransformConfig} [props.valueTransforms] - Value transformation config with byKey and byPath rules
  * @returns {JSX.Element} Rendered JSON tree view
  * @example
  * // Basic usage with object
