@@ -3,6 +3,7 @@ import { Icon } from "components";
 import { useOrgDetailContext, useUser } from "contexts";
 import { useUserTypes } from "hooks";
 import { useEffect, useState } from "react";
+import { formatMobile } from "utils";
 
 const profile_percent_parameter_list = [
 	"shop_name",
@@ -50,7 +51,7 @@ const formatToCommaSeparated = (numberList) => {
  * A ProfileWidget page-component
  */
 const ProfileWidget = () => {
-	const { userData, userType, userTypeLabel } = useUser();
+	const { userData, userType, userTypeLabel, isAdmin } = useUser();
 	const [percent, setPercent] = useState(0);
 	const data = userData.userDetails;
 
@@ -125,6 +126,9 @@ const ProfileWidget = () => {
 						</Text>
 						<Flex gap="2" fontSize="14px">
 							<strong>{userTypeLabel}</strong>
+							{isAdmin ? (
+								<Text>({orgDetail?.org_name})</Text>
+							) : null}
 						</Flex>
 						{isMobileMappedUserId ? (
 							<Flex gap="2" fontSize="14px">
@@ -139,6 +143,19 @@ const ProfileWidget = () => {
 								{userCodeLabel}: <strong>{data.code}</strong>
 							</Text>
 						</Flex>
+						{isAdmin ? (
+							<Flex gap="2" fontSize="14px">
+								<Text>
+									Website:{" "}
+									<strong>
+										{data?.website ??
+											(typeof window !== "undefined"
+												? window.location.origin
+												: "")}
+									</strong>
+								</Text>
+							</Flex>
+						) : null}
 						<Flex align="center" gap="2" mt="2">
 							<Icon
 								name="phone-circle-outline"
@@ -147,8 +164,9 @@ const ProfileWidget = () => {
 							/>
 
 							<Text>
-								{data?.mobile}
-								{_alternateMobile && `, ${_alternateMobile}`}
+								{formatMobile(data?.mobile)}
+								{_alternateMobile &&
+									`, ${formatMobile(_alternateMobile)}`}
 							</Text>
 						</Flex>
 					</Flex>
