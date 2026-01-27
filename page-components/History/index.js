@@ -1,3 +1,4 @@
+export { BankBalance } from "./BankBalance";
 export { default as History } from "./History";
 export { HistoryPagination } from "./HistoryPagination";
 export { HistoryTable } from "./HistoryTable";

@@ -1,5 +1,5 @@
 import { Circle, Flex, Text, Tooltip } from "@chakra-ui/react";
-import { useSession } from "contexts";
+import { useSession } from "contexts/UserContext";
 import { useWallet } from "contexts/WalletContext";
 import { rotateAntiClockwise } from "libs/chakraKeyframes";
 import { useRouter } from "next/router";
@@ -12,67 +12,45 @@ type StatusCardProps = {
 	onLoadBalanceClick?: () => void;
 };
 
+type StatusRowProps = {
+	label: string;
+	iconName: string;
+	balance: number;
+	loading: boolean;
+	onRefresh?: () => void;
+	onLoadBalance?: () => void;
+};
+
 /**
- * StatusCard component displays the user's balance and provides options to refresh
- * the balance and load more balance.
- * @param {StatusCardProps} props - The properties passed to the component.
- * @param {string} [props.className] - Optional classes to pass to this component.
- * @param {() => void} [props.onLoadBalanceClick] - Callback function to be called when the "Load Balance" button is clicked.
- * @example
- * ```tsx
- * <StatusCard onLoadBalanceClick={() => console.log("Load Balance clicked")} />
- * ```
+ * StatusRow component displays a single wallet balance row with refresh and load balance actions.
+ * Each row maintains its own independent 30-second refresh cooldown timer.
+ * MARK: StatusRow
+ * @param {StatusRowProps} props - The properties passed to the component.
+ * @param {string} props.label - Label for the wallet type (e.g., "E-value Balance").
+ * @param {string} props.iconName - Icon name to display for the wallet.
+ * @param {number} props.balance - Current balance amount.
+ * @param {boolean} props.loading - Loading state for the wallet.
+ * @param {() => void} [props.onRefresh] - Callback function when refresh button is clicked. If provided, enables the refresh button.
+ * @param {() => void} [props.onLoadBalance] - Callback function when load balance button is clicked. If provided, enables the load balance button.
  */
-const StatusCard = ({
-	onLoadBalanceClick,
-	...rest
-}: StatusCardProps): JSX.Element => {
-	const router = useRouter();
+const StatusRow = ({
+	label,
+	iconName,
+	balance,
+	loading,
+	onRefresh,
+	onLoadBalance,
+}: StatusRowProps): JSX.Element => {
 	const [disabled, setDisabled] = useState(false);
 	const [isRefreshing, setIsRefreshing] = useState(false);
-	// const toast = useToast();
-	const {
-		refreshWallet,
-		balance,
-		loading,
-		isWalletVisible,
-		addBalanceTrxnId,
-	} = useWallet();
-	const { isLoggedIn, isOnboarding, isAdmin } = useSession();
 
-	// Hide the status card if the user is not logged in or is in onboarding stage
-	if (isOnboarding || isLoggedIn !== true) return null;
-
-	// Hide the status card if the balance is 0 and "Add Balance" transaction is also not allowed
-	if (!isWalletVisible) return null;
-
-	// Click handler for "Load Balance" button
-	const handleAddClick = () => {
-		if (!addBalanceTrxnId) {
-			// toast({
-			// 	title: "Add Balance not allowed! Please contact support.",
-			// 	status: "error",
-			// 	duration: 2000,
-			// });
-			console.error("Add Balance not found in roles");
-			return;
-		}
-
-		router.push(
-			`${isAdmin ? "/admin" : ""}/transaction/${addBalanceTrxnId}`
-		);
-		if (onLoadBalanceClick) {
-			onLoadBalanceClick();
-		}
-	};
-
-	// Click handler for "Refresh" button
+	// Click handler for "Refresh" button with independent 30-second cooldown
 	const onRefreshHandler = () => {
 		if (!disabled) {
 			setDisabled(true);
 			setIsRefreshing(true);
 			// fetching updated account balance
-			refreshWallet();
+			onRefresh();
 			// Added 30sec timer
 			setTimeout(() => {
 				setDisabled(false);
@@ -86,7 +64,7 @@ const StatusCard = ({
 		cursor: disabled || loading ? "not-allowed" : "pointer",
 	};
 
-	// MARK: JSX
+	// MARK: Row JSX
 	return (
 		<Flex
 			w="100%"
@@ -94,16 +72,12 @@ const StatusCard = ({
 			px="15px"
 			align="center"
 			justify="space-between"
-			bg="status.bg" // ORIG_THEME: bgColor || sidebar.card-bg-dark
 			borderBottom="1px solid" // ORIG_THEME: br-sidebar
 			borderBottomColor="primary.light"
-			borderRight="1px solid"
-			borderRightColor="status.borderRightColor"
-			{...rest}
 		>
 			<Flex align="center" gap="2.5">
 				<Icon
-					name="wallet-outline"
+					name={iconName}
 					color="status.wm" // ORIG_THEME: sidebar.font
 					size={{ base: "24px", "2xl": "32px" }}
 				/>
@@ -118,7 +92,7 @@ const StatusCard = ({
 						pointerEvents="none"
 						userSelect="none"
 					>
-						E-value Balance
+						{label}
 					</Text>
 					<Flex
 						color="status.title" // ORIG_THEME: #FFD93B
@@ -143,9 +117,13 @@ const StatusCard = ({
 					</Flex>
 				</Flex>
 			</Flex>
-			{addBalanceTrxnId ? (
-				<Flex columnGap="12px" align="center">
-					<Tooltip label="Refresh" placement="top">
+			<Flex columnGap="12px" align="center">
+				{onRefresh ? (
+					<Tooltip
+						label="Refresh"
+						placement="top"
+						isDisabled={disabled || isRefreshing}
+					>
 						<Circle
 							size={{ base: "6", "2xl": "8" }}
 							bg="white"
@@ -166,6 +144,8 @@ const StatusCard = ({
 							/>
 						</Circle>
 					</Tooltip>
+				) : null}
+				{onLoadBalance ? (
 					<Tooltip label="Load Balance" placement="top">
 						<Circle
 							size={{ base: "6", "2xl": "8" }}
@@ -173,7 +153,7 @@ const StatusCard = ({
 							color="white"
 							boxShadow="0px 3px 6px #00000029"
 							border="2px solid #FFFFFF"
-							onClick={handleAddClick}
+							onClick={onLoadBalance}
 							opacity={loading ? 0.3 : 1}
 							cursor={loading ? "not-allowed" : "pointer"}
 						>
@@ -183,8 +163,102 @@ const StatusCard = ({
 							/>
 						</Circle>
 					</Tooltip>
-				</Flex>
-			) : null}
+				) : null}
+			</Flex>
+		</Flex>
+	);
+};
+
+/**
+ * StatusCard component displays the user's balance and provides options to refresh
+ * the balance and load more balance.
+ * MARK: StatusCard
+ * @param {StatusCardProps} props - The properties passed to the component.
+ * @param {string} [props.className] - Optional classes to pass to this component.
+ * @param {() => void} [props.onLoadBalanceClick] - Callback function to be called when the "Load Balance" button is clicked.
+ * @example
+ * ```tsx
+ * <StatusCard onLoadBalanceClick={() => console.log("Load Balance clicked")} />
+ * ```
+ */
+const StatusCard = ({
+	onLoadBalanceClick,
+	...rest
+}: StatusCardProps): JSX.Element => {
+	const router = useRouter();
+	const {
+		refreshWallet,
+		balance,
+		loading,
+		isWalletVisible,
+		addBalanceTrxnId,
+		accountList,
+		bankBalances,
+		refreshAccountBalance,
+	} = useWallet();
+	const { isLoggedIn, isOnboarding, isAdmin } = useSession();
+
+	const bankAccounts = accountList.filter(
+		(account: any) =>
+			account.type_id === 3 && // TSP Bank Account
+			account.account_number &&
+			account.label
+	);
+
+	// Hide the status card if the user is not logged in or is in onboarding stage
+	if (isOnboarding || isLoggedIn !== true) return null;
+
+	// Hide the status card if:
+	// E-value is hidden (balance is 0 and "Add Balance" transaction is also not allowed)
+	// AND, no other TSP bank accounts are present
+	if (!isWalletVisible && bankAccounts.length === 0) return null;
+
+	// Click handler for "Load Balance" button
+	const handleAddClick = () => {
+		if (!addBalanceTrxnId) {
+			console.error("Add Balance not found in roles");
+			return;
+		}
+		router.push(
+			`${isAdmin ? "/admin" : ""}/transaction/${addBalanceTrxnId}`
+		);
+		if (onLoadBalanceClick) {
+			onLoadBalanceClick();
+		}
+	};
+
+	// MARK: Main JSX
+	return (
+		<Flex
+			w="100%"
+			direction="column"
+			bg="status.bg" // ORIG_THEME: bgColor || sidebar.card-bg-dark
+			borderRight="1px solid"
+			borderRightColor="status.borderRightColor"
+			{...rest}
+		>
+			<StatusRow
+				label="E-value Balance"
+				iconName="wallet-outline"
+				balance={balance}
+				loading={loading}
+				onRefresh={addBalanceTrxnId ? refreshWallet : undefined}
+				onLoadBalance={handleAddClick}
+			/>
+
+			{bankAccounts.map((account: any) => (
+				<StatusRow
+					key={account.account_number}
+					label={account.label || "Bank Account"}
+					iconName="account-balance"
+					balance={bankBalances[account.id]?.balance || 0}
+					loading={loading}
+					onRefresh={() => refreshAccountBalance(account.id)}
+					// onLoadBalance={() => {
+					// 	// No load balance action for bank accounts
+					// }}
+				/>
+			))}
 		</Flex>
 	);
 };

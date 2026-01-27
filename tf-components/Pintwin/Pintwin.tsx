@@ -1,4 +1,4 @@
-import { Box, Flex, Text, useToast } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { Button } from "components/Button";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionTypes } from "constants/EpsTransactions";
@@ -212,7 +212,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
 	// console.log("pintwinKey", pintwinKey);
 	const [_retryCount, setRetryCount] = useState(0);
-	const toast = useToast();
+	// const toast = useToast();
 
 	// Use ref to track retry count to avoid closure issues
 	const retryCountRef = useRef(0);
@@ -272,11 +272,11 @@ const Pintwin: React.FC<PintwinProps> = ({
 				retryCountRef.current = 0;
 				onKeyReloaded?.(response.data.key_id?.toString() || "");
 				onKeyLoadStateChange?.(true, false, false); // Key loaded successfully, no error
-				toast({
-					title: "PinTwin key loaded successfully",
-					status: "success",
-					duration: 2000,
-				});
+				// toast({
+				// 	title: "PinTwin key loaded successfully",
+				// 	status: "success",
+				// 	duration: 2000,
+				// });
 			} else {
 				throw new Error("Invalid response format");
 			}
@@ -292,11 +292,11 @@ const Pintwin: React.FC<PintwinProps> = ({
 				retryCountRef.current = newRetryCount;
 				setRetryCount(newRetryCount);
 
-				toast({
-					title: `Failed to load key. Retrying... (${newRetryCount}/${MAX_RETRY_COUNT})`,
-					status: "warning",
-					duration: 3000,
-				});
+				// toast({
+				// 	title: `Failed to load key. Retrying... (${newRetryCount}/${MAX_RETRY_COUNT})`,
+				// 	status: "warning",
+				// 	duration: 3000,
+				// });
 
 				// Clear any existing timeout
 				if (retryTimeoutRef.current) {
@@ -309,19 +309,20 @@ const Pintwin: React.FC<PintwinProps> = ({
 						handleKeyReload();
 					}
 				}, RETRY_DELAY);
-			} else if (isMountedRef.current) {
-				toast({
-					title: "Failed to load PinTwin key after multiple attempts",
-					status: "error",
-					duration: 5000,
-				});
 			}
+			// else if (isMountedRef.current) {
+			// 	toast({
+			// 		title: "Failed to load PinTwin key after multiple attempts",
+			// 		status: "error",
+			// 		duration: 5000,
+			// 	});
+			// }
 		} finally {
 			// if (isMountedRef.current) {
 			setLoading(false);
 			// }
 		}
-	}, [useMockData, onKeyLoadStateChange, onKeyReloaded, toast]);
+	}, [useMockData, onKeyLoadStateChange, onKeyReloaded]);
 
 	/**
 	 * Encodes a PIN using the current PinTwin key
