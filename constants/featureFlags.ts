@@ -60,6 +60,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// KYC Verification
+	KYC_VERIFICATION: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
@@ -89,6 +95,21 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
+
+	// TSP Bank Demo (Payments via TSP Bank Account)
+	// TODO: REMOVE after demo
+	TSP_BANK: {
+		enabled: true,
+		forAdminOnly: true,
+		envConstraints: {
+			development: {
+				forOrgId: [27],
+			},
+			staging: {
+				forOrgId: [27],
+			},
+		},
+	},
 
 	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
 	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK

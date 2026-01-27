@@ -1,0 +1,189 @@
+/**
+ * VerificationProgress - Progress indicator for multi-service verification.
+ * Shows current progress with segmented colored bar (green for success, red for failed).
+ * Displays summary card with Total, Successful, Failed counts.
+ */
+
+import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+
+interface VerificationProgressProps {
+	/** Current index (number completed) */
+	current: number;
+	/** Total number of services */
+	total: number;
+	/** Whether verification is complete */
+	isComplete?: boolean;
+	/** Count of successful verifications */
+	successCount?: number;
+	/** Count of failed verifications */
+	failedCount?: number;
+	/** Completion timestamp */
+	completedAt?: string;
+	/** Custom header label (defaults to "X Verification(s)") */
+	label?: string;
+	/** Custom progress text (defaults to "Verifying X of Y...") */
+	progressLabel?: string;
+}
+
+/**
+ * Progress indicator component for multi-service verification.
+ * Displays a segmented progress bar and summary statistics.
+ * @param {VerificationProgressProps} props - Component props
+ * @param {number} props.current - Current index (number of completed verifications)
+ * @param {number} props.total - Total number of services to verify
+ * @param {boolean} [props.isComplete] - Whether all verifications are complete
+ * @param {number} [props.successCount] - Count of successful verifications
+ * @param {number} [props.failedCount] - Count of failed verifications
+ * @param {string} [props.completedAt] - Formatted timestamp when verification completed
+ * @param {string} [props.label] - Custom header label (defaults to "X Verification(s)")
+ * @param {string} [props.progressLabel] - Custom progress text (defaults to "Verifying X of Y...")
+ * @returns {JSX.Element} Rendered progress bar with success/failed segments and stats grid
+ */
+export const VerificationProgress = ({
+	current,
+	total,
+	isComplete = false,
+	successCount = 0,
+	failedCount = 0,
+	completedAt,
+	label,
+	progressLabel,
+}: VerificationProgressProps): JSX.Element => {
+	const successPercent = total > 0 ? (successCount / total) * 100 : 0;
+	const failedPercent = total > 0 ? (failedCount / total) * 100 : 0;
+	// Overall percentage is based on completed verifications (success + failed)
+	const completedCount = successCount + failedCount;
+	const overallPercent =
+		total > 0 ? Math.round((completedCount / total) * 100) : 0;
+
+	const defaultLabel = `${total} Verification${total !== 1 ? "s" : ""}`;
+	const headerLabel = label ?? defaultLabel;
+
+	return (
+		<Box w="100%">
+			{/* Header with count and timestamp - hidden if label is empty string */}
+			{headerLabel && (
+				<Flex direction="column" align="center" mb={4}>
+					<Text fontSize="xl" fontWeight="bold" color="gray.800">
+						{headerLabel}
+					</Text>
+					{isComplete && completedAt && (
+						<Text fontSize="sm" color="gray.500">
+							Completed on {completedAt}
+						</Text>
+					)}
+				</Flex>
+			)}
+
+			{/* Progress Section */}
+			<Flex justify="space-between" align="center" mb={2}>
+				<Text fontSize="sm" fontWeight="medium" color="gray.600">
+					Overall Progress
+				</Text>
+				<Text fontSize="sm" fontWeight="semibold" color="gray.700">
+					{overallPercent}%
+				</Text>
+			</Flex>
+
+			{/* Segmented Progress Bar */}
+			<Box
+				w="100%"
+				h="10px"
+				bg="gray.200"
+				borderRadius="full"
+				overflow="hidden"
+				mb={4}
+			>
+				<Flex h="100%">
+					{/* Green segment for success */}
+					{successPercent > 0 && (
+						<Box
+							w={`${successPercent}%`}
+							h="100%"
+							bg="success"
+							transition="width 0.3s ease"
+						/>
+					)}
+					{/* Red segment for failed */}
+					{failedPercent > 0 && (
+						<Box
+							w={`${failedPercent}%`}
+							h="100%"
+							bg="error"
+							transition="width 0.3s ease"
+						/>
+					)}
+				</Flex>
+			</Box>
+
+			{/* Stats Grid - only show when complete */}
+			{isComplete && (
+				<Grid templateColumns="repeat(3, 1fr)" gap={3}>
+					{/* Successful */}
+					<Box
+						p={4}
+						bg="rgba(0, 195, 65, 0.12)"
+						borderRadius="md"
+						border="1px solid"
+						borderColor="rgba(0, 195, 65, 0.4)"
+						textAlign="center"
+					>
+						<Text fontSize="2xl" fontWeight="bold" color="success">
+							{successCount}
+						</Text>
+						<Text fontSize="sm" color="success">
+							Successful
+						</Text>
+					</Box>
+
+					{/* Failed */}
+					<Box
+						p={4}
+						bg="rgba(255, 64, 129, 0.12)"
+						borderRadius="md"
+						border="1px solid"
+						borderColor="rgba(255, 64, 129, 0.4)"
+						textAlign="center"
+					>
+						<Text fontSize="2xl" fontWeight="bold" color="error">
+							{failedCount}
+						</Text>
+						<Text fontSize="sm" color="error">
+							Failed
+						</Text>
+					</Box>
+
+					{/* Total */}
+					<Box
+						p={4}
+						bg="rgba(254, 159, 0, 0.12)"
+						borderRadius="md"
+						border="1px solid"
+						borderColor="rgba(254, 159, 0, 0.4)"
+						textAlign="center"
+					>
+						<Text
+							fontSize="2xl"
+							fontWeight="bold"
+							color="accent.DEFAULT"
+						>
+							{total}
+						</Text>
+						<Text fontSize="sm" color="accent.DEFAULT">
+							Total
+						</Text>
+					</Box>
+				</Grid>
+			)}
+
+			{/* In-progress text */}
+			{!isComplete && (
+				<Text fontSize="sm" color="gray.500" textAlign="center">
+					{progressLabel ?? `Verifying ${current} of ${total}...`}
+				</Text>
+			)}
+		</Box>
+	);
+};
+
+export default VerificationProgress;
