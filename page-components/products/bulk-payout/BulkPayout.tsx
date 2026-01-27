@@ -9,6 +9,7 @@ import {
 	Tabs,
 } from "@chakra-ui/react";
 import { EkoConnectWidget } from "components/EkoConnectWidget";
+import { PaddingBox } from "components/PaddingBox";
 import { useEffect, useState } from "react";
 import BatchHistory from "./components/BatchHistory";
 import UploadRecipients from "./components/UploadRecipients";
@@ -81,12 +82,12 @@ const BulkPayoutContent = () => {
 					p="1"
 					borderRadius="full"
 					w="fit-content"
-					mb="6"
+					mb="2"
 				>
 					<Tab
 						_selected={{ bg: "primary.DEFAULT", color: "white" }}
 						borderRadius="full"
-						px="6"
+						// px="6"
 						fontSize="sm"
 						fontWeight="medium"
 					>
@@ -95,7 +96,7 @@ const BulkPayoutContent = () => {
 					<Tab
 						_selected={{ bg: "primary.DEFAULT", color: "white" }}
 						borderRadius="full"
-						px="6"
+						// px="6"
 						fontSize="sm"
 						fontWeight="medium"
 					>
@@ -105,12 +106,7 @@ const BulkPayoutContent = () => {
 
 				<TabPanels p={1}>
 					<TabPanel p="0">
-						<Card
-							maxW="100%"
-							w="100%"
-							h="auto"
-							p={{ base: 2, md: 0 }}
-						>
+						<Card>
 							<EkoConnectWidget start_id={10035} paths={[]} />
 						</Card>
 
@@ -137,14 +133,9 @@ const BulkPayoutContent = () => {
 const BulkPayout = () => {
 	return (
 		<BulkPayoutProvider>
-			<Flex
-				direction="column"
-				w="100%"
-				py={{ base: 2, md: 6 }}
-				px={{ base: 3, md: 2.5 }}
-			>
+			<PaddingBox>
 				<BulkPayoutContent />
-			</Flex>
+			</PaddingBox>
 		</BulkPayoutProvider>
 	);
 };

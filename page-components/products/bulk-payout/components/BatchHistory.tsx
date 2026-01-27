@@ -1,4 +1,4 @@
-import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
+import { DownloadIcon } from "@chakra-ui/icons";
 import {
 	Avatar,
 	Badge,
@@ -8,6 +8,7 @@ import {
 	IconButton,
 	keyframes,
 	Spinner,
+	Stack,
 	Table,
 	Tbody,
 	Td,
@@ -15,8 +16,9 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useBreakpointValue,
 } from "@chakra-ui/react";
-import { Button, Card, Icon, Pagination } from "components";
+import { Button, Card, Icon, PageTitle, Pagination } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -27,6 +29,7 @@ import {
 	useBulkPayout,
 	useBulkPayoutContext,
 } from "../context/BulkPayoutContext";
+import HistoryCard from "./HistoryCard";
 
 // Blinking animation for watch icon
 const blinkAnimation = keyframes`
@@ -42,7 +45,7 @@ const BULK_PAYOUT_TF_URIS = {
 
 const TF_ROOT_PATH = "/api/v1";
 
-interface ApiBatch {
+export interface ApiBatch {
 	batchNumber: string;
 	batchUploadDate: string;
 	customerName: string;
@@ -55,7 +58,7 @@ interface ApiBatch {
 	totalRecordsApproved: number;
 }
 
-type BatchStatus = "PROCESSING" | "PROCESSED";
+export type BatchStatus = "PROCESSING" | "PROCESSED";
 
 /**
  * Derive batch status from success/failure/pending counts
@@ -115,6 +118,8 @@ const BatchHistory: React.FC = (): JSX.Element => {
 	const {
 		state: { activeTab },
 	} = useBulkPayoutContext();
+
+	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
 	const { setProcessingBatchCount } = useBulkPayout();
 
@@ -374,227 +379,293 @@ const BatchHistory: React.FC = (): JSX.Element => {
 	}
 
 	return (
-		<Flex direction="column" gap="6">
-			<Flex justify="space-between" align="center">
-				<Text fontWeight="semibold" fontSize="lg" color="dark">
-					Bulk Payout History
-				</Text>
-				<IconButton
-					aria-label="Refresh"
-					onClick={handleRefresh}
-					icon={<RepeatIcon />}
-					size="sm"
-					variant="ghost"
-					isLoading={isLoading}
-				></IconButton>
-			</Flex>
+		<Flex direction="column">
+			<PageTitle title="Bulk Payment History" hideBackIcon />
 
-			<Card maxW="100%" w="100%" h="auto" p={{ base: 4, md: 6 }}>
-				<Box overflowX="auto">
-					<Table variant="simple" size="sm">
-						<Thead bg="shade">
-							<Tr>
-								<Th>Upload Date</Th>
-								<Th>Customer</Th>
-								<Th isNumeric>Records</Th>
-								<Th isNumeric>Amount</Th>
-								<Th>Status</Th>
-								<Th isNumeric>Approved</Th>
-								<Th isNumeric>Invalid</Th>
-								<Th isNumeric>Success</Th>
-								<Th isNumeric>Pending</Th>
-								<Th isNumeric>Failed</Th>
-								<Th textAlign="center">Action</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							{paginatedBatches.map((batch) => {
-								const totalCount =
-									batch.successCount +
-									batch.failureCount +
-									batch.invalidRecords +
-									batch.pendingCount;
-								const status = deriveBatchStatus(batch);
-								const statusProps = getStatusBadgeProps(status);
-								const isProcessing = status === "PROCESSING";
-								const processedCount = Math.min(
-									totalCount,
-									batch.totalRecords
-								);
-								const canDownload = status === "PROCESSED";
+			<Box>
+				{isLoading ? (
+					<Flex justify="center" align="center" minH="300px">
+						<Spinner />
+					</Flex>
+				) : isSmallScreen ? (
+					/* Mobile View: Stack of HistoryCards */
+					<Stack spacing="4">
+						{paginatedBatches.map((batch) => {
+							const status = deriveBatchStatus(batch);
+							const statusProps = getStatusBadgeProps(status);
+							const isProcessing = status === "PROCESSING";
+							const totalCount =
+								batch.successCount +
+								batch.failureCount +
+								batch.invalidRecords +
+								batch.pendingCount;
+							const processedCount = Math.min(
+								totalCount,
+								batch.totalRecords
+							);
+							const canDownload = status === "PROCESSED";
 
-								return (
-									<Tr key={batch.batchNumber}>
-										<Td>
-											<Text fontSize="sm">
-												{formatDateTime(
-													batch.batchUploadDate
-												)}
-											</Text>
-										</Td>
-										<Td>
-											<HStack gap="3" spacing={0}>
-												<Avatar
-													name={batch.customerName}
-													size="sm"
-													bg="primary.light"
-													color="white"
-													fontSize="xs"
-												/>
-												<Text
-													fontSize="sm"
-													fontWeight="medium"
-													color="dark"
-												>
-													{batch.customerName}
-												</Text>
-											</HStack>
-										</Td>
-										<Td isNumeric>
-											<Text fontSize="sm">
-												{batch.totalRecords}
-											</Text>
-										</Td>
-										<Td isNumeric>
-											<Text
-												fontSize="sm"
-												fontWeight="medium"
-											>
-												₹
-												{batch.totalAmount.toLocaleString(
-													"en-IN"
-												)}
-											</Text>
-										</Td>
-										<Td>
-											<Badge
-												colorScheme={
-													statusProps.colorScheme
-												}
-												justifyContent="center"
-												fontSize="xs"
-												px="2"
-												py="1"
-												borderRadius="full"
-												whiteSpace="nowrap"
-												display="inline-flex"
-												alignItems="center"
-												gap="1"
-											>
-												<Box
-													as="span"
-													display="inline-flex"
-													alignItems="center"
-													animation={
-														isProcessing
-															? `${blinkAnimation} 1.5s infinite`
-															: "none"
-													}
-												>
-													<Icon
-														name={statusProps.icon}
-														size="xs"
-													/>
-												</Box>
-												<Text as="span">
-													{statusProps.label}
-												</Text>
-												{isProcessing && (
-													<Text
-														as="span"
-														ml="1"
-														fontWeight="semibold"
-													>
-														{processedCount
-															.toString()
-															.padStart(2, "0")}
-														|
-														{batch.totalRecords
-															.toString()
-															.padStart(2, "0")}
+							return (
+								<HistoryCard
+									key={batch.batchNumber}
+									batch={batch}
+									statusProps={statusProps}
+									isProcessing={isProcessing}
+									processedCount={processedCount}
+									canDownload={canDownload}
+									onDownload={handleDownload}
+								/>
+							);
+						})}
+					</Stack>
+				) : (
+					/* Desktop View: Table  */
+					<Card maxW="100%" w="100%" h="auto" p={{ base: 4, md: 4 }}>
+						<Box overflowX="auto">
+							<Table variant="simple" size="sm">
+								<Thead bg="shade">
+									<Tr>
+										<Th textAlign="center">Upload Date</Th>
+										<Th textAlign="center">Customer</Th>
+										<Th textAlign="center" isNumeric>
+											Records
+										</Th>
+										<Th textAlign="center" isNumeric>
+											Amount
+										</Th>
+										<Th textAlign="center">Status</Th>
+										<Th textAlign="center" isNumeric>
+											Approved
+										</Th>
+										<Th textAlign="center" isNumeric>
+											Invalid
+										</Th>
+										<Th textAlign="center" isNumeric>
+											Success
+										</Th>
+										<Th textAlign="center" isNumeric>
+											Pending
+										</Th>
+										<Th textAlign="center" isNumeric>
+											Failed
+										</Th>
+										<Th textAlign="center">Action</Th>
+									</Tr>
+								</Thead>
+								<Tbody>
+									{paginatedBatches.map((batch) => {
+										const totalCount =
+											batch.successCount +
+											batch.failureCount +
+											batch.invalidRecords +
+											batch.pendingCount;
+										const status = deriveBatchStatus(batch);
+										const statusProps =
+											getStatusBadgeProps(status);
+										const isProcessing =
+											status === "PROCESSING";
+										const processedCount = Math.min(
+											totalCount,
+											batch.totalRecords
+										);
+										const canDownload =
+											status === "PROCESSED";
+
+										return (
+											<Tr key={batch.batchNumber}>
+												<Td>
+													<Text fontSize="sm">
+														{formatDateTime(
+															batch.batchUploadDate
+														)}
 													</Text>
-												)}
-											</Badge>
-										</Td>
-										<Td isNumeric>
-											<Text
-												fontSize="xs"
-												color="green.600"
-											>
-												{batch.totalRecordsApproved}
-											</Text>
-										</Td>
-										<Td isNumeric>
-											<Text fontSize="xs" color="red.600">
-												{batch.invalidRecords}
-											</Text>
-										</Td>
-										<Td isNumeric>
-											<Text
-												fontSize="xs"
-												color="green.600"
-											>
-												{batch.successCount}
-											</Text>
-										</Td>
-										<Td isNumeric>
-											<Text
-												fontSize="xs"
-												color="yellow.600"
-											>
-												{batch.pendingCount}
-											</Text>
-										</Td>
-										<Td isNumeric>
-											<Text fontSize="xs" color="red.600">
-												{batch.failureCount}
-											</Text>
-										</Td>
-										<Td>
-											<Flex justify="center">
-												{isProcessing ? (
-													<Spinner
-														size="sm"
-														color="blue.500"
-														thickness="2px"
-													/>
-												) : canDownload ? (
-													<IconButton
-														aria-label="Download Report"
-														icon={<DownloadIcon />}
-														size="xs"
-														variant="ghost"
-														onClick={() =>
-															handleDownload(
-																batch.batchNumber
-															)
+												</Td>
+												<Td>
+													<HStack gap="3" spacing={0}>
+														<Avatar
+															name={
+																batch.customerName
+															}
+															size="sm"
+															bg="primary.light"
+															color="white"
+															fontSize="xs"
+														/>
+														<Text
+															fontSize="sm"
+															fontWeight="medium"
+															color="dark"
+														>
+															{batch.customerName}
+														</Text>
+													</HStack>
+												</Td>
+												<Td isNumeric>
+													<Text fontSize="sm">
+														{batch.totalRecords}
+													</Text>
+												</Td>
+												<Td isNumeric>
+													<Text
+														fontSize="sm"
+														fontWeight="medium"
+													>
+														₹
+														{batch.totalAmount.toLocaleString(
+															"en-IN"
+														)}
+													</Text>
+												</Td>
+												<Td>
+													<Badge
+														colorScheme={
+															statusProps.colorScheme
 														}
-														title="Download Report"
-													/>
-												) : (
+														justifyContent="center"
+														fontSize="xs"
+														px="2"
+														py="1"
+														borderRadius="full"
+														whiteSpace="nowrap"
+														display="inline-flex"
+														alignItems="center"
+														gap="1"
+													>
+														<Box
+															as="span"
+															display="inline-flex"
+															alignItems="center"
+															animation={
+																isProcessing
+																	? `${blinkAnimation} 1.5s infinite`
+																	: "none"
+															}
+														>
+															<Icon
+																name={
+																	statusProps.icon
+																}
+																size="xs"
+															/>
+														</Box>
+														<Text as="span">
+															{statusProps.label}
+														</Text>
+														{isProcessing && (
+															<Text
+																as="span"
+																ml="1"
+																fontWeight="semibold"
+															>
+																{processedCount
+																	.toString()
+																	.padStart(
+																		2,
+																		"0"
+																	)}
+																|
+																{batch.totalRecords
+																	.toString()
+																	.padStart(
+																		2,
+																		"0"
+																	)}
+															</Text>
+														)}
+													</Badge>
+												</Td>
+												<Td isNumeric>
 													<Text
 														fontSize="xs"
-														color="light"
+														color="green.600"
 													>
-														-
+														{
+															batch.totalRecordsApproved
+														}
 													</Text>
-												)}
-											</Flex>
-										</Td>
-									</Tr>
-								);
-							})}
-						</Tbody>
-					</Table>
-				</Box>
-			</Card>
-
-			<Pagination
-				pageSize={pageSize}
-				totalCount={batches.length}
-				currentPage={currentPage}
-				onPageChange={setCurrentPage}
-			/>
+												</Td>
+												<Td isNumeric>
+													<Text
+														fontSize="xs"
+														color="red.600"
+													>
+														{batch.invalidRecords}
+													</Text>
+												</Td>
+												<Td isNumeric>
+													<Text
+														fontSize="xs"
+														color="green.600"
+													>
+														{batch.successCount}
+													</Text>
+												</Td>
+												<Td isNumeric>
+													<Text
+														fontSize="xs"
+														color="yellow.600"
+													>
+														{batch.pendingCount}
+													</Text>
+												</Td>
+												<Td isNumeric>
+													<Text
+														fontSize="xs"
+														color="red.600"
+													>
+														{batch.failureCount}
+													</Text>
+												</Td>
+												<Td>
+													<Flex justify="center">
+														{isProcessing ? (
+															<Spinner
+																size="sm"
+																color="blue.500"
+																thickness="2px"
+															/>
+														) : canDownload ? (
+															<IconButton
+																aria-label="Download Report"
+																icon={
+																	<DownloadIcon />
+																}
+																size="xs"
+																variant="ghost"
+																onClick={() =>
+																	handleDownload(
+																		batch.batchNumber
+																	)
+																}
+																title="Download Report"
+															/>
+														) : (
+															<Text
+																fontSize="xs"
+																color="light"
+															>
+																-
+															</Text>
+														)}
+													</Flex>
+												</Td>
+											</Tr>
+										);
+									})}
+								</Tbody>
+							</Table>
+						</Box>
+					</Card>
+				)}
+			</Box>
+			<Box mb={{ base: "9", md: "none" }}>
+				<Pagination
+					pageSize={pageSize}
+					totalCount={batches.length}
+					currentPage={currentPage}
+					onPageChange={setCurrentPage}
+				/>
+			</Box>
 		</Flex>
 	);
 };

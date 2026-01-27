@@ -232,7 +232,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 								fontSize="sm"
 							>
 								<Icon name="file-download" size="sm" />
-								sample_bulk_payout.xlsx
+								sample_bulk_payment.xlsx
 							</Flex>
 						</Link>
 					</Flex>
