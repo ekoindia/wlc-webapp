@@ -1,5 +1,5 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Icon, PageTitle, PrintReceipt } from "components";
+import { Button, Icon, PageTitle, PillTab, PrintReceipt } from "components";
 import {
 	Endpoints,
 	ParamType,
@@ -12,8 +12,10 @@ import {
 	useMenuContext,
 	useSession,
 	useUser,
+	useWallet,
 } from "contexts";
 import { fetcher } from "helpers";
+import { useFeatureFlag } from "hooks";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -24,7 +26,7 @@ import {
 	doAndroidAction,
 	saveDataToFile,
 } from "utils";
-import { HistoryTable, HistoryToolbar, ToggleColumns } from ".";
+import { BankBalance, HistoryTable, HistoryToolbar, ToggleColumns } from ".";
 import { HistoryProvider } from "./HistoryContext";
 import {
 	getAdditionalTransactionMetadata,
@@ -95,6 +97,11 @@ const History = ({ forNetwork = false }) => {
 	const { trxn_type_prod_map } = interactions || {};
 
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
+
+	// Multi-wallet support: Show additional wallets or TSP Bank Accounts in history
+	const { accountList, bankBalances, refreshAccountBalance } = useWallet();
+	const [isTspBankAllowed] = useFeatureFlag("TSP_BANK");
+	const [selectedAccountIndex, setSelectedAccountIndex] = useState(0); // Default to first account (E-value)
 
 	// Fetch history_interaction_list
 	useEffect(() => {
@@ -296,6 +303,19 @@ const History = ({ forNetwork = false }) => {
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
 
+		const account_id =
+			accountList &&
+			accountList.length > selectedAccountIndex &&
+			accountList[selectedAccountIndex]?.id
+				? accountList[selectedAccountIndex].id
+				: null;
+
+		// Account_id is required for self (non-network) transaction history
+		if (account_id === null && forNetwork === false) {
+			console.log("[History] Invalid account selected for filtering.");
+			return;
+		}
+
 		setLoading(true);
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -307,12 +327,7 @@ const History = ({ forNetwork = false }) => {
 				...(forNetwork
 					? {}
 					: {
-							account_id:
-								account_list &&
-								account_list.length > 0 &&
-								account_list[0]?.id
-									? account_list[0].id
-									: null,
+							account_id: account_id,
 						}),
 				...finalFormState,
 			},
@@ -530,9 +545,9 @@ const History = ({ forNetwork = false }) => {
 					: {
 							account_id:
 								account_list &&
-								account_list.length > 0 &&
-								account_list[0]?.id
-									? account_list[0].id
+								account_list.length > selectedAccountIndex &&
+								account_list[selectedAccountIndex]?.id
+									? account_list[selectedAccountIndex].id
 									: null,
 						}),
 				..._finalFormState,
@@ -666,7 +681,7 @@ const History = ({ forNetwork = false }) => {
 		}
 	}, [router.query]);
 
-	// Fetch transaction history when the following change: currentPage, finalFormState
+	// Fetch transaction history when the following change: currentPage, finalFormState, Account filter
 	useEffect(() => {
 		console.log("[History] fetch init", currentPage, finalFormState);
 
@@ -685,7 +700,7 @@ const History = ({ forNetwork = false }) => {
 			);
 			controller.abort();
 		};
-	}, [currentPage, finalFormState]);
+	}, [currentPage, finalFormState, accountList, selectedAccountIndex]);
 
 	useEffect(() => {
 		if (openModalId == action.FILTER) {
@@ -748,6 +763,22 @@ const History = ({ forNetwork = false }) => {
 					forNetwork ? "Network Transactions" : "Transaction History"
 				}
 				isBeta={forNetwork ? true : false}
+				titleProps={{
+					whiteSpace: "nowrap",
+				}}
+				toolComponent={
+					accountList && accountList.length > 1 ? (
+						<PillTab
+							list={accountList.map((account) => ({
+								label: account.label,
+							}))}
+							currTab={selectedAccountIndex}
+							onClick={(index) => setSelectedAccountIndex(index)}
+							size="sm"
+						/>
+					) : null
+				}
+				gap="2em"
 			/>
 			<HistoryProvider
 				historyParameterMetadata={history_parameter_metadata}
@@ -777,6 +808,34 @@ const History = ({ forNetwork = false }) => {
 						},
 					}}
 				>
+					{isTspBankAllowed ? (
+						<BankBalance
+							label={accountList[selectedAccountIndex]?.label}
+							balance={
+								bankBalances[
+									accountList[selectedAccountIndex]?.id
+								]?.balance
+							}
+							account_number={
+								accountList[selectedAccountIndex]
+									?.account_number
+							}
+							loading={
+								bankBalances[
+									accountList[selectedAccountIndex]?.id
+								]?.loading
+							}
+							onRefresh={() =>
+								refreshAccountBalance(
+									accountList[selectedAccountIndex]?.id
+								)
+							}
+							ifsc={accountList[selectedAccountIndex]?.bank_code}
+							mb="2"
+							width="100% !important"
+						/>
+					) : null}
+
 					<HistoryToolbar
 						{...{
 							isFiltered,
