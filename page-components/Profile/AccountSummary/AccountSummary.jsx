@@ -7,12 +7,15 @@ import { WidgetBase } from "page-components/Home";
  * A AccountSummary page-component
  */
 const AccountSummary = () => {
-	const { userData } = useUser();
+	const { userData, isAdmin } = useUser();
 	const { accountDetails } = userData || {};
 	const { accountList } = useWallet();
 	const bankAccounts = accountList?.filter((acc) => acc.type_id == 3);
 
-	console.log("UserData::::: ", accountDetails);
+	// TODO: Allow for Non-Admins as well
+	if (!isAdmin) {
+		return null;
+	}
 
 	return (
 		<WidgetBase
