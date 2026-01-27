@@ -1,14 +1,14 @@
 import { useToken } from "@chakra-ui/react";
+import { useUserTypes } from "hooks";
+import dynamic from "next/dynamic";
 import {
 	createRoleSelectionStep,
 	ONBOARDING_API_STATUS,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
 	visibleAgentTypes,
-} from "constants/OnboardingSteps";
-import { useUserTypes } from "hooks";
-import dynamic from "next/dynamic";
-import { useOnboardingState, useRoleFormSubmission } from "./hooks";
+} from "../constants";
+import { useOnboardingState, useRoleFormSubmission } from "../hooks";
 
 const ExternalSelectionScreen = dynamic(
 	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),

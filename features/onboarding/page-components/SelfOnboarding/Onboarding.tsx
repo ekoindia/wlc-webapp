@@ -1,5 +1,4 @@
 import { Flex } from "@chakra-ui/react";
-import { OnboardingWidget } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useSession, useUser } from "contexts/UserContext";
@@ -7,6 +6,7 @@ import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import router from "next/router";
 import { useCallback } from "react";
+import { OnboardingWidget } from "../../components";
 
 /**
  * An Onboarding component for self-onboarding of users.

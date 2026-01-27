@@ -1,10 +1,10 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { ONBOARDING_STEP_IDS } from "constants/OnboardingSteps";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
+import { ONBOARDING_STEP_IDS } from "../constants";
 
 /**
  * Form submission data structure

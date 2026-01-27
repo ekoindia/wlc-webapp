@@ -1,10 +1,10 @@
 import { Center, Spinner } from "@chakra-ui/react";
-import { OnboardingWidget } from "components/OnboardingWidget";
 import { Endpoints } from "constants/EndPoints";
 import { useOrgDetailContext, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
+import { OnboardingWidget } from "../../components";
 
 export interface AgentOnboardingProps {
 	agentMobile?: string;

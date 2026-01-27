@@ -1,5 +1,5 @@
-import { OnboardingWidget } from "components/OnboardingWidget";
-import { pageRender } from "test-utils";
+import { Onboarding } from "features/onboarding";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,12 +15,9 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("OnboardingWidget", () => {
+describe("Onboarding", () => {
 	it("renders without error with no attributes", () => {
-		const mockRefreshAgentProfile = jest.fn().mockResolvedValue({});
-		const { container } = pageRender(
-			<OnboardingWidget refreshAgentProfile={mockRefreshAgentProfile} />
-		);
+		const { container } = render(<Onboarding />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -51,6 +48,6 @@ describe("OnboardingWidget", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for OnboardingWidget in __tests__/components/OnboardingWidget/OnboardingWidget.test.jsx"
+		"TODO: add proper test cases for Onboarding in __tests__/page-components/Onboarding/Onboarding.test.jsx"
 	);
 });

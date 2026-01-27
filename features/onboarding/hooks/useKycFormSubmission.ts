@@ -1,7 +1,7 @@
 import { TransactionIds } from "constants/EpsTransactions";
-import { ONBOARDING_STEP_IDS } from "constants/OnboardingSteps";
 import { useCallback } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
+import { ONBOARDING_STEP_IDS } from "../constants";
 import { useOnboardingApiSubmission } from "./useOnboardingApiSubmission";
 
 /**

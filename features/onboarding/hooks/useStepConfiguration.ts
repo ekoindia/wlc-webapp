@@ -1,10 +1,10 @@
+import { useCallback } from "react";
 import {
 	filterOnboardingStepsByRoles,
 	masterOnboardingSteps,
 	ONBOARDING_STEP_STATUS,
 	type OnboardingStep,
-} from "constants/OnboardingSteps";
-import { useCallback } from "react";
+} from "../constants";
 import { type UnifiedUserData } from "../utils";
 
 /**

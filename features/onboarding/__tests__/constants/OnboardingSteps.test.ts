@@ -1,7 +1,7 @@
 import {
 	filterOnboardingStepsByRoles,
 	masterOnboardingSteps,
-} from "constants/OnboardingSteps";
+} from "features/onboarding";
 
 describe("OnboardingSteps", () => {
 	describe("masterOnboardingSteps", () => {

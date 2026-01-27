@@ -1,5 +1,7 @@
-import { OnboardingCompleted } from "page-components/AssistedOnboarding";
-import { ASSISTED_ONBOARDING_STEPS } from "page-components/AssistedOnboarding/AssistedOnboarding";
+import {
+	ASSISTED_ONBOARDING_STEPS,
+	OnboardingCompleted,
+} from "features/onboarding";
 import { render } from "test-utils";
 
 // Mock useRouter

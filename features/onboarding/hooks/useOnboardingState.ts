@@ -1,8 +1,5 @@
-import type {
-	OnboardingStep,
-	OnboardingStepStatusType,
-} from "constants/OnboardingSteps";
 import { useReducer } from "react";
+import type { OnboardingStep, OnboardingStepStatusType } from "../constants";
 
 export interface AadhaarState {
 	number: string | null;

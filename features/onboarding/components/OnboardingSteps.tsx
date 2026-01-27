@@ -1,15 +1,15 @@
 import { useToken } from "@chakra-ui/react";
 import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
+import { useAppSource, useOrgDetailContext, usePubSub } from "contexts";
+import { useBankList, useCountryStates, useShopTypes } from "hooks";
+import { useCallback, useEffect, useMemo } from "react";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
 	masterOnboardingSteps,
 	ONBOARDING_API_STATUS,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
-} from "constants/OnboardingSteps";
-import { useAppSource, useOrgDetailContext, usePubSub } from "contexts";
-import { useBankList, useCountryStates, useShopTypes } from "hooks";
-import { useCallback, useEffect, useMemo } from "react";
-import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
+} from "../constants";
 import {
 	createStepLookupMap,
 	extractStepConfiguration,
@@ -21,14 +21,14 @@ import {
 	useOnboardingState,
 	usePintwinIntegration,
 	useStepConfiguration,
-} from "./hooks";
+} from "../hooks";
 import {
 	getAgreementIdFromData,
 	getMobileFromData,
 	getOnboardingStepsFromData,
 	getRoleListFromData,
 	getUserTypeFromData,
-} from "./utils";
+} from "../utils";
 
 // Type assertion to fix external component type mismatch
 const ExternalOnboardingWidget =

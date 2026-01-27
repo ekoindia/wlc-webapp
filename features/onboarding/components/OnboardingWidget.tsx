@@ -4,9 +4,9 @@ import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { Button } from "components";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
+import { getOnboardingStepsFromData } from "../utils";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
-import { getOnboardingStepsFromData } from "./utils";
 
 /**
  * Constants representing the different steps in the onboarding flow

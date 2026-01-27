@@ -1,5 +1,5 @@
-import { AssistedOnboarding } from "page-components/AssistedOnboarding";
-import { adminRender } from "test-utils";
+import { OnboardingWidget } from "features/onboarding";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,12 @@ import { adminRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("AssistedOnboarding", () => {
+describe("OnboardingWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = adminRender(<AssistedOnboarding />);
+		const mockRefreshAgentProfile = jest.fn().mockResolvedValue({});
+		const { container } = pageRender(
+			<OnboardingWidget refreshAgentProfile={mockRefreshAgentProfile} />
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +51,6 @@ describe("AssistedOnboarding", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for FieldAgentOnboarding in __tests__/page-components/FieldAgentOnboarding/FieldAgentOnboarding.test.jsx"
+		"TODO: add proper test cases for OnboardingWidget in __tests__/components/OnboardingWidget/OnboardingWidget.test.jsx"
 	);
 });
