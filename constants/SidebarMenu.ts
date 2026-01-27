@@ -186,6 +186,17 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/configurations",
 	},
 
+	// TODO: DEMO: TSP Bank Features
+	{
+		id: 600,
+		label: "Payments",
+		icon: "cash",
+		link: "/admin/transaction/996",
+		trxn_id: 996,
+		summary: "Make payments from your Bank account.",
+		featureFlag: "TSP_BANK",
+	},
+
 	// UAT Options
 	{
 		id: 901,
