@@ -245,7 +245,6 @@ export const sidebarMenu: sidebarMenuType[] = [
 			"Onboard new users to your network in a assisted manner, one at a time.",
 		featureFlag: "ASSISTED_FULL_ONBOARDING",
 	},
-
 	{
 		id: 215,
 		label: "Product Catalogue",
