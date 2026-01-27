@@ -4,7 +4,6 @@ import {
 	ChangeRoleMenuList,
 	Endpoints,
 	ParamType,
-	ResponseTypes,
 	TransactionTypes,
 } from "constants";
 import { useSession } from "contexts";
@@ -13,6 +12,8 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
+
+const AGENT_STATUS_UPDATE_SUCCESSFULL = 1831;
 
 const status = {
 	PENDING_APPROVAL: 13,
@@ -264,10 +265,9 @@ const NetworkMenuWrapper = ({
 			}
 		)
 			.then((res) => {
-				// Check for successful response: response_type_id = SUCCESSFUL_STATUS_UPDATE and status = 0
+				// Check for successful response
 				const isSuccess =
-					res.response_type_id ===
-						ResponseTypes.SUCCESSFUL_STATUS_UPDATE &&
+					res.response_type_id === AGENT_STATUS_UPDATE_SUCCESSFULL &&
 					res.status === 0;
 
 				if (isSuccess) {

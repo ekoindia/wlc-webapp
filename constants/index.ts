@@ -7,11 +7,7 @@ export {
 } from "./BreadcrumbsData";
 export { colorThemes } from "./colorThemes";
 export { Endpoints } from "./EndPoints";
-export {
-	ResponseTypes,
-	TransactionIds,
-	TransactionTypes,
-} from "./EpsTransactions";
+export { TransactionIds, TransactionTypes } from "./EpsTransactions";
 export { FrontendUrls } from "./FrontendUrls";
 export {
 	IconLibrary,
