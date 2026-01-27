@@ -38,11 +38,12 @@ const useAppLink = () => {
 			url = (url.startsWith("/") ? "" : "/") + url;
 			console.log("[useAppLink] Opening Internal Link:", url);
 
-			// Handle transaction links for Admins (not in Agent Mode)...
+			// Handle transaction & product links for Admins (when not in Agent-Mode)...
 			if (
 				isAdmin &&
 				!isAdminAgentMode &&
-				url.startsWith("/transaction/")
+				(url.startsWith("/transaction/") ||
+					url.startsWith("/products/"))
 			) {
 				url = "/admin" + url;
 			}
