@@ -9,7 +9,6 @@ import {
 	Tabs,
 } from "@chakra-ui/react";
 import { EkoConnectWidget } from "components/EkoConnectWidget";
-import { PaddingBox } from "components/PaddingBox";
 import { useEffect, useState } from "react";
 import BatchHistory from "./components/BatchHistory";
 import UploadRecipients from "./components/UploadRecipients";
@@ -28,12 +27,12 @@ const BulkPayoutContent = () => {
 
 	useEffect(() => {
 		const onEkoResponse = (event: Event) => {
+			// Type guard to ensure we are dealing with a CustomEvent
+			if (!("detail" in event)) {
+				return;
+			}
+
 			const detail = (event as CustomEvent)?.detail;
-			console.log(
-				"EkoConnect response detail:",
-				detail?.response?.data?.customer_profile?.name,
-				detail?.response?.data?.customer_profile?.mobile
-			);
 
 			const customerName = detail?.response?.data?.customer_profile?.name;
 			const customerNumber =
@@ -57,17 +56,12 @@ const BulkPayoutContent = () => {
 			}
 		};
 
-		window.addEventListener(
-			"eko-response",
-			onEkoResponse as unknown as EventListener
-		);
+		window.addEventListener("eko-response", onEkoResponse);
 
-		return () =>
-			window.removeEventListener(
-				"eko-response",
-				onEkoResponse as unknown as EventListener
-			);
-	}, []);
+		return () => {
+			window.removeEventListener("eko-response", onEkoResponse);
+		};
+	}, [setCustomerParams]);
 
 	return (
 		<Flex direction="column" gap="6" w="100%">
@@ -133,9 +127,15 @@ const BulkPayoutContent = () => {
 const BulkPayout = () => {
 	return (
 		<BulkPayoutProvider>
-			<PaddingBox>
+			<Box
+				p={{
+					base: "10px",
+					md: "30px",
+				}}
+				pb={{ base: "20px", md: "30px" }}
+			>
 				<BulkPayoutContent />
-			</PaddingBox>
+			</Box>
 		</BulkPayoutProvider>
 	);
 };

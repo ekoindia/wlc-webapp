@@ -72,6 +72,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 
 		try {
 			const userCode = userData?.userDetails?.code;
+			const serviceCode = "45"; // Service code for Bulk Payout
 
 			const payload = {
 				sender_name: customerParams.customerName,
@@ -80,7 +81,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 				client_ref_id:
 					Date.now() + "" + Math.floor(Math.random() * 1000),
 				customer_id: customerParams.customerNumber,
-				service_code: "45",
+				service_code: serviceCode,
 			};
 
 			const formData = new FormData();

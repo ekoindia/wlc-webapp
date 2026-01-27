@@ -260,18 +260,22 @@ const BatchHistory: React.FC = (): JSX.Element => {
 		}
 	}, [accessToken]);
 
-	// ──────────────────────────────────────────────────────────────
-	// Initial load - only when activeTab is "history"
-	// ──────────────────────────────────────────────────────────────
+	/**
+	 * Initial data fetcher for the Batch History.
+	 * Triggered specifically when the user navigates to the 'history' tab.
+	 */
 	useEffect(() => {
 		if (activeTab === "history") {
 			fetchBatches();
 		}
 	}, [fetchBatches, activeTab]);
 
-	// ──────────────────────────────────────────────────────────────
-	// Polling effect for processing batches
-	// ──────────────────────────────────────────────────────────────
+	/**
+	 * Polling effect to monitor batches currently in 'PROCESSING' status.
+	 * Runs every 5 seconds for each batch in the polling set.
+	 * @listens activeTab - Only executes when on the "history" tab.
+	 * @listens pollingBatchNumbers - Manages individual intervals for each batch ID.
+	 */
 	useEffect(() => {
 		// Only poll if on history tab and have batches to poll
 		if (activeTab !== "history" || pollingBatchNumbers.size === 0) return;
