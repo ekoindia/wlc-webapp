@@ -48,6 +48,7 @@ const ExternalOnboardingWidget =
 		handleOnboardingSkip: (_stepId: number) => void;
 		esignStatus: number;
 		digilockerData: any;
+		initialStepId?: number;
 		constants?: {
 			apiStatus: typeof ONBOARDING_API_STATUS;
 			stepIds: typeof ONBOARDING_STEP_IDS;
@@ -146,6 +147,25 @@ const OnboardingSteps = ({
 			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
+
+	/**
+	 * Calculate the initial step ID to render.
+	 * Finds the first step that has a role and is not COMPLETED or SKIPPED.
+	 * Falls back to the first step if none found.
+	 */
+	const initialStepId = useMemo(() => {
+		const stepsData = state?.stepperData;
+		if (!stepsData || stepsData.length === 0) return undefined;
+
+		const initialStep = stepsData.find(
+			(step) =>
+				step.role &&
+				step.stepStatus !== ONBOARDING_STEP_STATUS.COMPLETED &&
+				step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
+		);
+
+		return initialStep?.id ?? stepsData[0]?.id;
+	}, [state?.stepperData]);
 
 	// Moved stepConfiguration BEFORE updateStepStatus so it can be referenced
 	// Initialize step configuration hook
@@ -556,6 +576,7 @@ const OnboardingSteps = ({
 							? 2
 							: 0,
 				digilockerData: state?.digilocker?.data,
+				initialStepId: initialStepId,
 				constants: {
 					apiStatus: ONBOARDING_API_STATUS,
 					stepIds: ONBOARDING_STEP_IDS,
