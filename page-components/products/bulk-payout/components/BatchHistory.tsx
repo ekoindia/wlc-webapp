@@ -320,13 +320,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 		fetchBatches();
 	}, [fetchBatches]);
 
-	/**
-	 * Fetches and triggers the download of a report for a specific batch.
-	 * @async
-	 * @param {string} batchNumber - The unique identifier of the batch to download.
-	 * @returns {Promise<void>} - Resolves once the file download is triggered.
-	 * @throws Will log an error to the console if the API request fails or blob generation fails.
-	 */
+	// Download report for a given batch number
 	const downloadReport = useCallback(
 		async (batchNumber: string) => {
 			try {
