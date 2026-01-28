@@ -22,6 +22,7 @@ const NetworkCard = ({ item }) => {
 		onboarded_on,
 		commission_type,
 		account_status,
+		_onStatusUpdate,
 	} = item ?? {};
 
 	const { lattitude, longitude, address } = address_details ?? {};
@@ -37,6 +38,7 @@ const NetworkCard = ({ item }) => {
 						eko_code,
 						account_status_id,
 						agent_type,
+						onStatusUpdate: _onStatusUpdate,
 					}}
 				/>
 			</Flex>

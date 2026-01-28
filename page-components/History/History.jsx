@@ -767,7 +767,10 @@ const History = ({ forNetwork = false }) => {
 					whiteSpace: "nowrap",
 				}}
 				toolComponent={
-					accountList && accountList.length > 1 ? (
+					isTspBankAllowed &&
+					accountList &&
+					accountList.length > 1 &&
+					forNetwork !== true ? (
 						<PillTab
 							list={accountList.map((account) => ({
 								label: account.label,
@@ -808,7 +811,7 @@ const History = ({ forNetwork = false }) => {
 						},
 					}}
 				>
-					{isTspBankAllowed ? (
+					{isTspBankAllowed && forNetwork !== true ? (
 						<BankBalance
 							label={accountList[selectedAccountIndex]?.label}
 							balance={

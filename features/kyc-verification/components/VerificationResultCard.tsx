@@ -219,7 +219,6 @@ export const VerificationResultCard = ({
 								<JsonViewer
 									data={result.requestData}
 									collapseAfterLevel={2}
-									showBrackets={false}
 									keyOverrides={JSON_KEY_OVERRIDES}
 								/>
 							</Box>
@@ -269,7 +268,6 @@ export const VerificationResultCard = ({
 									<JsonViewer
 										data={result.responseData}
 										collapseAfterLevel={2}
-										showBrackets={false}
 										keyOverrides={JSON_KEY_OVERRIDES}
 										valueTransforms={JSON_VALUE_TRANSFORMS}
 									/>

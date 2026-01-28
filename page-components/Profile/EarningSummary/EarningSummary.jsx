@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
-import { useEarningSummary, useWallet } from "contexts";
+import { useEarningSummary, useSession, useWallet } from "contexts";
 import { WidgetBase } from "page-components/Home";
 import { Fragment } from "react";
 
@@ -13,6 +13,7 @@ import { Fragment } from "react";
 const EarningSummary = ({ ...rest }) => {
 	const data = useEarningSummary();
 	const { isWalletVisible } = useWallet();
+	const { isAdmin } = useSession();
 	// console.log("DataAtEarn", data);
 
 	if (!data) {
@@ -20,6 +21,12 @@ const EarningSummary = ({ ...rest }) => {
 	}
 
 	if (!isWalletVisible) {
+		return null;
+	}
+
+	// Hide for Admins.
+	// TODO: Show Admin earning summary as well.
+	if (isAdmin) {
 		return null;
 	}
 

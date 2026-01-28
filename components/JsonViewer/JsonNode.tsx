@@ -35,7 +35,7 @@ const JsonNode = memo(function JsonNode({
 	ancestors,
 	isLast = true,
 	onCopyRoot,
-	showBrackets,
+	variant,
 	keyOverrides,
 	valueTransforms,
 }: JsonNodeProps & { onCopyRoot?: (_jsonString: string) => void }) {
@@ -98,8 +98,8 @@ const JsonNode = memo(function JsonNode({
 	// Calculate margin for tree line positioning
 	const indent = level * INDENT_SIZE;
 
-	// Trailing comma
-	const comma = isLast ? "" : ",";
+	// Trailing comma (only in json variant)
+	const comma = variant === "json" && !isLast ? "," : "";
 
 	// Render key portion
 	const renderKey = () => {
@@ -112,7 +112,7 @@ const JsonNode = memo(function JsonNode({
 						{formatKeyLabel(nodeKey, keyOverrides)}
 					</Text>
 					<Text as="span" color={BRACKET_COLOR}>
-						:{" "}
+						:&nbsp;
 					</Text>
 				</>
 			);
@@ -128,7 +128,11 @@ const JsonNode = memo(function JsonNode({
 			path,
 			valueTransforms
 		);
-		const formatted = formatPrimitiveValue(transformedValue, valueType);
+		const formatted = formatPrimitiveValue(
+			transformedValue,
+			valueType,
+			variant
+		);
 		return (
 			<Text as="span" color={getTypeColor(valueType)}>
 				{formatted}
@@ -207,6 +211,7 @@ const JsonNode = memo(function JsonNode({
 
 	// Render expandable nodes (objects/arrays)
 	const isArray = valueType === "array";
+	const showBrackets = variant === "json";
 	const openBracket = showBrackets ? (isArray ? "[" : "{") : "";
 	const closeBracket = showBrackets ? (isArray ? "]" : "}") : "";
 	const isEmpty = children.length === 0;
@@ -313,7 +318,7 @@ const JsonNode = memo(function JsonNode({
 									animated={animated}
 									ancestors={childAncestors}
 									isLast={index === children.length - 1}
-									showBrackets={showBrackets}
+									variant={variant}
 									keyOverrides={keyOverrides}
 									valueTransforms={valueTransforms}
 								/>

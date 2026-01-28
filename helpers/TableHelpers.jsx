@@ -302,7 +302,8 @@ export const getModalStyle = (
 	mobile_number,
 	eko_code,
 	account_status_id,
-	agent_type
+	agent_type,
+	onStatusUpdate
 ) => {
 	return (
 		<NetworkMenuWrapper
@@ -311,6 +312,7 @@ export const getModalStyle = (
 				eko_code,
 				account_status_id,
 				agent_type,
+				onStatusUpdate,
 			}}
 		/>
 	);
