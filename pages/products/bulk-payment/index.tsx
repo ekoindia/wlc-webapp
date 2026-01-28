@@ -9,6 +9,6 @@ export default function BulkPayoutPage() {
 }
 
 BulkPayoutPage.pageMeta = {
-	title: "Bulk Payment",
+	title: "Bulk Payments",
 	isFixedBottomAppBar: true,
 };
