@@ -1,7 +1,17 @@
-import { useToken } from "@chakra-ui/react";
+import { useToast, useToken } from "@chakra-ui/react";
 import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
-import { useAppSource, useOrgDetailContext, usePubSub } from "contexts";
-import { useBankList, useCountryStates, useShopTypes } from "hooks";
+import {
+	useAppSource,
+	useOrgDetailContext,
+	usePubSub,
+	useSession,
+} from "contexts";
+import {
+	useBankList,
+	useCountryStates,
+	useRefreshToken,
+	useShopTypes,
+} from "hooks";
 import { useCallback, useEffect, useMemo } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
@@ -10,6 +20,7 @@ import {
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
 } from "../constants";
+import { OnboardingProvider } from "../context";
 import {
 	createStepLookupMap,
 	extractStepConfiguration,
@@ -23,6 +34,7 @@ import {
 	useStepConfiguration,
 } from "../hooks";
 import {
+	executePipeline,
 	getAgreementIdFromData,
 	getMobileFromData,
 	getOnboardingStepsFromData,
@@ -64,7 +76,7 @@ const ExternalOnboardingWidget =
  * - Initialize and persist step state via useStepConfiguration / useOnboardingState
  * - Route step submissions to upload/form handlers and third-party integrations (esign, digilocker, pintwin)
  * - Handle step skip logic, widget callbacks, Android messages and pub/sub responses
- * @param {object} props
+ * @param {object} props - Component props
  * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
  * @param {string} props.logo - organization logo URL
  * @param {string} props.appName - application display name
@@ -90,6 +102,9 @@ const OnboardingSteps = ({
 	const { shopTypes: shopTypesData } = useShopTypes();
 	const { states: stateTypesData } = useCountryStates();
 	const { orgDetail } = useOrgDetailContext();
+	const { accessToken } = useSession();
+	const { generateNewToken } = useRefreshToken();
+	const toast = useToast();
 
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
@@ -278,7 +293,13 @@ const OnboardingSteps = ({
 	/**
 	 * Handle submission of step data from the external widget.
 	 * Routes payloads to submitForm / uploadFile depending on step id.
-	 * Special cases:
+	 *
+	 * Routing logic:
+	 * 1. Check step config `useLegacyApi` flag
+	 * 2. If false, use new pipeline executor
+	 * 3. If true (default), use legacy switch-based routing
+	 *
+	 * Special cases (legacy):
 	 * - SELECTION_SCREEN: ignored (handled by RoleSelection elsewhere)
 	 * - LOCATION_CAPTURE: updates location in state
 	 * - ADD_BANK_ACCOUNT: both submitForm and uploadFile are executed
@@ -297,6 +318,104 @@ const OnboardingSteps = ({
 				return;
 			}
 
+			// Find step config from masterOnboardingSteps
+			const stepConfig = masterOnboardingSteps.find(
+				(step) => step.id === data?.id
+			);
+
+			// Check if we should use the new pipeline executor
+			if (stepConfig && stepConfig.useLegacyApi === false) {
+				// NEW PIPELINE EXECUTOR PATH
+				console.log(
+					`[OnboardingSteps] Using new pipeline executor for step: ${stepConfig.name}`
+				);
+
+				// PRE-EXECUTION STATE UPDATES (matching legacy behavior)
+				// LOCATION_CAPTURE: Save latlong to state for subsequent steps
+				if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
+					actions.setLocation(data?.form_data?.latlong);
+				}
+
+				// Set API in progress
+				actions.setApiInProgress(true);
+
+				try {
+					const pipelineResult = await executePipeline({
+						stepConfig,
+						formData: data,
+						mobile: String(mobile || ""),
+						accessToken,
+						generateNewToken,
+						sharedState: {
+							mobile: String(mobile || ""),
+							latLong: state.latLong,
+							aadhaar: {
+								number: state.aadhaar?.number ?? undefined,
+								accessKey:
+									state.aadhaar?.accessKey ?? undefined,
+								userCode: state.aadhaar?.userCode ?? undefined,
+							},
+							digilocker: state.digilocker,
+						},
+						onSuccess: async (response) => {
+							console.log(
+								"[OnboardingSteps] Pipeline success:",
+								response
+							);
+							toast({
+								title: data.success_message || "Success",
+								status: "success",
+								duration: 2000,
+							});
+							// Update step status
+							updateStepStatus(
+								data.id,
+								ONBOARDING_STEP_STATUS.COMPLETED
+							);
+							// Refresh user profile
+							await refreshAgentProfile();
+						},
+						onError: async (error) => {
+							console.error(
+								"[OnboardingSteps] Pipeline error:",
+								error
+							);
+							toast({
+								title: error?.message || "Something went wrong",
+								status: "error",
+								duration: 3000,
+							});
+							// Update step status to failed
+							updateStepStatus(
+								data.id,
+								ONBOARDING_STEP_STATUS.FAILED
+							);
+						},
+					});
+
+					console.log(
+						"[OnboardingSteps] Pipeline result:",
+						pipelineResult
+					);
+				} catch (error) {
+					console.error(
+						"[OnboardingSteps] Pipeline execution error:",
+						error
+					);
+					toast({
+						title: "Something went wrong",
+						status: "error",
+						duration: 3000,
+					});
+				} finally {
+					actions.setApiInProgress(false);
+				}
+
+				// IMPORTANT: Return early to prevent legacy path execution
+				return;
+			}
+
+			// LEGACY SWITCH-BASED ROUTING
 			if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
 				// Update location in state
 				actions.setLocation(data?.form_data?.latlong);
@@ -330,7 +449,22 @@ const OnboardingSteps = ({
 				return;
 			}
 		},
-		[actions]
+		[
+			actions,
+			submitForm,
+			uploadFile,
+			accessToken,
+			generateNewToken,
+			mobile,
+			refreshAgentProfile,
+			state.aadhaar?.accessKey,
+			state.aadhaar?.number,
+			state.aadhaar?.userCode,
+			state.digilocker,
+			state.latLong,
+			toast,
+			updateStepStatus,
+		]
 	);
 
 	/**
@@ -553,37 +687,43 @@ const OnboardingSteps = ({
 
 	// MARK: JSX
 	return (
-		<ExternalOnboardingWidget
-			{...({
-				appName: appName,
-				orgName: orgName,
-				primaryColor: primaryColor,
-				accentColor: accentColor,
-				shopTypes: shopTypesData,
-				stateTypes: stateTypesData,
-				bankList: bankList,
-				userData: onboardingUserDetails,
-				handleSubmit: handleStepDataSubmit,
-				stepResponse: state?.lastStepResponse,
-				stepsData: state?.stepperData,
-				handleStepCallBack: handleStepCallBack,
-				handleOnboardingSkip: handleOnboardingSkip,
-				apiInProgress: state?.ui?.apiInProgress,
-				esignStatus:
-					state?.esign?.status === "ready"
-						? 1
-						: state?.esign?.status === "failed"
-							? 2
-							: 0,
-				digilockerData: state?.digilocker?.data,
-				initialStepId: initialStepId,
-				constants: {
-					apiStatus: ONBOARDING_API_STATUS,
-					stepIds: ONBOARDING_STEP_IDS,
-					stepStatus: ONBOARDING_STEP_STATUS,
-				},
-			} as any)}
-		/>
+		<OnboardingProvider
+			mobile={String(mobile || "")}
+			agreementId={String(agreementId || "")}
+			externalState={{ state, dispatch: () => {}, actions }}
+		>
+			<ExternalOnboardingWidget
+				{...({
+					appName: appName,
+					orgName: orgName,
+					primaryColor: primaryColor,
+					accentColor: accentColor,
+					shopTypes: shopTypesData,
+					stateTypes: stateTypesData,
+					bankList: bankList,
+					userData: onboardingUserDetails,
+					handleSubmit: handleStepDataSubmit,
+					stepResponse: state?.lastStepResponse,
+					stepsData: state?.stepperData,
+					handleStepCallBack: handleStepCallBack,
+					handleOnboardingSkip: handleOnboardingSkip,
+					apiInProgress: state?.ui?.apiInProgress,
+					esignStatus:
+						state?.esign?.status === "ready"
+							? 1
+							: state?.esign?.status === "failed"
+								? 2
+								: 0,
+					digilockerData: state?.digilocker?.data,
+					initialStepId: initialStepId,
+					constants: {
+						apiStatus: ONBOARDING_API_STATUS,
+						stepIds: ONBOARDING_STEP_IDS,
+						stepStatus: ONBOARDING_STEP_STATUS,
+					},
+				} as any)}
+			/>
+		</OnboardingProvider>
 	);
 };
 

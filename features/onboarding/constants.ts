@@ -1,3 +1,4 @@
+import { TransactionIds } from "constants/EpsTransactions";
 import { UserTypeLabel } from "constants/UserTypes";
 
 // Applicant types as defined in the OaaS Widget configuration. Note, it is not the same as EPS's user-type-id
@@ -104,6 +105,43 @@ export interface RoleConfig {
 }
 
 /**
+ * API pipeline step configuration
+ */
+export interface ApiPipelineStep {
+	/** Unique identifier for this API call within the pipeline */
+	id: string;
+	/** Type of API call */
+	type: "form" | "upload";
+	/** Transaction interaction type ID for form submissions */
+	interactionTypeId?: number;
+	/** Document type ID for file uploads */
+	docType?: number;
+	/** If true, pipeline stops if this step fails */
+	continueOnSuccess?: boolean;
+	/** Only execute if the specified step succeeded */
+	dependsOn?: string;
+}
+
+/**
+ * Local renderer configuration for steps rendered by this project
+ */
+export interface LocalRendererConfig {
+	/** Type of local rendering */
+	type: "form" | "custom";
+	/** Component name for custom rendering (e.g., 'SignAgreementPage') */
+	component?: string;
+	/** Form fields for Form.jsx rendering (parameter_list format) */
+	formFields?: Array<{
+		name: string;
+		label: string;
+		parameter_type_id?: number;
+		required?: boolean;
+		validations?: Record<string, any>;
+		[key: string]: any;
+	}>;
+}
+
+/**
  * OnboardingStep interface representing a single step in the user onboarding process
  */
 export interface OnboardingStep {
@@ -136,6 +174,45 @@ export interface OnboardingStep {
 	};
 	/** Optional success message to display when step is completed */
 	success_message?: string;
+
+	// === NEW: Migration Toggle ===
+	/** If true, use legacy switch-based API routing. If false, use new pipeline executor. */
+	useLegacyApi?: boolean;
+
+	// === NEW: Rendering Configuration ===
+	/** Where this step should be rendered: 'widget' (oaas-widget) or 'local' (this project) */
+	renderSource?: "widget" | "local";
+	/** Configuration for local rendering (only used when renderSource is 'local') */
+	localRenderer?: LocalRendererConfig;
+
+	// === NEW: API Pipeline ===
+	/** API pipeline configuration for step execution */
+	api?: {
+		pipeline: ApiPipelineStep[];
+	};
+
+	// === NEW: Data Transforms ===
+	/** Pre-submit data transformations */
+	preSubmit?: {
+		/** Fields to inject from state (e.g., { latlong: 'state.latLong' }) */
+		inject?: Record<string, string>;
+	};
+
+	// === NEW: Post Actions ===
+	/** Post-submit actions */
+	postSubmit?: {
+		/** Whether to refresh the user profile after this step */
+		refreshProfile?: boolean;
+	};
+
+	// === NEW: Callbacks ===
+	/** Third-party integration callbacks */
+	callbacks?: {
+		/** Type of callback integration */
+		type: "esign" | "digilocker" | "pintwin" | "permission";
+		/** Methods available for this callback */
+		methods: string[];
+	};
 }
 
 /**
@@ -280,6 +357,8 @@ export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
  * - `id`: Unique step identifier used for API routing logic (handlers check this)
  * - `role`: Primary role ID for backward compatibility
  * - `applicableRoles`: Array of all role IDs this step applies to (for multi-user-type steps)
+ * - `useLegacyApi`: If true, uses old switch-based API routing. Set to false to use new pipeline.
+ * - `api.pipeline`: Configuration for the new pipeline executor.
  *
  * The filtering logic matches steps where ANY role in applicableRoles appears in the API response.
  */
@@ -291,13 +370,30 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12400, // Primary role (used by retailer)
-		applicableRoles: [13000, 12400], // Both distributor (13000) and retailer (12400)
+		role: 12400,
+		applicableRoles: [13000, 12400],
 		primaryCTAText: "Capture Location",
 		description:
 			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
 		form_data: {},
 		success_message: "Location captured successfully.",
+		// === NEW CONFIG ===
+		useLegacyApi: false,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId:
+						TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE,
+				},
+			],
+		},
+		// NOTE: latlong is passed directly from widget's form_data, no injection needed
+		callbacks: {
+			type: "permission",
+			methods: ["requestLocationPermission"],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
@@ -313,6 +409,18 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload clear photos of both front and back of your Aadhaar card. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
+		// === NEW CONFIG ===
+		useLegacyApi: false,
+		api: {
+			pipeline: [
+				{
+					id: "upload",
+					type: "upload",
+					docType: 1, // Aadhaar document
+					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+				},
+			],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.AADHAAR_CONSENT,
@@ -328,6 +436,23 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Please provide your consent to use Aadhaar for identity verification as per UIDAI guidelines.",
 		form_data: {},
 		success_message: "Aadhaar consent taken.",
+		// === NEW CONFIG ===
+		useLegacyApi: false,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId: TransactionIds.USER_AADHAR_CONSENT,
+				},
+			],
+		},
+		preSubmit: {
+			inject: {
+				latlong: "state.latLong",
+				company_name: "state.mobile", // Legacy uses mobile as company_name
+			},
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
@@ -343,6 +468,18 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Please verify that your Aadhaar number is entered correctly before proceeding.",
 		form_data: {},
 		success_message: "Aadhaar number confirmed.",
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId:
+						TransactionIds.USER_AADHAR_NUMBER_CONFIRM,
+				},
+			],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY,
@@ -358,6 +495,17 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Enter the OTP sent to your Aadhaar-registered mobile number to verify your identity.",
 		form_data: {},
 		success_message: "Aadhaar confirmed successfully.",
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM,
+				},
+			],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION,
@@ -372,6 +520,21 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description: "Verify your Aadhaar using your Digilocker account.",
 		form_data: {},
 		success_message: "Digilocker verification successful.",
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM, // reused for digilocker
+				},
+			],
+		},
+		callbacks: {
+			type: "digilocker",
+			methods: ["initiateDigilocker", "handleDigilockerCallback"],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.PAN_VERIFICATION,
@@ -381,12 +544,23 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 12300,
-		applicableRoles: [12300, 13000], // Shared step with multiple role variants
+		applicableRoles: [12300, 13000],
 		primaryCTAText: "Verify PAN",
 		description:
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "PAN verified successfully.",
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "upload",
+					type: "upload",
+					docType: 2, // PAN document
+				},
+			],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.VIDEO_KYC,
@@ -402,6 +576,17 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Take a clear selfie in good lighting to complete your identity verification. Ensure your face is clearly visible.",
 		form_data: {},
 		success_message: "KYC completed.",
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "upload",
+					type: "upload",
+					docType: 3, // Video/Selfie document
+				},
+			],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.BUSINESS,
@@ -411,11 +596,22 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 13300,
-		applicableRoles: [13300], // Distributor only
+		applicableRoles: [13300],
 		primaryCTAText: "Next",
 		description:
 			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId: TransactionIds.USER_ONBOARDING_BUSINESS,
+				},
+			],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
@@ -425,11 +621,32 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isVisible: true,
 		stepStatus: 0,
 		role: 51700,
-		applicableRoles: [51700], // Retailer only
+		applicableRoles: [51700],
 		primaryCTAText: "Next",
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "verify",
+					type: "form",
+					interactionTypeId: TransactionIds.ADD_BANK_ACCOUNT,
+					continueOnSuccess: true,
+				},
+				{
+					id: "upload",
+					type: "upload",
+					docType: 7, // Bank passbook document
+					dependsOn: "verify",
+				},
+			],
+		},
+		postSubmit: {
+			refreshProfile: true,
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.SECRET_PIN,
@@ -444,6 +661,22 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Create a secure 4-digit PIN for transaction authorization. Keep it confidential and don't share with anyone.",
 		form_data: {},
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId:
+						TransactionIds.USER_ONBOARDING_SECRET_PIN,
+				},
+			],
+		},
+		callbacks: {
+			type: "pintwin",
+			methods: ["fetchBookletNumber", "fetchBookletKeys"],
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
@@ -459,5 +692,21 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Review and digitally sign the terms and conditions to activate your account and start using our services.",
 		form_data: {},
 		success_message: "Agreement signed successfully.",
+		// === NEW CONFIG ===
+		useLegacyApi: true,
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId:
+						TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT,
+				},
+			],
+		},
+		callbacks: {
+			type: "esign",
+			methods: ["initializeEsign", "handleEsignCallback"],
+		},
 	},
 ];

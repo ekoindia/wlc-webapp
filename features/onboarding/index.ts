@@ -24,7 +24,16 @@ export {
 	usePintwinIntegration,
 	useRoleFormSubmission,
 	useStepConfiguration,
+	useStepExecutor,
 } from "./hooks";
+
+// Context
+export {
+	OnboardingProvider,
+	useOnboardingContext,
+	type OnboardingContextValue,
+	type PipelineState,
+} from "./context";
 
 export type {
 	OnboardingAction,

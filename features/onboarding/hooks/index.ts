@@ -17,3 +17,4 @@ export {
 	extractStepConfiguration,
 	useStepConfiguration,
 } from "./useStepConfiguration";
+export { useStepExecutor } from "./useStepExecutor";
