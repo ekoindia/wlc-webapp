@@ -1,6 +1,5 @@
-import { Avatar, Flex, Grid, Skeleton, Text, Tooltip } from "@chakra-ui/react";
-import { BreadcrumbWrapper, Icon, PageTitle } from "components";
-import { useHslColor } from "hooks";
+import { Flex, Skeleton, Text, Tooltip } from "@chakra-ui/react";
+import { BreadcrumbWrapper, Icon, InfoTileGrid, PageTitle } from "components";
 import { useRouter } from "next/router";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 import { useEffect, useState } from "react";
@@ -35,18 +34,6 @@ interface ConfigCategory {
 interface ConfigPageCardProps {
 	configCategories: ConfigCategory[]; // Array of configuration categories
 	isLoading: boolean; // Flag to indicate if the data is loading
-}
-
-interface ConfigGridProps {
-	product_list: ProductNode[]; // List of product nodes to display
-}
-
-interface CardProps {
-	name: string; // Unique name of the card
-	label: string; // Label for the card
-	desc?: string; // Optional description for the card
-	icon?: string; // Optional icon name for the card
-	children?: ProductNode[]; // Optional child nodes for navigation
 }
 
 // MARK: PricingConfig
@@ -152,7 +139,16 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 			);
 		}
 
-		return <ConfigGrid product_list={currentPricingTreeNode} />;
+		return (
+			<InfoTileGrid
+				list={currentPricingTreeNode?.map((product) => ({
+					name: product.name,
+					label: product.label,
+					desc: product.desc,
+					icon: product.icon,
+				}))}
+			/>
+		);
 	};
 	return (
 		<BreadcrumbWrapper
@@ -249,126 +245,18 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
 						)}
 
 						{/* List of configuration options in the category */}
-						<ConfigGrid product_list={products} />
+						<InfoTileGrid
+							list={products?.map((product) => ({
+								name: product.name,
+								label: product.label,
+								desc: product.desc,
+								icon: product.icon,
+							}))}
+						/>
 					</Flex>
 				);
 			})}
 		</>
-	);
-};
-
-// MARK: ConfigGrid
-/**
- * ConfigGrid Component
- * Displays a grid of configuration items.
- * @param {ConfigGridProps} props - Props for the component.
- * @returns {JSX.Element} - Rendered ConfigGrid component.
- */
-const ConfigGrid = ({ product_list }: ConfigGridProps): JSX.Element => {
-	return (
-		<Grid
-			templateColumns={{
-				base: "repeat(auto-fill,minmax(250px,1fr))",
-				md: "repeat(auto-fill,minmax(300px,1fr))",
-			}}
-			justifyContent="center"
-			py={{ base: "4", md: "0px" }}
-			gap={{
-				base: 4,
-				md: 2,
-				lg: 6,
-			}}
-		>
-			{product_list?.map((product) => {
-				const { label, name, desc, icon } = product ?? {};
-				return (
-					<div
-						key={name}
-						data-card-name={name}
-						style={{ width: "100%" }}
-					>
-						<Card
-							key={name}
-							name={name}
-							label={label}
-							desc={desc}
-							icon={icon}
-						/>
-					</div>
-				);
-			})}
-		</Grid>
-	);
-};
-
-// MARK: Card
-/**
- * Card Component
- * Displays a single card for a product or configuration item.
- * @param {CardProps} props - Props for the component.
- * @returns {JSX.Element} - Rendered Card component.
- */
-const Card = ({ name, label, desc, icon }: CardProps): JSX.Element => {
-	const { h } = useHslColor(label);
-	const [onHover, setOnHover] = useState(false);
-
-	return (
-		<Flex
-			key={name}
-			w="100%"
-			bg="white"
-			p="4"
-			borderRadius="8"
-			align="center"
-			justify="space-between"
-			gap="1"
-			_hover={{
-				bg: `hsl(${h},80%,98%)`,
-				transition: "background 0.3s ease-out",
-				cursor: "pointer",
-			}}
-			boxShadow="buttonShadow"
-			onMouseEnter={() => setOnHover(true)}
-			onMouseLeave={() => setOnHover(false)}
-		>
-			<Flex align="center" gap="4" w="100%">
-				<Avatar
-					size={{ base: "sm", md: "md" }}
-					name={icon ? null : label}
-					border={`2px solid hsl(${h},80%,90%)`}
-					bg={`hsl(${h},80%,95%)`}
-					color={`hsl(${h},80%,30%)`}
-					icon={
-						<Icon
-							size={{ base: "sm", md: "md" }}
-							name={icon}
-							color={`hsl(${h},80%,30%)`}
-						/>
-					}
-				/>
-				<Flex direction="column" w="80%" gap="1">
-					{label?.length > 0 && (
-						<Text
-							fontSize={{ base: "sm", md: "md" }}
-							fontWeight="medium"
-							userSelect="none"
-						>
-							{label}
-						</Text>
-					)}
-					{desc?.length > 0 && (
-						<Text fontSize="xxs" userSelect="none" noOfLines={3}>
-							{desc}
-						</Text>
-					)}
-				</Flex>
-			</Flex>
-			<Icon
-				name="arrow-forward"
-				size={{ base: "xs", sm: "sm" }}
-				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
-			/>
-		</Flex>
 	);
 };
 

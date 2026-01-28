@@ -26,7 +26,6 @@ const AgentAlreadyExistsScreen = ({
 			size: "lg",
 			label: "Add Another Agent",
 			onClick: () => setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT),
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

@@ -269,7 +269,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		formState: { errors, isSubmitting, isValid },
 		watch,
 		unregister,
-	} = useForm({
+	} = useForm<Record<string, unknown>>({
 		mode: "onChange",
 		// Merge product defaults with previously stored search data
 		// This ensures form is prefilled when returning from status screen
@@ -427,7 +427,6 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			label: "Proceed",
 			loading: isSubmitting || isLoadingBills || isLoadingDynamicData,
 			disabled: !isValid,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

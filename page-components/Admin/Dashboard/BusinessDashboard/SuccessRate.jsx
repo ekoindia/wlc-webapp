@@ -1,4 +1,5 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints, ProductRoleConfiguration } from "constants";
 import { useApiFetch, useDailyCacheState, useFeatureFlag } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -12,7 +13,7 @@ const successRateLocalCacheKey = "inf-dashboard-success-rate";
 const getCacheKey = (dateFrom, dateTo) =>
 	`successRate-${dateFrom.substring(0, 10)}-${dateTo.substring(0, 10)}`;
 
-const SuccessRate = ({ dateFrom, dateTo }) => {
+const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 	const [successRateCache, setSuccessRateCache, isCacheValid] =
@@ -134,20 +135,22 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			borderRadius="10px"
 			p="5"
 			w="100%"
-			// h={{ base: "auto", xl: "280px" }}
+			h="100%"
 			overflowY="auto"
 			className="customScrollbars"
 			gap="4"
 		>
-			<Flex
-				fontSize="lg"
-				fontWeight="semibold"
-				align="center"
-				gap="0.4em"
-			>
-				<LuShieldCheck color="#16a249" />
-				Success Rates
-			</Flex>
+			<DragHandle isDraggable={isDraggable}>
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuShieldCheck color="#16a249" />
+					Success Rates
+				</Flex>
+			</DragHandle>
 
 			{/* <Divider /> */}
 

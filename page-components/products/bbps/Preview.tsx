@@ -804,7 +804,6 @@ export const Preview = (): JSX.Element => {
 			loading: false,
 			disabled: !canProceed,
 			onClick: nav.goPayment,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

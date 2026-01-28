@@ -2,6 +2,7 @@ import { Flex, Grid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import Link from "next/link";
 import {
+	AccountSummary,
 	EarningSummary,
 	ManageMyAccountCard,
 	PersonalDetailCard,
@@ -21,6 +22,7 @@ const Profile = () => {
 		{ id: 3, component: EarningSummary },
 		{ id: 4, component: ShopCard },
 		{ id: 5, component: PersonalDetailCard },
+		{ id: 6, component: AccountSummary },
 	];
 
 	return (
