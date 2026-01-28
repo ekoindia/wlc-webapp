@@ -311,9 +311,10 @@ const BatchHistory: React.FC = (): JSX.Element => {
 		};
 	}, [activeTab, pollingBatchNumbers, fetchSingleBatch, updateBatchInList]);
 
-	// ──────────────────────────────────────────────────────────────
-	// Refresh handler – now uses the same logic
-	// ──────────────────────────────────────────────────────────────
+	/**
+	 * Resets the pagination to the first page and re-fetches the batch data.
+	 * Use this to manually sync the UI with the latest server state.
+	 */
 	const handleRefresh = useCallback(() => {
 		setCurrentPage(1);
 		fetchBatches();
@@ -430,7 +431,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 								<Thead bg="shade">
 									<Tr>
 										<Th textAlign="center">Upload Date</Th>
-										<Th textAlign="center">Customer</Th>
+										<Th textAlign="center">Vendor</Th>
 										<Th textAlign="center" isNumeric>
 											Records
 										</Th>
