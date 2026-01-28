@@ -1,7 +1,8 @@
+export { AccountSummary } from "./AccountSummary";
+export { AppDetails } from "./AppDetails";
 export { EarningSummary } from "./EarningSummary";
 export { ManageMyAccountCard } from "./ManageMyAccountCard";
 export { PersonalDetailCard } from "./PersonalDetailCard";
 export { default as Profile } from "./Profile";
 export { ProfileWidget } from "./ProfileWidget";
 export { ShopCard } from "./ShopCard";
-export { AccountSummary } from "./AccountSummary";
