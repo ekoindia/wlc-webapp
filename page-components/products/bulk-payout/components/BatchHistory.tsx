@@ -311,15 +311,22 @@ const BatchHistory: React.FC = (): JSX.Element => {
 		};
 	}, [activeTab, pollingBatchNumbers, fetchSingleBatch, updateBatchInList]);
 
-	// ──────────────────────────────────────────────────────────────
-	// Refresh handler – now uses the same logic
-	// ──────────────────────────────────────────────────────────────
+	/**
+	 * Resets the pagination to the first page and re-fetches the batch data.
+	 * Use this to manually sync the UI with the latest server state.
+	 */
 	const handleRefresh = useCallback(() => {
 		setCurrentPage(1);
 		fetchBatches();
 	}, [fetchBatches]);
 
-	// Download report for a given batch number
+	/**
+	 * Fetches and triggers the download of a report for a specific batch.
+	 * @async
+	 * @param {string} batchNumber - The unique identifier of the batch to download.
+	 * @returns {Promise<void>} - Resolves once the file download is triggered.
+	 * @throws Will log an error to the console if the API request fails or blob generation fails.
+	 */
 	const downloadReport = useCallback(
 		async (batchNumber: string) => {
 			try {
@@ -430,7 +437,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 								<Thead bg="shade">
 									<Tr>
 										<Th textAlign="center">Upload Date</Th>
-										<Th textAlign="center">Customer</Th>
+										<Th textAlign="center">Vendor</Th>
 										<Th textAlign="center" isNumeric>
 											Records
 										</Th>
