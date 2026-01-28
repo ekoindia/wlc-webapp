@@ -2,6 +2,7 @@ import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import {
 	CopyButton,
 	Dropzone,
+	EkoConnectWidget,
 	Input,
 	JsonViewer,
 	Markdown,
@@ -781,6 +782,13 @@ const CopyButtonTest = () => {
  * MARK: JsonViewerTest
  */
 const JsonViewerTest = () => {
+	const JsonViewerVariant = {
+		PLAIN: "plain",
+		JSON: "json",
+	};
+
+	const [variant, setVariant] = useState(JsonViewerVariant.JSON);
+
 	// Sample data matching KYC verification response structure
 	const sampleData = {
 		user: {
@@ -821,7 +829,33 @@ const JsonViewerTest = () => {
 
 	return (
 		<Flex direction="column" gap={4}>
-			<JsonViewer data={sampleData} collapseAfterLevel={2} />
+			<Flex gap={2} direction="row">
+				<Button
+					variant={
+						variant === JsonViewerVariant.PLAIN
+							? "primary"
+							: "secondary"
+					}
+					onClick={() => setVariant(JsonViewerVariant.PLAIN)}
+				>
+					Plain
+				</Button>
+				<Button
+					variant={
+						variant === JsonViewerVariant.JSON
+							? "primary"
+							: "secondary"
+					}
+					onClick={() => setVariant(JsonViewerVariant.JSON)}
+				>
+					Json
+				</Button>
+			</Flex>
+			<JsonViewer
+				data={sampleData}
+				collapseAfterLevel={2}
+				variant={variant}
+			/>
 		</Flex>
 	);
 };

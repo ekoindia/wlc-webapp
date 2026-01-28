@@ -5,6 +5,11 @@ import { TransactionIds } from "./EpsTransactions";
  * It will be shown in the top-right profile dropdown menu (before the "Logout" menu-item).
  */
 export const adminProfileMenu = [
+	{
+		title: "View My Profile",
+		link: "/admin/profile",
+		icon: "account-circle",
+	},
 	// {
 	// 	title: "Business Contact",
 	// 	link: "",

@@ -91,16 +91,11 @@ export interface JsonViewerProps {
 	className?: string;
 
 	/**
-	 * Show or hide the curly brackets and square brackets.
-	 * Default is true.
+	 * Display variant for the JSON viewer.
+	 * - "plain": Clean, human-readable format without brackets, quotes, or commas (default)
+	 * - "json": Full JSON syntax with brackets, quotes, and commas
 	 */
-	showBrackets?: boolean;
-
-	/**
-	 * Override specific key display names.
-	 * Keys not in this object will use default formatting (underscore removal + capitalize).
-	 * Example: { pan_number: "PAN Number", dob: "Date of Birth" }
-	 */
+	variant?: "plain" | "json";
 	keyOverrides?: Record<string, string>;
 
 	/**
@@ -156,9 +151,9 @@ export interface JsonNodeProps {
 	isLast?: boolean;
 
 	/**
-	 * Show or hide the curly brackets and square brackets.
+	 * Display variant: "plain" (clean) or "json" (full syntax)
 	 */
-	showBrackets: boolean;
+	variant: "plain" | "json";
 
 	/**
 	 * Override specific key display names.

@@ -58,6 +58,7 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 	const [isFiltered, setIsFiltered] = useState(initialIsFiltered);
 	const [processedData, setProcessedData] = useState([]); // Computed from data
 	const [aggregatedData, setAggregatedData] = useState([]); // Column data with aggregate values over all the rows
+	const [hideRunningBalance, setHideRunningBalance] = useState(false);
 
 	// Use generic column visibility hook
 	const { hiddenColumns, toggleColumnVisibility, resetColumnVisibility } =
@@ -98,7 +99,9 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 						column.name in hiddenColumns
 							? hiddenColumns[column.name]
 							: column.hide_by_default;
-					if (!isHidden) {
+					const isHiddenRunningBalance =
+						column.name === "r_bal" && hideRunningBalance;
+					if (!isHidden && !isHiddenRunningBalance) {
 						mainCols.push(column);
 					}
 				} else {
@@ -109,7 +112,7 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 			setMainColumns(mainCols);
 			setExtraColumns(extraCols);
 		}
-	}, [historyParameterMetadata, hiddenColumns]);
+	}, [historyParameterMetadata, hiddenColumns, hideRunningBalance]);
 
 	/**
 	 * useEffect: Calculate processedData with computed values (if the `compute` function is defined).
@@ -140,6 +143,11 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 				return newRow;
 			});
 		}
+
+		// Calculate if running balance is available to be shown...
+		// Does any row have "r_bal" field defined and greater than zero?
+		const hasRunningBalance = _processedData.some((row) => row?.r_bal > 0);
+		setHideRunningBalance(!hasRunningBalance);
 
 		// Set the processed data
 		setProcessedData(_processedData);

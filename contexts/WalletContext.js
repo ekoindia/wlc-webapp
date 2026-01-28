@@ -1,6 +1,7 @@
 import { ActionIcon } from "components/CommandBar";
 import { Endpoints, TransactionIds, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
+import { useFeatureFlag } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useCopilotAction, useCopilotInfo } from "libs";
 import {
@@ -12,7 +13,7 @@ import {
 	useState,
 } from "react";
 import { formatCurrency } from "utils/numberFormat";
-import { useMenuContext, useSession } from ".";
+import { useMenuContext, useUser } from ".";
 import { useBusinessSearchActions } from "./GlobalSearchContext";
 
 // Created a Wallet Context
@@ -64,11 +65,14 @@ const useFetchBalance = (setBalance, accessToken) => {
 
 /**
  * Context Provider for fetching and managing wallet balance.
+ * MARK: WalletProvider
  * @param {object} props - The props.
  * @param {ReactNode} props.children - The children components that will have access to the wallet context.
  */
 const WalletProvider = ({ children }) => {
-	const { isLoggedIn, userId, accessToken } = useSession();
+	const { userData, isLoggedIn, userId, accessToken } = useUser();
+	const { accountDetails } = userData ?? {};
+	const { account_list } = accountDetails ?? {};
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions || {};
 
@@ -76,6 +80,113 @@ const WalletProvider = ({ children }) => {
 	const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
 	const [isWalletVisible, setIsWalletVisible] = useState(true);
 	const [addBalanceTrxnId, setAddBalanceTrxnId] = useState(null);
+
+	// TSP Bank Wallets
+	const [isTspBankAllowed] = useFeatureFlag("TSP_BANK");
+	const [accountList, setAccountList] = useState([]);
+	const [bankBalances, setBankBalances] = useState({}); // { bankId: { balance: number, lastUpdatedDate: Date } }
+
+	const updateBankBalance = (bankId, newBalance) => {
+		setBankBalances((prevBalances) => ({
+			...prevBalances,
+			[bankId]: {
+				balance: newBalance,
+				isFetching: false,
+				lastUpdatedDate: new Date(),
+			},
+		}));
+	};
+
+	const updateFetchingBankBalance = (bankId, isFetching) => {
+		setBankBalances((prevBalances) => ({
+			...prevBalances,
+			[bankId]: {
+				...(prevBalances[bankId] || {}),
+				isFetching: isFetching,
+			},
+		}));
+	};
+
+	/**
+	 * Fetch the balance for a specific bank account or wallet by its ID. It updates the bankBalances state with the fetched balance and lastUpdatedDate.
+	 * @param {number} bankId - The ID of the bank/wallet account
+	 * @returns {void}
+	 */
+	const refreshAccountBalance = useCallback(
+		(bankId) => {
+			if (!bankId || !accountList || accountList.length === 0) return;
+
+			const account = accountList.find((acc) => acc.id === bankId);
+			const accountNumber = account?.account_number;
+			if (!account) return;
+
+			updateFetchingBankBalance(bankId, true);
+
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					token: accessToken,
+					body: {
+						interaction_type_id:
+							TransactionTypes.GET_WALLET_BALANCE,
+						account: accountNumber,
+					},
+					timeout: 30000,
+				}
+			)
+				.then((data) => {
+					console.log(
+						`[refreshAccountBalance] Balance for bankId ${bankId}: `,
+						data
+					);
+
+					if (data && data.data && "balance" in data.data) {
+						updateBankBalance(bankId, +data?.data?.balance || 0);
+					}
+				})
+				.catch((err) => {
+					console.error(
+						`[refreshAccountBalance] error for bankId ${bankId}: `,
+						err
+					);
+				})
+				.finally(() => {
+					updateFetchingBankBalance(bankId, false);
+				});
+		},
+		[accessToken, accountList]
+	);
+
+	// Set account list filter based on feature flag and user accounts
+	// MARK: account_list
+	useEffect(() => {
+		const allowedList = [];
+		if (account_list && account_list.length > 0) {
+			account_list.forEach((account) => {
+				if (!account.id) return; // Skip invalid accounts
+				switch (account.type_id) {
+					case 1: // E-value
+						allowedList.push(account);
+						break;
+					case 3: // TSP Bank Account
+						if (isTspBankAllowed && account.account_number) {
+							allowedList.push(account);
+						}
+						break;
+				}
+			});
+			setAccountList(allowedList);
+		}
+	}, [account_list, isTspBankAllowed]);
+
+	// Fetch Balances for all accounts in the account list
+	useEffect(() => {
+		if (accountList && accountList.length > 0) {
+			accountList.forEach((account) => {
+				refreshAccountBalance(account.id);
+			});
+		}
+	}, [accountList, refreshAccountBalance]);
 
 	// Function to set the balance and update the last updated date
 	const setBalance = useCallback((value) => {
@@ -227,6 +338,9 @@ const WalletProvider = ({ children }) => {
 			lastUpdatedDate,
 			isWalletVisible,
 			addBalanceTrxnId,
+			accountList,
+			bankBalances,
+			refreshAccountBalance,
 		}),
 		[
 			balance,
@@ -236,6 +350,9 @@ const WalletProvider = ({ children }) => {
 			lastUpdatedDate,
 			isWalletVisible,
 			addBalanceTrxnId,
+			accountList,
+			bankBalances,
+			refreshAccountBalance,
 		]
 	);
 

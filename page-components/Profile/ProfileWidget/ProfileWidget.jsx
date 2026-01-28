@@ -3,6 +3,7 @@ import { Icon } from "components";
 import { useOrgDetailContext, useUser } from "contexts";
 import { useUserTypes } from "hooks";
 import { useEffect, useState } from "react";
+import { formatMobile } from "utils";
 
 const profile_percent_parameter_list = [
 	"shop_name",
@@ -120,6 +121,7 @@ const ProfileWidget = () => {
 							fontSize={{ base: "18px", md: "22px" }}
 							color="highlight"
 							noOfLines={2}
+							letterSpacing="-0.02em"
 						>
 							{data.name}
 						</Text>
@@ -147,8 +149,9 @@ const ProfileWidget = () => {
 							/>
 
 							<Text>
-								{data?.mobile}
-								{_alternateMobile && `, ${_alternateMobile}`}
+								{formatMobile(data?.mobile)}
+								{_alternateMobile &&
+									`, ${formatMobile(_alternateMobile)}`}
 							</Text>
 						</Flex>
 					</Flex>

@@ -102,6 +102,8 @@ interface InputPintwinProps {
 	onSetPin?: () => void;
 	/** Callback when Reset PIN is requested */
 	onResetPin?: () => void;
+
+	resetTrigger?: number;
 }
 
 /**
@@ -217,6 +219,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	onJumpToNext,
 	onSetPin,
 	onResetPin,
+	resetTrigger = 0,
 }) => {
 	// State management
 	const [secretValue, setSecretValue] = useState("");
@@ -240,6 +243,16 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 
 	// Responsive breakpoint
 	const isMobile = useBreakpointValue({ base: true, md: false });
+
+	/**
+	 * Effect: Reset secret value and reload PinTwin key when resetTrigger changes
+	 * This ensures a fresh encryption key is used for the next PIN attempt
+	 */
+	useEffect(() => {
+		if (resetTrigger > 0) {
+			setSecretValue("");
+		}
+	}, [resetTrigger]);
 
 	/**
 	 * Validates the current input
