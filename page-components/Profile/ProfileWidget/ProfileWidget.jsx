@@ -121,6 +121,7 @@ const ProfileWidget = () => {
 							fontSize={{ base: "18px", md: "22px" }}
 							color="highlight"
 							noOfLines={2}
+							letterSpacing="-0.02em"
 						>
 							{data.name}
 						</Text>
