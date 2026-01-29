@@ -1,5 +1,6 @@
 import { TransactionIds } from "constants/EpsTransactions";
 import { UserTypeLabel } from "constants/UserTypes";
+import type { OnboardingStateHook } from "./hooks/useOnboardingState";
 
 // Applicant types as defined in the OaaS Widget configuration. Note, it is not the same as EPS's user-type-id
 export const APPLICANT_TYPES = {
@@ -120,6 +121,12 @@ export interface ApiPipelineStep {
 	continueOnSuccess?: boolean;
 	/** Only execute if the specified step succeeded */
 	dependsOn?: string;
+	/**
+	 * Maps form data paths to backend-expected file keys.
+	 * Example: { "aadhaarImages.front": "front", "aadhaarImages.back": "back" }
+	 * If not specified, files are named file1, file2, etc.
+	 */
+	fileKeyMapping?: Record<string, string>;
 }
 
 /**
@@ -213,6 +220,18 @@ export interface OnboardingStep {
 		/** Methods available for this callback */
 		methods: string[];
 	};
+
+	// === NEW: Pre-submit Hook ===
+	/**
+	 * Callback executed before step submission.
+	 * Use this to update state from form data (e.g., save latlong to state).
+	 * @param data - The form data being submitted
+	 * @param actions - State actions from useOnboardingState
+	 */
+	onPreSubmit?: (
+		_data: { id: number; form_data?: Record<string, any> },
+		_actions: OnboardingStateHook["actions"]
+	) => void;
 }
 
 /**
@@ -394,6 +413,12 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "permission",
 			methods: ["requestLocationPermission"],
 		},
+		onPreSubmit: (data, actions) => {
+			// Save location to state for subsequent steps
+			if (data?.form_data?.latlong) {
+				actions.setLocation(data.form_data.latlong);
+			}
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
@@ -418,6 +443,10 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 1, // Aadhaar document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					fileKeyMapping: {
+						"aadhaarImages.front": "file1",
+						"aadhaarImages.back": "file2",
+					},
 				},
 			],
 		},
@@ -469,7 +498,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Aadhaar number confirmed.",
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -496,7 +525,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Aadhaar confirmed successfully.",
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -521,7 +550,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Digilocker verification successful.",
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -551,7 +580,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		success_message: "PAN verified successfully.",
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -577,7 +606,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		success_message: "KYC completed.",
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -602,7 +631,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -627,7 +656,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -662,7 +691,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Create a secure 4-digit PIN for transaction authorization. Keep it confidential and don't share with anyone.",
 		form_data: {},
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -693,7 +722,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		success_message: "Agreement signed successfully.",
 		// === NEW CONFIG ===
-		useLegacyApi: true,
+		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{

@@ -112,9 +112,27 @@ function objectToFormParams(obj: Record<string, any>): string {
 }
 
 /**
+ * Resolve file key from mapping or generate default
+ * @param {Record<string, string>} [fileKeyMapping] - Mapping from form paths to backend keys
+ * @param {string} formPath - The form data path (e.g., "aadhaarImages.front")
+ * @param {number} fileIndex - Current file index for fallback naming
+ * @returns {string} The file key to use
+ */
+function resolveFileKey(
+	fileKeyMapping: Record<string, string> | undefined,
+	formPath: string,
+	fileIndex: number
+): string {
+	if (fileKeyMapping && fileKeyMapping[formPath]) {
+		return fileKeyMapping[formPath];
+	}
+	return `file${fileIndex}`;
+}
+
+/**
  * Execute a file upload API call
  * Matches the legacy upload format from useFileUpload.ts
- * @param {ApiPipelineStep} pipelineStep - Pipeline step with docType and interaction type
+ * @param {ApiPipelineStep} pipelineStep - Pipeline step with docType, interaction type, and fileKeyMapping
  * @param {Record<string, any>} formData - Form data containing files and metadata
  * @param {string} mobile - User's mobile number used as user_id and csp_id
  * @param {string} accessToken - JWT access token for authentication
@@ -133,6 +151,7 @@ async function executeUploadCall(
 	try {
 		// Build FormData for file upload (matching legacy format)
 		const uploadFormData = new FormData();
+		const { fileKeyMapping } = pipelineStep;
 
 		// Collect files and build file list for formdata params
 		const fileList: string[] = [];
@@ -145,22 +164,34 @@ async function executeUploadCall(
 				typeof value === "object" &&
 				!(value instanceof File)
 			) {
-				// Check for fileData property
+				console.log("[executePipeline] Upload key:", key);
+				console.log("[executePipeline] Upload value:", value);
+				// Check for fileData property (flat object like { fileData: File })
 				if (value.fileData instanceof File) {
-					const fileKey = `file${fileIndex}`;
+					const formPath = key;
+					const fileKey = resolveFileKey(
+						fileKeyMapping,
+						formPath,
+						fileIndex
+					);
 					uploadFormData.append(fileKey, value.fileData);
 					fileList.push(fileKey);
 					fileIndex++;
 				}
 				// Handle nested objects like aadhaarImages: { front: { fileData }, back: { fileData } }
-				if (key === "aadhaarImages" || key === "panImage") {
-					for (const [_subKey, subValue] of Object.entries(value)) {
+				else {
+					for (const [subKey, subValue] of Object.entries(value)) {
 						if (
 							subValue &&
 							typeof subValue === "object" &&
 							(subValue as any).fileData instanceof File
 						) {
-							const fileKey = `file${fileIndex}`;
+							const formPath = `${key}.${subKey}`;
+							const fileKey = resolveFileKey(
+								fileKeyMapping,
+								formPath,
+								fileIndex
+							);
 							uploadFormData.append(
 								fileKey,
 								(subValue as any).fileData
@@ -171,7 +202,12 @@ async function executeUploadCall(
 					}
 				}
 			} else if (value instanceof File) {
-				const fileKey = `file${fileIndex}`;
+				const formPath = key;
+				const fileKey = resolveFileKey(
+					fileKeyMapping,
+					formPath,
+					fileIndex
+				);
 				uploadFormData.append(fileKey, value);
 				fileList.push(fileKey);
 				fileIndex++;
