@@ -158,59 +158,88 @@ async function executeUploadCall(
 		let fileIndex = 1;
 
 		for (const [key, value] of Object.entries(formData)) {
-			// Handle nested file objects (e.g., aadhaarImages.front.fileData)
-			if (
-				value &&
-				typeof value === "object" &&
-				!(value instanceof File)
-			) {
-				console.log("[executePipeline] Upload key:", key);
-				console.log("[executePipeline] Upload value:", value);
-				// Check for fileData property (flat object like { fileData: File })
-				if (value.fileData instanceof File) {
-					const formPath = key;
+			// CASE 1: Raw File object (from local Form/Dropzone rendering - preferred approach)
+			if (value instanceof File) {
+				const fileKey = resolveFileKey(fileKeyMapping, key, fileIndex);
+				uploadFormData.append(fileKey, value);
+				fileList.push(fileKey);
+				fileIndex++;
+				continue;
+			}
+
+			// Skip non-object values (strings, numbers, etc. - handled later as non-file fields)
+			if (!value || typeof value !== "object") {
+				continue;
+			}
+
+			// CASE 2: { fileData: File } structure (legacy widget support)
+			if (value.fileData instanceof File) {
+				const fileKey = resolveFileKey(fileKeyMapping, key, fileIndex);
+				uploadFormData.append(fileKey, value.fileData);
+				fileList.push(fileKey);
+				fileIndex++;
+				continue;
+			}
+
+			// CASE 3: Nested objects like aadhaarImages: { front: { fileData }, back: { fileData } } (legacy widget)
+			for (const [subKey, subValue] of Object.entries(value)) {
+				if (subValue instanceof File) {
+					// Nested raw File (unlikely but supported)
+					const formPath = `${key}.${subKey}`;
 					const fileKey = resolveFileKey(
 						fileKeyMapping,
 						formPath,
 						fileIndex
 					);
-					uploadFormData.append(fileKey, value.fileData);
+					uploadFormData.append(fileKey, subValue);
+					fileList.push(fileKey);
+					fileIndex++;
+				} else if (
+					subValue &&
+					typeof subValue === "object" &&
+					(subValue as any).fileData instanceof File
+				) {
+					// Nested { fileData: File } structure
+					const formPath = `${key}.${subKey}`;
+					const fileKey = resolveFileKey(
+						fileKeyMapping,
+						formPath,
+						fileIndex
+					);
+					uploadFormData.append(fileKey, (subValue as any).fileData);
 					fileList.push(fileKey);
 					fileIndex++;
 				}
-				// Handle nested objects like aadhaarImages: { front: { fileData }, back: { fileData } }
-				else {
-					for (const [subKey, subValue] of Object.entries(value)) {
-						if (
-							subValue &&
-							typeof subValue === "object" &&
-							(subValue as any).fileData instanceof File
-						) {
-							const formPath = `${key}.${subKey}`;
-							const fileKey = resolveFileKey(
-								fileKeyMapping,
-								formPath,
-								fileIndex
-							);
-							uploadFormData.append(
-								fileKey,
-								(subValue as any).fileData
-							);
-							fileList.push(fileKey);
-							fileIndex++;
-						}
-					}
-				}
-			} else if (value instanceof File) {
-				const formPath = key;
-				const fileKey = resolveFileKey(
-					fileKeyMapping,
-					formPath,
-					fileIndex
-				);
-				uploadFormData.append(fileKey, value);
-				fileList.push(fileKey);
-				fileIndex++;
+			}
+		}
+
+		// Extract non-file fields from formData for inclusion in params
+		// This captures panNumber, shopType, shopName, etc.
+		const { fieldMapping } = pipelineStep;
+		const nonFileFields: Record<string, any> = {};
+		for (const [key, value] of Object.entries(formData)) {
+			// Skip file objects and nested file containers
+			if (value instanceof File) continue;
+			if (
+				value &&
+				typeof value === "object" &&
+				(value.fileData instanceof File ||
+					key === "aadhaarImages" ||
+					key === "panImage" ||
+					key === "videoKyc" ||
+					key === "passbookImage")
+			) {
+				continue;
+			}
+			// Include primitive values (string, number, boolean)
+			if (
+				typeof value === "string" ||
+				typeof value === "number" ||
+				typeof value === "boolean"
+			) {
+				// Use fieldMapping if available, otherwise use original key
+				const apiKey = fieldMapping?.[key] ?? key;
+				nonFileFields[apiKey] = value;
 			}
 		}
 
@@ -218,12 +247,14 @@ async function executeUploadCall(
 		const baseParams: Record<string, any> = {
 			client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 			user_id: mobile,
-			interaction_type_id: pipelineStep.interactionTypeId || 548, // Default to USER_ONBOARDING_AADHAR
+			interaction_type_id: pipelineStep.interactionTypeId,
 			intent_id: 3,
 			doc_type: pipelineStep.docType,
 			latlong: sharedState?.latLong || "",
 			source: "WLC",
 			csp_id: mobile,
+			// Include non-file fields from form_data
+			...nonFileFields,
 		};
 
 		// Add empty file placeholders for formdata string
@@ -233,8 +264,6 @@ async function executeUploadCall(
 
 		// Append as URL-encoded formdata field (matching legacy format)
 		uploadFormData.append("formdata", objectToFormParams(baseParams));
-
-		console.log("[executePipeline] Upload baseParams:", baseParams);
 
 		// Use raw fetch like legacy (Endpoints.UPLOAD = /transactions/upload)
 		const response = await fetch(
@@ -357,6 +386,27 @@ export async function executePipeline(
 
 	console.log("[executePipeline] Enriched form data:", enrichedFormData);
 
+	// Filter formData to only include fields defined in current step's localRenderer.
+	// This prevents files from previous steps (e.g., Aadhaar) from being included when processing
+	// the current step (e.g., PAN), which would cause incorrect file key assignments.
+	let filteredFormData = enrichedFormData;
+	const localRendererFields = stepConfig.localRenderer?.formFields;
+
+	if (localRendererFields && Array.isArray(localRendererFields)) {
+		const allowedFieldNames = new Set(
+			localRendererFields.map((f: { name: string }) => f.name)
+		);
+		filteredFormData = Object.fromEntries(
+			Object.entries(enrichedFormData).filter(([key]) =>
+				allowedFieldNames.has(key)
+			)
+		);
+		console.log(
+			`[executePipeline] Filtered form data to step fields: ${Array.from(allowedFieldNames).join(", ")}`,
+			filteredFormData
+		);
+	}
+
 	for (const pipelineStep of pipeline) {
 		// SKIP already succeeded steps (smart retry)
 		if (state[pipelineStep.id]?.status === "success") {
@@ -384,7 +434,7 @@ export async function executePipeline(
 		if (pipelineStep.type === "form") {
 			result = await executeFormCall(
 				pipelineStep,
-				enrichedFormData,
+				filteredFormData,
 				mobile,
 				accessToken,
 				generateNewToken
@@ -392,7 +442,7 @@ export async function executePipeline(
 		} else if (pipelineStep.type === "upload") {
 			result = await executeUploadCall(
 				pipelineStep,
-				enrichedFormData,
+				filteredFormData,
 				mobile,
 				accessToken,
 				generateNewToken,

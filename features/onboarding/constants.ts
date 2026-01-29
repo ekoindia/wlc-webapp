@@ -1,4 +1,5 @@
 import { TransactionIds } from "constants/EpsTransactions";
+import { ParamType } from "constants/trxnFramework";
 import { UserTypeLabel } from "constants/UserTypes";
 import type { OnboardingStateHook } from "./hooks/useOnboardingState";
 
@@ -127,6 +128,12 @@ export interface ApiPipelineStep {
 	 * If not specified, files are named file1, file2, etc.
 	 */
 	fileKeyMapping?: Record<string, string>;
+	/**
+	 * Maps form field names to API field names.
+	 * Example: { "panNumber": "doc_id", "shopType": "shop_type" }
+	 * If a field is not in the mapping, it passes through with its original key.
+	 */
+	fieldMapping?: Record<string, string>;
 }
 
 /**
@@ -434,8 +441,28 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload clear photos of both front and back of your Aadhaar card. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
-		// === NEW CONFIG ===
+		// Configuration for new pipeline execution
 		useLegacyApi: false,
+		renderSource: "local",
+		localRenderer: {
+			type: "form",
+			formFields: [
+				{
+					name: "aadhaarFront",
+					label: "Aadhaar Front Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+				{
+					name: "aadhaarBack",
+					label: "Aadhaar Back Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+			],
+		},
 		api: {
 			pipeline: [
 				{
@@ -444,8 +471,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					docType: 1, // Aadhaar document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
 					fileKeyMapping: {
-						"aadhaarImages.front": "file1",
-						"aadhaarImages.back": "file2",
+						aadhaarFront: "file1",
+						aadhaarBack: "file2",
 					},
 				},
 			],
@@ -579,14 +606,54 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "PAN verified successfully.",
-		// === NEW CONFIG ===
+		// Configuration for new pipeline execution
 		useLegacyApi: false,
+		renderSource: "local",
+		localRenderer: {
+			type: "form",
+			formFields: [
+				{
+					name: "panNumber",
+					label: "PAN Number",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^([A-Z]){5}([0-9]){4}([A-Z]){1}$/,
+							message: "Invalid PAN format (e.g., ABCDE1234F)",
+						},
+						minLength: {
+							value: 10,
+							message: "PAN must be 10 characters",
+						},
+						maxLength: {
+							value: 10,
+							message: "PAN must be 10 characters",
+						},
+					},
+				},
+				{
+					name: "panImage",
+					label: "PAN Card Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+			],
+		},
 		api: {
 			pipeline: [
 				{
 					id: "upload",
 					type: "upload",
 					docType: 2, // PAN document
+					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					fileKeyMapping: {
+						panImage: "file1",
+					},
+					fieldMapping: {
+						panNumber: "doc_id",
+					},
 				},
 			],
 		},
@@ -612,6 +679,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				{
 					id: "upload",
 					type: "upload",
+					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
 					docType: 3, // Video/Selfie document
 				},
 			],
@@ -644,13 +712,13 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 	},
 	{
 		id: ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
-		name: "ADD_BANK_ACCOUNT",
+		name: "ADD_BANK_ACCONT",
 		label: "Add Bank Account",
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 51700,
-		applicableRoles: [51700],
+		role: 12500,
+		applicableRoles: [12500],
 		primaryCTAText: "Next",
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",

@@ -1,4 +1,4 @@
-import { useToast, useToken } from "@chakra-ui/react";
+import { Box, Flex, useToast, useToken } from "@chakra-ui/react";
 import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
 import {
 	useAppSource,
@@ -12,7 +12,7 @@ import {
 	useRefreshToken,
 	useShopTypes,
 } from "hooks";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import {
 	masterOnboardingSteps,
@@ -41,6 +41,7 @@ import {
 	getRoleListFromData,
 	getUserTypeFromData,
 } from "../utils";
+import LocalStepForm from "./LocalStepForm";
 
 // Type assertion to fix external component type mismatch
 const ExternalOnboardingWidget =
@@ -71,10 +72,13 @@ const ExternalOnboardingWidget =
 /**
  * OnboardingSteps
  *
- * Manages onboarding state and integrations, and renders the external onboarding widget.
+ * Manages onboarding state and integrations, and renders either the external onboarding widget
+ * or a local form based on the step configuration.
+ *
  * Responsibilities:
  * - Initialize and persist step state via useStepConfiguration / useOnboardingState
  * - Route step submissions to upload/form handlers and third-party integrations (esign, digilocker, pintwin)
+ * - Render locally defined steps using LocalStepForm overlay
  * - Handle step skip logic, widget callbacks, Android messages and pub/sub responses
  * @param {object} props - Component props
  * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
@@ -181,6 +185,32 @@ const OnboardingSteps = ({
 
 		return initialStep?.id ?? stepsData[0]?.id;
 	}, [state?.stepperData]);
+
+	// Track the current active step for local form rendering
+	const [currentStepId, setCurrentStepId] = useState<number | undefined>(
+		undefined
+	);
+
+	// Initialize currentStepId from initialStepId once it's calculated
+	useEffect(() => {
+		if (initialStepId !== undefined && currentStepId === undefined) {
+			setCurrentStepId(initialStepId);
+		}
+	}, [initialStepId, currentStepId]);
+
+	/**
+	 * Get the current step config from masterOnboardingSteps
+	 * Returns the step config if it has renderSource: "local", otherwise undefined
+	 */
+	const currentLocalStepConfig = useMemo(() => {
+		if (currentStepId === undefined) return undefined;
+		const stepConfig = stepLookupMap.get(String(currentStepId));
+		// Only return config if it should render locally
+		if (stepConfig?.renderSource === "local") {
+			return stepConfig;
+		}
+		return undefined;
+	}, [currentStepId, stepLookupMap]);
 
 	// Moved stepConfiguration BEFORE updateStepStatus so it can be referenced
 	// Initialize step configuration hook
@@ -291,13 +321,13 @@ const OnboardingSteps = ({
 	);
 
 	/**
-	 * Handle submission of step data from the external widget.
-	 * Routes payloads to submitForm / uploadFile depending on step id.
+	 * Handle submission of step data from the external widget or local form.
+	 * Routes payloads to submitForm / uploadFile depending on step id and configuration.
 	 *
 	 * Routing logic:
 	 * 1. Check step config `useLegacyApi` flag
-	 * 2. If false, use new pipeline executor
-	 * 3. If true (default), use legacy switch-based routing
+	 * 2. If false, use new pipeline executor (`executePipeline`)
+	 * 3. If true (default or undefined), use legacy switch-based routing
 	 *
 	 * Special cases (legacy):
 	 * - SELECTION_SCREEN: ignored (handled by RoleSelection elsewhere)
@@ -330,11 +360,18 @@ const OnboardingSteps = ({
 					`[OnboardingSteps] Using new pipeline executor for step: ${stepConfig.name}`
 				);
 
-				// PRE-EXECUTION STATE UPDATES (matching legacy behavior)
-				// LOCATION_CAPTURE: Save latlong to state for subsequent steps
-				if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
-					actions.setLocation(data?.form_data?.latlong);
-				}
+				// Show feedback for execution start (Temporary)
+				toast({
+					title: "Executing step",
+					description: `Executing ${stepConfig.name}`,
+					status: "info",
+					duration: 5000,
+					isClosable: true,
+				});
+
+				// PRE-EXECUTION STATE UPDATES
+				// Call step's onPreSubmit if defined (declarative state updates)
+				stepConfig?.onPreSubmit?.(data, actions);
 
 				// Set API in progress
 				actions.setApiInProgress(true);
@@ -372,6 +409,19 @@ const OnboardingSteps = ({
 								data.id,
 								ONBOARDING_STEP_STATUS.COMPLETED
 							);
+							// Advance to next incomplete step for local step tracking
+							const nextStep = state?.stepperData?.find(
+								(step) =>
+									step.id !== data.id &&
+									step.role &&
+									step.stepStatus !==
+										ONBOARDING_STEP_STATUS.COMPLETED &&
+									step.stepStatus !==
+										ONBOARDING_STEP_STATUS.SKIPPED
+							);
+							if (nextStep) {
+								setCurrentStepId(nextStep.id);
+							}
 							// Refresh user profile
 							await refreshAgentProfile();
 						},
@@ -423,7 +473,7 @@ const OnboardingSteps = ({
 
 			if (data?.id === ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
 				// HACK: For bank account, we need both upload and submit
-				// TODO: Better configuration required to handle such cases
+				// Better configuration required to handle such cases
 				const isAccountAdded = await submitForm(data);
 				if (!isAccountAdded) {
 					// If form submission failed, do not proceed to upload
@@ -462,6 +512,7 @@ const OnboardingSteps = ({
 			state.aadhaar?.userCode,
 			state.digilocker,
 			state.latLong,
+			state?.stepperData,
 			toast,
 			updateStepStatus,
 		]
@@ -643,7 +694,7 @@ const OnboardingSteps = ({
 		if (state.pintwin.bookletNumber) {
 			pintwin.getBookletKey();
 		}
-	}, [state.pintwin.bookletNumber, pintwin.getBookletKey]);
+	}, [state.pintwin.bookletNumber, pintwin]);
 
 	/**
 	 * Subscribe to Android responses for eSign status updates.
@@ -692,37 +743,51 @@ const OnboardingSteps = ({
 			agreementId={String(agreementId || "")}
 			externalState={{ state, dispatch: () => {}, actions }}
 		>
-			<ExternalOnboardingWidget
-				{...({
-					appName: appName,
-					orgName: orgName,
-					primaryColor: primaryColor,
-					accentColor: accentColor,
-					shopTypes: shopTypesData,
-					stateTypes: stateTypesData,
-					bankList: bankList,
-					userData: onboardingUserDetails,
-					handleSubmit: handleStepDataSubmit,
-					stepResponse: state?.lastStepResponse,
-					stepsData: state?.stepperData,
-					handleStepCallBack: handleStepCallBack,
-					handleOnboardingSkip: handleOnboardingSkip,
-					apiInProgress: state?.ui?.apiInProgress,
-					esignStatus:
-						state?.esign?.status === "ready"
-							? 1
-							: state?.esign?.status === "failed"
-								? 2
-								: 0,
-					digilockerData: state?.digilocker?.data,
-					initialStepId: initialStepId,
-					constants: {
-						apiStatus: ONBOARDING_API_STATUS,
-						stepIds: ONBOARDING_STEP_IDS,
-						stepStatus: ONBOARDING_STEP_STATUS,
-					},
-				} as any)}
-			/>
+			{/* Local Form Overlay - shown when current step has renderSource: "local" */}
+			{currentLocalStepConfig && (
+				<Flex>
+					<LocalStepForm
+						stepConfig={currentLocalStepConfig}
+						onSubmit={handleStepDataSubmit}
+						onSkip={handleOnboardingSkip}
+						isLoading={state?.ui?.apiInProgress}
+					/>
+				</Flex>
+			)}
+			{/* External Widget - always rendered but hidden when local form is active */}
+			<Box display={currentLocalStepConfig ? "none" : "block"}>
+				<ExternalOnboardingWidget
+					{...({
+						appName: appName,
+						orgName: orgName,
+						primaryColor: primaryColor,
+						accentColor: accentColor,
+						shopTypes: shopTypesData,
+						stateTypes: stateTypesData,
+						bankList: bankList,
+						userData: onboardingUserDetails,
+						handleSubmit: handleStepDataSubmit,
+						stepResponse: state?.lastStepResponse,
+						stepsData: state?.stepperData,
+						handleStepCallBack: handleStepCallBack,
+						handleOnboardingSkip: handleOnboardingSkip,
+						apiInProgress: state?.ui?.apiInProgress,
+						esignStatus:
+							state?.esign?.status === "ready"
+								? 1
+								: state?.esign?.status === "failed"
+									? 2
+									: 0,
+						digilockerData: state?.digilocker?.data,
+						initialStepId: initialStepId,
+						constants: {
+							apiStatus: ONBOARDING_API_STATUS,
+							stepIds: ONBOARDING_STEP_IDS,
+							stepStatus: ONBOARDING_STEP_STATUS,
+						},
+					} as any)}
+				/>
+			</Box>
 		</OnboardingProvider>
 	);
 };
