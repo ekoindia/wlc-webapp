@@ -2,7 +2,6 @@ import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import {
 	CopyButton,
 	Dropzone,
-	EkoConnectWidget,
 	Input,
 	JsonViewer,
 	Markdown,

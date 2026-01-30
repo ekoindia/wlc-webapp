@@ -1,4 +1,4 @@
-import { Box, Flex, useToast, useToken } from "@chakra-ui/react";
+import { useToast, useToken } from "@chakra-ui/react";
 import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
 import {
 	useAppSource,
@@ -41,7 +41,8 @@ import {
 	getRoleListFromData,
 	getUserTypeFromData,
 } from "../utils";
-import LocalStepForm from "./LocalStepForm";
+import ContentRenderer from "./ContentRenderer";
+import OnboardingLayout from "./OnboardingLayout";
 
 // Type assertion to fix external component type mismatch
 const ExternalOnboardingWidget =
@@ -743,51 +744,62 @@ const OnboardingSteps = ({
 			agreementId={String(agreementId || "")}
 			externalState={{ state, dispatch: () => {}, actions }}
 		>
-			{/* Local Form Overlay - shown when current step has renderSource: "local" */}
-			{currentLocalStepConfig && (
-				<Flex>
-					<LocalStepForm
-						stepConfig={currentLocalStepConfig}
-						onSubmit={handleStepDataSubmit}
-						onSkip={handleOnboardingSkip}
-						isLoading={state?.ui?.apiInProgress}
-					/>
-				</Flex>
-			)}
-			{/* External Widget - always rendered but hidden when local form is active */}
-			<Box display={currentLocalStepConfig ? "none" : "block"}>
-				<ExternalOnboardingWidget
-					{...({
-						appName: appName,
-						orgName: orgName,
-						primaryColor: primaryColor,
-						accentColor: accentColor,
-						shopTypes: shopTypesData,
-						stateTypes: stateTypesData,
-						bankList: bankList,
-						userData: onboardingUserDetails,
-						handleSubmit: handleStepDataSubmit,
-						stepResponse: state?.lastStepResponse,
-						stepsData: state?.stepperData,
-						handleStepCallBack: handleStepCallBack,
-						handleOnboardingSkip: handleOnboardingSkip,
-						apiInProgress: state?.ui?.apiInProgress,
-						esignStatus:
-							state?.esign?.status === "ready"
-								? 1
-								: state?.esign?.status === "failed"
-									? 2
-									: 0,
-						digilockerData: state?.digilocker?.data,
-						initialStepId: initialStepId,
-						constants: {
-							apiStatus: ONBOARDING_API_STATUS,
-							stepIds: ONBOARDING_STEP_IDS,
-							stepStatus: ONBOARDING_STEP_STATUS,
-						},
-					} as any)}
+			<OnboardingLayout
+				steps={state?.stepperData || []}
+				currentStepId={currentStepId}
+				stepperTitle="Onboarding Progress"
+				filterConfig={{
+					// Filter out steps based on user type if needed
+					// For retailers (userType === 3), exclude business and secret PIN steps
+					excludeStepIds:
+						userType === 3
+							? [
+									ONBOARDING_STEP_IDS.BUSINESS,
+									ONBOARDING_STEP_IDS.SECRET_PIN,
+								]
+							: [],
+				}}
+			>
+				<ContentRenderer
+					stepConfig={currentLocalStepConfig}
+					onSubmit={handleStepDataSubmit}
+					onSkip={handleOnboardingSkip}
+					isLoading={state?.ui?.apiInProgress}
+					widgetContent={
+						<ExternalOnboardingWidget
+							{...({
+								appName: appName,
+								orgName: orgName,
+								primaryColor: primaryColor,
+								accentColor: accentColor,
+								shopTypes: shopTypesData,
+								stateTypes: stateTypesData,
+								bankList: bankList,
+								userData: onboardingUserDetails,
+								handleSubmit: handleStepDataSubmit,
+								stepResponse: state?.lastStepResponse,
+								stepsData: state?.stepperData,
+								handleStepCallBack: handleStepCallBack,
+								handleOnboardingSkip: handleOnboardingSkip,
+								apiInProgress: state?.ui?.apiInProgress,
+								esignStatus:
+									state?.esign?.status === "ready"
+										? 1
+										: state?.esign?.status === "failed"
+											? 2
+											: 0,
+								digilockerData: state?.digilocker?.data,
+								initialStepId: initialStepId,
+								constants: {
+									apiStatus: ONBOARDING_API_STATUS,
+									stepIds: ONBOARDING_STEP_IDS,
+									stepStatus: ONBOARDING_STEP_STATUS,
+								},
+							} as any)}
+						/>
+					}
 				/>
-			</Box>
+			</OnboardingLayout>
 		</OnboardingProvider>
 	);
 };
