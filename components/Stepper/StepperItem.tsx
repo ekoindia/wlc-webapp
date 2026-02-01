@@ -66,10 +66,10 @@ const StepperItem = ({
 	 * @returns {string} Icon name
 	 */
 	const getHoverIconName = (): string => {
-		if (isCompleted) return "check";
-		if (isSkipped) return "minus";
-		if (isFailed) return "close";
-		return "";
+		if (isCompleted) return "check-circle";
+		if (isSkipped) return "radio-button-checked";
+		if (isFailed) return "error";
+		return "radio-button-unchecked";
 	};
 
 	/**
@@ -187,18 +187,15 @@ const StepperItem = ({
 
 	const connectorWidth = "2px";
 	const connectorHeight = { base: "24px", "2xl": "32px" };
-	const connectorColorBefore =
-		isCompleted || isInProgress ? DEFAULT_STATUS_COLORS.completed : "hint";
-	const connectorColorAfter = isCompleted
-		? DEFAULT_STATUS_COLORS.completed
-		: "hint";
+
+	const connectorColor = "hint";
 
 	return (
 		<Flex
 			direction="column"
 			align={isHorizontal ? "center" : "flex-start"}
 			w={isHorizontal ? "auto" : "100%"}
-			minW={isHorizontal ? "100px" : "auto"}
+			minW={isHorizontal ? "80px" : "auto"}
 			textAlign={isHorizontal ? "center" : "left"}
 			position="relative"
 			cursor={isClickable ? "pointer" : "default"}
@@ -209,35 +206,31 @@ const StepperItem = ({
 		>
 			{/* Step content */}
 			<Flex
-				align={isHorizontal ? "center" : "center"}
+				align="center"
 				direction={isHorizontal ? "column" : "row"}
 				gap={{ base: 3, "2xl": 4 }}
 				w="100%"
 			>
 				{/* Indicator with connector */}
 				{isHorizontal ? (
-					<Flex direction="row" align="center" flex={1} w="100%">
-						{/* Connector before (horizontal) */}
-						{index > 0 && (
-							<Box
-								flex={1}
-								h={connectorWidth}
-								bg={connectorColorBefore}
-								transition="background 0.2s ease"
-							/>
-						)}
+					<Flex direction="row" align="center" w="100%">
+						{/* Connector before (horizontal) - invisible spacer for first item */}
+						<Box
+							flex={1}
+							h={index > 0 ? connectorWidth : 0}
+							bg={index > 0 ? connectorColor : "transparent"}
+							transition="background 0.2s ease"
+						/>
 
 						{renderStepIndicator()}
 
-						{/* Connector after (horizontal) */}
-						{showConnector && (
-							<Box
-								flex={1}
-								h={connectorWidth}
-								bg={connectorColorAfter}
-								transition="background 0.2s ease"
-							/>
-						)}
+						{/* Connector after (horizontal) - invisible spacer for last item */}
+						<Box
+							flex={1}
+							h={showConnector ? connectorWidth : 0}
+							bg={showConnector ? connectorColor : "transparent"}
+							transition="background 0.2s ease"
+						/>
 					</Flex>
 				) : (
 					<Flex direction="column" align="center" flexShrink={0}>
@@ -246,7 +239,7 @@ const StepperItem = ({
 							<Box
 								w={connectorWidth}
 								h={connectorHeight}
-								bg={connectorColorBefore}
+								bg={connectorColor}
 								transition="background 0.2s ease"
 							/>
 						) : (
@@ -260,7 +253,7 @@ const StepperItem = ({
 							<Box
 								w={connectorWidth}
 								h={connectorHeight}
-								bg={connectorColorAfter}
+								bg={connectorColor}
 								transition="background 0.2s ease"
 							/>
 						) : (
@@ -275,24 +268,26 @@ const StepperItem = ({
 					gap="1"
 					pt={isHorizontal ? 2 : 0}
 					align={isHorizontal ? "center" : "flex-start"}
-					maxW={isHorizontal ? "120px" : "none"}
+					w={isHorizontal ? "100%" : "auto"}
+					px={isHorizontal ? 1 : 0}
 				>
 					<Text
-						fontSize={{ base: "sm", "2xl": "md" }}
+						fontSize={{ base: "xs", "2xl": "sm" }}
 						fontWeight={isInProgress ? "semibold" : "medium"}
 						color={getTextColor()}
 						lineHeight="short"
+						textAlign={isHorizontal ? "center" : "left"}
 						noOfLines={isHorizontal ? 2 : undefined}
+						wordBreak="break-word"
 					>
 						{label}
 					</Text>
 
-					{description && (
+					{description && !isHorizontal && (
 						<Text
 							fontSize={{ base: "xs", "2xl": "sm" }}
 							color="light"
 							lineHeight="short"
-							noOfLines={isHorizontal ? 3 : undefined}
 						>
 							{description}
 						</Text>

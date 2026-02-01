@@ -137,7 +137,7 @@ describe("StepperLayout", () => {
 			expect(screen.getByText("Shipping")).toBeInTheDocument();
 		});
 
-		it("should render steps with descriptions", () => {
+		it("should render steps with descriptions in vertical mode", () => {
 			const stateWithDescriptions: StepperState = {
 				...mockState,
 				visibleSteps: [
@@ -160,6 +160,7 @@ describe("StepperLayout", () => {
 				<StepperLayout
 					{...defaultProps}
 					state={stateWithDescriptions}
+					orientation="vertical"
 				/>
 			);
 

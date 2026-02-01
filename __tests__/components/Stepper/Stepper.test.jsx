@@ -154,8 +154,10 @@ describe("Stepper Component", () => {
 			expect(screen.getByText("Payment")).toBeInTheDocument();
 		});
 
-		it("renders steps with descriptions", () => {
-			render(<Stepper steps={mockStepsWithIcons} />);
+		it("renders steps with descriptions in vertical mode", () => {
+			render(
+				<Stepper steps={mockStepsWithIcons} orientation="vertical" />
+			);
 			expect(
 				screen.getByText("Add your address here")
 			).toBeInTheDocument();
