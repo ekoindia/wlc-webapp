@@ -119,8 +119,6 @@ export interface StepperItemProps {
 	isClickable?: boolean;
 	/** Orientation of the stepper item */
 	orientation: "vertical" | "horizontal";
-	/** Status colors configuration */
-	statusColors: Required<StatusColorConfig>;
 }
 
 /**
@@ -143,7 +141,6 @@ export interface StepperLayoutProps {
 	state: StepperState;
 	width?: string | object;
 	orientation: StepperOrientation;
-	statusColors: Required<StatusColorConfig>;
 	onStepClick?: (_step: StepItem, _index: number) => void;
 	allowNavigation?: boolean;
 	className?: string;

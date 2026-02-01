@@ -1,7 +1,7 @@
 import { Box, Circle, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components/Icon";
 import { isValidElement, ReactNode } from "react";
-import { STEP_STATUS, StepperItemProps } from "./types";
+import { DEFAULT_STATUS_COLORS, STEP_STATUS, StepperItemProps } from "./types";
 
 /**
  * StepperItem - Renders a single step in the stepper with visual states
@@ -30,7 +30,6 @@ const StepperItem = ({
 	onClick,
 	isClickable = false,
 	orientation,
-	statusColors,
 }: StepperItemProps): JSX.Element => {
 	const { status, label, description, icon } = step;
 
@@ -45,11 +44,11 @@ const StepperItem = ({
 	 * @returns {string} Chakra color token
 	 */
 	const getStatusColor = (): string => {
-		if (isCompleted) return statusColors.completed;
-		if (isFailed) return statusColors.failed;
-		if (isSkipped) return statusColors.skipped;
-		if (isInProgress) return statusColors.inProgress;
-		return statusColors.notStarted;
+		if (isCompleted) return DEFAULT_STATUS_COLORS.completed;
+		if (isFailed) return DEFAULT_STATUS_COLORS.failed;
+		if (isSkipped) return DEFAULT_STATUS_COLORS.skipped;
+		if (isInProgress) return DEFAULT_STATUS_COLORS.inProgress;
+		return DEFAULT_STATUS_COLORS.notStarted;
 	};
 
 	/**
@@ -189,8 +188,10 @@ const StepperItem = ({
 	const connectorWidth = "2px";
 	const connectorHeight = { base: "24px", "2xl": "32px" };
 	const connectorColorBefore =
-		isCompleted || isInProgress ? statusColors.completed : "hint";
-	const connectorColorAfter = isCompleted ? statusColors.completed : "hint";
+		isCompleted || isInProgress ? DEFAULT_STATUS_COLORS.completed : "hint";
+	const connectorColorAfter = isCompleted
+		? DEFAULT_STATUS_COLORS.completed
+		: "hint";
 
 	return (
 		<Flex

@@ -1,10 +1,5 @@
-import { useMemo } from "react";
 import StepperLayout from "./StepperLayout";
-import {
-	DEFAULT_STATUS_COLORS,
-	StatusColorConfig,
-	StepperProps,
-} from "./types";
+import { StepperProps } from "./types";
 import { useStepperState } from "./useStepperState";
 
 /**
@@ -21,7 +16,6 @@ import { useStepperState } from "./useStepperState";
  * @param {Function} [props.onStepClick] - Callback when a step is clicked
  * @param {boolean} [props.allowNavigation] - Whether to allow clicking on completed steps to navigate back
  * @param {StepperOrientation} [props.orientation] - Orientation: 'responsive' (vertical on ≥md, horizontal on <md), 'horizontal', or 'vertical'
- * @param {StatusColorConfig} [props.statusColorsProp] - Custom colors for step statuses (uses theme defaults if not provided)
  * @param {React.ReactNode} [props.children] - Content to render alongside the stepper
  * @returns {JSX.Element} The rendered stepper component
  * @example
@@ -37,15 +31,6 @@ import { useStepperState } from "./useStepperState";
  * >
  *   <MyContent />
  * </Stepper>
- * @example
- * // With custom status colors
- * <Stepper
- *   steps={steps}
- *   statusColorsProp={{
- *     completed: "green.500",
- *     inProgress: "blue.500",
- *   }}
- * />
  */
 const Stepper = (props: StepperProps): JSX.Element => {
 	const {
@@ -55,18 +40,8 @@ const Stepper = (props: StepperProps): JSX.Element => {
 		onStepClick,
 		allowNavigation = false,
 		orientation = "responsive",
-		statusColorsProp,
 		children,
 	} = props;
-
-	// Merge custom status colors with defaults
-	const statusColors = useMemo(
-		(): Required<StatusColorConfig> => ({
-			...DEFAULT_STATUS_COLORS,
-			...statusColorsProp,
-		}),
-		[statusColorsProp]
-	);
 
 	// Extract business logic to hook
 	const state = useStepperState({
@@ -81,7 +56,6 @@ const Stepper = (props: StepperProps): JSX.Element => {
 		<StepperLayout
 			state={state}
 			orientation={orientation}
-			statusColors={statusColors}
 			onStepClick={onStepClick}
 			allowNavigation={allowNavigation}
 		>

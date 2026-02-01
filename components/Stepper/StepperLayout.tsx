@@ -21,7 +21,6 @@ import { StepperLayoutProps } from "./types";
 const StepperLayout: React.FC<StepperLayoutProps> = ({
 	state,
 	orientation,
-	statusColors,
 	onStepClick,
 	allowNavigation,
 	children,
@@ -137,7 +136,6 @@ const StepperLayout: React.FC<StepperLayoutProps> = ({
 								onClick={() => handleStepClick(step, index)}
 								isClickable={isClickable}
 								orientation={effectiveOrientation}
-								statusColors={statusColors}
 							/>
 						</Box>
 					);
