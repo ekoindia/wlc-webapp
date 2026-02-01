@@ -747,7 +747,6 @@ const OnboardingSteps = ({
 			<OnboardingLayout
 				steps={state?.stepperData || []}
 				currentStepId={currentStepId}
-				stepperTitle="Onboarding Progress"
 				filterConfig={{
 					// Filter out steps based on user type if needed
 					// For retailers (userType === 3), exclude business and secret PIN steps

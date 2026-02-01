@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Card } from "components/Card";
 import { STEP_STATUS, Stepper } from "components/Stepper";
 import { StepFilterConfig, StepItem } from "components/Stepper/types";
@@ -25,18 +25,14 @@ export interface OnboardingLayoutProps {
 	}>;
 	/** ID of the currently active step */
 	currentStepId?: number;
-	/** Title for the stepper header */
-	stepperTitle?: string;
 	/** Filter configuration for steps (e.g., exclude certain step IDs for retailers) */
 	filterConfig?: StepFilterConfig;
-	/** Content to render in the right panel (Form, Custom Component, or Widget) */
+	/** Content to render in the content area */
 	children: ReactNode;
 	/** Current step configuration (used for determining content type) */
 	currentStepConfig?: OnboardingStep;
 	/** Custom class name for additional styling */
 	className?: string;
-	/** Whether to show the stepper panel (hide on mobile or specific screens) */
-	showStepper?: boolean;
 }
 
 /**
@@ -63,41 +59,37 @@ const mapStepStatus = (stepStatus: number): number => {
 /**
  * OnboardingLayout - Layout component for onboarding flow
  *
- * Renders a two-column layout with:
- * - Left: Stepper component showing progress
- * - Right: Content area for Form, Custom Component, or Widget
- *
- * This component replaces the sidebar from the widget and provides a
- * consistent layout for all onboarding content types.
+ * Renders a responsive layout with the Stepper component showing progress
+ * alongside the main content area for forms, custom components, or widgets.
+ * @component
+ * @param {OnboardingLayoutProps} props - Component props
+ * @param {Array} props.steps - Array of step data from onboarding state
+ * @param {number} [props.currentStepId] - ID of the currently active step
+ * @param {StepFilterConfig} [props.filterConfig] - Configuration for filtering steps
+ * @param {ReactNode} props.children - Content to render in the main area
+ * @param {OnboardingStep} [props.currentStepConfig] - Current step configuration
+ * @param {string} [props.className] - Custom class name for additional styling
+ * @returns {JSX.Element} The rendered layout component
  * @example
- * ```tsx
  * <OnboardingLayout
  *   steps={state.stepperData}
  *   currentStepId={currentStepId}
- *   stepperTitle="Onboarding Progress"
- *   currentStepConfig={currentStepConfig}
+ *   filterConfig={{ excludeStepIds: [5] }}
  * >
  *   {currentStepConfig?.localRenderer?.type === "form" ? (
  *     <LocalStepForm stepConfig={currentStepConfig} onSubmit={handleSubmit} />
- *   ) : currentStepConfig?.localRenderer?.type === "custom" ? (
- *     <CustomComponent />
  *   ) : (
  *     <WidgetContent />
  *   )}
  * </OnboardingLayout>
- * ```
- * @param {OnboardingLayoutProps} props - Component props
- * @returns {JSX.Element} The rendered layout component
  */
 const OnboardingLayout = ({
 	steps,
 	currentStepId,
-	stepperTitle = "Onboarding Progress",
 	filterConfig,
 	children,
 	currentStepConfig: _currentStepConfig,
 	className = "",
-	showStepper = true,
 }: OnboardingLayoutProps): JSX.Element => {
 	/**
 	 * Transform onboarding steps to Stepper-compatible format
@@ -112,47 +104,23 @@ const OnboardingLayout = ({
 	}, [steps]);
 
 	return (
-		<Flex
-			className={className}
-			direction={{ base: "column", md: "row" }}
-			gap={{ base: 4, md: 6 }}
-			w="100%"
-			h="100%"
-			align="flex-start"
-			justify="center"
-			p={{ base: 4, md: 6 }}
-		>
-			{/* Left Panel - Stepper */}
-			{showStepper && (
-				<Box
-					display={{ base: "none", md: "block" }}
-					flexShrink={0}
-					position={{ md: "sticky" }}
-					top={{ md: "24px" }}
-				>
-					<Stepper
-						steps={stepperSteps}
-						currentStepId={currentStepId}
-						title={stepperTitle}
-						filterConfig={filterConfig}
-						showStepNumbers={true}
-						showProgressBar={true}
-						width={{ base: "100%", md: "280px" }}
-					/>
-				</Box>
-			)}
-
-			{/* Right Panel - Content Area */}
-			<Card
-				flex={1}
-				maxW={{ base: "100%", md: "600px" }}
-				minH={{ base: "auto", md: "500px" }}
-				h="auto"
-				// p={{ base: 4, md: 6 }}
+		<Box w="100%" h="100%" p={{ base: 4, md: 6 }} className={className}>
+			<Stepper
+				steps={stepperSteps}
+				currentStepId={currentStepId}
+				filterConfig={filterConfig}
 			>
-				{children}
-			</Card>
-		</Flex>
+				<Card
+					flex={1}
+					maxW={{ base: "100%", md: "600px" }}
+					minH={{ base: "auto", md: "500px" }}
+					h="auto"
+					overflow="auto"
+				>
+					{children}
+				</Card>
+			</Stepper>
+		</Box>
 	);
 };
 

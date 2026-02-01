@@ -1,4 +1,9 @@
-import { STEP_STATUS, Stepper, StepperItem } from "components/Stepper";
+import {
+	DEFAULT_STATUS_COLORS,
+	STEP_STATUS,
+	Stepper,
+	StepperItem,
+} from "components/Stepper";
 import { render, screen } from "test-utils";
 
 const mockSteps = [
@@ -34,11 +39,44 @@ const mockSteps = [
 	},
 ];
 
+const mockStepsWithIcons = [
+	{
+		id: 1,
+		label: "Address",
+		description: "Add your address here",
+		status: STEP_STATUS.COMPLETED,
+		icon: "location",
+	},
+	{
+		id: 2,
+		label: "Shipping",
+		description: "Set your preferred shipping method",
+		status: STEP_STATUS.IN_PROGRESS,
+		icon: "truck",
+	},
+	{
+		id: 3,
+		label: "Payment",
+		description: "Add any payment information you have",
+		status: STEP_STATUS.NOT_STARTED,
+		icon: "card",
+	},
+];
+
 describe("Stepper Component", () => {
 	describe("Rendering", () => {
 		it("renders without error with required props", () => {
 			const { container } = render(<Stepper steps={mockSteps} />);
 			expect(container).not.toBeEmptyDOMElement();
+		});
+
+		it("renders children content correctly", () => {
+			render(
+				<Stepper steps={mockSteps} currentStepId={1}>
+					<div data-testid="child-content">Child Content</div>
+				</Stepper>
+			);
+			expect(screen.getByTestId("child-content")).toBeInTheDocument();
 		});
 
 		it("renders all visible steps", () => {
@@ -53,75 +91,77 @@ describe("Stepper Component", () => {
 			expect(screen.getByText("Add Bank Account")).toBeInTheDocument();
 		});
 
-		it("renders the title correctly", () => {
-			render(<Stepper steps={mockSteps} title="Onboarding Progress" />);
-
-			expect(screen.getByText("Onboarding Progress")).toBeInTheDocument();
-		});
-
 		it("renders nothing when steps array is empty", () => {
 			const { container } = render(<Stepper steps={[]} />);
 			expect(container.firstChild).toBeEmptyDOMElement();
 		});
 	});
 
-	describe("Step Statuses", () => {
-		it("shows 'In Progress' badge for current step", () => {
-			render(<Stepper steps={mockSteps} currentStepId={3} />);
-
-			expect(screen.getByText("In Progress")).toBeInTheDocument();
+	describe("Orientation", () => {
+		it("defaults to responsive orientation", () => {
+			const { container } = render(<Stepper steps={mockSteps} />);
+			expect(container).not.toBeEmptyDOMElement();
 		});
 
-		it("shows 'Skipped' badge for skipped steps", () => {
-			render(<Stepper steps={mockSteps} currentStepId={3} />);
-
-			expect(screen.getByText("Skipped")).toBeInTheDocument();
-		});
-
-		it("displays custom status labels when provided", () => {
-			render(
-				<Stepper
-					steps={mockSteps}
-					currentStepId={3}
-					statusLabels={{
-						inProgress: "Current Step",
-						skipped: "Bypassed",
-					}}
-				/>
+		it("accepts horizontal orientation", () => {
+			const { container } = render(
+				<Stepper steps={mockSteps} orientation="horizontal" />
 			);
+			expect(container).not.toBeEmptyDOMElement();
+		});
 
-			expect(screen.getByText("Current Step")).toBeInTheDocument();
-			expect(screen.getByText("Bypassed")).toBeInTheDocument();
+		it("accepts vertical orientation", () => {
+			const { container } = render(
+				<Stepper steps={mockSteps} orientation="vertical" />
+			);
+			expect(container).not.toBeEmptyDOMElement();
 		});
 	});
 
-	describe("Progress Calculation", () => {
-		it("displays correct completion count", () => {
-			render(<Stepper steps={mockSteps} currentStepId={3} />);
-
-			// 2 completed + 1 skipped = 3 steps completed
-			expect(screen.getByText("3 Steps Completed")).toBeInTheDocument();
+	describe("Status Colors", () => {
+		it("uses default status colors when none provided", () => {
+			const { container } = render(<Stepper steps={mockSteps} />);
+			expect(container).not.toBeEmptyDOMElement();
 		});
 
-		it("displays singular 'Step' when only one completed", () => {
-			const singleCompletedSteps = [
-				{
-					id: 1,
-					label: "Step 1",
-					status: STEP_STATUS.COMPLETED,
-					isVisible: true,
-				},
-				{
-					id: 2,
-					label: "Step 2",
-					status: STEP_STATUS.IN_PROGRESS,
-					isVisible: true,
-				},
-			];
+		it("accepts custom status colors", () => {
+			const customColors = {
+				completed: "green.500",
+				failed: "red.500",
+				skipped: "gray.400",
+			};
+			const { container } = render(
+				<Stepper steps={mockSteps} statusColorsProp={customColors} />
+			);
+			expect(container).not.toBeEmptyDOMElement();
+		});
 
-			render(<Stepper steps={singleCompletedSteps} currentStepId={2} />);
+		it("exports DEFAULT_STATUS_COLORS constant", () => {
+			expect(DEFAULT_STATUS_COLORS).toBeDefined();
+			expect(DEFAULT_STATUS_COLORS.completed).toBe("success");
+			expect(DEFAULT_STATUS_COLORS.failed).toBe("error");
+			expect(DEFAULT_STATUS_COLORS.skipped).toBe("hint");
+			expect(DEFAULT_STATUS_COLORS.inProgress).toBe("primary.DEFAULT");
+			expect(DEFAULT_STATUS_COLORS.notStarted).toBe("shade");
+		});
+	});
 
-			expect(screen.getByText("1 Step Completed")).toBeInTheDocument();
+	describe("Icons", () => {
+		it("renders steps with string icons", () => {
+			render(<Stepper steps={mockStepsWithIcons} />);
+			expect(screen.getByText("Address")).toBeInTheDocument();
+			expect(screen.getByText("Shipping")).toBeInTheDocument();
+			expect(screen.getByText("Payment")).toBeInTheDocument();
+		});
+
+		it("renders steps with descriptions", () => {
+			render(<Stepper steps={mockStepsWithIcons} />);
+			expect(
+				screen.getByText("Add your address here")
+			).toBeInTheDocument();
+			expect(
+				screen.getByText("Set your preferred shipping method")
+			).toBeInTheDocument();
 		});
 	});
 
@@ -211,22 +251,6 @@ describe("Stepper Component", () => {
 			expect(onStepClick).not.toHaveBeenCalled();
 		});
 	});
-
-	describe("Progress Bar", () => {
-		it("hides progress bar when showProgressBar is false", () => {
-			render(
-				<Stepper
-					steps={mockSteps}
-					currentStepId={3}
-					showProgressBar={false}
-				/>
-			);
-
-			expect(
-				screen.queryByText(/Steps? Completed/)
-			).not.toBeInTheDocument();
-		});
-	});
 });
 
 describe("StepperItem Component", () => {
@@ -236,6 +260,9 @@ describe("StepperItem Component", () => {
 		isActive: false,
 		isCompleted: false,
 		showConnector: false,
+		hasAnyIcon: false,
+		orientation: "vertical",
+		statusColors: DEFAULT_STATUS_COLORS,
 	};
 
 	it("renders without error", () => {
@@ -248,28 +275,74 @@ describe("StepperItem Component", () => {
 		expect(screen.getByText("Test Step")).toBeInTheDocument();
 	});
 
-	it("shows 'In Progress' badge when isActive is true", () => {
-		render(<StepperItem {...baseProps} isActive={true} />);
-		expect(screen.getByText("In Progress")).toBeInTheDocument();
+	it("displays step number when hasAnyIcon is false", () => {
+		render(<StepperItem {...baseProps} />);
+		expect(screen.getByText("1")).toBeInTheDocument();
 	});
 
-	it("shows 'Skipped' badge for skipped steps", () => {
+	it("displays description when provided", () => {
 		render(
+			<StepperItem
+				{...baseProps}
+				step={{ ...baseProps.step, description: "Step description" }}
+			/>
+		);
+		expect(screen.getByText("Step description")).toBeInTheDocument();
+	});
+
+	it("renders in horizontal orientation", () => {
+		const { container } = render(
+			<StepperItem {...baseProps} orientation="horizontal" />
+		);
+		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("renders completed step", () => {
+		const { container } = render(
+			<StepperItem
+				{...baseProps}
+				step={{ ...baseProps.step, status: STEP_STATUS.COMPLETED }}
+				isCompleted={true}
+			/>
+		);
+		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("renders skipped step", () => {
+		const { container } = render(
 			<StepperItem
 				{...baseProps}
 				step={{ ...baseProps.step, status: STEP_STATUS.SKIPPED }}
 			/>
 		);
-		expect(screen.getByText("Skipped")).toBeInTheDocument();
+		expect(container).not.toBeEmptyDOMElement();
 	});
 
-	it("shows 'Failed' badge for failed steps", () => {
-		render(
+	it("renders failed step", () => {
+		const { container } = render(
 			<StepperItem
 				{...baseProps}
 				step={{ ...baseProps.step, status: STEP_STATUS.FAILED }}
 			/>
 		);
-		expect(screen.getByText("Failed")).toBeInTheDocument();
+		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("renders active step", () => {
+		const { container } = render(
+			<StepperItem {...baseProps} isActive={true} />
+		);
+		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("renders step with string icon", () => {
+		const { container } = render(
+			<StepperItem
+				{...baseProps}
+				step={{ ...baseProps.step, icon: "check" }}
+				hasAnyIcon={true}
+			/>
+		);
+		expect(container).not.toBeEmptyDOMElement();
 	});
 });

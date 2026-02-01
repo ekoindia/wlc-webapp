@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { STEP_STATUS, Stepper } from "./index";
 
 export default {
@@ -9,29 +9,15 @@ export default {
 		layout: "centered",
 	},
 	argTypes: {
-		title: {
-			control: "text",
-			description: "Title text displayed above the progress bar",
-		},
-		showProgressBar: {
-			control: "boolean",
-			description: "Whether to show the progress bar",
-		},
-		showStepNumbers: {
-			control: "boolean",
-			description: "Whether to show step numbers",
+		orientation: {
+			control: "select",
+			options: ["responsive", "horizontal", "vertical"],
+			description:
+				"Orientation of the stepper. 'responsive' (default) shows vertical on large screens, horizontal on small",
 		},
 		allowNavigation: {
 			control: "boolean",
 			description: "Whether to allow clicking on completed steps",
-		},
-		headerBg: {
-			control: "color",
-			description: "Background color for the header section",
-		},
-		headerColor: {
-			control: "color",
-			description: "Text color for the header section",
 		},
 	},
 };
@@ -109,16 +95,45 @@ const mixedStatusSteps = [
 	},
 ];
 
+const stepsWithIcons = [
+	{
+		id: 1,
+		label: "Address",
+		description: "Add your address here",
+		status: STEP_STATUS.COMPLETED,
+		icon: "location",
+	},
+	{
+		id: 2,
+		label: "Shipping",
+		description: "Set your preferred shipping method",
+		status: STEP_STATUS.IN_PROGRESS,
+		icon: "truck",
+	},
+	{
+		id: 3,
+		label: "Payment",
+		description: "Add any payment information you have",
+		status: STEP_STATUS.NOT_STARTED,
+		icon: "card",
+	},
+	{
+		id: 4,
+		label: "Checkout",
+		description: "Confirm your order",
+		status: STEP_STATUS.NOT_STARTED,
+		icon: "check",
+	},
+];
+
 /**
- * Default stepper showing onboarding progress
+ * Default stepper showing onboarding progress with responsive orientation
  */
 export const Default = {
 	args: {
 		steps: onboardingSteps,
 		currentStepId: 4,
-		title: "Onboarding Progress",
-		showProgressBar: true,
-		showStepNumbers: true,
+		orientation: "responsive",
 	},
 };
 
@@ -129,9 +144,34 @@ export const AllStatuses = {
 	args: {
 		steps: mixedStatusSteps,
 		currentStepId: 3,
-		title: "All Step Statuses",
-		showProgressBar: true,
-		showStepNumbers: true,
+		orientation: "vertical",
+	},
+};
+
+/**
+ * Stepper with icons and descriptions (modern checkout flow)
+ */
+export const WithIcons = {
+	args: {
+		steps: stepsWithIcons,
+		currentStepId: 2,
+		orientation: "horizontal",
+	},
+	render: (args) => (
+		<Box w="600px" p="6" bg="gray.900" borderRadius="lg">
+			<Stepper {...args} />
+		</Box>
+	),
+};
+
+/**
+ * Vertical orientation stepper with descriptions
+ */
+export const VerticalWithDescriptions = {
+	args: {
+		steps: stepsWithIcons,
+		currentStepId: 2,
+		orientation: "vertical",
 	},
 };
 
@@ -167,7 +207,6 @@ export const AtBeginning = {
 			},
 		],
 		currentStepId: 1,
-		title: "Getting Started",
 	},
 };
 
@@ -180,32 +219,24 @@ export const AllCompleted = {
 			...step,
 			status: STEP_STATUS.COMPLETED,
 		})),
-		title: "All Steps Complete",
 	},
 };
 
 /**
- * Stepper without progress bar
+ * Stepper with custom status colors
  */
-export const WithoutProgressBar = {
+export const CustomStatusColors = {
 	args: {
-		steps: onboardingSteps,
-		currentStepId: 4,
-		title: "Steps List",
-		showProgressBar: false,
-	},
-};
-
-/**
- * Stepper with custom colors (accent theme)
- */
-export const CustomColors = {
-	args: {
-		steps: onboardingSteps,
-		currentStepId: 4,
-		title: "Custom Theme",
-		headerBg: "accent.DEFAULT",
-		headerColor: "dark",
+		steps: mixedStatusSteps,
+		currentStepId: 3,
+		orientation: "vertical",
+		statusColors: {
+			completed: "green.500",
+			failed: "red.600",
+			skipped: "gray.400",
+			inProgress: "blue.500",
+			notStarted: "gray.200",
+		},
 	},
 };
 
@@ -216,27 +247,9 @@ export const WithNavigation = {
 	args: {
 		steps: onboardingSteps,
 		currentStepId: 4,
-		title: "Click Completed Steps",
 		allowNavigation: true,
 		onStepClick: (step, index) => {
 			alert(`Clicked step ${index + 1}: ${step.label}`);
-		},
-	},
-};
-
-/**
- * Stepper with custom status labels
- */
-export const CustomLabels = {
-	args: {
-		steps: mixedStatusSteps,
-		currentStepId: 3,
-		title: "Custom Labels",
-		statusLabels: {
-			inProgress: "Current",
-			skipped: "Bypassed",
-			completed: "Done",
-			failed: "Error",
 		},
 	},
 };
@@ -248,7 +261,6 @@ export const WithFiltering = {
 	args: {
 		steps: onboardingSteps,
 		currentStepId: 4,
-		title: "Filtered Steps",
 		filterConfig: {
 			excludeStepIds: [5], // Exclude "Add Bank Account"
 		},
@@ -264,13 +276,39 @@ export const WithFiltering = {
 };
 
 /**
- * Mobile responsive width
+ * Horizontal orientation (always horizontal)
  */
-export const MobileWidth = {
+export const AlwaysHorizontal = {
+	args: {
+		steps: onboardingSteps.slice(0, 4),
+		currentStepId: 2,
+		orientation: "horizontal",
+	},
+	render: (args) => (
+		<Box w="700px">
+			<Text mb="4" fontSize="sm" color="gray.600">
+				This stepper will always be horizontal regardless of screen size
+			</Text>
+			<Stepper {...args} />
+		</Box>
+	),
+};
+
+/**
+ * Vertical orientation (always vertical)
+ */
+export const AlwaysVertical = {
 	args: {
 		steps: onboardingSteps,
 		currentStepId: 4,
-		title: "Mobile View",
-		width: "280px",
+		orientation: "vertical",
 	},
+	render: (args) => (
+		<Box w="300px">
+			<Text mb="4" fontSize="sm" color="gray.600">
+				This stepper will always be vertical regardless of screen size
+			</Text>
+			<Stepper {...args} />
+		</Box>
+	),
 };

@@ -1,23 +1,22 @@
-import { Badge, Box, Circle, Flex, Text } from "@chakra-ui/react";
+import { Box, Circle, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components/Icon";
+import { isValidElement, ReactNode } from "react";
 import { STEP_STATUS, StepperItemProps } from "./types";
-
-const DEFAULT_STATUS_LABELS = {
-	inProgress: "In Progress",
-	skipped: "Skipped",
-	completed: "Completed",
-	failed: "Failed",
-};
 
 /**
  * StepperItem - Renders a single step in the stepper with visual states
  *
- * Visual states:
- * - Completed: Green checkmark icon, black text
- * - In Progress: Primary blue text, "In Progress" badge
- * - Skipped: Orange border circle with dash, orange text, "Skipped" badge
- * - Failed: Red border circle with X, red text, "Failed" badge
- * - Disabled/Future: Grayed out appearance, muted text
+ * Visual states (indicated by background/border color):
+ * - Completed: success color background
+ * - In Progress: primary color background
+ * - Skipped: hint color background
+ * - Failed: error color background
+ * - Not Started: shade color background
+ *
+ * Indicator content:
+ * - If no step has icons: shows step number (1, 2, 3...)
+ * - If any step has icons: shows icon or empty circle
+ * - On hover: shows status icon (✓ for completed, — for skipped, ✗ for failed)
  * @param {StepperItemProps} props - Component props
  * @returns {JSX.Element} The rendered step item
  */
@@ -27,161 +26,73 @@ const StepperItem = ({
 	isActive,
 	isCompleted,
 	showConnector,
-	showStepNumbers = false,
+	hasAnyIcon,
 	onClick,
 	isClickable = false,
-	statusLabels = DEFAULT_STATUS_LABELS,
+	orientation,
+	statusColors,
 }: StepperItemProps): JSX.Element => {
-	const { status, label } = step;
-	const mergedLabels = { ...DEFAULT_STATUS_LABELS, ...statusLabels };
+	const { status, label, description, icon } = step;
 
 	// Determine visual state
 	const isSkipped = status === STEP_STATUS.SKIPPED;
 	const isFailed = status === STEP_STATUS.FAILED;
-	const isDisabled = !isCompleted && !isActive && !isSkipped && !isFailed;
+	const isNotStarted = status === STEP_STATUS.NOT_STARTED;
+	const isInProgress = isActive || status === STEP_STATUS.IN_PROGRESS;
 
 	/**
-	 * Renders the step indicator (circle with icon/number)
-	 * @returns {JSX.Element} Step indicator element
+	 * Gets the background color based on step status
+	 * @returns {string} Chakra color token
 	 */
-	const renderStepIndicator = (): JSX.Element => {
-		// Completed state - green checkmark
-		if (isCompleted) {
-			return (
-				<Circle
-					size={{ base: "24px", "2xl": "28px" }}
-					bg="success"
-					flexShrink={0}
-				>
-					<Icon
-						name="check"
-						color="white"
-						size={{ base: "14px", "2xl": "16px" }}
-					/>
-				</Circle>
-			);
-		}
-
-		// Active/In Progress state - primary colored circle
-		if (isActive) {
-			return (
-				<Circle
-					size={{ base: "24px", "2xl": "28px" }}
-					bg="primary.DEFAULT"
-					color="white"
-					fontSize={{ base: "xs", "2xl": "sm" }}
-					fontWeight="semibold"
-					flexShrink={0}
-				>
-					{showStepNumbers ? index + 1 : null}
-				</Circle>
-			);
-		}
-
-		// Skipped state - orange border with dash
-		if (isSkipped) {
-			return (
-				<Circle
-					size={{ base: "24px", "2xl": "28px" }}
-					border="2px solid"
-					borderColor="accent.DEFAULT"
-					flexShrink={0}
-				>
-					<Icon
-						name="minus"
-						color="accent.DEFAULT"
-						size={{ base: "12px", "2xl": "14px" }}
-					/>
-				</Circle>
-			);
-		}
-
-		// Failed state - red border with X
-		if (isFailed) {
-			return (
-				<Circle
-					size={{ base: "24px", "2xl": "28px" }}
-					border="2px solid"
-					borderColor="error"
-					flexShrink={0}
-				>
-					<Icon
-						name="close"
-						color="error"
-						size={{ base: "12px", "2xl": "14px" }}
-					/>
-				</Circle>
-			);
-		}
-
-		// Disabled/Future state - gray circle with number
-		return (
-			<Circle
-				size={{ base: "24px", "2xl": "28px" }}
-				bg="gray.200"
-				color="gray.500"
-				fontSize={{ base: "xs", "2xl": "sm" }}
-				fontWeight="medium"
-				flexShrink={0}
-			>
-				{showStepNumbers ? index + 1 : null}
-			</Circle>
-		);
+	const getStatusColor = (): string => {
+		if (isCompleted) return statusColors.completed;
+		if (isFailed) return statusColors.failed;
+		if (isSkipped) return statusColors.skipped;
+		if (isInProgress) return statusColors.inProgress;
+		return statusColors.notStarted;
 	};
 
 	/**
-	 * Renders the status badge for active/skipped/failed steps
-	 * @returns {JSX.Element | null} Badge element or null
+	 * Gets the text color for the indicator content
+	 * @returns {string} Chakra color token
 	 */
-	const renderStatusBadge = (): JSX.Element | null => {
-		if (isActive) {
-			return (
-				<Badge
-					bg="accent.light"
-					color="dark"
-					fontSize={{ base: "xxs", "2xl": "xs" }}
-					fontWeight="medium"
-					px="2"
-					py="0.5"
-					borderRadius="sm"
-					textTransform="none"
-				>
-					{mergedLabels.inProgress}
-				</Badge>
-			);
+	const getIndicatorTextColor = (): string => {
+		if (isNotStarted) return "gray.500";
+		if (isSkipped) return "gray.600";
+		return "white";
+	};
+
+	/**
+	 * Gets the hover status icon name based on step status
+	 * @returns {string} Icon name
+	 */
+	const getHoverIconName = (): string => {
+		if (isCompleted) return "check";
+		if (isSkipped) return "minus";
+		if (isFailed) return "close";
+		return "";
+	};
+
+	/**
+	 * Renders the icon inside the indicator
+	 * @returns {ReactNode} Icon element
+	 */
+	const renderIcon = (): ReactNode => {
+		if (!icon) return null;
+
+		// If icon is a ReactNode (component), render it directly
+		if (isValidElement(icon)) {
+			return icon;
 		}
 
-		if (isSkipped) {
+		// If icon is a string, render using Icon component
+		if (typeof icon === "string") {
 			return (
-				<Badge
-					bg="orange.100"
-					color="accent.dark"
-					fontSize={{ base: "xxs", "2xl": "xs" }}
-					fontWeight="medium"
-					px="2"
-					py="0.5"
-					borderRadius="sm"
-					textTransform="none"
-				>
-					{mergedLabels.skipped}
-				</Badge>
-			);
-		}
-
-		if (isFailed) {
-			return (
-				<Badge
-					bg="red.100"
-					color="error"
-					fontSize={{ base: "xxs", "2xl": "xs" }}
-					fontWeight="medium"
-					px="2"
-					py="0.5"
-					borderRadius="sm"
-					textTransform="none"
-				>
-					{mergedLabels.failed}
-				</Badge>
+				<Icon
+					name={icon}
+					color={getIndicatorTextColor()}
+					size={{ base: "18px", "2xl": "22px" }}
+				/>
 			);
 		}
 
@@ -189,61 +100,202 @@ const StepperItem = ({
 	};
 
 	/**
+	 * Renders the default indicator content (number or empty circle)
+	 * @returns {ReactNode} Default indicator content
+	 */
+	const renderDefaultContent = (): ReactNode => {
+		if (hasAnyIcon) {
+			// If any step has icons but this one doesn't, show empty
+			return null;
+		}
+
+		// Show step number
+		return (
+			<Text
+				fontSize={{ base: "md", "2xl": "lg" }}
+				fontWeight="semibold"
+				color={getIndicatorTextColor()}
+				lineHeight="1"
+			>
+				{index + 1}
+			</Text>
+		);
+	};
+
+	/**
+	 * Renders the step indicator (circle with icon/number)
+	 * @returns {JSX.Element} Step indicator element
+	 */
+	const renderStepIndicator = (): JSX.Element => {
+		const statusColor = getStatusColor();
+		const hoverIcon = getHoverIconName();
+		const hasHoverIcon = Boolean(hoverIcon);
+
+		return (
+			<Circle
+				size={{ base: "40px", "2xl": "48px" }}
+				bg={statusColor}
+				flexShrink={0}
+				position="relative"
+				transition="all 0.2s ease"
+				role="group"
+			>
+				{/* Default content (icon or number) */}
+				<Flex
+					align="center"
+					justify="center"
+					transition="opacity 0.2s ease"
+					_groupHover={hasHoverIcon ? { opacity: 0 } : undefined}
+				>
+					{icon ? renderIcon() : renderDefaultContent()}
+				</Flex>
+
+				{/* Hover state - show status icon */}
+				{hasHoverIcon && (
+					<Flex
+						position="absolute"
+						inset="0"
+						align="center"
+						justify="center"
+						opacity={0}
+						transition="opacity 0.2s ease"
+						_groupHover={{ opacity: 1 }}
+					>
+						<Icon
+							name={hoverIcon}
+							color={getIndicatorTextColor()}
+							size={{ base: "18px", "2xl": "22px" }}
+						/>
+					</Flex>
+				)}
+			</Circle>
+		);
+	};
+
+	/**
 	 * Determines the text color based on step state
 	 * @returns {string} Chakra color token
 	 */
 	const getTextColor = (): string => {
-		if (isActive) return "primary.DEFAULT";
-		if (isSkipped) return "accent.dark";
+		if (isInProgress) return "dark";
+		if (isCompleted) return "dark";
+		if (isSkipped) return "light";
 		if (isFailed) return "error";
-		if (isDisabled) return "gray.400";
-		return "dark";
+		return "light";
 	};
+
+	const isHorizontal = orientation === "horizontal";
+
+	const connectorWidth = "2px";
+	const connectorHeight = { base: "24px", "2xl": "32px" };
+	const connectorColorBefore =
+		isCompleted || isInProgress ? statusColors.completed : "hint";
+	const connectorColorAfter = isCompleted ? statusColors.completed : "hint";
 
 	return (
 		<Flex
 			direction="column"
+			align={isHorizontal ? "center" : "flex-start"}
+			w={isHorizontal ? "auto" : "100%"}
+			minW={isHorizontal ? "100px" : "auto"}
+			textAlign={isHorizontal ? "center" : "left"}
 			position="relative"
 			cursor={isClickable ? "pointer" : "default"}
 			onClick={isClickable ? onClick : undefined}
 			_hover={isClickable ? { opacity: 0.8 } : undefined}
 			transition="opacity 0.2s"
+			flex={isHorizontal ? 1 : "none"}
 		>
-			{/* Step content row */}
-			<Flex align="flex-start" gap={{ base: "3", "2xl": "4" }}>
-				{/* Indicator column with connector line */}
-				<Flex direction="column" align="center">
-					{renderStepIndicator()}
+			{/* Step content */}
+			<Flex
+				align={isHorizontal ? "center" : "center"}
+				direction={isHorizontal ? "column" : "row"}
+				gap={{ base: 3, "2xl": 4 }}
+				w="100%"
+			>
+				{/* Indicator with connector */}
+				{isHorizontal ? (
+					<Flex direction="row" align="center" flex={1} w="100%">
+						{/* Connector before (horizontal) */}
+						{index > 0 && (
+							<Box
+								flex={1}
+								h={connectorWidth}
+								bg={connectorColorBefore}
+								transition="background 0.2s ease"
+							/>
+						)}
 
-					{/* Connector line */}
-					{showConnector && (
-						<Box
-							w="2px"
-							h={{ base: "24px", "2xl": "28px" }}
-							bg={isCompleted ? "success" : "gray.200"}
-							mt="1"
-						/>
-					)}
-				</Flex>
+						{renderStepIndicator()}
 
-				{/* Label and badge column */}
+						{/* Connector after (horizontal) */}
+						{showConnector && (
+							<Box
+								flex={1}
+								h={connectorWidth}
+								bg={connectorColorAfter}
+								transition="background 0.2s ease"
+							/>
+						)}
+					</Flex>
+				) : (
+					<Flex direction="column" align="center" flexShrink={0}>
+						{/* Connector before (vertical) */}
+						{index > 0 ? (
+							<Box
+								w={connectorWidth}
+								h={connectorHeight}
+								bg={connectorColorBefore}
+								transition="background 0.2s ease"
+							/>
+						) : (
+							<Box h={connectorHeight} />
+						)}
+
+						{renderStepIndicator()}
+
+						{/* Connector after (vertical) */}
+						{showConnector ? (
+							<Box
+								w={connectorWidth}
+								h={connectorHeight}
+								bg={connectorColorAfter}
+								transition="background 0.2s ease"
+							/>
+						) : (
+							<Box h={connectorHeight} />
+						)}
+					</Flex>
+				)}
+
+				{/* Label and description */}
 				<Flex
 					direction="column"
 					gap="1"
-					pt="1px"
-					minH={
-						showConnector ? { base: "48px", "2xl": "56px" } : "auto"
-					}
+					pt={isHorizontal ? 2 : 0}
+					align={isHorizontal ? "center" : "flex-start"}
+					maxW={isHorizontal ? "120px" : "none"}
 				>
 					<Text
 						fontSize={{ base: "sm", "2xl": "md" }}
-						fontWeight={isActive ? "semibold" : "normal"}
+						fontWeight={isInProgress ? "semibold" : "medium"}
 						color={getTextColor()}
 						lineHeight="short"
+						noOfLines={isHorizontal ? 2 : undefined}
 					>
 						{label}
 					</Text>
-					{renderStatusBadge()}
+
+					{description && (
+						<Text
+							fontSize={{ base: "xs", "2xl": "sm" }}
+							color="light"
+							lineHeight="short"
+							noOfLines={isHorizontal ? 3 : undefined}
+						>
+							{description}
+						</Text>
+					)}
 				</Flex>
 			</Flex>
 		</Flex>
