@@ -1,4 +1,3 @@
-import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -98,10 +97,9 @@ export const useStepExecutor = ({
 }: UseStepExecutorProps): UseStepExecutorReturn => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const _toast = useToast();
 
-	const [_pipelineState, _setPipelineState] = useState<PipelineState>({});
-	const [_isExecuting, _setIsExecuting] = useState(false);
+	const [pipelineState, setPipelineState] = useState<PipelineState>({});
+	const [isExecuting, setIsExecuting] = useState(false);
 
 	/**
 	 * Inject state values into form data based on preSubmit config
@@ -230,7 +228,7 @@ export const useStepExecutor = ({
 				return _existingPipelineState;
 			}
 
-			// setIsExecuting(true);
+			setIsExecuting(true);
 			const state: PipelineState = { ..._existingPipelineState };
 
 			// Inject state values into form data
@@ -319,20 +317,21 @@ export const useStepExecutor = ({
 			);
 
 			if (allSucceeded) {
-				// Get the last step's response
 				const lastResponse =
 					state[pipeline[pipeline.length - 1].id]?.response;
 				if (onComplete) onComplete(lastResponse);
-			} else if (!allSucceeded) {
+			} else {
 				// Find the first failed step
 				const failedStep = pipeline.find(
 					(step) => state[step.id]?.status === "failed"
 				);
-				onError(
-					failedStep
-						? state[failedStep.id]?.response
-						: "Pipeline failed"
-				);
+				if (onError) {
+					onError(
+						failedStep
+							? state[failedStep.id]?.response
+							: "Pipeline failed"
+					);
+				}
 			}
 
 			return state;
@@ -343,16 +342,15 @@ export const useStepExecutor = ({
 			injectStateValues,
 			executeFormCall,
 			executeUploadCall,
-			// toast,
-			// onComplete,
-			// onError,
+			onComplete,
+			onError,
 		]
 	);
 
 	return {
 		execute,
-		pipelineState: {},
-		isExecuting: false,
+		pipelineState,
+		isExecuting,
 	};
 };
 

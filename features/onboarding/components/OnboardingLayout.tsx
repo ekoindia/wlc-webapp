@@ -1,7 +1,11 @@
 import { Box } from "@chakra-ui/react";
 import { Card } from "components/Card";
 import { STEP_STATUS, Stepper } from "components/Stepper";
-import { StepFilterConfig, StepItem } from "components/Stepper/types";
+import {
+	StepFilterConfig,
+	StepItem,
+	StepStatus,
+} from "components/Stepper/types";
 import { useMemo, type ReactNode } from "react";
 import type { OnboardingStep } from "../constants";
 import { ONBOARDING_STEP_STATUS } from "../constants";
@@ -38,9 +42,9 @@ export interface OnboardingLayoutProps {
 /**
  * Maps onboarding step status to Stepper STEP_STATUS
  * @param {number} stepStatus - Onboarding step status value
- * @returns {number} Stepper STEP_STATUS value
+ * @returns {StepStatus} Stepper StepStatus value
  */
-const mapStepStatus = (stepStatus: number): number => {
+const mapStepStatus = (stepStatus: number): StepStatus => {
 	switch (stepStatus) {
 		case ONBOARDING_STEP_STATUS.COMPLETED:
 			return STEP_STATUS.COMPLETED;

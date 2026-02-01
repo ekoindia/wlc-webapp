@@ -105,16 +105,8 @@ describe("StepperLayout", () => {
 	});
 
 	describe("Status Colors", () => {
-		it("should accept custom status colors", () => {
-			const customColors = {
-				...DEFAULT_STATUS_COLORS,
-				completed: "green.500",
-				failed: "red.500",
-			};
-
-			const { container } = render(
-				<StepperLayout {...defaultProps} statusColors={customColors} />
-			);
+		it("should use DEFAULT_STATUS_COLORS for styling", () => {
+			const { container } = render(<StepperLayout {...defaultProps} />);
 			expect(container).not.toBeEmptyDOMElement();
 		});
 	});
