@@ -122,7 +122,9 @@ const StepperLayout: React.FC<StepperLayoutProps> = ({
 					return (
 						<Box
 							key={step.id}
-							ref={(el) => (currentStepRefs.current[index] = el)}
+							ref={(el) => {
+								currentStepRefs.current[index] = el;
+							}}
 							w={isHorizontal ? "auto" : "100%"}
 							scrollSnapAlign={isHorizontal ? "start" : undefined}
 						>
