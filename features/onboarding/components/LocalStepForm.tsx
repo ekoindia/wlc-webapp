@@ -1,4 +1,5 @@
-import { Box, Button, HStack, VStack } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
+import { ActionButtonGroup } from "components";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
 import type { OnboardingStep } from "../constants";
@@ -86,33 +87,29 @@ const LocalStepForm = ({
 				/>
 
 				{/* Action buttons */}
-				<HStack gap={4} w="100%" justifyContent="flex-end">
-					{/* Skip button - only shown if step is not required */}
-					{canSkip && (
-						<Button
-							type="button"
-							variant="outline"
-							colorScheme="gray"
-							size="lg"
-							onClick={() => onSkip && onSkip(stepConfig.id)}
-							isDisabled={isLoading}
-						>
-							Skip
-						</Button>
-					)}
-
-					{/* Submit button */}
-					<Button
-						type="submit"
-						colorScheme="primary"
-						size="lg"
-						flex={canSkip ? undefined : 1}
-						isLoading={isLoading}
-						isDisabled={isLoading}
-					>
-						{stepConfig.primaryCTAText || "Submit"}
-					</Button>
-				</HStack>
+				<ActionButtonGroup
+					isFixedOnMobile={false}
+					buttonConfigList={[
+						...(canSkip
+							? [
+									{
+										type: "button",
+										variant: "outline",
+										label: "Skip",
+										disabled: isLoading,
+										onClick: () => onSkip?.(stepConfig.id),
+									},
+								]
+							: []),
+						{
+							type: "submit",
+							variant: "solid",
+							label: stepConfig.primaryCTAText || "Submit",
+							loading: isLoading,
+							disabled: isLoading,
+						},
+					]}
+				/>
 			</VStack>
 		</Box>
 	);

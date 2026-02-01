@@ -728,6 +728,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
+		renderSource: "local",
+		localRenderer: {
+			type: "custom",
+			component: "AddBankAccountStep",
+		},
 		api: {
 			pipeline: [
 				{

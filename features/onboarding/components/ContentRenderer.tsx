@@ -1,4 +1,5 @@
 import { Box, Spinner, Text, VStack } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 import type { ComponentType, ReactNode } from "react";
 import { Suspense, useMemo } from "react";
 import type { OnboardingStep } from "../constants";
@@ -13,9 +14,7 @@ const CUSTOM_COMPONENT_REGISTRY: Record<
 	ComponentType<CustomComponentProps>
 > = {
 	// Add custom components here as they are created
-	// Example:
-	// SignAgreementPage: dynamic(() => import('./custom/SignAgreementPage')),
-	// VideoKycPage: dynamic(() => import('./custom/VideoKycPage')),
+	AddBankAccountStep: dynamic(() => import("./custom/AddBankAccountStep")),
 };
 
 /**
