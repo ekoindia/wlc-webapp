@@ -27,8 +27,6 @@ import {
 	useAndroidIntegration,
 	useDigilockerApi,
 	useEsignIntegration,
-	useFileUpload,
-	useKycFormSubmission,
 	useOnboardingState,
 	usePintwinIntegration,
 	useStepConfiguration,
@@ -267,48 +265,6 @@ const OnboardingSteps = ({
 		mobile,
 	});
 
-	const { submitForm } = useKycFormSubmission({
-		state,
-		actions,
-		agreementId,
-		mobile,
-		onSuccess: async (_response, data) => {
-			// Update step status
-			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.COMPLETED);
-
-			// Refresh user profile
-			await refreshAgentProfile();
-		},
-		onError: async (_error, data) => {
-			// Update step status to failed
-			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.FAILED);
-
-			// Refresh user profile
-			await refreshAgentProfile();
-		},
-	});
-
-	const { uploadFile } = useFileUpload({
-		state,
-		actions,
-		mobile,
-		onSuccess: async (_response, data) => {
-			// Update step status
-			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.COMPLETED);
-
-			// Refresh user profile
-			await refreshAgentProfile();
-		},
-
-		onError: async (_error, data) => {
-			// Update step status to failed
-			updateStepStatus(data.id, ONBOARDING_STEP_STATUS.FAILED);
-
-			// Refresh user profile
-			await refreshAgentProfile();
-		},
-	});
-
 	/**
 	 * Initialize step configuration from provided user data.
 	 * @param {object} user_data - object containing onboarding details ({ details: { ... } })
@@ -323,17 +279,10 @@ const OnboardingSteps = ({
 
 	/**
 	 * Handle submission of step data from the external widget or local form.
-	 * Routes payloads to submitForm / uploadFile depending on step id and configuration.
+	 * Uses the pipeline executor to process steps according to their API configuration.
 	 *
-	 * Routing logic:
-	 * 1. Check step config `useLegacyApi` flag
-	 * 2. If false, use new pipeline executor (`executePipeline`)
-	 * 3. If true (default or undefined), use legacy switch-based routing
-	 *
-	 * Special cases (legacy):
+	 * Special cases:
 	 * - SELECTION_SCREEN: ignored (handled by RoleSelection elsewhere)
-	 * - LOCATION_CAPTURE: updates location in state
-	 * - ADD_BANK_ACCOUNT: both submitForm and uploadFile are executed
 	 *
 	 * MARK: Step Submit
 	 * @param {object} data - widget payload
@@ -343,7 +292,6 @@ const OnboardingSteps = ({
 	 */
 	const handleStepDataSubmit = useCallback(
 		async (data) => {
-			// console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 			if (data?.id === ONBOARDING_STEP_IDS.SELECTION_SCREEN) {
 				// Skip role selection as it's handled in RoleSelection component
 				return;
@@ -354,156 +302,110 @@ const OnboardingSteps = ({
 				(step) => step.id === data?.id
 			);
 
-			// Check if we should use the new pipeline executor
-			if (stepConfig && stepConfig.useLegacyApi === false) {
-				// NEW PIPELINE EXECUTOR PATH
-				console.log(
-					`[OnboardingSteps] Using new pipeline executor for step: ${stepConfig.name}`
+			if (!stepConfig) {
+				console.warn(
+					`[OnboardingSteps] No step config found for step ID: ${data?.id}`
 				);
+				return;
+			}
 
-				// Show feedback for execution start (Temporary)
-				toast({
-					title: "Executing step",
-					description: `Executing ${stepConfig.name}`,
-					status: "info",
-					duration: 5000,
-					isClosable: true,
+			console.log(
+				`[OnboardingSteps] Executing pipeline for step: ${stepConfig.name}`
+			);
+
+			// PRE-EXECUTION STATE UPDATES
+			// Call step's onPreSubmit if defined (declarative state updates)
+			stepConfig?.onPreSubmit?.(data, actions);
+
+			// Set API in progress
+			actions.setApiInProgress(true);
+
+			try {
+				const pipelineResult = await executePipeline({
+					stepConfig,
+					formData: data,
+					mobile: String(mobile || ""),
+					accessToken,
+					generateNewToken,
+					sharedState: {
+						mobile: String(mobile || ""),
+						latLong: state.latLong,
+						aadhaar: {
+							number: state.aadhaar?.number ?? undefined,
+							accessKey: state.aadhaar?.accessKey ?? undefined,
+							userCode: state.aadhaar?.userCode ?? undefined,
+						},
+						digilocker: state.digilocker,
+					},
+					onSuccess: async (response) => {
+						console.log(
+							"[OnboardingSteps] Pipeline success:",
+							response
+						);
+						toast({
+							title: data.success_message || "Success",
+							status: "success",
+							duration: 2000,
+						});
+						// Update step status
+						updateStepStatus(
+							data.id,
+							ONBOARDING_STEP_STATUS.COMPLETED
+						);
+						// Advance to next incomplete step for local step tracking
+						const nextStep = state?.stepperData?.find(
+							(step) =>
+								step.id !== data.id &&
+								step.role &&
+								step.stepStatus !==
+									ONBOARDING_STEP_STATUS.COMPLETED &&
+								step.stepStatus !==
+									ONBOARDING_STEP_STATUS.SKIPPED
+						);
+						if (nextStep) {
+							setCurrentStepId(nextStep.id);
+						}
+						// Refresh user profile
+						await refreshAgentProfile();
+					},
+					onError: async (error) => {
+						console.error(
+							"[OnboardingSteps] Pipeline error:",
+							error
+						);
+						toast({
+							title: error?.message || "Something went wrong",
+							status: "error",
+							duration: 3000,
+						});
+						// Update step status to failed
+						updateStepStatus(
+							data.id,
+							ONBOARDING_STEP_STATUS.FAILED
+						);
+					},
 				});
 
-				// PRE-EXECUTION STATE UPDATES
-				// Call step's onPreSubmit if defined (declarative state updates)
-				stepConfig?.onPreSubmit?.(data, actions);
-
-				// Set API in progress
-				actions.setApiInProgress(true);
-
-				try {
-					const pipelineResult = await executePipeline({
-						stepConfig,
-						formData: data,
-						mobile: String(mobile || ""),
-						accessToken,
-						generateNewToken,
-						sharedState: {
-							mobile: String(mobile || ""),
-							latLong: state.latLong,
-							aadhaar: {
-								number: state.aadhaar?.number ?? undefined,
-								accessKey:
-									state.aadhaar?.accessKey ?? undefined,
-								userCode: state.aadhaar?.userCode ?? undefined,
-							},
-							digilocker: state.digilocker,
-						},
-						onSuccess: async (response) => {
-							console.log(
-								"[OnboardingSteps] Pipeline success:",
-								response
-							);
-							toast({
-								title: data.success_message || "Success",
-								status: "success",
-								duration: 2000,
-							});
-							// Update step status
-							updateStepStatus(
-								data.id,
-								ONBOARDING_STEP_STATUS.COMPLETED
-							);
-							// Advance to next incomplete step for local step tracking
-							const nextStep = state?.stepperData?.find(
-								(step) =>
-									step.id !== data.id &&
-									step.role &&
-									step.stepStatus !==
-										ONBOARDING_STEP_STATUS.COMPLETED &&
-									step.stepStatus !==
-										ONBOARDING_STEP_STATUS.SKIPPED
-							);
-							if (nextStep) {
-								setCurrentStepId(nextStep.id);
-							}
-							// Refresh user profile
-							await refreshAgentProfile();
-						},
-						onError: async (error) => {
-							console.error(
-								"[OnboardingSteps] Pipeline error:",
-								error
-							);
-							toast({
-								title: error?.message || "Something went wrong",
-								status: "error",
-								duration: 3000,
-							});
-							// Update step status to failed
-							updateStepStatus(
-								data.id,
-								ONBOARDING_STEP_STATUS.FAILED
-							);
-						},
-					});
-
-					console.log(
-						"[OnboardingSteps] Pipeline result:",
-						pipelineResult
-					);
-				} catch (error) {
-					console.error(
-						"[OnboardingSteps] Pipeline execution error:",
-						error
-					);
-					toast({
-						title: "Something went wrong",
-						status: "error",
-						duration: 3000,
-					});
-				} finally {
-					actions.setApiInProgress(false);
-				}
-
-				// IMPORTANT: Return early to prevent legacy path execution
-				return;
-			}
-
-			// LEGACY SWITCH-BASED ROUTING
-			if (data?.id === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
-				// Update location in state
-				actions.setLocation(data?.form_data?.latlong);
-			}
-
-			if (data?.id === ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT) {
-				// HACK: For bank account, we need both upload and submit
-				// Better configuration required to handle such cases
-				const isAccountAdded = await submitForm(data);
-				if (!isAccountAdded) {
-					// If form submission failed, do not proceed to upload
-					return;
-				}
-				await uploadFile(data);
-				return;
-			} else if (
-				[
-					ONBOARDING_STEP_IDS.WELCOME,
-					ONBOARDING_STEP_IDS.AADHAAR_VERIFICATION,
-					ONBOARDING_STEP_IDS.PAN_VERIFICATION,
-					ONBOARDING_STEP_IDS.VIDEO_KYC,
-					// ONBOARDING_STEP_IDS.ADD_BANK_ACCOUNT,
-				].includes(data?.id)
-			) {
-				// File upload steps
-				await uploadFile(data);
-				return;
-			} else {
-				// Regular form submission
-				await submitForm(data);
-				return;
+				console.log(
+					"[OnboardingSteps] Pipeline result:",
+					pipelineResult
+				);
+			} catch (error) {
+				console.error(
+					"[OnboardingSteps] Pipeline execution error:",
+					error
+				);
+				toast({
+					title: "Something went wrong",
+					status: "error",
+					duration: 3000,
+				});
+			} finally {
+				actions.setApiInProgress(false);
 			}
 		},
 		[
 			actions,
-			submitForm,
-			uploadFile,
 			accessToken,
 			generateNewToken,
 			mobile,

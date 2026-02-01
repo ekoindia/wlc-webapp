@@ -54,7 +54,7 @@ const OnboardingWidget = ({
 	allowedMerchantTypes,
 	refreshAgentProfile,
 }: OnboardingWidgetProps): JSX.Element => {
-	const [selectedRole, setSelectedRole] = useState<string>("");
+	const [_selectedRole, setSelectedRole] = useState<string>("");
 	const [isInitializing, setIsInitializing] = useState<boolean>(true);
 
 	// State to manage the current step in the onboarding process
@@ -144,7 +144,6 @@ const OnboardingWidget = ({
 				return (
 					<RoleSelection
 						setStep={setStep}
-						selectedRole={selectedRole}
 						setSelectedRole={setSelectedRole}
 						isAssistedOnboarding={isAssistedOnboarding}
 						userData={userData}

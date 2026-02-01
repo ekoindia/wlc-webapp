@@ -189,11 +189,7 @@ export interface OnboardingStep {
 	/** Optional success message to display when step is completed */
 	success_message?: string;
 
-	// === NEW: Migration Toggle ===
-	/** If true, use legacy switch-based API routing. If false, use new pipeline executor. */
-	useLegacyApi?: boolean;
-
-	// === NEW: Rendering Configuration ===
+	// === Rendering Configuration ===
 	/** Where this step should be rendered: 'widget' (oaas-widget) or 'local' (this project) */
 	renderSource?: "widget" | "local";
 	/** Configuration for local rendering (only used when renderSource is 'local') */
@@ -383,12 +379,39 @@ export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
  * - `id`: Unique step identifier used for API routing logic (handlers check this)
  * - `role`: Primary role ID for backward compatibility
  * - `applicableRoles`: Array of all role IDs this step applies to (for multi-user-type steps)
- * - `useLegacyApi`: If true, uses old switch-based API routing. Set to false to use new pipeline.
- * - `api.pipeline`: Configuration for the new pipeline executor.
+ * - `api.pipeline`: Configuration for the pipeline executor
  *
  * The filtering logic matches steps where ANY role in applicableRoles appears in the API response.
  */
 export const masterOnboardingSteps: OnboardingStep[] = [
+	{
+		id: ONBOARDING_STEP_IDS.SELECTION_SCREEN,
+		name: "ROLE_SELECTION",
+		label: "Role Selection",
+		isRequired: true,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Continue",
+		description: "Select your role to begin the onboarding process.",
+		form_data: {},
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId: TransactionIds.USER_ONBOARDING_ROLE,
+					fieldMapping: {
+						applicant_type: "applicant_type",
+					},
+				},
+			],
+		},
+		preSubmit: {
+			inject: {
+				csp_id: "state.mobile",
+			},
+		},
+	},
 	{
 		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
 		name: "LOCATION_CAPTURE",
@@ -403,8 +426,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
 		form_data: {},
 		success_message: "Location captured successfully.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -441,8 +462,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload clear photos of both front and back of your Aadhaar card. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
-		// Configuration for new pipeline execution
-		useLegacyApi: false,
 		renderSource: "local",
 		localRenderer: {
 			type: "form",
@@ -492,8 +511,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Please provide your consent to use Aadhaar for identity verification as per UIDAI guidelines.",
 		form_data: {},
 		success_message: "Aadhaar consent taken.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -524,8 +541,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Please verify that your Aadhaar number is entered correctly before proceeding.",
 		form_data: {},
 		success_message: "Aadhaar number confirmed.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -551,8 +566,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Enter the OTP sent to your Aadhaar-registered mobile number to verify your identity.",
 		form_data: {},
 		success_message: "Aadhaar confirmed successfully.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -576,8 +589,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description: "Verify your Aadhaar using your Digilocker account.",
 		form_data: {},
 		success_message: "Digilocker verification successful.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -606,8 +617,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "PAN verified successfully.",
-		// Configuration for new pipeline execution
-		useLegacyApi: false,
 		renderSource: "local",
 		localRenderer: {
 			type: "form",
@@ -672,8 +681,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Take a clear selfie in good lighting to complete your identity verification. Ensure your face is clearly visible.",
 		form_data: {},
 		success_message: "KYC completed.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -698,8 +705,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -723,8 +728,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -758,8 +761,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Create a secure 4-digit PIN for transaction authorization. Keep it confidential and don't share with anyone.",
 		form_data: {},
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{
@@ -789,8 +790,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Review and digitally sign the terms and conditions to activate your account and start using our services.",
 		form_data: {},
 		success_message: "Agreement signed successfully.",
-		// === NEW CONFIG ===
-		useLegacyApi: false,
 		api: {
 			pipeline: [
 				{

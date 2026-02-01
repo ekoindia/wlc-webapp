@@ -17,12 +17,8 @@ export {
 	useAndroidIntegration,
 	useDigilockerApi,
 	useEsignIntegration,
-	useFileUpload,
-	useKycFormSubmission,
-	useOnboardingApiSubmission,
 	useOnboardingState,
 	usePintwinIntegration,
-	useRoleFormSubmission,
 	useStepConfiguration,
 	useStepExecutor,
 } from "./hooks";
