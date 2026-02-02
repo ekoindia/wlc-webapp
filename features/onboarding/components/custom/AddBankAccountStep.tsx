@@ -37,7 +37,7 @@ interface IfscValidation {
 }
 
 interface FormData {
-	bank_code: string;
+	bank_code: string | { value: string; label: string };
 	account: string;
 	ifsc: string;
 	passbook_image: File | null;
@@ -268,9 +268,17 @@ const AddBankAccountStep = ({
 			}
 		}
 
+		// Extract bank_code value (select returns object, we need the value)
+		const bankCodeValue =
+			data.bank_code &&
+			typeof data.bank_code === "object" &&
+			"value" in data.bank_code
+				? (data.bank_code as { value: string }).value
+				: data.bank_code;
+
 		// Prepare form data for API submission
 		const formData: Record<string, any> = {
-			bank_code: data.bank_code,
+			bank_code: bankCodeValue,
 			account: data.account,
 			ifsc: data.ifsc,
 			bank_id,
