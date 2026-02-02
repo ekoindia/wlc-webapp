@@ -683,8 +683,25 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		success_message: "KYC completed.",
 		renderSource: "local",
 		localRenderer: {
-			type: "custom",
-			component: "VideoKycStep",
+			type: "form",
+			formFields: [
+				{
+					name: "selfieImage",
+					label: "Take a live photo with ID proof",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: {
+						accept: "image/jpeg,image/png",
+						cameraOnly: true,
+						watermark: true,
+						options: {
+							detectFace: true,
+							minFaceCount: 1,
+							maxFaceCount: 1,
+						},
+					},
+				},
+			],
 		},
 		api: {
 			pipeline: [
@@ -694,7 +711,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
 					docType: 3, // Video/Selfie document
 					fileKeyMapping: {
-						"videoKyc.fileData": "file1",
+						selfieImage: "file1",
 					},
 				},
 			],

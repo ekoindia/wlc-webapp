@@ -4,7 +4,6 @@ import { Suspense, useMemo } from "react";
 import type { OnboardingStep } from "../constants";
 import LocalStepForm from "./LocalStepForm";
 import AddBankAccountStep from "./custom/AddBankAccountStep";
-import VideoKycStep from "./custom/VideoKycStep";
 
 /**
  * Registry of custom onboarding components
@@ -16,7 +15,6 @@ const CUSTOM_COMPONENT_REGISTRY: Record<
 > = {
 	// Add custom components here as they are created
 	AddBankAccountStep: AddBankAccountStep,
-	VideoKycStep: VideoKycStep,
 };
 
 /**
