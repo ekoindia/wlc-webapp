@@ -186,11 +186,12 @@ const OnboardingSteps = ({
 	}, [state?.stepperData]);
 
 	// Track the current active step for local form rendering
+	// Initialize with initialStepId to avoid first-render timing issues
 	const [currentStepId, setCurrentStepId] = useState<number | undefined>(
-		undefined
+		() => initialStepId
 	);
 
-	// Initialize currentStepId from initialStepId once it's calculated
+	// Sync currentStepId when initialStepId changes (e.g., after data loads)
 	useEffect(() => {
 		if (initialStepId !== undefined && currentStepId === undefined) {
 			setCurrentStepId(initialStepId);
@@ -199,17 +200,15 @@ const OnboardingSteps = ({
 
 	/**
 	 * Get the current step config from masterOnboardingSteps
-	 * Returns the step config if it has renderSource: "local", otherwise undefined
+	 * Always returns the step config for the active step (ContentRenderer decides how to render)
+	 * Uses initialStepId as fallback when currentStepId hasn't been set yet
 	 */
-	const currentLocalStepConfig = useMemo(() => {
-		if (currentStepId === undefined) return undefined;
-		const stepConfig = stepLookupMap.get(String(currentStepId));
-		// Only return config if it should render locally
-		if (stepConfig?.renderSource === "local") {
-			return stepConfig;
-		}
-		return undefined;
-	}, [currentStepId, stepLookupMap]);
+	const currentStepConfig = useMemo(() => {
+		// Use currentStepId if available, otherwise fall back to initialStepId
+		const activeStepId = currentStepId ?? initialStepId;
+		if (activeStepId === undefined) return undefined;
+		return stepLookupMap.get(String(activeStepId));
+	}, [currentStepId, initialStepId, stepLookupMap]);
 
 	// Moved stepConfiguration BEFORE updateStepStatus so it can be referenced
 	// Initialize step configuration hook
@@ -481,6 +480,9 @@ const OnboardingSteps = ({
 				// Set the updated stepper data at once and persist to session storage
 				stepConfiguration.updateStepStates(finalStepperData);
 
+				// Update currentStepId to trigger re-render with new step config
+				setCurrentStepId(nextStep.id);
+
 				console.log(
 					`[OnboardingSteps] Skipped step ${stepId}, moving to next step: ${nextStep.name} (ID: ${nextStep.id})`
 				);
@@ -654,7 +656,7 @@ const OnboardingSteps = ({
 				}}
 			>
 				<ContentRenderer
-					stepConfig={currentLocalStepConfig}
+					stepConfig={currentStepConfig}
 					onSubmit={handleStepDataSubmit}
 					onSkip={handleOnboardingSkip}
 					isLoading={state?.ui?.apiInProgress}

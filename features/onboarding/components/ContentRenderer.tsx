@@ -98,6 +98,7 @@ const ContentRenderer = ({
 	widgetContent,
 	fallbackContent,
 }: ContentRendererProps): JSX.Element => {
+	console.log("[ContentRenderer] Rendering with stepConfig:", stepConfig);
 	/**
 	 * Determine the content type to render
 	 */
