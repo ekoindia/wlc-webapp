@@ -60,6 +60,7 @@ const StepperItem = ({
 	 * @returns {string} Chakra color token
 	 */
 	const getIndicatorTextColor = (): string => {
+		if (isInProgress) return "white";
 		if (isNotStarted) return "gray.500";
 		if (isSkipped) return "gray.600";
 		return "white";
