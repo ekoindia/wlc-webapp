@@ -1,4 +1,4 @@
-import { Box, Circle, Flex, Text } from "@chakra-ui/react";
+import { Box, Circle, Flex, Text, useToken } from "@chakra-ui/react";
 import { Icon } from "components/Icon";
 import { isValidElement, ReactNode } from "react";
 import { DEFAULT_STATUS_COLORS, STEP_STATUS, StepperItemProps } from "./types";
@@ -53,6 +53,42 @@ const StepperItem = ({
 		if (isSkipped) return DEFAULT_STATUS_COLORS.skipped;
 		if (isInProgress) return DEFAULT_STATUS_COLORS.inProgress;
 		return DEFAULT_STATUS_COLORS.notStarted;
+	};
+
+	// Get theme colors dynamically
+	const [successColor, errorColor, hintColor, primaryColor, shadeColor] =
+		useToken("colors", [
+			DEFAULT_STATUS_COLORS.completed,
+			DEFAULT_STATUS_COLORS.failed,
+			DEFAULT_STATUS_COLORS.skipped,
+			DEFAULT_STATUS_COLORS.inProgress,
+			DEFAULT_STATUS_COLORS.notStarted,
+		]);
+
+	/**
+	 * Converts a hex color to rgba with alpha
+	 * @param hex - Hex color string
+	 * @param alpha - Alpha value (0-1)
+	 * @returns rgba string
+	 */
+	const hexToRgba = (hex: string, alpha: number): string => {
+		const r = parseInt(hex.slice(1, 3), 16);
+		const g = parseInt(hex.slice(3, 5), 16);
+		const b = parseInt(hex.slice(5, 7), 16);
+		return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+	};
+
+	/**
+	 * Gets the ring color (lighter shade) for the step indicator
+	 * @returns {string} RGBA color with alpha for ring
+	 */
+	const getRingColor = (): string => {
+		const alpha = 0.2; // 20% opacity for the ring
+		if (isCompleted) return hexToRgba(successColor, alpha);
+		if (isFailed) return hexToRgba(errorColor, alpha);
+		if (isSkipped) return hexToRgba(hintColor, alpha);
+		if (isInProgress) return hexToRgba(primaryColor, alpha);
+		return hexToRgba(shadeColor, alpha);
 	};
 
 	/**
@@ -137,12 +173,13 @@ const StepperItem = ({
 
 		return (
 			<Circle
-				size={{ base: "40px", "2xl": "48px" }}
+				size={{ base: "36px", "2xl": "40px" }}
 				bg={statusColor}
 				flexShrink={0}
 				position="relative"
 				transition="all 0.2s ease"
 				role="group"
+				boxShadow={`0 0 0 4px ${getRingColor()}`}
 			>
 				{/* Default content (icon or number) */}
 				<Flex
