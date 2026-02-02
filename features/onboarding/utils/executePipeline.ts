@@ -53,6 +53,41 @@ interface ExecutePipelineOptions {
 }
 
 /**
+ * Check if a value is file data (File instance or object with fileData property)
+ * @param {unknown} value - Value to check
+ * @returns {boolean} True if the value is file data
+ */
+function isFileData(value: unknown): boolean {
+	if (value instanceof File) return true;
+	if (
+		value &&
+		typeof value === "object" &&
+		"fileData" in (value as Record<string, unknown>)
+	) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Filter out file data from form data for form submissions.
+ * Files cannot be sent as JSON in form calls - they must use upload calls.
+ * @param {Record<string, any>} data - Form data to filter
+ * @returns {Record<string, any>} Form data without file fields
+ */
+function filterFileDataFromForm(
+	data: Record<string, unknown>
+): Record<string, unknown> {
+	const result: Record<string, unknown> = {};
+	for (const [key, value] of Object.entries(data)) {
+		if (!isFileData(value)) {
+			result[key] = value;
+		}
+	}
+	return result;
+}
+
+/**
  * Execute a form submission API call
  * @param {ApiPipelineStep} pipelineStep - Pipeline step configuration containing interaction type ID
  * @param {Record<string, any>} formData - Form data object to submit to the API
@@ -69,6 +104,9 @@ async function executeFormCall(
 	generateNewToken: (..._args: any[]) => any
 ): Promise<ApiCallResult> {
 	try {
+		// Filter out file data - files cannot be sent as JSON, they must use upload calls
+		const filteredFormData = filterFileDataFromForm(formData);
+
 		const response = await fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -77,7 +115,7 @@ async function executeFormCall(
 					interaction_type_id: pipelineStep.interactionTypeId,
 					user_id: mobile,
 					csp_id: mobile,
-					...formData,
+					...filteredFormData,
 				},
 				timeout: 30000,
 			},
