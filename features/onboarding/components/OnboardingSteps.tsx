@@ -597,7 +597,8 @@ const OnboardingSteps = ({
 		if (state.pintwin.bookletNumber) {
 			pintwin.getBookletKey();
 		}
-	}, [state.pintwin.bookletNumber, pintwin]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [state.pintwin.bookletNumber]);
 
 	/**
 	 * Subscribe to Android responses for eSign status updates.
@@ -627,19 +628,10 @@ const OnboardingSteps = ({
 				details: onboardingUserDetails,
 			});
 		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [onboardingUserDetails]);
 
-	useEffect(() => {
-		console.log(
-			"[OnboardingSteps] state:",
-			state,
-			state?.ui?.apiInProgress
-		);
-	}, [state]);
-
-	// console.log("[AgentOnboarding] state data", state.stepperData);
-
-	// MARK: JSX
 	return (
 		<OnboardingProvider
 			mobile={String(mobile || "")}

@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Card } from "components/Card";
 import { STEP_STATUS, Stepper } from "components/Stepper";
 import {
@@ -108,7 +108,7 @@ const OnboardingLayout = ({
 	}, [steps]);
 
 	return (
-		<Box w="100%" h="100%" p={{ base: 4, md: 6 }} className={className}>
+		<Flex className={className}>
 			<Stepper
 				steps={stepperSteps}
 				currentStepId={currentStepId}
@@ -124,7 +124,7 @@ const OnboardingLayout = ({
 					{children}
 				</Card>
 			</Stepper>
-		</Box>
+		</Flex>
 	);
 };
 
