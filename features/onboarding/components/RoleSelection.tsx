@@ -1,23 +1,157 @@
-import { useToast, useToken } from "@chakra-ui/react";
-import { useSession } from "contexts";
-import { useRefreshToken, useUserTypes } from "hooks";
-import dynamic from "next/dynamic";
-import { useCallback } from "react";
 import {
+	Box,
+	Circle,
+	Flex,
+	Heading,
+	Spinner,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
+import { Button, Icon } from "components";
+import { UserTypeIcon } from "constants/UserTypes";
+import { useSession } from "contexts";
+import { useHslColor, useRefreshToken, useUserTypes } from "hooks";
+import { useCallback, useState } from "react";
+import {
+	APPLICANT_TYPES,
 	createRoleSelectionStep,
 	masterOnboardingSteps,
-	ONBOARDING_API_STATUS,
 	ONBOARDING_STEP_IDS,
-	ONBOARDING_STEP_STATUS,
+	type Role,
 	visibleAgentTypes,
 } from "../constants";
 import { useOnboardingState } from "../hooks";
 import { executePipeline } from "../utils";
 
-const ExternalSelectionScreen = dynamic(
-	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
-	{ ssr: false }
-) as any;
+/**
+ * Map applicant_type to user_type_id for icon lookup
+ * APPLICANT_TYPES are different from UserType IDs
+ */
+const APPLICANT_TO_USER_TYPE: Record<number, number> = {
+	[APPLICANT_TYPES.RETAILER]: 2, // Maps to UserType.MERCHANT
+	[APPLICANT_TYPES.DISTRIBUTOR]: 1, // Maps to UserType.DISTRIBUTOR
+	[APPLICANT_TYPES.ENTERPRISE]: 23, // Maps to UserType.ENTERPRISE_PARTNER_ADMIN
+};
+
+/**
+ * Get icon name for a given applicant type
+ * @param {number} applicantType - Applicant type id
+ * @returns {string} Icon name
+ */
+const getIconForApplicantType = (applicantType: number): string => {
+	const userTypeId = APPLICANT_TO_USER_TYPE[applicantType];
+	return UserTypeIcon[userTypeId] || "person";
+};
+
+interface RoleCardProps {
+	role: Role;
+	isSelected: boolean;
+	isDisabled: boolean;
+	onClick: () => void;
+}
+
+/**
+ * Custom role selection card with icon, label, and description
+ * @param {RoleCardProps} props - Role card props
+ * @returns {JSX.Element} Role card
+ */
+const RoleCard = (props: RoleCardProps): JSX.Element => {
+	const { role, isSelected, isDisabled, onClick } = props;
+	const iconName = getIconForApplicantType(role.applicant_type);
+	const { h } = useHslColor(role.label);
+	const borderColor = isSelected ? `hsl(${h},70%,48%)` : `hsl(${h},10%,85%)`;
+	const hoverBorderColor = isDisabled
+		? undefined
+		: isSelected
+			? `hsl(${h},70%,44%)`
+			: `hsl(${h},10%,80%)`;
+
+	const handleClick = () => {
+		if (isDisabled) return;
+		onClick();
+	};
+
+	return (
+		<Flex
+			as="button"
+			type="button"
+			onClick={handleClick}
+			disabled={isDisabled}
+			aria-disabled={isDisabled}
+			tabIndex={isDisabled ? -1 : 0}
+			w="100%"
+			bg="white"
+			p={4}
+			borderRadius="xl"
+			align="center"
+			gap={4}
+			cursor={isDisabled ? "not-allowed" : "pointer"}
+			border="2px solid"
+			borderColor={borderColor}
+			boxShadow={isSelected ? "md" : "sm"}
+			transition="all 0.2s ease"
+			_hover={{
+				borderColor: hoverBorderColor,
+				boxShadow: isDisabled ? undefined : "md",
+				transform: isDisabled ? undefined : "translateY(-1px)",
+			}}
+			_active={{
+				transform: isDisabled ? undefined : "scale(0.99)",
+			}}
+			_focusVisible={{
+				outline: "2px solid",
+				outlineColor: `hsl(${h},70%,44%)`,
+				outlineOffset: "2px",
+			}}
+			opacity={isDisabled ? 0.6 : 1}
+		>
+			{/* Icon */}
+			<Flex
+				w="32px"
+				h="32px"
+				bg={`hsl(${h},70%,52%)`}
+				borderRadius="6px"
+				align="center"
+				justify="center"
+				flexShrink={0}
+			>
+				<Icon size="sm" name={iconName} color="#FFF" />
+			</Flex>
+
+			{/* Content */}
+			<Flex direction="column" align="flex-start" flex={1} gap={0.5}>
+				<Text
+					fontSize="md"
+					fontWeight="semibold"
+					color="gray.800"
+					textAlign="left"
+				>
+					{role.label}
+				</Text>
+				<Text
+					fontSize="sm"
+					color="gray.500"
+					textAlign="left"
+					noOfLines={2}
+				>
+					{role.description}
+				</Text>
+			</Flex>
+
+			{/* Selection Indicator */}
+			{isSelected && (
+				<Circle
+					size="24px"
+					bg={`hsl(${h},70%,44%)`}
+					color="white"
+					flexShrink={0}
+				>
+					<Icon name="check" size="xs" />
+				</Circle>
+			)}
+		</Flex>
+	);
+};
 
 /**
  * RoleSelection component for selecting user role during onboarding
@@ -40,11 +174,9 @@ const RoleSelection = ({
 	allowedMerchantTypes,
 	refreshAgentProfile,
 }) => {
-	// Get theme primary color
-	const [primaryColor, accentColor] = useToken("colors", [
-		"primary.DEFAULT",
-		"accent.DEFAULT",
-	]);
+	const [selectedApplicantType, setSelectedApplicantType] = useState<
+		number | null
+	>(null);
 
 	const mobile = isAssistedOnboarding
 		? assistedAgentDetails?.user_detail?.mobile
@@ -53,7 +185,6 @@ const RoleSelection = ({
 	const { state, actions } = useOnboardingState();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const toast = useToast();
 
 	// Get the role selection step config from masterOnboardingSteps
 	const roleStepConfig = masterOnboardingSteps.find(
@@ -64,7 +195,7 @@ const RoleSelection = ({
 	 * Submit role selection using the pipeline executor
 	 */
 	const submitRoleSelection = useCallback(
-		async (applicantType: string | number) => {
+		async (applicantType: number) => {
 			if (!roleStepConfig) {
 				console.error(
 					"[RoleSelection] Role selection step config not found"
@@ -104,21 +235,11 @@ const RoleSelection = ({
 					},
 					onError: async (error) => {
 						console.error("[RoleSelection] Pipeline error:", error);
-						toast({
-							title: error?.message || "Failed to submit role",
-							status: "error",
-							duration: 3000,
-						});
+						actions.setApiInProgress(false);
 					},
 				});
 			} catch (error) {
 				console.error("[RoleSelection] Submission error:", error);
-				toast({
-					title: "Something went wrong",
-					status: "error",
-					duration: 3000,
-				});
-			} finally {
 				actions.setApiInProgress(false);
 			}
 		},
@@ -131,7 +252,6 @@ const RoleSelection = ({
 			state.latLong,
 			refreshAgentProfile,
 			setStep,
-			toast,
 		]
 	);
 
@@ -141,43 +261,98 @@ const RoleSelection = ({
 		? visibleAgentTypes.assistedOnboarding
 		: allowedMerchantTypes || visibleAgentTypes.selfOnboarding;
 
-	// Example: Custom user type labels from org_metadata (in the future from orgDetail)
-	// const customUserTypeLabels = {
-	// 	1: "Partner", // Custom label for Distributor
-	// 	2: "Agent", // Custom label for I_MERCHANT
-	// 	23: "API Partner", // Custom label for Enterprise
-	// };
-
-	// const onboardingRoleStep = createRoleSelectionStep(visibleAgentTypes, {
-	// 	userTypeLabel: customUserTypeLabels,
-	// });
-
 	const onboardingRoleStep = createRoleSelectionStep(forAgentTypes, {
 		userTypeLabel: userTypeLabels,
 	});
-	// console.log("[AgentOnboarding] onboardingRoleStep", onboardingRoleStep);
+
+	const roles: Role[] = onboardingRoleStep?.form_data?.roles || [];
+
+	/**
+	 * Handle role tile selection
+	 * @param {number} applicantType - Applicant type id
+	 * @returns {void}
+	 */
+	const handleRoleSelect = (applicantType: number) => {
+		if (state.ui?.apiInProgress) return;
+		setSelectedApplicantType(applicantType);
+	};
+
+	/**
+	 * Handle continue button click
+	 */
+	const handleContinue = () => {
+		if (selectedApplicantType === null) return;
+
+		// Update selected role state
+		setSelectedRole(selectedApplicantType);
+
+		// Submit role selection via pipeline executor
+		submitRoleSelection(selectedApplicantType);
+	};
 
 	return (
-		<ExternalSelectionScreen
-			primaryColor={primaryColor}
-			accentColor={accentColor}
-			stepData={onboardingRoleStep}
-			constants={{
-				apiStatus: ONBOARDING_API_STATUS,
-				stepIds: ONBOARDING_STEP_IDS,
-				stepStatus: ONBOARDING_STEP_STATUS,
-			}}
-			handleSubmit={(value) => {
-				const { form_data } = value ?? {};
-				const _applicantType = form_data?.applicant_type ?? "";
+		<Flex
+			direction="column"
+			align="center"
+			w="100%"
+			h="100%"
+			minH="100vh"
+			py={8}
+			px={{ base: 4, md: 8 }}
+			bg="gray.100"
+		>
+			<Box w="100%" maxW="480px">
+				{/* Title */}
+				<Heading
+					as="h1"
+					size="md"
+					fontWeight="semibold"
+					color="dark"
+					mb={6}
+				>
+					{onboardingRoleStep?.label || "Tell us who you are?"}
+				</Heading>
 
-				// Update selected role state
-				setSelectedRole(_applicantType);
+				{/* Role Cards */}
+				<VStack spacing={3} w="100%" align="stretch" mb={8}>
+					{roles.map((role) => (
+						<RoleCard
+							key={role.id}
+							role={role}
+							isSelected={
+								selectedApplicantType === role.applicant_type
+							}
+							isDisabled={Boolean(state.ui?.apiInProgress)}
+							onClick={() =>
+								handleRoleSelect(role.applicant_type)
+							}
+						/>
+					))}
+				</VStack>
 
-				// Submit role selection via pipeline executor
-				submitRoleSelection(_applicantType);
-			}}
-		/>
+				{/* Continue Button */}
+				<Button
+					variant="primary"
+					w="100%"
+					size="lg"
+					isDisabled={
+						selectedApplicantType === null ||
+						state.ui?.apiInProgress
+					}
+					onClick={handleContinue}
+					_disabled={{
+						opacity: 0.5,
+						cursor: "not-allowed",
+					}}
+				>
+					{state.ui?.apiInProgress ? (
+						<Spinner size="sm" />
+					) : (
+						onboardingRoleStep?.primaryCTAText || "Continue"
+					)}
+				</Button>
+			</Box>
+		</Flex>
 	);
 };
 
