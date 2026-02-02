@@ -3,6 +3,10 @@ import { Icon } from "components/Icon";
 import { isValidElement, ReactNode } from "react";
 import { DEFAULT_STATUS_COLORS, STEP_STATUS, StepperItemProps } from "./types";
 
+const CONNECTOR_WIDTH = "2px";
+const CONNECTOR_HEIGHT = { base: "24px", "2xl": "32px" };
+const CONNECTOR_COLOR = "hint";
+
 /**
  * StepperItem - Renders a single step in the stepper with visual states
  *
@@ -171,24 +175,7 @@ const StepperItem = ({
 		);
 	};
 
-	/**
-	 * Determines the text color based on step state
-	 * @returns {string} Chakra color token
-	 */
-	const getTextColor = (): string => {
-		if (isInProgress) return "dark";
-		if (isCompleted) return "dark";
-		if (isSkipped) return "light";
-		if (isFailed) return "error";
-		return "light";
-	};
-
 	const isHorizontal = orientation === "horizontal";
-
-	const connectorWidth = "2px";
-	const connectorHeight = { base: "24px", "2xl": "32px" };
-
-	const connectorColor = "hint";
 
 	return (
 		<Flex
@@ -217,8 +204,8 @@ const StepperItem = ({
 						{/* Connector before (horizontal) - invisible spacer for first item */}
 						<Box
 							flex={1}
-							h={index > 0 ? connectorWidth : 0}
-							bg={index > 0 ? connectorColor : "transparent"}
+							h={index > 0 ? CONNECTOR_WIDTH : 0}
+							bg={index > 0 ? CONNECTOR_COLOR : "transparent"}
 							transition="background 0.2s ease"
 						/>
 
@@ -227,8 +214,8 @@ const StepperItem = ({
 						{/* Connector after (horizontal) - invisible spacer for last item */}
 						<Box
 							flex={1}
-							h={showConnector ? connectorWidth : 0}
-							bg={showConnector ? connectorColor : "transparent"}
+							h={showConnector ? CONNECTOR_WIDTH : 0}
+							bg={showConnector ? CONNECTOR_COLOR : "transparent"}
 							transition="background 0.2s ease"
 						/>
 					</Flex>
@@ -237,13 +224,13 @@ const StepperItem = ({
 						{/* Connector before (vertical) */}
 						{index > 0 ? (
 							<Box
-								w={connectorWidth}
-								h={connectorHeight}
-								bg={connectorColor}
+								w={CONNECTOR_WIDTH}
+								h={CONNECTOR_HEIGHT}
+								bg={CONNECTOR_COLOR}
 								transition="background 0.2s ease"
 							/>
 						) : (
-							<Box h={connectorHeight} />
+							<Box h={CONNECTOR_HEIGHT} />
 						)}
 
 						{renderStepIndicator()}
@@ -251,13 +238,13 @@ const StepperItem = ({
 						{/* Connector after (vertical) */}
 						{showConnector ? (
 							<Box
-								w={connectorWidth}
-								h={connectorHeight}
-								bg={connectorColor}
+								w={CONNECTOR_WIDTH}
+								h={CONNECTOR_HEIGHT}
+								bg={CONNECTOR_COLOR}
 								transition="background 0.2s ease"
 							/>
 						) : (
-							<Box h={connectorHeight} />
+							<Box h={CONNECTOR_HEIGHT} />
 						)}
 					</Flex>
 				)}
@@ -274,7 +261,7 @@ const StepperItem = ({
 					<Text
 						fontSize={{ base: "xs", "2xl": "sm" }}
 						fontWeight={isInProgress ? "semibold" : "medium"}
-						color={getTextColor()}
+						color="dark"
 						lineHeight="short"
 						textAlign={isHorizontal ? "center" : "left"}
 						noOfLines={isHorizontal ? 2 : undefined}

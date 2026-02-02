@@ -85,7 +85,7 @@ const StepperLayout: React.FC<StepperLayoutProps> = ({
 			w="100%"
 			align="flex-start"
 			gap={{ base: 4, md: 6 }}
-			overflow="hidden"
+			overflow="auto"
 		>
 			{/* Stepper Container */}
 			<Flex
@@ -97,8 +97,7 @@ const StepperLayout: React.FC<StepperLayoutProps> = ({
 				justify={isHorizontal ? "flex-start" : "flex-start"}
 				overflowX={isHorizontal ? "auto" : "visible"}
 				overflowY="visible"
-				py={isHorizontal ? 4 : 0}
-				px={isHorizontal ? 2 : 0}
+				p="4"
 				scrollSnapType={isHorizontal ? "x proximity" : undefined}
 				scrollPaddingLeft={isHorizontal ? 8 : undefined}
 				css={
