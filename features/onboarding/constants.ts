@@ -681,6 +681,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Take a clear selfie in good lighting to complete your identity verification. Ensure your face is clearly visible.",
 		form_data: {},
 		success_message: "KYC completed.",
+		renderSource: "local",
+		localRenderer: {
+			type: "custom",
+			component: "VideoKycStep",
+		},
 		api: {
 			pipeline: [
 				{
@@ -688,6 +693,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
 					docType: 3, // Video/Selfie document
+					fileKeyMapping: {
+						"videoKyc.fileData": "file1",
+					},
 				},
 			],
 		},
