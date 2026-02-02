@@ -36,6 +36,13 @@ interface IfscValidation {
 	pattern_error: string;
 }
 
+const IFSC_VALIDATION: IfscValidation = {
+	min: 11,
+	max: 11,
+	pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+	pattern_error: "Invalid IFSC format (e.g., SBIN0000001)",
+} as const;
+
 interface FormData {
 	bank_code: string | { value: string; label: string };
 	account: string;
@@ -61,22 +68,12 @@ const AddBankAccountStep = ({
 		refetch,
 	} = useBankList();
 
-	const [selectedBank, setSelectedBank] = useState<BankListElement | null>(
-		null
-	);
 	const [accountValidation, setAccountValidation] =
 		useState<AccountValidation>({
 			min: 6,
 			max: 20,
 			pattern_error: "Please enter a valid account number",
 		});
-	const [ifscRequired, setIfscRequired] = useState<boolean>(true);
-	const [ifscValidation, setIfscValidation] = useState<IfscValidation>({
-		min: 11,
-		max: 11,
-		pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-		pattern_error: "Invalid IFSC format (e.g., SBIN0000001)",
-	});
 
 	const {
 		register,
@@ -97,91 +94,55 @@ const AddBankAccountStep = ({
 	});
 
 	const formValues = watch();
-	const watchBankCode = watch("bank_code");
+	const watchBankCode = watch("bank_code") as BankListElement | string;
+
+	// Get selected bank object directly from watchBankCode (like PricingCommission pattern)
+	const selectedBank =
+		watchBankCode && typeof watchBankCode === "object"
+			? (watchBankCode as BankListElement)
+			: null;
 
 	// Handle bank selection change - update validation rules
 	useEffect(() => {
-		if (!watchBankCode || !banks.length) return;
-
-		const bank = banks.find(
-			(b: BankListElement) => b.value === watchBankCode
-		);
-		setSelectedBank(bank || null);
-
-		if (bank) {
-			// Extract account validation from dependent_params
-			const accountParam = bank.dependent_params?.find(
-				(p: BankDependentParam) => p.name === "account"
-			);
-
-			if (accountParam) {
-				setAccountValidation({
-					min: accountParam.length_min || 6,
-					max: accountParam.length_max || 20,
-					pattern_error:
-						accountParam.pattern_error ||
-						"Please enter a valid account number",
-				});
-			}
-
-			// Extract ifsc_required from dependent_params (defaults to required)
-			const ifscRequiredParam = bank.dependent_params?.find(
-				(p: BankDependentParam) => p.name === "ifsc_required"
-			);
-			// ifsc_required: 0 = optional, 1 or undefined = required
-			setIfscRequired(ifscRequiredParam?.value !== 0);
-
-			// Extract IFSC validation from dependent_params
-			const ifscParam = bank.dependent_params?.find(
-				(p: BankDependentParam) => p.name === "ifsc"
-			);
-
-			if (ifscParam) {
-				setIfscValidation({
-					min: ifscParam.length_min || 11,
-					max: ifscParam.length_max || 11,
-					pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-					pattern_error:
-						ifscParam.pattern_error ||
-						"Invalid IFSC format (e.g., SBIN0000001)",
-				});
-			} else {
-				// Reset to defaults if no IFSC param
-				setIfscValidation({
-					min: 11,
-					max: 11,
-					pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-					pattern_error: "Invalid IFSC format (e.g., SBIN0000001)",
-				});
-			}
-
-			// Reset account and ifsc fields when bank changes
-			setValue("account", "");
-			setValue("ifsc", "");
-		} else {
-			// Reset to defaults if bank not found
+		if (!selectedBank) {
+			// Reset to defaults if no bank selected
 			setAccountValidation({
 				min: 6,
 				max: 20,
 				pattern_error: "Please enter a valid account number",
 			});
-			setIfscValidation({
-				min: 11,
-				max: 11,
-				pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-				pattern_error: "Invalid IFSC format (e.g., SBIN0000001)",
-			});
-			setIfscRequired(true);
+			return;
 		}
-	}, [watchBankCode, banks, setValue]);
+
+		console.log("[AddBankAccount] Selected bank changed:", selectedBank);
+
+		// Extract account validation from dependent_params
+		const accountParam = selectedBank.dependent_params?.find(
+			(p: BankDependentParam) => p.name === "account"
+		);
+
+		if (accountParam) {
+			setAccountValidation({
+				min: accountParam.length_min || 6,
+				max: accountParam.length_max || 20,
+				pattern_error:
+					accountParam.pattern_error ||
+					"Please enter a valid account number",
+			});
+		}
+
+		// Reset account and ifsc fields when bank changes
+		setValue("account", "");
+		setValue("ifsc", "");
+	}, [selectedBank, setValue]);
 
 	// Re-trigger validation when validation rules change
 	// This pattern follows PricingCommission implementation
 	useEffect(() => {
-		if (accountValidation || ifscValidation) {
+		if (accountValidation) {
 			trigger();
 		}
-	}, [accountValidation, ifscValidation, trigger]);
+	}, [accountValidation, trigger]);
 
 	// Build dynamic parameter_list for Form component
 	const parameterList = useMemo(() => {
@@ -219,27 +180,23 @@ const AddBankAccountStep = ({
 				name: "ifsc",
 				label: "IFSC Code",
 				parameter_type_id: ParamType.TEXT,
-				required: ifscRequired,
-				validations: ifscRequired
-					? {
-							pattern: {
-								value: ifscValidation.pattern,
-								message: ifscValidation.pattern_error,
-							},
-							minLength: {
-								value: ifscValidation.min,
-								message: `IFSC must be at least ${ifscValidation.min} characters`,
-							},
-							maxLength: {
-								value: ifscValidation.max,
-								message: `IFSC must be at most ${ifscValidation.max} characters`,
-							},
-						}
-					: {},
+				required: true,
+				validations: {
+					pattern: {
+						value: IFSC_VALIDATION.pattern,
+						message: IFSC_VALIDATION.pattern_error,
+					},
+					minLength: {
+						value: IFSC_VALIDATION.min,
+						message: `IFSC must be at least ${IFSC_VALIDATION.min} characters`,
+					},
+					maxLength: {
+						value: IFSC_VALIDATION.max,
+						message: `IFSC must be at most ${IFSC_VALIDATION.max} characters`,
+					},
+				},
 				helperText: selectedBank
-					? ifscRequired
-						? ifscValidation.pattern_error
-						: "Optional"
+					? IFSC_VALIDATION.pattern_error
 					: "Bank branch's IFSC code",
 			},
 			{
@@ -253,35 +210,47 @@ const AddBankAccountStep = ({
 				},
 			},
 		];
-	}, [banks, accountValidation, ifscValidation, ifscRequired, selectedBank]);
+	}, [banks, accountValidation, selectedBank]);
 
 	// Handle form submission
 	const onFormSubmit = (data: FormData) => {
+		console.log("[AddBankAccount] Form data to submit:", data);
+		console.log("[AddBankAccount] Selected bank:", selectedBank);
+
 		// Extract bank_id from selected bank's dependent_params
 		let bank_id = "";
 		if (selectedBank) {
 			const bankIdParam = selectedBank.dependent_params?.find(
 				(p: BankDependentParam) => p.name === "bank_id"
 			);
+			console.log("[AddBankAccount] Found bankIdParam:", bankIdParam);
 			if (bankIdParam && bankIdParam.value) {
 				bank_id = String(bankIdParam.value);
 			}
 		}
 
 		// Extract bank_code value (select returns object, we need the value)
-		const bankCodeValue =
-			data.bank_code &&
-			typeof data.bank_code === "object" &&
-			"value" in data.bank_code
-				? (data.bank_code as { value: string }).value
-				: data.bank_code;
+		const bankCodeValue = selectedBank?.value
+			? String(selectedBank.value)
+			: "";
+
+		console.log(
+			"[AddBankAccount] Submitting bank account data:",
+			{
+				bank_code: bankCodeValue,
+				account: data.account,
+				ifsc: data.ifsc,
+			},
+			"with bank_id:",
+			bank_id
+		);
 
 		// Prepare form data for API submission
 		const formData: Record<string, any> = {
 			bank_code: bankCodeValue,
 			account: data.account,
 			ifsc: data.ifsc,
-			bank_id,
+			bank_id: bank_id,
 		};
 
 		// Add passbook image if uploaded (matches widget structure)

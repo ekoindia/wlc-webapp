@@ -1,20 +1,20 @@
 import { Box, Spinner, Text, VStack } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
 import type { ComponentType, ReactNode } from "react";
 import { Suspense, useMemo } from "react";
 import type { OnboardingStep } from "../constants";
 import LocalStepForm from "./LocalStepForm";
+import AddBankAccountStep from "./custom/AddBankAccountStep";
 
 /**
  * Registry of custom onboarding components
- * Maps component names to their dynamic imports
+ * Maps component names to their component references
  */
 const CUSTOM_COMPONENT_REGISTRY: Record<
 	string,
 	ComponentType<CustomComponentProps>
 > = {
 	// Add custom components here as they are created
-	AddBankAccountStep: dynamic(() => import("./custom/AddBankAccountStep")),
+	AddBankAccountStep: AddBankAccountStep,
 };
 
 /**
