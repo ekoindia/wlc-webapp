@@ -127,6 +127,42 @@ export const useStepExecutor = ({
 	);
 
 	/**
+	 * Check if a value is file data (File instance or object with fileData property)
+	 * @param {any} value - Value to check
+	 * @returns {boolean} True if the value is file data
+	 */
+	const isFileData = useCallback((value: unknown): boolean => {
+		if (value instanceof File) return true;
+		if (
+			value &&
+			typeof value === "object" &&
+			"fileData" in (value as Record<string, unknown>)
+		) {
+			return true;
+		}
+		return false;
+	}, []);
+
+	/**
+	 * Filter out file data from form data for form submissions.
+	 * Files cannot be sent as JSON in form calls - they must use upload calls.
+	 * @param {Record<string, any>} data - Form data to filter
+	 * @returns {Record<string, any>} Form data without file fields
+	 */
+	const filterFileData = useCallback(
+		(data: Record<string, unknown>): Record<string, unknown> => {
+			const result: Record<string, unknown> = {};
+			for (const [key, value] of Object.entries(data)) {
+				if (!isFileData(value)) {
+					result[key] = value;
+				}
+			}
+			return result;
+		},
+		[isFileData]
+	);
+
+	/**
 	 * Execute a single form submission API call
 	 */
 	const executeFormCall = useCallback(
@@ -135,6 +171,9 @@ export const useStepExecutor = ({
 			formData: Record<string, any>
 		): Promise<ApiCallResult> => {
 			try {
+				// Filter out file data - files cannot be sent as JSON
+				const filteredFormData = filterFileData(formData);
+
 				const response = await fetcher(
 					process.env.NEXT_PUBLIC_API_BASE_URL +
 						Endpoints.TRANSACTION,
@@ -144,7 +183,7 @@ export const useStepExecutor = ({
 							interaction_type_id: pipelineStep.interactionTypeId,
 							user_id: userId,
 							csp_id: cspId,
-							...formData,
+							...filteredFormData,
 						},
 						timeout: 30000,
 					},
@@ -161,7 +200,7 @@ export const useStepExecutor = ({
 				return { success: false, error };
 			}
 		},
-		[accessToken, userId, cspId, generateNewToken]
+		[accessToken, userId, cspId, generateNewToken, filterFileData]
 	);
 
 	/**
@@ -179,12 +218,27 @@ export const useStepExecutor = ({
 				uploadFormData.append("csp_id", cspId);
 				uploadFormData.append("doc_type", String(pipelineStep.docType));
 
+				const fileKeyMapping = pipelineStep.fileKeyMapping || {};
+				let fileIndex = 1;
+
 				// Append files and other form data
 				for (const [key, value] of Object.entries(formData)) {
-					if (value instanceof File) {
-						uploadFormData.append(key, value);
-					} else if (value !== undefined && value !== null) {
-						uploadFormData.append(key, String(value));
+					// Handle file data objects (e.g., { url, fileData })
+					if (
+						value &&
+						typeof value === "object" &&
+						"fileData" in value &&
+						value.fileData instanceof File
+					) {
+						const mappedKey =
+							fileKeyMapping[key] || `file${fileIndex++}`;
+						uploadFormData.append(mappedKey, value.fileData);
+					}
+					// Handle direct File instances
+					else if (value instanceof File) {
+						const mappedKey =
+							fileKeyMapping[key] || `file${fileIndex++}`;
+						uploadFormData.append(mappedKey, value);
 					}
 				}
 
