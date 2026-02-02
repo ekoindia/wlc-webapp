@@ -94,16 +94,23 @@ const LocalStepForm = ({
 							? [
 									{
 										type: "button",
-										variant: "outline",
+										variant: "link",
 										label: "Skip",
 										disabled: isLoading,
 										onClick: () => onSkip?.(stepConfig.id),
+										styles: {
+											color: "primary.DEFAULT",
+											bg: { base: "white", md: "none" },
+											h: { base: "64px", md: "64px" },
+											w: { base: "100%", md: "auto" },
+											_hover: { textDecoration: "none" },
+										},
 									},
 								]
 							: []),
 						{
 							type: "submit",
-							variant: "solid",
+							// variant: "solid",
 							label: stepConfig.primaryCTAText || "Submit",
 							loading: isLoading,
 							disabled: isLoading,
