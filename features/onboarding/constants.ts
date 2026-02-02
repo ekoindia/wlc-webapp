@@ -746,6 +746,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 7, // Bank passbook document
 					dependsOn: "verify",
+					fileKeyMapping: {
+						passbookImage: "file1",
+					},
 				},
 			],
 		},
