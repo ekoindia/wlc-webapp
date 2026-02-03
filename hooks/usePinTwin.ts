@@ -24,6 +24,16 @@ interface PinTwinResponse {
 
 type PinTwinKeyLoadStatus = "loading" | "loaded" | "error";
 
+/**
+ * Result of PIN validation
+ */
+export interface PinValidationResult {
+	/** Whether the PIN is valid */
+	isValid: boolean;
+	/** Error message if validation failed, null if valid */
+	error: string | null;
+}
+
 export interface UsePinTwinReturn {
 	/** Current load status of the PinTwin key: 'loading', 'loaded', or 'error' */
 	pinTwinKeyLoadStatus: PinTwinKeyLoadStatus;
@@ -31,6 +41,8 @@ export interface UsePinTwinReturn {
 	refreshPinTwinKey: () => Promise<void>;
 	/** Function to encode a PIN using the current key. It is usually 4-digit long but can be of any length (upto 10-digits) */
 	encodePinTwin: (_pin: string) => string;
+	/** Function to validate a PIN. Returns validation result with isValid flag and error message */
+	validatePin: (_pin: string, _length?: number) => PinValidationResult;
 }
 
 /**
@@ -199,6 +211,36 @@ export const usePinTwin = (): UsePinTwinReturn => {
 		[pinTwinKey, pinTwinKeyId]
 	);
 
+	/**
+	 * Validates a PIN and returns validation result
+	 *
+	 * Validates that:
+	 * - Security key is loaded
+	 * - PIN is not empty
+	 * - PIN has the required length
+	 * @param {string} pin The PIN to validate
+	 * @param {number} length Required PIN length (default: 4)
+	 * @returns {PinValidationResult} Validation result with isValid flag and error message
+	 */
+	const validatePin = useCallback(
+		(pin: string, length: number = 4): PinValidationResult => {
+			if (pinTwinKeyLoadStatus !== "loaded") {
+				return { isValid: false, error: "Security key not loaded" };
+			}
+			if (!pin || pin.length === 0) {
+				return { isValid: false, error: `Enter a ${length}-digit PIN` };
+			}
+			if (pin.length < length) {
+				return {
+					isValid: false,
+					error: `PIN must be ${length} digits`,
+				};
+			}
+			return { isValid: true, error: null };
+		},
+		[pinTwinKeyLoadStatus]
+	);
+
 	// Auto-load PinTwin key on component mount (runs only once)
 	// This initiates the loading process with status tracking
 	useEffect(() => {
@@ -225,5 +267,6 @@ export const usePinTwin = (): UsePinTwinReturn => {
 		pinTwinKeyLoadStatus,
 		refreshPinTwinKey,
 		encodePinTwin,
+		validatePin,
 	};
 };

@@ -180,7 +180,12 @@ const Form = ({
 										rules={{
 											..._validations,
 											validate: (value) => {
-												if (value.length >= 4) {
+												const requiredLength =
+													rest?.length ?? 4;
+												if (
+													value.length >=
+													requiredLength
+												) {
 													return true;
 												}
 												return false;
@@ -188,19 +193,18 @@ const Form = ({
 										}}
 										render={({ field: { onChange } }) => (
 											<Pintwin
-												{...{
-													label,
-													disabled,
-													onPinChange: (
-														pin,
-														encodedPin
-													) => {
-														onChange(
-															encodedPin || pin
-														);
-													},
-													...rest,
+												label={label}
+												disabled={disabled}
+												onPinChange={(pin) => {
+													onChange(pin); // Raw PIN while typing
 												}}
+												onPinComplete={(
+													_pin,
+													encodedPin
+												) => {
+													onChange(encodedPin); // Encoded PIN when complete
+												}}
+												{...rest}
 											/>
 										)}
 									/>

@@ -158,4 +158,51 @@ describe("usePinTwin", () => {
 
 		expect(result.current.pinTwinKeyLoadStatus).toBe("error");
 	}, 15000); // Increase timeout for this test
+
+	it("should validate PIN correctly when key is loaded", async () => {
+		jest.useFakeTimers();
+
+		mockedFetcher.mockResolvedValue(mockResponse);
+
+		const { result } = renderHook(() => usePinTwin());
+		expect(result.current).toBeDefined();
+
+		await act(async () => {
+			jest.runAllTimers();
+		});
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loaded");
+
+		// Test valid PIN
+		const validResult = result.current.validatePin("1234");
+		expect(validResult.isValid).toBe(true);
+		expect(validResult.error).toBeNull();
+
+		// Test PIN too short
+		const shortResult = result.current.validatePin("12");
+		expect(shortResult.isValid).toBe(false);
+		expect(shortResult.error).toBe("PIN must be 4 digits");
+
+		// Test empty PIN
+		const emptyResult = result.current.validatePin("");
+		expect(emptyResult.isValid).toBe(false);
+		expect(emptyResult.error).toBe("Enter a 4-digit PIN");
+
+		// Test custom length validation
+		const customLengthResult = result.current.validatePin("12", 6);
+		expect(customLengthResult.isValid).toBe(false);
+		expect(customLengthResult.error).toBe("PIN must be 6 digits");
+
+		jest.useRealTimers();
+	});
+
+	it("should return error when validating PIN before key is loaded", () => {
+		const { result } = renderHook(() => usePinTwin());
+
+		// Key is still loading
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loading");
+
+		const validationResult = result.current.validatePin("1234");
+		expect(validationResult.isValid).toBe(false);
+		expect(validationResult.error).toBe("Security key not loaded");
+	});
 });

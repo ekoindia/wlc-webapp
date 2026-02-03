@@ -1,4 +1,4 @@
-import userEvent from "@testing-library/user-event";
+import { fireEvent } from "@testing-library/react";
 import { render, screen } from "test-utils";
 import Pintwin from "tf-components/Pintwin/Pintwin";
 
@@ -74,11 +74,10 @@ jest.mock("components/InputLabel", () => ({
 
 describe("Pintwin Component", () => {
 	const defaultMockHookReturn = {
-		pintwinKey: ["1", "9", "7", "4", "8", "5", "6", "3", "0", "2"],
-		loading: false,
-		reloadKey: jest.fn(),
+		pinTwinKeyLoadStatus: "loaded",
+		refreshPinTwinKey: jest.fn(),
 		encodePinTwin: jest.fn((pin: string) => `encoded_${pin}`),
-		keyLoadError: false,
+		validatePin: jest.fn(() => ({ isValid: true, error: null })),
 	};
 
 	beforeEach(() => {
@@ -102,7 +101,7 @@ describe("Pintwin Component", () => {
 	});
 
 	it("renders OtpInput with correct props", () => {
-		render(<Pintwin maxLength={6} />);
+		render(<Pintwin length={6} />);
 
 		expect(MockOtpInput).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -125,7 +124,7 @@ describe("Pintwin Component", () => {
 	it("passes loading state to OtpInput", () => {
 		mockUsePinTwin.mockReturnValue({
 			...defaultMockHookReturn,
-			loading: true,
+			pinTwinKeyLoadStatus: "loading",
 		});
 
 		render(<Pintwin />);
@@ -137,22 +136,18 @@ describe("Pintwin Component", () => {
 		);
 	});
 
-	it("calls onPinChange when PIN is entered", async () => {
-		const user = userEvent.setup();
-		const onPinChange = jest.fn();
-		render(<Pintwin onPinChange={onPinChange} />);
+	it("calls onPinComplete when PIN is entered", () => {
+		const onPinComplete = jest.fn();
+		render(<Pintwin onPinComplete={onPinComplete} />);
 
-		const pinInput = screen.getByTestId("pin-input");
-		await user.type(pinInput, "1234");
-
-		// Simulate onComplete callback
+		// Simulate onComplete callback directly (mocked OtpInput)
 		const otpInputProps = MockOtpInput.mock.calls[0][0];
 		otpInputProps.onComplete("1234");
 
-		expect(onPinChange).toHaveBeenCalledWith("1234", "encoded_1234");
+		expect(onPinComplete).toHaveBeenCalledWith("1234", "encoded_1234");
 	});
 
-	it("handles PIN change without onPinChange callback", () => {
+	it("handles PIN complete without onPinComplete callback", () => {
 		render(<Pintwin />);
 
 		const otpInputProps = MockOtpInput.mock.calls[0][0];
@@ -175,7 +170,7 @@ describe("Pintwin Component", () => {
 	it("renders IcoButton with retry icon when loading", () => {
 		mockUsePinTwin.mockReturnValue({
 			...defaultMockHookReturn,
-			loading: true,
+			pinTwinKeyLoadStatus: "loading",
 		});
 
 		render(<Pintwin />);
@@ -193,7 +188,7 @@ describe("Pintwin Component", () => {
 	it("renders IcoButton with replay icon when there's an error", () => {
 		mockUsePinTwin.mockReturnValue({
 			...defaultMockHookReturn,
-			keyLoadError: true,
+			pinTwinKeyLoadStatus: "error",
 		});
 
 		render(<Pintwin />);
@@ -208,91 +203,35 @@ describe("Pintwin Component", () => {
 		);
 	});
 
-	it("calls reloadKey when IcoButton is clicked and there's an error", async () => {
-		const user = userEvent.setup();
-		const reloadKey = jest.fn();
+	it("calls refreshPinTwinKey when IcoButton is clicked and there's an error", () => {
+		const refreshPinTwinKey = jest.fn();
 		mockUsePinTwin.mockReturnValue({
 			...defaultMockHookReturn,
-			keyLoadError: true,
-			reloadKey,
+			pinTwinKeyLoadStatus: "error",
+			refreshPinTwinKey,
 		});
 
 		render(<Pintwin />);
 
 		const icoButton = screen.getByTestId("ico-button");
-		await user.click(icoButton);
+		fireEvent.click(icoButton);
 
-		expect(reloadKey).toHaveBeenCalled();
+		expect(refreshPinTwinKey).toHaveBeenCalled();
 	});
 
-	it("does not call reloadKey when IcoButton is clicked and there's no error", async () => {
-		const user = userEvent.setup();
-		const reloadKey = jest.fn();
+	it("does not call refreshPinTwinKey when IcoButton is clicked and there's no error", () => {
+		const refreshPinTwinKey = jest.fn();
 		mockUsePinTwin.mockReturnValue({
 			...defaultMockHookReturn,
-			reloadKey,
+			refreshPinTwinKey,
 		});
 
 		render(<Pintwin />);
 
 		const icoButton = screen.getByTestId("ico-button");
-		await user.click(icoButton);
+		fireEvent.click(icoButton);
 
-		expect(reloadKey).not.toHaveBeenCalled();
-	});
-
-	it("renders lookup table when noLookup is false", () => {
-		render(<Pintwin noLookup={false} />);
-
-		// Should render the lookup table with digits
-		expect(screen.getByText("0")).toBeInTheDocument();
-		expect(screen.getByText("1")).toBeInTheDocument();
-		expect(screen.getByText("2")).toBeInTheDocument();
-		expect(screen.getByText("3")).toBeInTheDocument();
-		expect(screen.getByText("4")).toBeInTheDocument();
-		expect(screen.getByText("5")).toBeInTheDocument();
-		expect(screen.getByText("6")).toBeInTheDocument();
-		expect(screen.getByText("7")).toBeInTheDocument();
-		expect(screen.getByText("8")).toBeInTheDocument();
-		expect(screen.getByText("9")).toBeInTheDocument();
-	});
-
-	it("does not render lookup table when noLookup is true", () => {
-		render(<Pintwin noLookup={true} />);
-
-		// Should not render the lookup table
-		expect(screen.queryByText("0")).not.toBeInTheDocument();
-		expect(screen.queryByText("1")).not.toBeInTheDocument();
-	});
-
-	it("applies loading opacity to lookup table when loading", () => {
-		mockUsePinTwin.mockReturnValue({
-			...defaultMockHookReturn,
-			loading: true,
-		});
-
-		render(<Pintwin noLookup={false} />);
-
-		const lookupContainer = screen.getByText("0").closest("div");
-		expect(lookupContainer).toHaveStyle("opacity: 0.4");
-	});
-
-	it("uses mock data when useMockData is true", () => {
-		render(<Pintwin useMockData={true} />);
-
-		expect(mockUsePinTwin).toHaveBeenCalledWith({
-			useMockData: true,
-			autoLoad: true,
-		});
-	});
-
-	it("uses real data when useMockData is false", () => {
-		render(<Pintwin useMockData={false} />);
-
-		expect(mockUsePinTwin).toHaveBeenCalledWith({
-			useMockData: false,
-			autoLoad: true,
-		});
+		expect(refreshPinTwinKey).not.toHaveBeenCalled();
 	});
 
 	it("handles PIN encoding correctly", () => {
@@ -302,7 +241,8 @@ describe("Pintwin Component", () => {
 			encodePinTwin,
 		});
 
-		render(<Pintwin />);
+		const onPinComplete = jest.fn();
+		render(<Pintwin onPinComplete={onPinComplete} />);
 
 		const otpInputProps = MockOtpInput.mock.calls[0][0];
 		otpInputProps.onComplete("5678");
@@ -310,23 +250,8 @@ describe("Pintwin Component", () => {
 		expect(encodePinTwin).toHaveBeenCalledWith("5678");
 	});
 
-	it("handles case when encodePinTwin is not available", () => {
-		mockUsePinTwin.mockReturnValue({
-			...defaultMockHookReturn,
-			encodePinTwin: undefined,
-		});
-
-		const onPinChange = jest.fn();
-		render(<Pintwin onPinChange={onPinChange} />);
-
-		const otpInputProps = MockOtpInput.mock.calls[0][0];
-		otpInputProps.onComplete("1234");
-
-		expect(onPinChange).toHaveBeenCalledWith("1234", "1234");
-	});
-
-	it("renders with custom maxLength", () => {
-		render(<Pintwin maxLength={6} />);
+	it("renders with custom length", () => {
+		render(<Pintwin length={6} />);
 
 		expect(MockOtpInput).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -335,7 +260,7 @@ describe("Pintwin Component", () => {
 		);
 	});
 
-	it("renders with default maxLength when not provided", () => {
+	it("renders with default length when not provided", () => {
 		render(<Pintwin />);
 
 		expect(MockOtpInput).toHaveBeenCalledWith(

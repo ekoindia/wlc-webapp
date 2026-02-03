@@ -31,20 +31,23 @@ jest.mock("@chakra-ui/react", () => ({
 
 // Mock Pintwin component to allow controlled PIN simulation
 jest.mock("tf-components", () => ({
-	Pintwin: ({ onPinChange, label, ...props }) => {
+	Pintwin: ({ onPinChange, onPinComplete, label, length = 4, ...props }) => {
 		return (
 			<div data-testid="pintwin-component">
 				<label>{label}</label>
 				<input
 					data-testid="pin-input"
 					type="password"
-					maxLength={4}
+					maxLength={length}
 					onChange={(e) => {
 						const value = e.target.value;
-						// Simulate encoded PIN with key ID (as per component logic)
-						const encodedValue =
-							value.length === 4 ? `encoded_${value}|87` : value;
-						onPinChange?.(value, encodedValue);
+						// Call onPinChange on every keystroke
+						onPinChange?.(value);
+						// Only call onPinComplete when PIN reaches required length
+						if (value.length === length) {
+							const encodedValue = `encoded_${value}|87`;
+							onPinComplete?.(value, encodedValue);
+						}
 					}}
 					{...props}
 				/>

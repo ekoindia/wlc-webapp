@@ -14,33 +14,47 @@ interface PintwinProps {
 	label?: string;
 	/** Whether the component is disabled and non-interactive */
 	disabled?: boolean;
-	/** Callback function called when PIN is entered or changed */
-	onPinChange?: (_pin: string, _encodedPin?: string) => void;
+	/** Number of digits for PIN (default: 4) */
+	length?: number;
+	/** Callback function called on every keystroke with raw PIN value */
+	onPinChange?: (_pin: string) => void;
+	/** Callback function called when PIN reaches required length with encoded value */
+	onPinComplete?: (_pin: string, _encodedPin: string) => void;
 }
 
 /**
  * A secure PIN input component that uses a PinTwin key grid for entry.
  *
  * It relies on the `usePinTwin` hook for its logic, including API calls,
- * state management, and PIN encoding, functioning as a presentational component.
+ * state management, PIN encoding and validation, functioning as a presentational component.
  * @param {PintwinProps} props - The props for the component.
  * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface.
  * @example
  * ```tsx
- * Basic usage with automatic key loading
+ * // Basic usage with automatic key loading
  * <Pintwin />
  *
- * With a PIN change handler
- * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
+ * // With separate change and complete handlers
+ * <Pintwin
+ *   length={4}
+ *   onPinChange={(pin) => console.log('Typing:', pin)}
+ *   onPinComplete={(pin, encodedPin) => console.log('Complete:', encodedPin)}
+ * />
  * ```
  */
 const Pintwin: React.FC<PintwinProps> = ({
 	label = "Secret PIN",
 	disabled = false,
+	length = 4,
 	onPinChange,
+	onPinComplete,
 }) => {
-	const { refreshPinTwinKey, encodePinTwin, pinTwinKeyLoadStatus } =
-		usePinTwin();
+	const {
+		refreshPinTwinKey,
+		encodePinTwin,
+		validatePin,
+		pinTwinKeyLoadStatus,
+	} = usePinTwin();
 
 	// Derive individual status flags from consolidated state for component logic
 	// This maintains component readability while using the cleaner hook interface
@@ -48,30 +62,31 @@ const Pintwin: React.FC<PintwinProps> = ({
 	const keyLoadError = pinTwinKeyLoadStatus === "error";
 
 	/**
-	 * Handles PIN input changes (for length tracking only, no encoding)
+	 * Handles PIN input changes (for progress tracking only, no encoding)
 	 */
 	const handlePinInputChange = useCallback(
 		(value: string) => {
 			if (onPinChange) {
-				onPinChange(value, undefined); // Only track length, do not encode
+				onPinChange(value);
 			}
 		},
 		[onPinChange]
 	);
 
 	/**
-	 * Handles PIN input completion (encode only when complete)
+	 * Handles PIN input completion (validate, encode, and notify)
 	 */
 	const handlePinComplete = useCallback(
 		(value: string) => {
-			if (onPinChange) {
-				const encodedValue = encodePinTwin
-					? encodePinTwin(value)
-					: value;
-				onPinChange(value, encodedValue);
+			if (onPinComplete) {
+				const validation = validatePin(value, length);
+				if (validation.isValid) {
+					const encodedValue = encodePinTwin(value);
+					onPinComplete(value, encodedValue);
+				}
 			}
 		},
-		[onPinChange, encodePinTwin]
+		[onPinComplete, encodePinTwin, validatePin, length]
 	);
 
 	return (
@@ -89,7 +104,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 				<Flex align="center" gap="4">
 					<OtpInput
 						mask={true}
-						length={4}
+						length={length}
 						onChange={handlePinInputChange}
 						onComplete={handlePinComplete}
 						inputStyle={{
