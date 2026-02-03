@@ -50,6 +50,8 @@ const Pintwin: React.FC<PintwinProps> = ({
 	onPinComplete,
 }) => {
 	const {
+		pin,
+		setPin,
 		refreshPinTwinKey,
 		encodePinTwin,
 		validatePin,
@@ -66,11 +68,12 @@ const Pintwin: React.FC<PintwinProps> = ({
 	 */
 	const handlePinInputChange = useCallback(
 		(value: string) => {
+			setPin(value);
 			if (onPinChange) {
 				onPinChange(value);
 			}
 		},
-		[onPinChange]
+		[setPin, onPinChange]
 	);
 
 	/**
@@ -105,6 +108,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 					<OtpInput
 						mask={true}
 						length={length}
+						value={pin}
 						onChange={handlePinInputChange}
 						onComplete={handlePinComplete}
 						inputStyle={{

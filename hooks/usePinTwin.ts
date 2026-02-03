@@ -35,6 +35,12 @@ export interface PinValidationResult {
 }
 
 export interface UsePinTwinReturn {
+	/** Current PIN value */
+	pin: string;
+	/** Function to update the PIN value */
+	setPin: (_pin: string) => void;
+	/** Function to clear the PIN value */
+	clearPin: () => void;
 	/** Current load status of the PinTwin key: 'loading', 'loaded', or 'error' */
 	pinTwinKeyLoadStatus: PinTwinKeyLoadStatus;
 	/** Function to manually reload the PinTwin key */
@@ -81,6 +87,10 @@ export interface UsePinTwinReturn {
  * ```
  */
 export const usePinTwin = (): UsePinTwinReturn => {
+	// PIN state - managed by this hook, consumed by Pintwin component
+	const [pin, setPin] = useState("");
+	const clearPin = useCallback(() => setPin(""), []);
+
 	const [pinTwinKey, setPinTwinKey] = useState<string[]>([]);
 	const [pinTwinKeyLoadStatus, setPinTwinKeyLoadStatus] =
 		useState<PinTwinKeyLoadStatus>("loading");
@@ -264,6 +274,9 @@ export const usePinTwin = (): UsePinTwinReturn => {
 	}, []);
 
 	return {
+		pin,
+		setPin,
+		clearPin,
 		pinTwinKeyLoadStatus,
 		refreshPinTwinKey,
 		encodePinTwin,

@@ -6,28 +6,28 @@ import { useRef, useState } from "react";
  * @example
  * ```typescript
  * // Basic usage with default 6-digit OTP
- * <OtpInput />
+ * <OtpInput value={otp} onChange={setOtp} />
  *
  * // Custom length OTP input
- * <OtpInput length={4} />
- *
- * // With change handlers
- * <OtpInput
- *   onChange={(value) => console.log('OTP changed:', value)}
- *   onComplete={(value) => console.log('OTP completed:', value)}
- * />
+ * <OtpInput length={4} value={otp} onChange={setOtp} />
  *
  * // With custom styling
  * <OtpInput
+ *   value={otp}
+ *   onChange={setOtp}
  *   inputStyle={{ w: 12, h: 12, fontSize: "lg" }}
  *   containerStyle={{ gap: 2 }}
  * />
  *
  * // Disabled state
- * <OtpInput isDisabled={true} />
+ * <OtpInput isDisabled={true} value={otp} onChange={setOtp} />
  * ```
  */
 interface OtpInputProps {
+	/** The value of the OTP input */
+	value: string;
+	/** Callback function called when OTP value changes */
+	onChange: (_value: string) => void;
 	/** Number of input fields to display (default: 6) */
 	length?: number;
 	/** Placeholder text for input fields */
@@ -36,8 +36,6 @@ interface OtpInputProps {
 	containerStyle?: Record<string, any>;
 	/** Styles for individual input fields */
 	inputStyle?: Record<string, any>;
-	/** Callback function called when OTP value changes */
-	onChange?: (_value: string) => void;
 	/** Callback function called on key down events */
 	onKeyDown?: (_event: React.KeyboardEvent) => void;
 	/** Callback function called when Enter key is pressed */
@@ -69,11 +67,12 @@ interface OtpInputProps {
  * @example
  * ```typescript
  * // Basic 4-digit OTP input
- * <OtpInput length={4} onComplete={handleOtpComplete} />
+ * <OtpInput length={4} value={otp} onChange={setOtp} onComplete={handleOtpComplete} />
  *
  * // Styled OTP input with custom handlers
  * <OtpInput
  *   length={6}
+ *   value={otp}
  *   onChange={handleOtpChange}
  *   onComplete={handleOtpComplete}
  *   inputStyle={{
@@ -87,22 +86,16 @@ interface OtpInputProps {
  *     justifyContent: "center"
  *   }}
  * />
- *
- * // Disabled state for form submission
- * <OtpInput
- *   length={4}
- *   isDisabled={isSubmitting}
- *   onComplete={handleSubmit}
- * />
  * ```
  */
 const OtpInput: React.FC<OtpInputProps> = ({
+	value,
+	onChange,
 	length = 6,
 	placeholder = "",
 	mask = false,
 	containerStyle = {},
 	inputStyle = {},
-	onChange = () => {},
 	onKeyDown = () => {},
 	onEnter = () => {},
 	onComplete = () => {},
@@ -110,7 +103,6 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	...rest
 }) => {
 	const inputRef = useRef<(HTMLInputElement | null)[]>([]);
-	const [currentOtp, setCurrentOtp] = useState("");
 	const [activeInputIndex, setActiveInputIndex] = useState<number | null>(
 		null
 	);
@@ -128,7 +120,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	 */
 	const getInputBackground = (index: number): string => {
 		// If input has a value, use focus background
-		if (currentOtp[index]) {
+		if (value && value[index]) {
 			return inputFocusBg;
 		}
 
@@ -156,9 +148,9 @@ const OtpInput: React.FC<OtpInputProps> = ({
 		setIsBackspacePressed(false);
 
 		// Auto-focus to first empty field if clicking on a field beyond current OTP length
-		if (!currentOtp.length || index > currentOtp.length - 1) {
-			const firstEmptyIndex = currentOtp.length;
-			if (firstEmptyIndex < length) {
+		if (!value || !value.length || index > value.length - 1) {
+			const firstEmptyIndex = value ? value.length : 0;
+			if (firstEmptyIndex < length && index !== firstEmptyIndex) {
 				inputRef.current[firstEmptyIndex]?.focus();
 				setActiveInputIndex(firstEmptyIndex);
 			}
@@ -174,7 +166,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 		setActiveInputIndex(index);
 
 		if (e.code === "Enter") {
-			onEnter(currentOtp);
+			onEnter(value);
 		} else if (e.code === "Backspace") {
 			setIsBackspacePressed(true);
 		} else {
@@ -184,26 +176,17 @@ const OtpInput: React.FC<OtpInputProps> = ({
 		onKeyDown(e);
 	};
 
-	/**
-	 * Handles OTP value changes
-	 * @param {string} value - The new OTP value
-	 */
-	const handleChange = (value: string): void => {
-		setCurrentOtp(value);
-		onChange(value);
-	};
-
 	return (
 		<Flex minW={"10rem"} columnGap={"10px"} wrap="wrap" {...containerStyle}>
 			<PinInput
 				autoFocus
 				type="number"
 				otp
-				value={currentOtp}
+				value={value}
 				placeholder={placeholder}
 				manageFocus={true}
 				isDisabled={isDisabled}
-				onChange={handleChange}
+				onChange={onChange}
 				onComplete={onComplete}
 				mask={mask}
 				{...rest}
@@ -219,7 +202,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 							borderColor="hint"
 							bg={getInputBackground(idx)}
 							borderRadius="10"
-							boxShadow={currentOtp[idx] ? "sh-otpfocus" : ""}
+							boxShadow={value && value[idx] ? "sh-otpfocus" : ""}
 							_focus={{
 								boxShadow: "sh-otpfocus",
 								borderColor: "hint",
