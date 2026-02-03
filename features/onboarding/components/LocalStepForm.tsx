@@ -110,7 +110,6 @@ const LocalStepForm = ({
 							: []),
 						{
 							type: "submit",
-							// variant: "solid",
 							label: stepConfig.primaryCTAText || "Submit",
 							loading: isLoading,
 							disabled: isLoading,
