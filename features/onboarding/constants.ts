@@ -391,7 +391,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: false,
 		stepStatus: 0,
-		primaryCTAText: "Continue",
+		primaryCTAText: "Proceed",
 		description: "Select your role to begin the onboarding process.",
 		form_data: {},
 		api: {
@@ -612,7 +612,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		stepStatus: 0,
 		role: 12300,
 		applicableRoles: [12300, 13000],
-		primaryCTAText: "Verify PAN",
+		primaryCTAText: "Proceed",
 		description:
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
@@ -676,7 +676,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		stepStatus: 0,
 		role: 12500,
 		applicableRoles: [12500],
-		primaryCTAText: "Next",
+		primaryCTAText: "Proceed",
 		description:
 			"Take a clear selfie in good lighting to complete your identity verification. Ensure your face is clearly visible.",
 		form_data: {},
@@ -726,7 +726,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		stepStatus: 0,
 		role: 13300,
 		applicableRoles: [13300],
-		primaryCTAText: "Next",
+		primaryCTAText: "Proceed",
 		description:
 			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
@@ -759,7 +759,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		stepStatus: 0,
 		role: 12500,
 		applicableRoles: [12500],
-		primaryCTAText: "Next",
+		primaryCTAText: "Proceed",
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
@@ -801,7 +801,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		stepStatus: 0,
 		role: 12600,
 		applicableRoles: [12600],
-		primaryCTAText: "Next",
+		primaryCTAText: "Proceed",
 		description:
 			"Create a secure 4-digit PIN for transaction authorization. Keep it confidential and don't share with anyone.",
 		form_data: {},
