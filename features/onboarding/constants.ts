@@ -497,85 +497,85 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 	},
-	{
-		id: ONBOARDING_STEP_IDS.AADHAAR_CONSENT,
-		name: "AADHAAR_CONSENT",
-		label: "Aadhaar Consent",
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 24000,
-		applicableRoles: [24000],
-		primaryCTAText: "Verify Consent",
-		description:
-			"Please provide your consent to use Aadhaar for identity verification as per UIDAI guidelines.",
-		form_data: {},
-		success_message: "Aadhaar consent taken.",
-		api: {
-			pipeline: [
-				{
-					id: "submit",
-					type: "form",
-					interactionTypeId: TransactionIds.USER_AADHAR_CONSENT,
-				},
-			],
-		},
-		preSubmit: {
-			inject: {
-				latlong: "state.latLong",
-				company_name: "state.mobile", // Legacy uses mobile as company_name
-			},
-		},
-	},
-	{
-		id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
-		name: "CONFIRM_AADHAAR_NUMBER",
-		label: "Confirm Aadhaar Number",
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 24000,
-		applicableRoles: [24000],
-		primaryCTAText: "Proceed",
-		description:
-			"Please verify that your Aadhaar number is entered correctly before proceeding.",
-		form_data: {},
-		success_message: "Aadhaar number confirmed.",
-		api: {
-			pipeline: [
-				{
-					id: "submit",
-					type: "form",
-					interactionTypeId:
-						TransactionIds.USER_AADHAR_NUMBER_CONFIRM,
-				},
-			],
-		},
-	},
-	{
-		id: ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY,
-		name: "AADHAAR_NUMBER_OTP_VERIFY",
-		label: "Confirm Aadhaar OTP",
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 24000,
-		applicableRoles: [24000],
-		primaryCTAText: "Confirm",
-		description:
-			"Enter the OTP sent to your Aadhaar-registered mobile number to verify your identity.",
-		form_data: {},
-		success_message: "Aadhaar confirmed successfully.",
-		api: {
-			pipeline: [
-				{
-					id: "submit",
-					type: "form",
-					interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM,
-				},
-			],
-		},
-	},
+	// {
+	// 	id: ONBOARDING_STEP_IDS.AADHAAR_CONSENT,
+	// 	name: "AADHAAR_CONSENT",
+	// 	label: "Aadhaar Consent",
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	applicableRoles: [24000],
+	// 	primaryCTAText: "Verify Consent",
+	// 	description:
+	// 		"Please provide your consent to use Aadhaar for identity verification as per UIDAI guidelines.",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar consent taken.",
+	// 	api: {
+	// 		pipeline: [
+	// 			{
+	// 				id: "submit",
+	// 				type: "form",
+	// 				interactionTypeId: TransactionIds.USER_AADHAR_CONSENT,
+	// 			},
+	// 		],
+	// 	},
+	// 	preSubmit: {
+	// 		inject: {
+	// 			latlong: "state.latLong",
+	// 			company_name: "state.mobile", // Legacy uses mobile as company_name
+	// 		},
+	// 	},
+	// },
+	// {
+	// 	id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
+	// 	name: "CONFIRM_AADHAAR_NUMBER",
+	// 	label: "Confirm Aadhaar Number",
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	applicableRoles: [24000],
+	// 	primaryCTAText: "Proceed",
+	// 	description:
+	// 		"Please verify that your Aadhaar number is entered correctly before proceeding.",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar number confirmed.",
+	// 	api: {
+	// 		pipeline: [
+	// 			{
+	// 				id: "submit",
+	// 				type: "form",
+	// 				interactionTypeId:
+	// 					TransactionIds.USER_AADHAR_NUMBER_CONFIRM,
+	// 			},
+	// 		],
+	// 	},
+	// },
+	// {
+	// 	id: ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY,
+	// 	name: "AADHAAR_NUMBER_OTP_VERIFY",
+	// 	label: "Confirm Aadhaar OTP",
+	// 	isRequired: true,
+	// 	isVisible: false,
+	// 	stepStatus: 0,
+	// 	role: 24000,
+	// 	applicableRoles: [24000],
+	// 	primaryCTAText: "Confirm",
+	// 	description:
+	// 		"Enter the OTP sent to your Aadhaar-registered mobile number to verify your identity.",
+	// 	form_data: {},
+	// 	success_message: "Aadhaar confirmed successfully.",
+	// 	api: {
+	// 		pipeline: [
+	// 			{
+	// 				id: "submit",
+	// 				type: "form",
+	// 				interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM,
+	// 			},
+	// 		],
+	// 	},
+	// },
 	{
 		id: ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION,
 		name: "DIGILOCKER_REDIRECTION",
