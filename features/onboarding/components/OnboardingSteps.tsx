@@ -87,6 +87,7 @@ const ExternalOnboardingWidget =
  * @param {any} props.userData - user data object (server/context)
  * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
  * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
+ * @param {string} [props.initialLatLong] - pre-fetched geolocation string (lat,long,accuracy) to populate state early
  * @returns {JSX.Element} ExternalOnboardingWidget wrapped with local orchestration
  */
 const OnboardingSteps = ({
@@ -97,6 +98,16 @@ const OnboardingSteps = ({
 	userData,
 	assistedAgentDetails,
 	refreshAgentProfile,
+	initialLatLong,
+}: {
+	isAssistedOnboarding: boolean;
+	logo?: string;
+	appName?: string;
+	orgName?: string;
+	userData: any;
+	assistedAgentDetails?: any;
+	refreshAgentProfile: () => Promise<void>;
+	initialLatLong?: string;
 }) => {
 	const { state, actions } = useOnboardingState();
 	const { isAndroid } = useAppSource();
@@ -108,6 +119,15 @@ const OnboardingSteps = ({
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
+
+	// Set initial location in state if provided (fetched early by parent)
+	useEffect(() => {
+		if (initialLatLong && !state.latLong) {
+			actions.setLocation(initialLatLong);
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [initialLatLong]);
 
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [

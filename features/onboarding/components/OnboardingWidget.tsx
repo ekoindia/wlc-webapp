@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Center, Flex, Spinner } from "@chakra-ui/react";
-import { Button } from "components";
+import { Button } from "components/Button";
+import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
 import { getOnboardingStepsFromData } from "../utils";
@@ -44,6 +45,9 @@ interface OnboardingWidgetProps {
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
+/** Default fallback coordinates when geolocation fails or is denied */
+const DEFAULT_LATLONG = "27.176670,78.008075,0";
+
 const OnboardingWidget = ({
 	logo,
 	appName,
@@ -56,6 +60,24 @@ const OnboardingWidget = ({
 }: OnboardingWidgetProps): JSX.Element => {
 	const [_selectedRole, setSelectedRole] = useState<string>("");
 	const [isInitializing, setIsInitializing] = useState<boolean>(true);
+
+	// Fetch geolocation early on widget mount
+	const { latitude, longitude, accuracy } = useGeolocation({
+		highAccuracy: false,
+		timeout: 10000,
+		maximumAge: 60000,
+	});
+
+	/**
+	 * Format geolocation as "lat,long,accuracy" string for API consumption.
+	 * Falls back to default coordinates if geolocation is unavailable.
+	 */
+	const initialLatLong = useMemo((): string => {
+		if (latitude !== null && longitude !== null) {
+			return `${latitude},${longitude},${accuracy ?? 0}`;
+		}
+		return DEFAULT_LATLONG;
+	}, [latitude, longitude, accuracy]);
 
 	// State to manage the current step in the onboarding process
 	const [step, setStep] = useState<keyof typeof ONBOARDING_STEPS>(
@@ -162,6 +184,7 @@ const OnboardingWidget = ({
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}
+						initialLatLong={initialLatLong}
 					/>
 				);
 			default:

@@ -53,7 +53,7 @@ export const ONBOARDING_STEP_IDS = {
 } as const;
 
 /**
- * Step Status Values
+ * Onboarding Step Status Values
  * Represents the current state of an onboarding step
  */
 export const ONBOARDING_STEP_STATUS = {
@@ -730,6 +730,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
+		renderSource: "local",
+		localRenderer: {
+			type: "custom",
+			component: "BusinessDetailsStep",
+		},
 		api: {
 			pipeline: [
 				{
@@ -738,6 +743,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					interactionTypeId: TransactionIds.USER_ONBOARDING_BUSINESS,
 				},
 			],
+		},
+		preSubmit: {
+			inject: {
+				latlong: "state.latLong",
+			},
 		},
 	},
 	{

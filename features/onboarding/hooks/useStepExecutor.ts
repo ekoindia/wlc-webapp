@@ -414,7 +414,16 @@ export const useStepExecutor = ({
  * @param {string} path - Dot-notation path (e.g., "state.latLong")
  * @returns {any} Value at path or undefined
  */
-function getValueByPath(obj: any, path: string): any {
+function getValueByPath(obj: any, path: unknown): any {
+	// Guard against non-string paths
+	if (typeof path !== "string") {
+		console.warn(
+			"[getValueByPath] Expected string path, received:",
+			typeof path,
+			path
+		);
+		return undefined;
+	}
 	// Remove "state." prefix if present (since we're already passing the state object)
 	const cleanPath = path.replace(/^state\./, "");
 	return cleanPath.split(".").reduce((acc, key) => acc?.[key], obj);
