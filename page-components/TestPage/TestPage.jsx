@@ -19,7 +19,8 @@ import {
 } from "hooks";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Value } from "tf-components";
+import { useForm } from "react-hook-form";
+import { Form, Pintwin, Value } from "tf-components";
 
 /**
  * A '/test' page-component
@@ -765,6 +766,96 @@ const VoiceCaptureTest = () => {
 };
 
 /**
+ * Test Pintwin component
+ * MARK: PintwinTest
+ */
+const PintwinTest = () => {
+	const [directPin, setDirectPin] = useState("");
+	const [directEncodedPin, setDirectEncodedPin] = useState("");
+
+	const {
+		register,
+		control,
+		watch,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			form_pin: "",
+		},
+	});
+
+	const formValues = watch();
+	const PIN_LENGTH = 6;
+
+	// Parameter list for the Form component
+	const pintwinFormParams = [
+		{
+			name: "form_pin",
+			label: "PIN (via Form)",
+			parameter_type_id: ParamType.PINTWIN,
+			required: true,
+			helperText: `Enter a ${PIN_LENGTH}-digit PIN using the Form component`,
+			length: PIN_LENGTH,
+		},
+	];
+
+	return (
+		<>
+			{/* Direct Pintwin Usage */}
+			<Flex direction="column" gap={2}>
+				<Text fontWeight="bold" fontSize="md">
+					Direct Pintwin Usage:
+				</Text>
+				<Pintwin
+					label="PIN (Direct)"
+					length={PIN_LENGTH}
+					onPinChange={(pin) => {
+						setDirectPin(pin);
+						setDirectEncodedPin("");
+					}}
+					onPinComplete={(pin, encodedPin) => {
+						setDirectPin(pin);
+						setDirectEncodedPin(encodedPin);
+					}}
+				/>
+				<Text fontSize="xs" color="gray.500">
+					PIN Length: {directPin.length} / {PIN_LENGTH}
+				</Text>
+				<Text fontSize="xs" color="gray.500">
+					Raw PIN: {directPin || "-"}
+				</Text>
+				{directPin.length === PIN_LENGTH && directEncodedPin ? (
+					<Text fontSize="xs" color="success">
+						Encoded PIN: {directEncodedPin.substring(0, 20)}...
+					</Text>
+				) : null}
+			</Flex>
+
+			{/* Pintwin via Form Component */}
+			<Flex direction="column" gap={2}>
+				<Text fontWeight="bold" fontSize="md">
+					Pintwin via Form Component:
+				</Text>
+				<Form
+					parameter_list={pintwinFormParams}
+					register={register}
+					control={control}
+					errors={errors}
+					formValues={formValues}
+					size="md"
+				/>
+				{formValues.form_pin && (
+					<Text fontSize="xs" color="success">
+						Form PIN Value: {formValues.form_pin.substring(0, 20)}
+						...
+					</Text>
+				)}
+			</Flex>
+		</>
+	);
+};
+
+/**
  * Test CopyButton component
  * MARK: CopyButtonTest
  */
@@ -913,6 +1004,10 @@ const TestComponents = [
 	{
 		title: "Copy Button Test",
 		component: CopyButtonTest,
+	},
+	{
+		title: "Pintwin",
+		component: PintwinTest,
 	},
 	{
 		title: "JSON Viewer",

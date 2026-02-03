@@ -528,6 +528,7 @@ const AgreementSigning = () => {
 											fontSize: "sm",
 										}}
 										length={6}
+										value={otp}
 										onChange={setOtp}
 										onEnter={verifyOtpHandler}
 										onComplete={(otp) => {

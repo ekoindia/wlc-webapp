@@ -155,6 +155,7 @@ const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 					// 	}
 					// }
 					length={4}
+					value={Otp}
 					onChange={setOtp}
 					onEnter={() => verifyOtpHandler()}
 					onComplete={(otp) => {
