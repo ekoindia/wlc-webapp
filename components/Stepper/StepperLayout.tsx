@@ -83,8 +83,8 @@ const StepperLayout: React.FC<StepperLayoutProps> = ({
 		<Flex
 			direction={isHorizontal ? "column" : "row"}
 			w="100%"
-			h="100%"
-			align="center"
+			h="auto"
+			align="stretch"
 			justify="center"
 			gap={{ base: 4, md: 10 }}
 		>
@@ -144,7 +144,11 @@ const StepperLayout: React.FC<StepperLayoutProps> = ({
 			</Flex>
 
 			{/* Main Content Area */}
-			{children && <>{children}</>}
+			{children && (
+				<Flex flex={1} w="100%" direction="column" overflow="hidden">
+					{children}
+				</Flex>
+			)}
 		</Flex>
 	);
 };

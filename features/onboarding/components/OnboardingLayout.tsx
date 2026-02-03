@@ -108,7 +108,12 @@ const OnboardingLayout = ({
 	}, [steps]);
 
 	return (
-		<Flex className={className} overflow="hidden" p={{ base: 2, md: 4 }}>
+		<Flex
+			className={className}
+			overflow="hidden"
+			justify="center"
+			p={{ base: 2, md: 4 }}
+		>
 			<Stepper
 				steps={stepperSteps}
 				currentStepId={currentStepId}

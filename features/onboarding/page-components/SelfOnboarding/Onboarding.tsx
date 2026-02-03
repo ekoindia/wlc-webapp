@@ -58,7 +58,7 @@ const Onboarding = () => {
 
 	// MARK: JSX
 	return (
-		<Flex direction="column" h="100vh" bg="bg" p="4">
+		<Flex direction="column" minH="100vh" bg="bg" p="4">
 			<OnboardingWidget
 				logo={logo}
 				appName={app_name}
