@@ -447,6 +447,39 @@ const Network = () => {
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
 
+	/**
+	 * Callback to update agent status in the local state (for optimistic UI updates)
+	 * @param {string} ekoCode - The eko_code of the agent to update
+	 * @param {number} newStatusId - The new status ID
+	 */
+	const handleStatusUpdate = (ekoCode, newStatusId) => {
+		const statusLabels = {
+			13: "Pending Approval",
+			16: "Active",
+			18: "Inactive",
+		};
+
+		setNetworkData((prevData) => {
+			if (!prevData?.agent_details) return prevData;
+
+			return {
+				...prevData,
+				agent_details: prevData.agent_details.map((agent) => {
+					if (agent.eko_code === ekoCode) {
+						return {
+							...agent,
+							account_status_id: newStatusId,
+							account_status:
+								statusLabels[newStatusId] ||
+								agent.account_status,
+						};
+					}
+					return agent;
+				}),
+			};
+		});
+	};
+
 	// MARK: JSX
 	return (
 		<>
@@ -456,7 +489,9 @@ const Network = () => {
 				toolComponent={
 					isAdmin ? (
 						<Button
-							size={{ base: "sm", md: "md" }}
+							size="sm"
+							icon="person"
+							iconStyle={{ size: "xs" }}
 							onClick={() =>
 								router.push(
 									"/admin/my-network/profile/change-role"
@@ -500,6 +535,7 @@ const Network = () => {
 							pageNumber,
 							setPageNumber,
 							visibleColumns,
+							onStatusUpdate: handleStatusUpdate,
 						}}
 					/>
 				) : null}

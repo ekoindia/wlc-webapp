@@ -5,7 +5,6 @@ import { Icon } from "..";
 /**
  * A Pagination component
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @param prop.pageSize
  * @param prop.totalCount

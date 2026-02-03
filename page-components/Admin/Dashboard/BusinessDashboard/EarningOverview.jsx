@@ -8,6 +8,7 @@ import {
 	useBreakpointValue,
 } from "@chakra-ui/react";
 import { Currency, Icon, WaffleChart } from "components";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
@@ -52,6 +53,8 @@ const calculateVariation = (current, lastMonth) => {
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
  * @param {Function} props.setTotalBusiness - Function to set total business data (total GTV & Transaction count) in parent component.
+ * @param {boolean} [props.isDraggable] - Whether the component is draggable in the grid.
+ * @returns {JSX.Element} The rendered earning overview component
  * @example
  * <EarningOverview
  *   dateFrom="2023-01-01"
@@ -64,6 +67,7 @@ const EarningOverview = ({
 	dateTo,
 	productFilterList,
 	setTotalBusiness,
+	isDraggable,
 }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
@@ -177,7 +181,13 @@ const EarningOverview = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter]);
+	}, [
+		dateFrom,
+		dateTo,
+		productFilter,
+		businessDashboardData?.earningOverviewCache,
+		setTotalBusiness,
+	]);
 
 	const earningOverviewList = [
 		{
@@ -258,29 +268,66 @@ const EarningOverview = ({
 			border="basic"
 			gap="4"
 			w="100%"
+			h="100%"
 		>
-			<Flex
-				direction={{ base: "column", md: "row" }}
-				justify="space-between"
-				gap={{ base: "2", md: "4" }}
-				w="100%"
-			>
+			<Flex direction="column" gap={{ base: "2", md: "0" }} w="100%">
+				{/* Desktop: All in one row */}
 				<Flex
-					fontSize="lg"
-					fontWeight="semibold"
+					display={{ base: "none", md: "flex" }}
+					justify="space-between"
 					align="center"
-					gap="0.4em"
+					gap="4"
 				>
-					<LuActivity color="#3c83f6" />
-					Business Overview
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+							flex="1"
+						>
+							<LuActivity color="#3c83f6" />
+							Business Overview
+						</Flex>
+						<Select
+							variant="filled"
+							value={productFilter}
+							onChange={(e) => setProductFilter(e.target.value)}
+							size="xs"
+							w="auto"
+						>
+							{productFilterList.map(({ label, value }) => (
+								<option key={value} value={value}>
+									{label}
+								</option>
+							))}
+						</Select>
+					</DragHandle>
 				</Flex>
 
-				<Flex w={{ base: "100%", md: "auto" }}>
+				{/* Mobile: Title + grip on first row, Select on second row */}
+				<Flex
+					display={{ base: "flex", md: "none" }}
+					direction="column"
+					gap="2"
+				>
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+						>
+							<LuActivity color="#3c83f6" />
+							Business Overview
+						</Flex>
+					</DragHandle>
 					<Select
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
 						size="xs"
+						w="100%"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>

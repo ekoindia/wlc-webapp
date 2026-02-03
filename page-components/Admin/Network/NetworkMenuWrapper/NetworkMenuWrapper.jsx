@@ -13,6 +13,8 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
+const AGENT_STATUS_UPDATE_SUCCESSFULL = 1831;
+
 const status = {
 	PENDING_APPROVAL: 13,
 	ACTIVE: 16,
@@ -61,30 +63,40 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 	return [..._list];
 };
 
-const getStatus = (status) => {
-	switch (status) {
-		case 0:
-			return "success";
-		default:
-			return "error";
-	}
-};
+// const getStatus = (status) => {
+// 	switch (status) {
+// 		case 0:
+// 			return "success";
+// 		default:
+// 			return "error";
+// 	}
+// };
 
 /**
- * A NetworkMenuWrapper component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.mobile_number
- * @param prop.eko_code
- * @param prop.account_status_id
- * @param prop.agent_type
- * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
+ * NetworkMenuWrapper component that provides a menu for managing agent network status and actions.
+ * Allows admins to mark agents as Active/Inactive, change roles, view details, and download agreements.
+ * @param {object} props - Component properties
+ * @param {string} props.mobile_number - Mobile number of the agent
+ * @param {string} props.eko_code - Unique EKO code identifier for the agent
+ * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive)
+ * @param {string} props.agent_type - Type/role of the agent
+ * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
+ * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
+ * @example
+ * <NetworkMenuWrapper
+ *   mobile_number="9876543210"
+ *   eko_code="EKO123"
+ *   account_status_id={16}
+ *   agent_type="retailer"
+ *   onStatusUpdate={(code, status) => console.log(code, status)}
+ * />
  */
 const NetworkMenuWrapper = ({
 	mobile_number,
 	eko_code,
 	account_status_id,
 	agent_type,
+	onStatusUpdate,
 }) => {
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
@@ -224,6 +236,18 @@ const NetworkMenuWrapper = ({
 					? reason_input
 					: reason?.label;
 
+		// Store previous status for rollback on failure
+		const previousStatusId = account_status_id;
+		const newStatusId = accountStatusId;
+
+		// Close modal immediately - don't block user
+		setOpen(false);
+
+		// Optimistic update: Update UI immediately for all status changes
+		if (onStatusUpdate) {
+			onStatusUpdate(eko_code, newStatusId);
+		}
+
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
 			{
@@ -241,19 +265,44 @@ const NetworkMenuWrapper = ({
 			}
 		)
 			.then((res) => {
-				toast({
-					title: res.message,
-					status: getStatus(res.status),
-					duration: 6000,
-					isClosable: true,
-				});
-				if (res.status === 0) {
-					setOpen(false);
-					router.reload(window.location.pathname);
+				// Check for successful response
+				const isSuccess =
+					res.response_type_id === AGENT_STATUS_UPDATE_SUCCESSFULL &&
+					res.status === 0;
+
+				if (isSuccess) {
+					toast({
+						title: res.message || "Updated Status Successfully!",
+						status: "success",
+						duration: 6000,
+						isClosable: true,
+					});
+				} else {
+					// API returned error - revert optimistic update
+					toast({
+						title: res.message || "Failed to update status",
+						status: "error",
+						duration: 6000,
+						isClosable: true,
+					});
+					// Revert the optimistic update
+					if (onStatusUpdate) {
+						onStatusUpdate(eko_code, previousStatusId);
+					}
 				}
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
+				// Revert optimistic update on network error
+				toast({
+					title: "Network error. Please try again.",
+					status: "error",
+					duration: 6000,
+					isClosable: true,
+				});
+				if (onStatusUpdate) {
+					onStatusUpdate(eko_code, previousStatusId);
+				}
 			});
 	};
 

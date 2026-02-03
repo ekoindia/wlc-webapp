@@ -13,6 +13,7 @@ import { Icon, Tags } from "..";
  * @param 	{Component}	[props.toolComponent] - Show additional component on the right end of the heading row. It could be tools like a filter button.
  * @param 	{Function}	[props.onBack] - Function to call when the back icon is clicked. By default, it will call the router.back() function.
  * @param {boolean} [props.isBeta] - Whether to show the beta tag
+ * @param 	{object}	[props.titleProps] - Additional props for the title text
  * @param 	{...*}	rest - Rest of the props
  * @example	`<Heading title="Welcome" />`
  */
@@ -24,6 +25,7 @@ const PageTitle = ({
 	hideToolComponent = false,
 	onBack,
 	isBeta = false,
+	titleProps,
 	...rest
 }) => {
 	const router = useRouter();
@@ -90,6 +92,7 @@ const PageTitle = ({
 									"2xl": "30px",
 								}}
 								fontWeight="semibold"
+								{...titleProps}
 							>
 								{title}
 							</Text>

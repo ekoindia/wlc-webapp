@@ -170,7 +170,6 @@ const IndoNepalDistributor = () => {
 			label: "Save",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

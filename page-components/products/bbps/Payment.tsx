@@ -232,7 +232,6 @@ export const Payment = () => {
 			loading: isProcessing,
 			disabled: !isValid || isProcessing,
 			onClick: handlePayment,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
