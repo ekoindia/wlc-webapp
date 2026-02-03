@@ -241,21 +241,16 @@ const AssistedOnboarding = (): JSX.Element => {
 
 	// MARK: JSX
 	return (
-		<Flex
-			direction="column"
-			w="100%"
-			maxW="100%"
-			// p={{ base: "0", md: "4" }}
-		>
+		<>
 			{/* Back button navigates based on current step - exits flow from Add Agent, goes to previous step otherwise */}
 			<PageTitle
 				title={stepBasedTitleMap[step]}
 				onBack={handleBackNavigation}
 			/>
-			<Flex direction="column" align="center" px="4">
+			<Flex direction="column" align="center" p={{ base: 6, md: 10 }}>
 				{renderCurrentStep()}
 			</Flex>
-		</Flex>
+		</>
 	);
 };
 

@@ -48,7 +48,7 @@ const AgentAlreadyExistsScreen = ({
 		<Flex
 			direction="column"
 			bg="white"
-			p={{ base: 8, md: 10 }}
+			p={{ base: 6, md: 10 }}
 			borderRadius="15px"
 			boxShadow="0px 5px 20px rgba(0, 0, 0, 0.08)"
 			border="1px solid"
