@@ -231,7 +231,10 @@ const RoleSelection = ({
 						);
 						// Check if role selection was successful (response_type_id 1566)
 						if (response?.response_type_id === 1566) {
-							await refreshAgentProfile();
+							// Refresh user profile if configured
+							if (roleStepConfig?.postSubmit?.refreshProfile) {
+								await refreshAgentProfile();
+							}
 							setStep("KYC_FLOW");
 						}
 					},

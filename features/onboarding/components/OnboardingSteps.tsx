@@ -385,8 +385,10 @@ const OnboardingSteps = ({
 						if (nextStep) {
 							setCurrentStepId(nextStep.id);
 						}
-						// Refresh user profile
-						await refreshAgentProfile();
+						// Refresh user profile if configured
+						if (stepConfig?.postSubmit?.refreshProfile) {
+							await refreshAgentProfile();
+						}
 					},
 					onError: async (error) => {
 						console.error(

@@ -411,13 +411,16 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				csp_id: "state.mobile",
 			},
 		},
+		postSubmit: {
+			refreshProfile: true,
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
 		name: "LOCATION_CAPTURE",
 		label: "Location Capturing",
 		isRequired: true,
-		isVisible: true,
+		isVisible: false,
 		stepStatus: 0,
 		role: 12400,
 		applicableRoles: [13000, 12400],
@@ -495,6 +498,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					},
 				},
 			],
+		},
+		postSubmit: {
+			refreshProfile: true,
 		},
 	},
 	// {
@@ -604,6 +610,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
+		postSubmit: {
+			refreshProfile: false,
+		},
 		callbacks: {
 			type: "digilocker",
 			methods: ["getDigilockerUrl"],
@@ -672,6 +681,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
+		postSubmit: {
+			refreshProfile: false,
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.VIDEO_KYC,
@@ -722,6 +734,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
+		postSubmit: {
+			refreshProfile: false,
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.BUSINESS,
@@ -741,6 +756,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "custom",
 			component: "BusinessDetailsStep",
 		},
+		preSubmit: {
+			inject: {
+				latlong: "state.latLong",
+			},
+		},
 		api: {
 			pipeline: [
 				{
@@ -750,10 +770,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
-		preSubmit: {
-			inject: {
-				latlong: "state.latLong",
-			},
+		postSubmit: {
+			refreshProfile: false,
 		},
 	},
 	{
@@ -795,7 +813,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -816,6 +834,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "custom",
 			component: "SecretPinStep",
 		},
+		preSubmit: {
+			inject: {
+				latlong: "state.latLong",
+			},
+		},
 		api: {
 			pipeline: [
 				{
@@ -826,10 +849,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
-		preSubmit: {
-			inject: {
-				latlong: "state.latLong",
-			},
+		postSubmit: {
+			refreshProfile: false,
 		},
 	},
 	{
@@ -860,6 +881,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 						TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT,
 				},
 			],
+		},
+		postSubmit: {
+			refreshProfile: true,
 		},
 		callbacks: {
 			type: "esign",
