@@ -840,6 +840,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Review and digitally sign the terms and conditions to activate your account and start using our services.",
 		form_data: {},
 		success_message: "Agreement signed successfully.",
+		renderSource: "local",
+		localRenderer: {
+			type: "custom",
+			component: "SignAgreementStep",
+		},
 		api: {
 			pipeline: [
 				{
@@ -852,7 +857,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		},
 		callbacks: {
 			type: "esign",
-			methods: ["initializeEsign", "handleEsignCallback"],
+			methods: ["getSignUrl", "legalityOpen", "checkEsignStatus"],
 		},
 	},
 ];
