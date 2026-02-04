@@ -586,9 +586,15 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		role: 24000,
 		applicableRoles: [24000],
 		primaryCTAText: "Proceed",
-		description: "Verify your Aadhaar using your Digilocker account.",
+		description:
+			"Please complete the verification process through Digilocker to continue with your onboarding.",
 		form_data: {},
 		success_message: "Digilocker verification successful.",
+		renderSource: "local",
+		localRenderer: {
+			type: "custom",
+			component: "DigilockerRedirectionStep",
+		},
 		api: {
 			pipeline: [
 				{
@@ -600,7 +606,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		},
 		callbacks: {
 			type: "digilocker",
-			methods: ["initiateDigilocker", "handleDigilockerCallback"],
+			methods: ["getDigilockerUrl"],
 		},
 	},
 	{

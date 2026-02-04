@@ -5,6 +5,7 @@ import type { OnboardingStep } from "../constants";
 import LocalStepForm from "./LocalStepForm";
 import AddBankAccountStep from "./custom/AddBankAccountStep";
 import BusinessDetailsStep from "./custom/BusinessDetailsStep";
+import DigilockerRedirectionStep from "./custom/DigilockerRedirectionStep";
 
 /**
  * Registry of custom onboarding components
@@ -17,6 +18,7 @@ const CUSTOM_COMPONENT_REGISTRY: Record<
 	// Add custom components here as they are created
 	AddBankAccountStep: AddBankAccountStep,
 	BusinessDetailsStep: BusinessDetailsStep,
+	DigilockerRedirectionStep: DigilockerRedirectionStep,
 };
 
 /**
