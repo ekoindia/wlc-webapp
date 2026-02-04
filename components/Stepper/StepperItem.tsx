@@ -41,7 +41,9 @@ const StepperItem = ({
 	const isSkipped = status === STEP_STATUS.SKIPPED;
 	const isFailed = status === STEP_STATUS.FAILED;
 	const isNotStarted = status === STEP_STATUS.NOT_STARTED;
-	const isInProgress = isActive || status === STEP_STATUS.IN_PROGRESS;
+	// Active state is determined solely by currentStepId (passed via isActive prop)
+	// Status only affects visual decoration (colors, icons), not which step is "current"
+	const isInProgress = isActive;
 
 	/**
 	 * Gets the background color based on step status

@@ -211,9 +211,10 @@ const OnboardingSteps = ({
 		() => initialStepId
 	);
 
-	// Sync currentStepId when initialStepId changes (e.g., after data loads)
+	// Sync currentStepId when initialStepId changes (e.g., after data loads or profile refresh)
+	// This ensures form content stays in sync with stepper's active step
 	useEffect(() => {
-		if (initialStepId !== undefined && currentStepId === undefined) {
+		if (initialStepId !== undefined && currentStepId !== initialStepId) {
 			setCurrentStepId(initialStepId);
 		}
 	}, [initialStepId, currentStepId]);
