@@ -197,7 +197,7 @@ const OnboardingSteps = ({
 
 		const initialStep = stepsData.find(
 			(step) =>
-				step.role &&
+				step.applicableRoles?.length &&
 				step.stepStatus !== ONBOARDING_STEP_STATUS.COMPLETED &&
 				step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
 		);
@@ -376,7 +376,7 @@ const OnboardingSteps = ({
 						const nextStep = state?.stepperData?.find(
 							(step) =>
 								step.id !== data.id &&
-								step.role &&
+								step.applicableRoles?.length &&
 								step.stepStatus !==
 									ONBOARDING_STEP_STATUS.COMPLETED &&
 								step.stepStatus !==

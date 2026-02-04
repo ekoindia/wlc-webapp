@@ -8,35 +8,35 @@ const mockSteps = [
 		label: "Location Capturing",
 		isVisible: true,
 		stepStatus: ONBOARDING_STEP_STATUS.COMPLETED,
-		role: 1,
+		applicableRoles: [1],
 	},
 	{
 		id: 2,
 		label: "Aadhaar Verification",
 		isVisible: true,
 		stepStatus: ONBOARDING_STEP_STATUS.COMPLETED,
-		role: 1,
+		applicableRoles: [1],
 	},
 	{
 		id: 3,
 		label: "PAN Verification",
 		isVisible: true,
 		stepStatus: ONBOARDING_STEP_STATUS.IN_PROGRESS,
-		role: 1,
+		applicableRoles: [1],
 	},
 	{
 		id: 4,
 		label: "Selfie KYC",
 		isVisible: true,
 		stepStatus: ONBOARDING_STEP_STATUS.NOT_STARTED,
-		role: 1,
+		applicableRoles: [1],
 	},
 	{
 		id: 5,
 		label: "Add Bank Account",
 		isVisible: true,
 		stepStatus: ONBOARDING_STEP_STATUS.NOT_STARTED,
-		role: 1,
+		applicableRoles: [1],
 	},
 ];
 
@@ -143,7 +143,7 @@ describe("OnboardingLayout", () => {
 					label: "Hidden Step",
 					isVisible: false,
 					stepStatus: ONBOARDING_STEP_STATUS.NOT_STARTED,
-					role: 1,
+					applicableRoles: [1],
 				},
 			];
 

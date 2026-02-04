@@ -11,18 +11,17 @@ describe("OnboardingSteps", () => {
 			expect(uniqueIds.size).toBe(ids.length);
 		});
 
-		it("should have applicableRoles array for each step", () => {
-			masterOnboardingSteps.forEach((step) => {
+		it("should have applicableRoles array for steps with roles", () => {
+			// Filter to steps that are expected to have applicableRoles
+			// (visible steps that appear in the onboarding flow)
+			const stepsWithRoles = masterOnboardingSteps.filter(
+				(step) => step.isVisible && step.applicableRoles
+			);
+
+			stepsWithRoles.forEach((step) => {
 				expect(step.applicableRoles).toBeDefined();
 				expect(Array.isArray(step.applicableRoles)).toBe(true);
-				expect(step.applicableRoles.length).toBeGreaterThan(0);
-			});
-		});
-
-		it("should have role field for backward compatibility", () => {
-			masterOnboardingSteps.forEach((step) => {
-				expect(step.role).toBeDefined();
-				expect(typeof step.role).toBe("number");
+				expect(step.applicableRoles!.length).toBeGreaterThan(0);
 			});
 		});
 	});

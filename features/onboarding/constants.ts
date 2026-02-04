@@ -171,8 +171,6 @@ export interface OnboardingStep {
 	isVisible: boolean;
 	/** Current status of the step (0: not started, 1: in progress, 2: completed) */
 	stepStatus: number;
-	/** Optional role identifier associated with this step (primary role for backward compatibility) */
-	role?: number;
 	/** Optional array of all role IDs this step applies to (for steps used across multiple user types) */
 	applicableRoles?: number[];
 	/** Text for the primary call-to-action button */
@@ -448,7 +446,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: false,
 		stepStatus: 0,
-		role: 12400,
 		applicableRoles: [13000, 12400],
 		primaryCTAText: "Capture Location",
 		description:
@@ -484,7 +481,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12400,
 		applicableRoles: [12400],
 		primaryCTAText: "Verify Aadhaar",
 		description:
@@ -615,7 +611,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 24000,
 		applicableRoles: [24000],
 		primaryCTAText: "Proceed",
 		description:
@@ -651,7 +646,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12300,
 		applicableRoles: [12300, 13000],
 		primaryCTAText: "Proceed",
 		description:
@@ -718,7 +712,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12500,
 		applicableRoles: [12500],
 		primaryCTAText: "Proceed",
 		description:
@@ -771,7 +764,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 13300,
 		applicableRoles: [13300],
 		primaryCTAText: "Proceed",
 		description:
@@ -807,7 +799,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12500,
 		applicableRoles: [12500],
 		primaryCTAText: "Proceed",
 		description:
@@ -849,7 +840,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12600,
 		applicableRoles: [12600],
 		primaryCTAText: "Proceed",
 		description:
@@ -886,7 +876,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12800,
 		applicableRoles: [12800],
 		primaryCTAText: "Sign Agreement",
 		description:

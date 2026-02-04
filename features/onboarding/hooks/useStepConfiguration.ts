@@ -360,10 +360,16 @@ const applyResumeLogic = (
 	// Find the first step whose role matches any in pending roleList
 	for (let i = 0; i < steps.length; i++) {
 		const step = steps[i];
-		if (roleArray.includes(step.role)) {
+
+		// Check if any of the step's applicable roles match the pending role list
+		const isMatchingStep = step.applicableRoles?.some((r) =>
+			roleArray.includes(r)
+		);
+
+		if (isMatchingStep) {
 			_currentRoleIndex = i;
 			console.log(
-				`[applyResumeLogic] Found first pending step from API at index ${i}: ${step.name} (role: ${step.role})`
+				`[applyResumeLogic] Found first pending step from API at index ${i}: ${step.name} (applicableRoles: ${step.applicableRoles})`
 			);
 			break;
 		}
