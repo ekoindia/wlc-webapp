@@ -59,12 +59,12 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
 	const { role, isSelected, isDisabled, onClick } = props;
 	const iconName = getIconForApplicantType(role.applicant_type);
 	const { h } = useHslColor(role.label);
-	const borderColor = isSelected ? `hsl(${h},70%,48%)` : `hsl(${h},10%,85%)`;
+	const borderColor = isSelected ? "primary.DEFAULT" : "transparent";
 	const hoverBorderColor = isDisabled
 		? undefined
 		: isSelected
-			? `hsl(${h},70%,44%)`
-			: `hsl(${h},10%,80%)`;
+			? "primary.DEFAULT"
+			: "primary.light";
 
 	const handleClick = () => {
 		if (isDisabled) return;
@@ -107,24 +107,26 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
 		>
 			{/* Icon */}
 			<Flex
-				w="32px"
-				h="32px"
-				bg={`hsl(${h},70%,52%)`}
-				borderRadius="6px"
+				w="48px"
+				h="48px"
+				bg={`hsl(${h},70%,96%)`}
+				borderRadius="12px"
 				align="center"
 				justify="center"
 				flexShrink={0}
+				transition="all 0.2s"
 			>
-				<Icon size="sm" name={iconName} color="#FFF" />
+				<Icon size="md" name={iconName} color={`hsl(${h},70%,45%)`} />
 			</Flex>
 
 			{/* Content */}
-			<Flex direction="column" align="flex-start" flex={1} gap={0.5}>
+			<Flex direction="column" align="flex-start" flex={1} gap={1}>
 				<Text
 					fontSize="md"
 					fontWeight="semibold"
 					color="gray.800"
 					textAlign="left"
+					lineHeight="short"
 				>
 					{role.label}
 				</Text>
@@ -133,22 +135,22 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
 					color="gray.500"
 					textAlign="left"
 					noOfLines={2}
+					lineHeight="short"
 				>
 					{role.description}
 				</Text>
 			</Flex>
 
 			{/* Selection Indicator */}
-			{isSelected && (
-				<Circle
-					size="24px"
-					bg={`hsl(${h},70%,44%)`}
-					color="white"
-					flexShrink={0}
-				>
-					<Icon name="check" size="xs" />
-				</Circle>
-			)}
+			<Circle
+				size="24px"
+				bg={isSelected ? "primary.DEFAULT" : "gray.200"}
+				color="white"
+				flexShrink={0}
+				transition="all 0.2s"
+			>
+				{isSelected && <Icon name="check" size="xs" strokeWidth={3} />}
+			</Circle>
 		</Flex>
 	);
 };
@@ -314,7 +316,7 @@ const RoleSelection = ({
 				</Heading>
 
 				{/* Role Cards */}
-				<VStack spacing={3} w="100%" align="stretch" mb={8}>
+				<VStack spacing={4} w="100%" align="stretch" mb={8}>
 					{roles.map((role) => (
 						<RoleCard
 							key={role.id}
