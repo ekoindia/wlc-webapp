@@ -813,54 +813,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		form_data: {},
 		renderSource: "local",
 		localRenderer: {
-			type: "form",
-			formFields: [
-				{
-					name: "first_okekey",
-					label: "Secret PIN",
-					parameter_type_id: ParamType.PINTWIN,
-					required: true,
-					validations: {
-						minLength: {
-							value: 4,
-							message: "Must be exactly 4 digits",
-						},
-						maxLength: {
-							value: 4,
-							message: "Must be exactly 4 digits",
-						},
-					},
-				},
-				{
-					name: "second_okekey",
-					label: "Confirm Secret PIN",
-					parameter_type_id: ParamType.PINTWIN,
-					required: true,
-					validations: {
-						validate: {
-							matchesPreviousPin: (
-								value: string,
-								formValues: any
-							) => {
-								return (
-									value === formValues.first_okekey ||
-									"Secret PIN must match"
-								);
-							},
-						},
-					},
-				},
-				{
-					name: "pin_note",
-					label: "",
-					parameter_type_id: ParamType.MARKDOWN,
-					meta: {
-						content: `**Note:**
-- Please set a strong secret PIN to secure your account
-- Your 4-digit secret pin will be required in all the transactions`,
-					},
-				},
-			],
+			type: "custom",
+			component: "SecretPinStep",
 		},
 		api: {
 			pipeline: [
@@ -872,9 +826,10 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
-		callbacks: {
-			type: "pintwin",
-			methods: ["getBookletNumber"],
+		preSubmit: {
+			inject: {
+				latlong: "state.latLong",
+			},
 		},
 	},
 	{

@@ -6,6 +6,7 @@ import LocalStepForm from "./LocalStepForm";
 import AddBankAccountStep from "./custom/AddBankAccountStep";
 import BusinessDetailsStep from "./custom/BusinessDetailsStep";
 import DigilockerRedirectionStep from "./custom/DigilockerRedirectionStep";
+import SecretPinStep from "./custom/SecretPinStep";
 import SignAgreementStep from "./custom/SignAgreementStep";
 
 /**
@@ -20,6 +21,7 @@ const CUSTOM_COMPONENT_REGISTRY: Record<
 	AddBankAccountStep: AddBankAccountStep,
 	BusinessDetailsStep: BusinessDetailsStep,
 	DigilockerRedirectionStep: DigilockerRedirectionStep,
+	SecretPinStep: SecretPinStep,
 	SignAgreementStep: SignAgreementStep,
 };
 
