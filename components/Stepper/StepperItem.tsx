@@ -98,21 +98,10 @@ const StepperItem = ({
 	 * @returns {string} Chakra color token
 	 */
 	const getIndicatorTextColor = (): string => {
-		if (isInProgress) return "white";
+		if (isInProgress || isFailed) return "white";
 		if (isNotStarted) return "gray.500";
 		if (isSkipped) return "gray.600";
 		return "white";
-	};
-
-	/**
-	 * Gets the hover status icon name based on step status
-	 * @returns {string} Icon name
-	 */
-	const getHoverIconName = (): string => {
-		if (isCompleted) return "check-circle";
-		if (isSkipped) return "radio-button-checked";
-		if (isFailed) return "error";
-		return "radio-button-unchecked";
 	};
 
 	/**
@@ -143,15 +132,37 @@ const StepperItem = ({
 
 	/**
 	 * Renders the default indicator content (number or empty circle)
+	 * For completed steps, shows a checkmark by default
+	 * For skipped steps, shows a minus icon
 	 * @returns {ReactNode} Default indicator content
 	 */
 	const renderDefaultContent = (): ReactNode => {
+		if (isCompleted) {
+			return (
+				<Icon
+					name="check"
+					color={getIndicatorTextColor()}
+					size={{ base: "18px", "2xl": "22px" }}
+				/>
+			);
+		}
+
+		if (isSkipped) {
+			return (
+				<Icon
+					name="remove"
+					color={getIndicatorTextColor()}
+					size={{ base: "18px", "2xl": "22px" }}
+				/>
+			);
+		}
+
 		if (hasAnyIcon) {
 			// If any step has icons but this one doesn't, show empty
 			return null;
 		}
 
-		// Show step number
+		// Show step number for In-progress, Failed, or Not Started steps
 		return (
 			<Text
 				fontSize={{ base: "md", "2xl": "lg" }}
@@ -170,8 +181,6 @@ const StepperItem = ({
 	 */
 	const renderStepIndicator = (): JSX.Element => {
 		const statusColor = getStatusColor();
-		const hoverIcon = getHoverIconName();
-		const hasHoverIcon = Boolean(hoverIcon);
 
 		return (
 			<Circle
@@ -180,37 +189,11 @@ const StepperItem = ({
 				flexShrink={0}
 				position="relative"
 				transition="all 0.2s ease"
-				role="group"
 				boxShadow={`0 0 0 4px ${getRingColor()}`}
 			>
-				{/* Default content (icon or number) */}
-				<Flex
-					align="center"
-					justify="center"
-					transition="opacity 0.2s ease"
-					_groupHover={hasHoverIcon ? { opacity: 0 } : undefined}
-				>
+				<Flex align="center" justify="center">
 					{icon ? renderIcon() : renderDefaultContent()}
 				</Flex>
-
-				{/* Hover state - show status icon */}
-				{hasHoverIcon && (
-					<Flex
-						position="absolute"
-						inset="0"
-						align="center"
-						justify="center"
-						opacity={0}
-						transition="opacity 0.2s ease"
-						_groupHover={{ opacity: 1 }}
-					>
-						<Icon
-							name={hoverIcon}
-							color={getIndicatorTextColor()}
-							size={{ base: "18px", "2xl": "22px" }}
-						/>
-					</Flex>
-				)}
 			</Circle>
 		);
 	};
