@@ -80,12 +80,12 @@ const DigilockerRedirectionStep = ({
 
 		const data = result?.data;
 
-		console.log(
-			"[DigilockerRedirectionStep] getDigilockerUrl response:",
-			data
-		);
-
 		if (data?.status === 0 && data?.data?.link) {
+			// console.log("[DigilockerRedirectionStep] link", data.data.link);
+			// console.log(
+			// 	"[DigilockerRedirectionStep] requestId",
+			// 	data.data.requestId
+			// );
 			setDigilockerLink(data.data.link);
 			setRequestId(data.data.requestId);
 			return;
