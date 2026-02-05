@@ -15,7 +15,6 @@ export {
 	createStepLookupMap,
 	extractStepConfiguration,
 	useAndroidIntegration,
-	useDigilockerApi,
 	useEsignIntegration,
 	useOnboardingState,
 	usePintwinIntegration,

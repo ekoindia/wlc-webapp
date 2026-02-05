@@ -6,28 +6,27 @@ import {
 	OrderedList,
 	Text,
 	VStack,
+	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
+import { Endpoints } from "constants/EndPoints";
 import { useOnboardingContext } from "features/onboarding/context";
-import { useEffect } from "react";
+import { useApiFetch } from "hooks";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CustomComponentProps } from "../ContentRenderer";
 
 /**
  * DigilockerRedirectionStep Component
  *
  * This component handles the Digilocker redirection flow in the onboarding process.
- * It integrates with the onboarding state management to fetch and display the Digilocker URL.
+ * It fetches the Digilocker URL and manages the redirection flow locally.
  *
  * Flow:
- * 1. On mount, triggers API call to get Digilocker redirection URL via callback
+ * 1. On mount, triggers API call to get Digilocker redirection URL
  * 2. Displays instructions and "Open Digilocker" button
- * 3. User completes verification in Digilocker (opens in new tab)
- * 4. User returns and clicks "Proceed" to continue onboarding
- *
- * The parent OnboardingSteps component handles the callback via handleStepCallBack:
- * - When method is "getDigilockerUrl", it calls the digilocker API hook
- * - The response is stored in state.digilocker.data
- * - This component accesses the data via useOnboardingContext
+ * 3. User clicks button once to open Digilocker in new tab
+ * 4. User completes verification in Digilocker
+ * 5. User returns and clicks "Proceed" to continue onboarding (enabled only after opening Digilocker)
  * @param {CustomComponentProps} props - Standard custom step props
  * @returns {JSX.Element} The rendered component
  */
@@ -36,35 +35,114 @@ const DigilockerRedirectionStep = ({
 	onSubmit,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
-	const { state } = useOnboardingContext();
+	const { state, actions } = useOnboardingContext();
+	const toast = useToast();
 
-	// Extract digilocker data from state
-	const digilockerData = state?.digilocker?.data;
-	const digilockerLink = digilockerData?.link;
+	// Local state for Digilocker data
+	const [digilockerLink, setDigilockerLink] = useState<string | null>(null);
+	const [hasOpenedDigilocker, setHasOpenedDigilocker] = useState(false);
+	const hasFetchedRef = useRef(false);
 
-	// Note: We can't call handleStepCallBack directly from context
-	// Instead, we rely on the parent OnboardingSteps to handle callbacks
-	// This is a limitation of the current architecture
+	// Setup API fetch hook
+	const [fetchApiData, isDigilockerLoading] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
+			method: "POST",
+		}
+	);
+
+	const fetchDigilockerUrl = useCallback(async (): Promise<void> => {
+		if (digilockerLink || isDigilockerLoading) return;
+
+		const result = await fetchApiData({
+			headers: {
+				"tf-req-method": "POST",
+				"tf-req-uri": "/karza/digilocker-redirection-url",
+				"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
+			},
+		});
+
+		if (result?.error) {
+			console.error(
+				"[DigilockerRedirectionStep] getDigilockerUrl error:",
+				result
+			);
+			toast({
+				title:
+					result?.data?.message ??
+					"Something went wrong, please try again later!",
+				status: "error",
+				duration: 2000,
+			});
+			return;
+		}
+
+		const data = result?.data;
+		if (data?.status === 0 && data?.data?.link) {
+			setDigilockerLink(data.data.link);
+			return;
+		}
+
+		toast({
+			title: data?.message || "Failed to get Digilocker URL",
+			status: "error",
+			duration: 2000,
+		});
+	}, [digilockerLink, fetchApiData, isDigilockerLoading, toast]);
+
 	useEffect(() => {
-		// The callback will be triggered by the widget/parent component
-		// when this step becomes active
-		console.log("[DigilockerRedirectionStep] Component mounted");
-	}, []);
+		if (!hasFetchedRef.current) {
+			hasFetchedRef.current = true;
+			void fetchDigilockerUrl();
+		}
+	}, [fetchDigilockerUrl]);
+
+	/**
+	 * Watch for incomplete verification error (status 1709)
+	 * If detected, reset state and fetch new Digilocker URL
+	 */
+	useEffect(() => {
+		const lastResponse = state?.lastStepResponse;
+
+		if (lastResponse?.response_type_id === 1709) {
+			toast({
+				title:
+					lastResponse?.message ||
+					"Verification incomplete. Please try again.",
+				status: "error",
+				duration: 3000,
+			});
+
+			// Clear the error response to prevent re-triggering
+			actions.setLastStepResponse(null);
+
+			// Reset local state
+			setHasOpenedDigilocker(false);
+			setDigilockerLink(null);
+			hasFetchedRef.current = false;
+
+			// Fetch new Digilocker URL (will bypass guard since digilockerLink is null)
+			void fetchDigilockerUrl();
+		}
+	}, [state?.lastStepResponse, actions, fetchDigilockerUrl, toast]);
 
 	/**
 	 * Opens Digilocker in a new tab
 	 */
-	const handleOpenDigilocker = () => {
-		if (digilockerLink) {
-			// Open Digilocker in new tab
-			window.open(digilockerLink, "_blank", "noopener,noreferrer");
-		}
+	const handleOpenDigilocker = (): void => {
+		if (!digilockerLink || hasOpenedDigilocker) return;
+
+		// Open Digilocker in a new tab
+		window.open(digilockerLink, "_blank", "noopener,noreferrer");
+
+		// Mark as opened after successful window.open
+		setHasOpenedDigilocker(true);
 	};
 
 	/**
 	 * Submits the step as completed
 	 */
-	const handleProceed = () => {
+	const handleProceed = (): void => {
 		onSubmit({
 			id: stepConfig.id,
 			form_data: {
@@ -91,8 +169,13 @@ const DigilockerRedirectionStep = ({
 					w="full"
 					colorScheme="blue"
 					onClick={handleOpenDigilocker}
-					isDisabled={isSubmitting || !digilockerLink}
-					isLoading={!digilockerLink}
+					isDisabled={
+						isSubmitting ||
+						isDigilockerLoading ||
+						hasOpenedDigilocker ||
+						!digilockerLink
+					}
+					isLoading={Boolean(isDigilockerLoading)}
 					loadingText="Loading Digilocker..."
 					leftIcon={
 						<svg
@@ -112,7 +195,9 @@ const DigilockerRedirectionStep = ({
 						</svg>
 					}
 				>
-					Open Digilocker
+					{hasOpenedDigilocker
+						? "Digilocker opened"
+						: "Open Digilocker"}
 				</Button>
 
 				{/* Instructions Box */}
@@ -151,7 +236,7 @@ const DigilockerRedirectionStep = ({
 									? "Loading..."
 									: stepConfig.primaryCTAText || "Proceed",
 								loading: isSubmitting,
-								disabled: isSubmitting,
+								disabled: isSubmitting || !hasOpenedDigilocker,
 								onClick: handleProceed,
 							},
 						]}

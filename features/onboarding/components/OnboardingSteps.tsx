@@ -25,7 +25,6 @@ import {
 	createStepLookupMap,
 	extractStepConfiguration,
 	useAndroidIntegration,
-	useDigilockerApi,
 	useEsignIntegration,
 	useOnboardingState,
 	usePintwinIntegration,
@@ -275,10 +274,6 @@ const OnboardingSteps = ({
 		onStepSubmit: (data) => handleStepDataSubmit(data),
 	});
 
-	const digilocker = useDigilockerApi({
-		actions,
-	});
-
 	const pintwin = usePintwinIntegration({
 		state,
 		actions,
@@ -395,6 +390,8 @@ const OnboardingSteps = ({
 							"[OnboardingSteps] Pipeline error:",
 							error
 						);
+						// Store error response for component error handling
+						actions.setLastStepResponse(error);
 						toast({
 							title: error?.message || "Something went wrong",
 							status: "error",
@@ -547,13 +544,6 @@ const OnboardingSteps = ({
 			} else if (callType.method === "checkEsignStatus") {
 				esign.checkEsignStatus();
 			}
-		} else if (callType.type === ONBOARDING_STEP_IDS.SECRET_PIN) {
-			if (callType.method === "getBookletNumber") {
-				pintwin.getBookletNumber();
-			}
-			if (callType.method === "getBookletKey") {
-				pintwin.getBookletKey();
-			}
 		} else if (
 			callType.type === ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY
 		) {
@@ -574,12 +564,6 @@ const OnboardingSteps = ({
 						ANDROID_PERMISSION.LOCATION
 					);
 				}
-			}
-		} else if (
-			callType.type === ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION
-		) {
-			if (callType.method === "getDigilockerUrl") {
-				digilocker.getDigilockerUrl();
 			}
 		}
 	};
