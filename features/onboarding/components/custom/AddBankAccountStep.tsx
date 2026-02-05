@@ -207,6 +207,9 @@ const AddBankAccountStep = ({
 				meta: {
 					accept: "image/jpeg,image/png",
 					watermark: false,
+					options: {
+						aspectRatio: 2,
+					},
 				},
 			},
 		];
