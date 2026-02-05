@@ -40,6 +40,7 @@ const DigilockerRedirectionStep = ({
 
 	// Local state for Digilocker data
 	const [digilockerLink, setDigilockerLink] = useState<string | null>(null);
+	const [requestId, setRequestId] = useState<string | null>(null);
 	const [hasOpenedDigilocker, setHasOpenedDigilocker] = useState(false);
 	const hasFetchedRef = useRef(false);
 
@@ -78,8 +79,15 @@ const DigilockerRedirectionStep = ({
 		}
 
 		const data = result?.data;
+
+		console.log(
+			"[DigilockerRedirectionStep] getDigilockerUrl response:",
+			data
+		);
+
 		if (data?.status === 0 && data?.data?.link) {
 			setDigilockerLink(data.data.link);
+			setRequestId(data.data.requestId);
 			return;
 		}
 
@@ -119,6 +127,7 @@ const DigilockerRedirectionStep = ({
 			// Reset local state
 			setHasOpenedDigilocker(false);
 			setDigilockerLink(null);
+			setRequestId(null);
 			hasFetchedRef.current = false;
 
 			// Fetch new Digilocker URL (will bypass guard since digilockerLink is null)
@@ -148,6 +157,8 @@ const DigilockerRedirectionStep = ({
 			form_data: {
 				digilocker_completed: true,
 				completion_timestamp: new Date().toISOString(),
+				token_id: requestId,
+				is_consent: "Y",
 			},
 		});
 	};
