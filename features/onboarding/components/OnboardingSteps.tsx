@@ -27,7 +27,6 @@ import {
 	useAndroidIntegration,
 	useEsignIntegration,
 	useOnboardingState,
-	usePintwinIntegration,
 	useStepConfiguration,
 } from "../hooks";
 import {
@@ -75,7 +74,7 @@ const ExternalOnboardingWidget =
  *
  * Responsibilities:
  * - Initialize and persist step state via useStepConfiguration / useOnboardingState
- * - Route step submissions to upload/form handlers and third-party integrations (esign, digilocker, pintwin)
+ * - Route step submissions to upload/form handlers and third-party integrations (esign)
  * - Render locally defined steps using LocalStepForm overlay
  * - Handle step skip logic, widget callbacks, Android messages and pub/sub responses
  * @param {object} props - Component props
@@ -272,12 +271,6 @@ const OnboardingSteps = ({
 	const android = useAndroidIntegration({
 		agreementId,
 		onStepSubmit: (data) => handleStepDataSubmit(data),
-	});
-
-	const pintwin = usePintwinIntegration({
-		state,
-		actions,
-		mobile,
 	});
 
 	/**
@@ -523,7 +516,7 @@ const OnboardingSteps = ({
 
 	/**
 	 * Handle callbacks dispatched by the external widget.
-	 * Supports actions for esign (legality), pintwin, digilocker and Android permission requests.
+	 * Supports actions for esign (legality and Android permission requests.
 	 * MARK: Widget Callbacks
 	 * @param {object} callType - callback descriptor from widget
 	 * @param {number} callType.type - step id constant indicating source step
@@ -597,17 +590,6 @@ const OnboardingSteps = ({
 			controller.abort();
 		};
 	}, [state.esign.signUrlData, agreementId, handleStepDataSubmit]);
-
-	/**
-	 * Subscribe to Pintwin booklet number changes to fetch keys automatically
-	 * MARK: PinTwin Fetch Keys
-	 */
-	useEffect(() => {
-		if (state.pintwin.bookletNumber) {
-			pintwin.getBookletKey();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [state.pintwin.bookletNumber]);
 
 	/**
 	 * Subscribe to Android responses for eSign status updates.

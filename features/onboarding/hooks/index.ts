@@ -6,7 +6,6 @@ export type {
 	OnboardingState,
 	OnboardingStateHook,
 } from "./useOnboardingState";
-export { usePintwinIntegration } from "./usePintwinIntegration";
 export {
 	createStepLookupMap,
 	extractStepConfiguration,
