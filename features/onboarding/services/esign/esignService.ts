@@ -33,12 +33,6 @@ export const getProvider = (
 			return karzaProvider;
 		case EsignProviderType.SIGNZY:
 			return signzyProvider;
-		case EsignProviderType.DIGIO:
-			// DIGIO not currently supported, fallback to Leegality
-			console.warn(
-				"[EsignService] DIGIO provider not supported, using Leegality"
-			);
-			return leegalityProvider;
 		default:
 			console.warn(
 				`[EsignService] Unknown provider type: ${providerType}, using Leegality`
