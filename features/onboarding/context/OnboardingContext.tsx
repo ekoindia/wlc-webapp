@@ -36,6 +36,7 @@ export interface OnboardingContextValue extends OnboardingStateHook {
 	getStepById: (_stepId: number) => OnboardingStep | undefined;
 
 	// Shared data (convenience getters)
+	userName: string;
 	mobile: string;
 	agreementId: string;
 }
@@ -44,6 +45,7 @@ const OnboardingContext = createContext<OnboardingContextValue | null>(null);
 
 interface OnboardingProviderProps {
 	children: ReactNode;
+	userName: string;
 	mobile: string;
 	agreementId: string;
 	/** Optional: pass existing state from parent (for gradual migration) */
@@ -68,6 +70,7 @@ interface OnboardingProviderProps {
  */
 export const OnboardingProvider = ({
 	children,
+	userName,
 	mobile,
 	agreementId,
 	externalState,
@@ -149,6 +152,7 @@ export const OnboardingProvider = ({
 			getStepById,
 
 			// Shared data
+			userName,
 			mobile,
 			agreementId,
 		}),
@@ -158,6 +162,7 @@ export const OnboardingProvider = ({
 			actions,
 			pipelineStates,
 			currentStepConfig,
+			userName,
 			mobile,
 			agreementId,
 			goToStep,

@@ -5,6 +5,7 @@ export interface OnboardingStep {
 
 export interface UserDataDetails {
 	user_type: number;
+	name: string;
 	mobile: string;
 	agreement_id: number;
 	code: string;
@@ -13,6 +14,7 @@ export interface UserDataDetails {
 
 export interface AssistedUserData {
 	user_type: number;
+	name: string;
 	mobile: string;
 	agreement_id: number;
 	code: string;
@@ -62,6 +64,23 @@ export const getOnboardingStepsFromData = (
 		: data?.onboarding_steps;
 
 	return _onboardingSteps;
+};
+
+/**
+ * Extracts the user's name from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @param {boolean} isAssistedOnboarding - Indicates if onboarding is assisted (done on behalf of an agent).
+ * @returns {string | undefined} The user's name if found, otherwise undefined.
+ */
+export const getUserNameFromData = (
+	data: UnifiedUserData,
+	isAssistedOnboarding: boolean
+): string | undefined => {
+	const _userName = isAssistedOnboarding
+		? data?.user_detail?.name
+		: data?.userDetails?.name;
+
+	return _userName;
 };
 
 /**
