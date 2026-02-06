@@ -35,6 +35,7 @@ import {
 	getMobileFromData,
 	getOnboardingStepsFromData,
 	getRoleListFromData,
+	getUserNameFromData,
 	getUserTypeFromData,
 } from "../utils";
 import ContentRenderer from "./ContentRenderer";
@@ -170,6 +171,11 @@ const OnboardingSteps = ({
 				onboardingUserDetails,
 				isAssistedOnboarding
 			),
+		[onboardingUserDetails, isAssistedOnboarding]
+	);
+
+	const userName = useMemo(
+		() => getUserNameFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
@@ -625,6 +631,7 @@ const OnboardingSteps = ({
 
 	return (
 		<OnboardingProvider
+			userName={String(userName || "")}
 			mobile={String(mobile || "")}
 			agreementId={String(agreementId || "")}
 			externalState={{ state, dispatch: () => {}, actions }}
