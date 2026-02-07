@@ -519,6 +519,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
+		postSubmit: {
+			refreshProfile: false,
+		},
 	},
 	{
 		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
@@ -551,6 +554,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					],
 				},
 			],
+		},
+		postSubmit: {
+			refreshProfile: false,
 		},
 	},
 	{
@@ -604,7 +610,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -638,7 +644,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -704,7 +710,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -770,7 +776,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -823,7 +829,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -859,7 +865,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -901,7 +907,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
@@ -938,7 +944,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: true,
+			refreshProfile: false,
 		},
 	},
 	{
