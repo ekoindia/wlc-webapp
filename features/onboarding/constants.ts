@@ -18,12 +18,41 @@ export const visibleAgentTypes = {
 };
 
 /**
- * API Response Status Codes
- * Used throughout the onboarding process to handle API responses
+ * Response Type IDs for step success validation
+ * Used by components to determine if a step should advance
  */
-export const ONBOARDING_API_STATUS = {
-	SUCCESS: 0,
-	ONBOARDING_REDIRECTION_ERROR: 1709,
+export const RESPONSE_TYPE_IDS = {
+	/* Role Selection Screen */
+	SELECTION_SCREEN: 0,
+
+	/* Location Capture */
+	LOCATION_CAPTURE: 0,
+
+	/* Digilocker redirection success response */
+	DIGILOCKER_REDIRECTION: 0,
+
+	/* Aadhaar Verification */
+	AADHAAR_VERIFICATION: 0,
+
+	/* PAN Verification */
+	PAN_VERIFICATION_RETAILER: 0,
+	PAN_VERIFICATION_DISTRIBUTOR: 0,
+
+	/* Video KYC */
+	VIDEO_KYC: 0,
+
+	/* Business Details Submission */
+	BUSINESS: 0,
+
+	/* Bank Account Verification */
+	BANK_VERIFICATION: 0,
+	UPLOAD_PASSBOOK_IMAGE: 0,
+
+	/* Secret Pin Creation */
+	SECRET_PIN: 0,
+
+	/* Sign Agreement */
+	SIGN_AGREEMENT: 0,
 } as const;
 
 /**
@@ -63,14 +92,6 @@ export const ONBOARDING_STEP_STATUS = {
 	FAILED: 3,
 	SKIPPED: 4,
 } as const;
-
-// Type exports for TypeScript support
-export type OnboardingApiStatus =
-	(typeof ONBOARDING_API_STATUS)[keyof typeof ONBOARDING_API_STATUS];
-export type OnboardingStepId =
-	(typeof ONBOARDING_STEP_IDS)[keyof typeof ONBOARDING_STEP_IDS];
-export type OnboardingStepStatusType =
-	(typeof ONBOARDING_STEP_STATUS)[keyof typeof ONBOARDING_STEP_STATUS];
 
 /**
  * Role interface representing different user types in the onboarding process
@@ -134,6 +155,9 @@ export interface ApiPipelineStep {
 	 * If a field is not in the mapping, it passes through with its original key.
 	 */
 	fieldMapping?: Record<string, string>;
+
+	/** Expected response type ID for successful completion of this step (used for validation) */
+	successResponseTypeId: number;
 }
 
 /**
@@ -418,6 +442,11 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		primaryCTAText: "Proceed",
 		description: "Select your role to begin the onboarding process.",
 		form_data: {},
+		preSubmit: {
+			inject: {
+				csp_id: "state.mobile",
+			},
+		},
 		api: {
 			pipeline: [
 				{
@@ -427,13 +456,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					fieldMapping: {
 						applicant_type: "applicant_type",
 					},
+					successResponseTypeId: RESPONSE_TYPE_IDS.SELECTION_SCREEN,
 				},
 			],
-		},
-		preSubmit: {
-			inject: {
-				csp_id: "state.mobile",
-			},
 		},
 		postSubmit: {
 			refreshProfile: true,
@@ -446,12 +471,18 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: false,
 		stepStatus: 0,
-		applicableRoles: [13000, 12400],
+		applicableRoles: [12400],
 		primaryCTAText: "Capture Location",
 		description:
 			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
 		form_data: {},
 		success_message: "Location captured successfully.",
+		onPreSubmit: (data, actions) => {
+			// Save location to state for subsequent steps
+			if (data?.form_data?.latlong) {
+				actions.setLocation(data.form_data.latlong);
+			}
+		},
 		api: {
 			pipeline: [
 				{
@@ -459,19 +490,40 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE,
+					successResponseTypeId: RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
 				},
 			],
 		},
-		// NOTE: latlong is passed directly from widget's form_data, no injection needed
-		callbacks: {
-			type: "permission",
-			methods: ["requestLocationPermission"],
-		},
+	},
+	{
+		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
+		name: "LOCATION_CAPTURE",
+		label: "Location Capturing",
+		isRequired: true,
+		isVisible: false,
+		stepStatus: 0,
+		applicableRoles: [13000],
+		primaryCTAText: "Capture Location",
+		description:
+			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
+		form_data: {},
+		success_message: "Location captured successfully.",
 		onPreSubmit: (data, actions) => {
 			// Save location to state for subsequent steps
 			if (data?.form_data?.latlong) {
 				actions.setLocation(data.form_data.latlong);
 			}
+		},
+		api: {
+			pipeline: [
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId:
+						TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE,
+					successResponseTypeId: RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
+				},
+			],
 		},
 	},
 	{
@@ -518,6 +570,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 						aadhaarFront: "file1",
 						aadhaarBack: "file2",
 					},
+					successResponseTypeId:
+						RESPONSE_TYPE_IDS.AADHAAR_VERIFICATION,
 				},
 			],
 		},
@@ -525,85 +579,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			refreshProfile: true,
 		},
 	},
-	// {
-	// 	id: ONBOARDING_STEP_IDS.AADHAAR_CONSENT,
-	// 	name: "AADHAAR_CONSENT",
-	// 	label: "Aadhaar Consent",
-	// 	isRequired: true,
-	// 	isVisible: false,
-	// 	stepStatus: 0,
-	// 	role: 24000,
-	// 	applicableRoles: [24000],
-	// 	primaryCTAText: "Verify Consent",
-	// 	description:
-	// 		"Please provide your consent to use Aadhaar for identity verification as per UIDAI guidelines.",
-	// 	form_data: {},
-	// 	success_message: "Aadhaar consent taken.",
-	// 	api: {
-	// 		pipeline: [
-	// 			{
-	// 				id: "submit",
-	// 				type: "form",
-	// 				interactionTypeId: TransactionIds.USER_AADHAR_CONSENT,
-	// 			},
-	// 		],
-	// 	},
-	// 	preSubmit: {
-	// 		inject: {
-	// 			latlong: "state.latLong",
-	// 			company_name: "state.mobile", // Legacy uses mobile as company_name
-	// 		},
-	// 	},
-	// },
-	// {
-	// 	id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
-	// 	name: "CONFIRM_AADHAAR_NUMBER",
-	// 	label: "Confirm Aadhaar Number",
-	// 	isRequired: true,
-	// 	isVisible: false,
-	// 	stepStatus: 0,
-	// 	role: 24000,
-	// 	applicableRoles: [24000],
-	// 	primaryCTAText: "Proceed",
-	// 	description:
-	// 		"Please verify that your Aadhaar number is entered correctly before proceeding.",
-	// 	form_data: {},
-	// 	success_message: "Aadhaar number confirmed.",
-	// 	api: {
-	// 		pipeline: [
-	// 			{
-	// 				id: "submit",
-	// 				type: "form",
-	// 				interactionTypeId:
-	// 					TransactionIds.USER_AADHAR_NUMBER_CONFIRM,
-	// 			},
-	// 		],
-	// 	},
-	// },
-	// {
-	// 	id: ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY,
-	// 	name: "AADHAAR_NUMBER_OTP_VERIFY",
-	// 	label: "Confirm Aadhaar OTP",
-	// 	isRequired: true,
-	// 	isVisible: false,
-	// 	stepStatus: 0,
-	// 	role: 24000,
-	// 	applicableRoles: [24000],
-	// 	primaryCTAText: "Confirm",
-	// 	description:
-	// 		"Enter the OTP sent to your Aadhaar-registered mobile number to verify your identity.",
-	// 	form_data: {},
-	// 	success_message: "Aadhaar confirmed successfully.",
-	// 	api: {
-	// 		pipeline: [
-	// 			{
-	// 				id: "submit",
-	// 				type: "form",
-	// 				interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM,
-	// 			},
-	// 		],
-	// 	},
-	// },
 	{
 		id: ONBOARDING_STEP_IDS.DIGILOCKER_REDIRECTION,
 		name: "DIGILOCKER_REDIRECTION",
@@ -628,15 +603,13 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "submit",
 					type: "form",
 					interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM, // reused for digilocker
+					successResponseTypeId:
+						RESPONSE_TYPE_IDS.DIGILOCKER_REDIRECTION,
 				},
 			],
 		},
 		postSubmit: {
 			refreshProfile: true,
-		},
-		callbacks: {
-			type: "digilocker",
-			methods: ["getDigilockerUrl"],
 		},
 	},
 	{
@@ -646,7 +619,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		applicableRoles: [12300, 13000],
+		applicableRoles: [12300],
 		primaryCTAText: "Proceed",
 		description:
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
@@ -698,6 +671,76 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					fieldMapping: {
 						panNumber: "doc_id",
 					},
+					successResponseTypeId:
+						RESPONSE_TYPE_IDS.PAN_VERIFICATION_RETAILER,
+				},
+			],
+		},
+		postSubmit: {
+			refreshProfile: true,
+		},
+	},
+	{
+		id: ONBOARDING_STEP_IDS.PAN_VERIFICATION,
+		name: "PAN_VERIFICATION",
+		label: "PAN Verification",
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		applicableRoles: [13000],
+		primaryCTAText: "Proceed",
+		description:
+			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
+		form_data: {},
+		success_message: "PAN verified successfully.",
+		renderSource: "local",
+		localRenderer: {
+			type: "form",
+			formFields: [
+				{
+					name: "panNumber",
+					label: "PAN Number",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^([A-Z]){5}([0-9]){4}([A-Z]){1}$/,
+							message: "Invalid PAN format (e.g., ABCDE1234F)",
+						},
+						minLength: {
+							value: 10,
+							message: "PAN must be 10 characters",
+						},
+						maxLength: {
+							value: 10,
+							message: "PAN must be 10 characters",
+						},
+					},
+				},
+				{
+					name: "panImage",
+					label: "PAN Card Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+			],
+		},
+		api: {
+			pipeline: [
+				{
+					id: "upload",
+					type: "upload",
+					docType: 2, // PAN document
+					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					fileKeyMapping: {
+						panImage: "file1",
+					},
+					fieldMapping: {
+						panNumber: "doc_id",
+					},
+					successResponseTypeId:
+						RESPONSE_TYPE_IDS.PAN_VERIFICATION_DISTRIBUTOR,
 				},
 			],
 		},
@@ -750,6 +793,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					fileKeyMapping: {
 						selfieImage: "file1",
 					},
+					successResponseTypeId: RESPONSE_TYPE_IDS.VIDEO_KYC,
 				},
 			],
 		},
@@ -785,6 +829,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "submit",
 					type: "form",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_BUSINESS,
+					successResponseTypeId: RESPONSE_TYPE_IDS.BUSINESS,
 				},
 			],
 		},
@@ -816,6 +861,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId: TransactionIds.ADD_BANK_ACCOUNT,
 					continueOnSuccess: true,
+					successResponseTypeId: RESPONSE_TYPE_IDS.BANK_VERIFICATION,
 				},
 				{
 					id: "upload",
@@ -826,6 +872,8 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					fileKeyMapping: {
 						passbookImage: "file1",
 					},
+					successResponseTypeId:
+						RESPONSE_TYPE_IDS.UPLOAD_PASSBOOK_IMAGE,
 				},
 			],
 		},
@@ -862,6 +910,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_SECRET_PIN,
+					successResponseTypeId: RESPONSE_TYPE_IDS.SECRET_PIN,
 				},
 			],
 		},
@@ -894,15 +943,12 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT,
+					successResponseTypeId: RESPONSE_TYPE_IDS.SIGN_AGREEMENT,
 				},
 			],
 		},
 		postSubmit: {
 			refreshProfile: true,
-		},
-		callbacks: {
-			type: "esign",
-			methods: ["getSignUrl", "legalityOpen", "checkEsignStatus"],
 		},
 	},
 ];
