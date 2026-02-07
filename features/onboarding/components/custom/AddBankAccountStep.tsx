@@ -258,7 +258,7 @@ const AddBankAccountStep = ({
 
 		// Add passbook image if uploaded (matches widget structure)
 		if (data.passbook_image) {
-			formData.passbookImage = {
+			formData.file1 = {
 				url: URL.createObjectURL(data.passbook_image),
 				fileData: data.passbook_image,
 			};
