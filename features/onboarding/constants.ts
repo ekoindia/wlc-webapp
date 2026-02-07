@@ -143,19 +143,6 @@ export interface ApiPipelineStep {
 	continueOnSuccess?: boolean;
 	/** Only execute if the specified step succeeded */
 	dependsOn?: string;
-	/**
-	 * Maps form data paths to backend-expected file keys.
-	 * Example: { "aadhaarImages.front": "front", "aadhaarImages.back": "back" }
-	 * If not specified, files are named file1, file2, etc.
-	 */
-	fileKeyMapping?: Record<string, string>;
-	/**
-	 * Maps form field names to API field names.
-	 * Example: { "panNumber": "doc_id", "shopType": "shop_type" }
-	 * If a field is not in the mapping, it passes through with its original key.
-	 */
-	fieldMapping?: Record<string, string>;
-
 	/** Expected response type ID for successful completion of this step (used for validation) */
 	successResponseTypeId: number;
 }
@@ -453,9 +440,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "submit",
 					type: "form",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_ROLE,
-					fieldMapping: {
-						applicant_type: "applicant_type",
-					},
 					successResponseTypeId: RESPONSE_TYPE_IDS.SELECTION_SCREEN,
 				},
 			],
@@ -544,14 +528,14 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "form",
 			formFields: [
 				{
-					name: "aadhaarFront",
+					name: "file1",
 					label: "Aadhaar Front Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
 					meta: { accept: "image/jpeg,image/png" },
 				},
 				{
-					name: "aadhaarBack",
+					name: "file2",
 					label: "Aadhaar Back Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -566,10 +550,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 1, // Aadhaar document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					fileKeyMapping: {
-						aadhaarFront: "file1",
-						aadhaarBack: "file2",
-					},
 					successResponseTypeId:
 						RESPONSE_TYPE_IDS.AADHAAR_VERIFICATION,
 				},
@@ -630,7 +610,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "form",
 			formFields: [
 				{
-					name: "panNumber",
+					name: "doc_id",
 					label: "PAN Number",
 					parameter_type_id: ParamType.TEXT,
 					required: true,
@@ -650,7 +630,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					},
 				},
 				{
-					name: "panImage",
+					name: "file1",
 					label: "PAN Card Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -665,12 +645,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 2, // PAN document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					fileKeyMapping: {
-						panImage: "file1",
-					},
-					fieldMapping: {
-						panNumber: "doc_id",
-					},
 					successResponseTypeId:
 						RESPONSE_TYPE_IDS.PAN_VERIFICATION_RETAILER,
 				},
@@ -698,7 +672,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "form",
 			formFields: [
 				{
-					name: "panNumber",
+					name: "doc_id",
 					label: "PAN Number",
 					parameter_type_id: ParamType.TEXT,
 					required: true,
@@ -718,7 +692,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					},
 				},
 				{
-					name: "panImage",
+					name: "file1",
 					label: "PAN Card Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -733,12 +707,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 2, // PAN document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					fileKeyMapping: {
-						panImage: "file1",
-					},
-					fieldMapping: {
-						panNumber: "doc_id",
-					},
 					successResponseTypeId:
 						RESPONSE_TYPE_IDS.PAN_VERIFICATION_DISTRIBUTOR,
 				},
@@ -766,7 +734,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "form",
 			formFields: [
 				{
-					name: "selfieImage",
+					name: "file1",
 					label: "Take a live photo with ID proof",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -790,9 +758,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
 					docType: 3, // Video/Selfie document
-					fileKeyMapping: {
-						selfieImage: "file1",
-					},
 					successResponseTypeId: RESPONSE_TYPE_IDS.VIDEO_KYC,
 				},
 			],
@@ -869,9 +834,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					docType: 7, // Bank passbook document
 					dependsOn: "verify",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					fileKeyMapping: {
-						passbookImage: "file1",
-					},
 					successResponseTypeId:
 						RESPONSE_TYPE_IDS.UPLOAD_PASSBOOK_IMAGE,
 				},
