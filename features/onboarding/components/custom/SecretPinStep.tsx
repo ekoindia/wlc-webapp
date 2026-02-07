@@ -5,6 +5,7 @@ import {
 	Skeleton,
 	Text,
 	VStack,
+	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
@@ -12,7 +13,7 @@ import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
 import { useOnboardingContext } from "../../context";
 import type { CustomComponentProps } from "../ContentRenderer";
@@ -44,11 +45,14 @@ interface PinState {
 const SecretPinStep = ({
 	stepConfig,
 	onSubmit,
+	onAdvance,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
-	const { mobile, state } = useOnboardingContext();
+	const toast = useToast();
+	const { mobile, state, pipelineResults } = useOnboardingContext();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
+	const hasAdvancedRef = useRef(false);
 
 	// Booklet data state
 	const [bookletData, setBookletData] = useState<BookletDataResponse | null>(
@@ -126,6 +130,32 @@ const SecretPinStep = ({
 	useEffect(() => {
 		fetchBookletData();
 	}, [fetchBookletData]);
+
+	/**
+	 * Check pipeline result for step completion - auto-advance if already successful
+	 */
+	useEffect(() => {
+		const result = pipelineResults[stepConfig.id];
+		if (!result || hasAdvancedRef.current) return;
+
+		if (result.status === "success") {
+			hasAdvancedRef.current = true;
+			toast({
+				title:
+					stepConfig.success_message ||
+					"Secret PIN created successfully!",
+				status: "success",
+				duration: 2000,
+			});
+			onAdvance(stepConfig.id);
+		}
+	}, [
+		pipelineResults,
+		stepConfig.id,
+		stepConfig.success_message,
+		onAdvance,
+		toast,
+	]);
 
 	/**
 	 * Handle form submission

@@ -6,6 +6,7 @@ export type {
 	OnboardingState,
 	OnboardingStateHook,
 } from "./useOnboardingState";
+export { useSignAgreement } from "./useSignAgreement";
 export {
 	createStepLookupMap,
 	extractStepConfiguration,

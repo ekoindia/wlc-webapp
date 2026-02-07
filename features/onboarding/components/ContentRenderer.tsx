@@ -33,6 +33,8 @@ export interface CustomComponentProps {
 	stepConfig: OnboardingStep;
 	/** Handler for form/step submission */
 	onSubmit: (_data: { id: number; form_data?: Record<string, any> }) => void;
+	/** Handler for advancing to next step after success validation */
+	onAdvance: (_stepId: number) => void;
 	/** Handler for skipping the step */
 	onSkip?: (_stepId: number) => void;
 	/** Loading state for actions */
@@ -49,6 +51,8 @@ export interface ContentRendererProps {
 	stepConfig?: OnboardingStep;
 	/** Handler for form/step submission */
 	onSubmit: (_data: { id: number; form_data?: Record<string, any> }) => void;
+	/** Handler for advancing to next step after success validation */
+	onAdvance: (_stepId: number) => void;
 	/** Handler for skipping the step */
 	onSkip?: (_stepId: number) => void;
 	/** Loading state for API calls */
@@ -100,6 +104,7 @@ const LoadingFallback = (): JSX.Element => (
 const ContentRenderer = ({
 	stepConfig,
 	onSubmit,
+	onAdvance,
 	onSkip,
 	isLoading = false,
 	additionalData,
@@ -155,6 +160,7 @@ const ContentRenderer = ({
 				<LocalStepForm
 					stepConfig={stepConfig}
 					onSubmit={onSubmit}
+					onAdvance={onAdvance}
 					onSkip={onSkip}
 					isLoading={isLoading}
 				/>
@@ -180,6 +186,7 @@ const ContentRenderer = ({
 					<CustomComponent
 						stepConfig={stepConfig}
 						onSubmit={onSubmit}
+						onAdvance={onAdvance}
 						onSkip={onSkip}
 						isLoading={isLoading}
 						additionalData={additionalData}

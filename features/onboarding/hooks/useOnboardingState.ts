@@ -38,7 +38,6 @@ export interface OnboardingState {
 	selectedRole: number | null;
 	currentStep: number;
 	latLong: string | null;
-	lastStepResponse: any;
 	stepperData: OnboardingStep[];
 
 	// Feature-specific state
@@ -55,7 +54,6 @@ export type OnboardingAction =
 	| { type: "SET_ROLE"; payload: number | null }
 	| { type: "SET_CURRENT_STEP"; payload: number }
 	| { type: "SET_LOCATION"; payload: string }
-	| { type: "SET_LAST_STEP_RESPONSE"; payload: any }
 	| { type: "SET_STEPPER_DATA"; payload: OnboardingStep[] }
 	| { type: "UPDATE_AADHAAR"; payload: Partial<AadhaarState> }
 	| { type: "SET_AADHAAR_NUMBER"; payload: string }
@@ -95,7 +93,6 @@ export interface OnboardingStateHook {
 		setDigilockerLoading: (_loading: boolean) => void;
 		setIsLoading: (_loading: boolean) => void;
 		setApiInProgress: (_inProgress: boolean) => void;
-		setLastStepResponse: (_response: any) => void;
 		setStepperData: (_data: OnboardingStep[]) => void;
 		completeStep: (_step: number, _response: any) => void;
 		updateStepStatus: (_stepId: number, _status: number) => void;
@@ -108,7 +105,6 @@ const initialState: OnboardingState = {
 	selectedRole: null,
 	currentStep: 0,
 	latLong: null,
-	lastStepResponse: undefined,
 	stepperData: [],
 
 	// Feature-specific state
@@ -166,12 +162,6 @@ function onboardingReducer(
 			return {
 				...state,
 				latLong: action.payload,
-			};
-
-		case "SET_LAST_STEP_RESPONSE":
-			return {
-				...state,
-				lastStepResponse: action.payload,
 			};
 
 		case "SET_STEPPER_DATA":
@@ -292,7 +282,6 @@ function onboardingReducer(
 			return {
 				...state,
 				currentStep: action.payload.step,
-				lastStepResponse: action.payload.response,
 			};
 
 		case "UPDATE_STEP_STATUS":
@@ -377,10 +366,6 @@ export const useOnboardingState = (): OnboardingStateHook => {
 
 		setApiInProgress: (inProgress: boolean) => {
 			dispatch({ type: "SET_API_IN_PROGRESS", payload: inProgress });
-		},
-
-		setLastStepResponse: (response: any) => {
-			dispatch({ type: "SET_LAST_STEP_RESPONSE", payload: response });
 		},
 
 		setStepperData: (data: OnboardingStep[]) => {

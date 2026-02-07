@@ -224,13 +224,14 @@ const RoleSelection = ({
 						mobile: String(mobile || ""),
 						latLong: state.latLong,
 					},
-					onSuccess: async (response) => {
+					onSuccess: async (result) => {
 						console.log(
 							"[RoleSelection] Pipeline success:",
-							response
+							result
 						);
 						// Check if role selection was successful (response_type_id 1566)
-						if (response?.response_type_id === 1566) {
+						const apiResponse = result?.list?.[0]?.response;
+						if (apiResponse?.response_type_id === 1566) {
 							// Refresh user profile if configured
 							if (roleStepConfig?.postSubmit?.refreshProfile) {
 								await refreshAgentProfile();
@@ -238,8 +239,11 @@ const RoleSelection = ({
 							setStep("KYC_FLOW");
 						}
 					},
-					onError: async (error) => {
-						console.error("[RoleSelection] Pipeline error:", error);
+					onError: async (result) => {
+						console.error(
+							"[RoleSelection] Pipeline error:",
+							result
+						);
 						actions.setApiInProgress(false);
 					},
 				});

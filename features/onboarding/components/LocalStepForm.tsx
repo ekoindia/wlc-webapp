@@ -1,8 +1,10 @@
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, useToast, VStack } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
 import type { OnboardingStep } from "../constants";
+import { useOnboardingContext } from "../context";
 
 /**
  * Props for LocalStepForm component
@@ -12,6 +14,8 @@ interface LocalStepFormProps {
 	stepConfig: OnboardingStep;
 	/** Called when form is submitted with valid data */
 	onSubmit: (_data: { id: number; form_data: Record<string, any> }) => void;
+	/** Called when step success is confirmed and ready to advance */
+	onAdvance: (_stepId: number) => void;
 	/** Called when skip button is clicked */
 	onSkip?: (_stepId: number) => void;
 	/** Loading state for buttons */
@@ -22,17 +26,23 @@ interface LocalStepFormProps {
  * LocalStepForm - Renders a local form for onboarding steps.
  *
  * This component acts as a bridge between the configuration-driven onboarding steps
- * and the `tf-components` Form engine. It manages form state using react-hook-form
- * and transforms the submission data to match the pipeline executor's expectations.
+ * and the `tf-components` Form engine. It manages form state using react-hook-form,
+ * transforms the submission data to match the pipeline executor's expectations,
+ * and watches its own step result from pipelineResults to call onAdvance when success is confirmed.
  * @param {LocalStepFormProps} props - Component props
  * @returns {JSX.Element} The rendered form component
  */
 const LocalStepForm = ({
 	stepConfig,
 	onSubmit,
+	onAdvance,
 	onSkip,
 	isLoading = false,
 }: LocalStepFormProps) => {
+	const toast = useToast();
+	const { pipelineResults } = useOnboardingContext();
+	const hasAdvancedRef = useRef(false);
+
 	const {
 		register,
 		control,
@@ -48,6 +58,51 @@ const LocalStepForm = ({
 
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
+
+	/**
+	 * Watch this step's pipeline result and call onAdvance when success is confirmed
+	 * Each step watches its own result from pipelineResults[stepConfig.id]
+	 */
+	useEffect(() => {
+		const result = pipelineResults[stepConfig.id];
+		if (!result || hasAdvancedRef.current) return;
+
+		// Check pipeline status (not individual response_type_id)
+		if (result.status === "success") {
+			// Success confirmed - advance to next step
+			hasAdvancedRef.current = true;
+			toast({
+				title: stepConfig.success_message || "Success",
+				status: "success",
+				duration: 2000,
+			});
+			onAdvance(stepConfig.id);
+		} else if (result.status === "failed") {
+			// Pipeline failed - show error from first failed API
+			const failedApi = result.list.find(
+				(api) => api.status === "failed"
+			);
+			const errorMsg =
+				failedApi?.response?.message ||
+				"Verification failed. Please check your details and try again.";
+			toast({
+				title: errorMsg,
+				status: "error",
+				duration: 5000,
+			});
+		}
+	}, [
+		pipelineResults,
+		stepConfig.id,
+		stepConfig.success_message,
+		onAdvance,
+		toast,
+	]);
+
+	// Reset the advanced flag when step changes
+	useEffect(() => {
+		hasAdvancedRef.current = false;
+	}, [stepConfig.id]);
 
 	/**
 	 * Handle form submission - transforms data to pipeline format

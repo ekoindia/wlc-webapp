@@ -33,9 +33,10 @@ import type { CustomComponentProps } from "../ContentRenderer";
 const DigilockerRedirectionStep = ({
 	stepConfig,
 	onSubmit,
+	onAdvance,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
-	const { state, actions } = useOnboardingContext();
+	const { pipelineResults, setPipelineResult } = useOnboardingContext();
 	const toast = useToast();
 
 	// Local state for Digilocker data
@@ -43,6 +44,7 @@ const DigilockerRedirectionStep = ({
 	const [requestId, setRequestId] = useState<string | null>(null);
 	const [hasOpenedDigilocker, setHasOpenedDigilocker] = useState(false);
 	const hasFetchedRef = useRef(false);
+	const hasAdvancedRef = useRef(false);
 
 	// Setup API fetch hook
 	const [fetchApiData, isDigilockerLoading] = useApiFetch(
@@ -106,34 +108,71 @@ const DigilockerRedirectionStep = ({
 	}, [fetchDigilockerUrl]);
 
 	/**
-	 * Watch for incomplete verification error (status 1709)
-	 * If detected, reset state and fetch new Digilocker URL
+	 * Check pipeline result for step completion - auto-advance if successful
 	 */
 	useEffect(() => {
-		const lastResponse = state?.lastStepResponse;
+		const result = pipelineResults[stepConfig.id];
+		if (!result || hasAdvancedRef.current) return;
 
-		if (lastResponse?.response_type_id === 1709) {
+		if (result.status === "success") {
+			hasAdvancedRef.current = true;
 			toast({
 				title:
-					lastResponse?.message ||
-					"Verification incomplete. Please try again.",
-				status: "error",
-				duration: 3000,
+					stepConfig.success_message ||
+					"Digilocker verification completed successfully!",
+				status: "success",
+				duration: 2000,
 			});
-
-			// Clear the error response to prevent re-triggering
-			actions.setLastStepResponse(null);
-
-			// Reset local state
-			setHasOpenedDigilocker(false);
-			setDigilockerLink(null);
-			setRequestId(null);
-			hasFetchedRef.current = false;
-
-			// Fetch new Digilocker URL (will bypass guard since digilockerLink is null)
-			void fetchDigilockerUrl();
+			onAdvance(stepConfig.id);
 		}
-	}, [state?.lastStepResponse, actions, fetchDigilockerUrl, toast]);
+	}, [
+		pipelineResults,
+		stepConfig.id,
+		stepConfig.success_message,
+		onAdvance,
+		toast,
+	]);
+
+	/**
+	 * Watch for incomplete verification error (status 1709)
+	 * If detected, reset state and fetch new Digilocker URL
+	 * Updated to work with new PipelineResult structure
+	 */
+	useEffect(() => {
+		const result = pipelineResults[stepConfig.id];
+
+		// Check if we have a failed verification (response_type_id 1709)
+		if (result?.status === "failed") {
+			const apiResponse = result.list?.[0]?.response;
+			if (apiResponse?.response_type_id === 1709) {
+				toast({
+					title:
+						apiResponse?.message ||
+						"Verification incomplete. Please try again.",
+					status: "error",
+					duration: 3000,
+				});
+
+				// Clear the error response to prevent re-triggering
+				setPipelineResult(stepConfig.id, null as any);
+
+				// Reset local state
+				setHasOpenedDigilocker(false);
+				setDigilockerLink(null);
+				setRequestId(null);
+				hasFetchedRef.current = false;
+
+				// Fetch new Digilocker URL (will bypass guard since digilockerLink is null)
+				void fetchDigilockerUrl();
+			}
+		}
+	}, [
+		pipelineResults,
+		stepConfig.id,
+		setPipelineResult,
+		fetchDigilockerUrl,
+		toast,
+	]);
 
 	/**
 	 * Opens Digilocker in a new tab

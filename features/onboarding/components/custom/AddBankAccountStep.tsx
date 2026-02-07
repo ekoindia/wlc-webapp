@@ -1,10 +1,18 @@
-import { Alert, AlertIcon, Box, Skeleton, VStack } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Skeleton,
+	VStack,
+	useToast,
+} from "@chakra-ui/react";
 import { ActionButtonGroup, Button } from "components";
 import { ParamType } from "constants/trxnFramework";
 import { useBankList } from "hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
+import { useOnboardingContext } from "../../context";
 import type { CustomComponentProps } from "../ContentRenderer";
 
 interface BankDependentParam {
@@ -59,8 +67,13 @@ interface FormData {
 const AddBankAccountStep = ({
 	stepConfig,
 	onSubmit,
+	onAdvance,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
+	const toast = useToast();
+	const { pipelineResults } = useOnboardingContext();
+	const hasAdvancedRef = useRef(false);
+
 	const {
 		banks,
 		isLoading: isBanksLoading,
@@ -143,6 +156,32 @@ const AddBankAccountStep = ({
 			trigger();
 		}
 	}, [accountValidation, trigger]);
+
+	/**
+	 * Check pipeline result for step completion - auto-advance if already successful
+	 */
+	useEffect(() => {
+		const result = pipelineResults[stepConfig.id];
+		if (!result || hasAdvancedRef.current) return;
+
+		if (result.status === "success") {
+			hasAdvancedRef.current = true;
+			toast({
+				title:
+					stepConfig.success_message ||
+					"Bank account added successfully!",
+				status: "success",
+				duration: 2000,
+			});
+			onAdvance(stepConfig.id);
+		}
+	}, [
+		pipelineResults,
+		stepConfig.id,
+		stepConfig.success_message,
+		onAdvance,
+		toast,
+	]);
 
 	// Build dynamic parameter_list for Form component
 	const parameterList = useMemo(() => {

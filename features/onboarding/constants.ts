@@ -23,36 +23,36 @@ export const visibleAgentTypes = {
  */
 export const RESPONSE_TYPE_IDS = {
 	/* Role Selection Screen */
-	SELECTION_SCREEN: 0,
+	SELECTION_SCREEN: 1566,
 
 	/* Location Capture */
-	LOCATION_CAPTURE: 0,
-
-	/* Digilocker redirection success response */
-	DIGILOCKER_REDIRECTION: 0,
+	LOCATION_CAPTURE: 1076,
 
 	/* Aadhaar Verification */
-	AADHAAR_VERIFICATION: 0,
+	AADHAAR_VERIFICATION: 1569,
+
+	/* Digilocker redirection success response */
+	DIGILOCKER_REDIRECTION: 1621,
 
 	/* PAN Verification */
-	PAN_VERIFICATION_RETAILER: 0,
-	PAN_VERIFICATION_DISTRIBUTOR: 0,
+	PAN_VERIFICATION_RETAILER: 1569,
+	PAN_VERIFICATION_DISTRIBUTOR: 1569,
 
 	/* Video KYC */
-	VIDEO_KYC: 0,
+	VIDEO_KYC: 1569,
 
 	/* Business Details Submission */
 	BUSINESS: 0,
 
 	/* Bank Account Verification */
-	BANK_VERIFICATION: 0,
-	UPLOAD_PASSBOOK_IMAGE: 0,
+	BANK_VERIFICATION: 2095, // Check
+	UPLOAD_PASSBOOK_IMAGE: 1569,
 
 	/* Secret Pin Creation */
-	SECRET_PIN: 0,
+	SECRET_PIN: 9,
 
 	/* Sign Agreement */
-	SIGN_AGREEMENT: 0,
+	SIGN_AGREEMENT: 1615,
 } as const;
 
 /**
@@ -139,12 +139,49 @@ export interface ApiPipelineStep {
 	interactionTypeId?: number;
 	/** Document type ID for file uploads */
 	docType?: number;
-	/** If true, pipeline stops if this step fails */
-	continueOnSuccess?: boolean;
-	/** Only execute if the specified step succeeded */
-	dependsOn?: string;
-	/** Expected response type ID for successful completion of this step (used for validation) */
-	successResponseTypeId: number;
+	/**
+	 * Explicit mapping from form field names to API parameter names.
+	 * Example: { "aadhaar_front_image": "file1", "aadhaar_back_image": "file2" }
+	 * For upload calls: maps to file keys (file1, file2, etc.)
+	 * For form calls: maps to API body parameter names
+	 * If mapping exists for a field, uses the mapped name; otherwise uses the original field name.
+	 */
+	fieldMapping?: Record<string, string>;
+	/**
+	 * Response type IDs that indicate success for this API.
+	 * Pipeline validates response.response_type_id against this list.
+	 * @default [0]
+	 */
+	successResponseTypeIds?: number[];
+	/**
+	 * Whether presence of invalid_params in response should fail this API call.
+	 * @default true
+	 */
+	checkInvalidParams?: boolean;
+}
+
+/**
+ * Result of a single API call in the pipeline
+ */
+export interface ApiCallResponse {
+	/** Pipeline step id (e.g., "verify", "upload") */
+	id: string;
+	/** Transaction interaction type ID for reference */
+	interactionTypeId?: number;
+	/** Execution status */
+	status: "success" | "failed" | "skipped";
+	/** API response or error object */
+	response?: any;
+}
+
+/**
+ * Result of executing a full pipeline
+ */
+export interface PipelineResult {
+	/** Overall pipeline status */
+	status: "success" | "failed";
+	/** List of all API call responses in execution order */
+	list: ApiCallResponse[];
 }
 
 /**
@@ -440,7 +477,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "submit",
 					type: "form",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_ROLE,
-					successResponseTypeId: RESPONSE_TYPE_IDS.SELECTION_SCREEN,
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.SELECTION_SCREEN,
+					],
 				},
 			],
 		},
@@ -474,7 +513,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE,
-					successResponseTypeId: RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
+					],
 				},
 			],
 		},
@@ -505,7 +546,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE,
-					successResponseTypeId: RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
+					],
 				},
 			],
 		},
@@ -528,14 +571,14 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "form",
 			formFields: [
 				{
-					name: "file1",
+					name: "aadhaar_front_image",
 					label: "Aadhaar Front Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
 					meta: { accept: "image/jpeg,image/png" },
 				},
 				{
-					name: "file2",
+					name: "aadhaar_back_image",
 					label: "Aadhaar Back Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -550,8 +593,13 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 1, // Aadhaar document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					successResponseTypeId:
+					fieldMapping: {
+						aadhaar_front_image: "file1",
+						aadhaar_back_image: "file2",
+					},
+					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.AADHAAR_VERIFICATION,
+					],
 				},
 			],
 		},
@@ -583,8 +631,9 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "submit",
 					type: "form",
 					interactionTypeId: TransactionIds.USER_AADHAR_OTP_CONFIRM, // reused for digilocker
-					successResponseTypeId:
+					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.DIGILOCKER_REDIRECTION,
+					],
 				},
 			],
 		},
@@ -630,7 +679,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					},
 				},
 				{
-					name: "file1",
+					name: "pan_image",
 					label: "PAN Card Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -645,8 +694,12 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 2, // PAN document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					successResponseTypeId:
+					fieldMapping: {
+						pan_image: "file1",
+					},
+					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.PAN_VERIFICATION_RETAILER,
+					],
 				},
 			],
 		},
@@ -692,7 +745,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					},
 				},
 				{
-					name: "file1",
+					name: "pan_image",
 					label: "PAN Card Image",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -707,8 +760,12 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					docType: 2, // PAN document
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					successResponseTypeId:
+					fieldMapping: {
+						pan_image: "file1",
+					},
+					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.PAN_VERIFICATION_DISTRIBUTOR,
+					],
 				},
 			],
 		},
@@ -734,7 +791,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			type: "form",
 			formFields: [
 				{
-					name: "file1",
+					name: "selfie_image",
 					label: "Take a live photo with ID proof",
 					parameter_type_id: ParamType.FILE,
 					required: true,
@@ -758,7 +815,10 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "upload",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
 					docType: 3, // Video/Selfie document
-					successResponseTypeId: RESPONSE_TYPE_IDS.VIDEO_KYC,
+					fieldMapping: {
+						selfie_image: "file1",
+					},
+					successResponseTypeIds: [RESPONSE_TYPE_IDS.VIDEO_KYC],
 				},
 			],
 		},
@@ -794,7 +854,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "submit",
 					type: "form",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_BUSINESS,
-					successResponseTypeId: RESPONSE_TYPE_IDS.BUSINESS,
+					successResponseTypeIds: [RESPONSE_TYPE_IDS.BUSINESS],
 				},
 			],
 		},
@@ -825,17 +885,18 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "verify",
 					type: "form",
 					interactionTypeId: TransactionIds.ADD_BANK_ACCOUNT,
-					continueOnSuccess: true,
-					successResponseTypeId: RESPONSE_TYPE_IDS.BANK_VERIFICATION,
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.BANK_VERIFICATION,
+					],
 				},
 				{
 					id: "upload",
 					type: "upload",
 					docType: 7, // Bank passbook document
-					dependsOn: "verify",
 					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
-					successResponseTypeId:
+					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.UPLOAD_PASSBOOK_IMAGE,
+					],
 				},
 			],
 		},
@@ -872,7 +933,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_SECRET_PIN,
-					successResponseTypeId: RESPONSE_TYPE_IDS.SECRET_PIN,
+					successResponseTypeIds: [RESPONSE_TYPE_IDS.SECRET_PIN],
 				},
 			],
 		},
@@ -905,7 +966,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					type: "form",
 					interactionTypeId:
 						TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT,
-					successResponseTypeId: RESPONSE_TYPE_IDS.SIGN_AGREEMENT,
+					successResponseTypeIds: [RESPONSE_TYPE_IDS.SIGN_AGREEMENT],
 				},
 			],
 		},

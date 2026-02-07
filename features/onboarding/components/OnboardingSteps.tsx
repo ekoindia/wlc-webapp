@@ -1,32 +1,24 @@
-import { useToast, useToken } from "@chakra-ui/react";
-import { OnboardingWidget as ExternalOnboardingWidgetBase } from "@ekoindia/oaas-widget";
+import { useToast } from "@chakra-ui/react";
 import {
 	useAppSource,
 	useOrgDetailContext,
 	usePubSub,
 	useSession,
 } from "contexts";
-import {
-	useBankList,
-	useCountryStates,
-	useRefreshToken,
-	useShopTypes,
-} from "hooks";
+import { useRefreshToken } from "hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
+import { ANDROID_ACTION } from "utils";
 import {
 	masterOnboardingSteps,
-	ONBOARDING_API_STATUS,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
+	type PipelineResult,
 } from "../constants";
-import { OnboardingProvider } from "../context";
+import { OnboardingProvider, useOnboardingContext } from "../context";
 import {
 	createStepLookupMap,
 	extractStepConfiguration,
 	useAndroidIntegration,
-	useEsignIntegration,
-	useOnboardingState,
 	useStepConfiguration,
 } from "../hooks";
 import {
@@ -41,83 +33,71 @@ import {
 import ContentRenderer from "./ContentRenderer";
 import OnboardingLayout from "./OnboardingLayout";
 
-// Type assertion to fix external component type mismatch
-const ExternalOnboardingWidget =
-	ExternalOnboardingWidgetBase as unknown as React.FC<{
-		appName: string;
-		orgName: string;
-		primaryColor: string;
-		accentColor: string;
-		shopTypes: any;
-		stateTypes: any;
-		bankList: any;
-		userData: any;
-		handleSubmit: (_data: any) => void;
-		stepResponse: any;
-		stepsData: any[];
-		handleStepCallBack: (_callType: any) => void;
-		handleOnboardingSkip: (_stepId: number) => void;
-		esignStatus: number;
-		digilockerData: any;
-		initialStepId?: number;
-		constants?: {
-			apiStatus: typeof ONBOARDING_API_STATUS;
-			stepIds: typeof ONBOARDING_STEP_IDS;
-			stepStatus: typeof ONBOARDING_STEP_STATUS;
-		};
-	}>;
-
 /**
- * OnboardingSteps
+ * OnboardingStepsContent
  *
- * Manages onboarding state and integrations, and renders either the external onboarding widget
- * or a local form based on the step configuration.
+ * Internal component that uses OnboardingContext to manage onboarding state and integrations.
+ * This component must be wrapped by OnboardingProvider.
  *
  * Responsibilities:
  * - Initialize and persist step state via useStepConfiguration / useOnboardingState
  * - Route step submissions to upload/form handlers and third-party integrations (esign)
  * - Render locally defined steps using LocalStepForm overlay
  * - Handle step skip logic, widget callbacks, Android messages and pub/sub responses
- * @param {object} props - Component props
- * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
- * @param {string} props.logo - organization logo URL
- * @param {string} props.appName - application display name
- * @param {string} props.orgName - organization name
- * @param {any} props.userData - user data object (server/context)
- * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
- * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
- * @param {string} [props.initialLatLong] - pre-fetched geolocation string (lat,long,accuracy) to populate state early
- * @returns {JSX.Element} ExternalOnboardingWidget wrapped with local orchestration
+ * @param {object} root0 - Component props
+ * @param {boolean} root0.isAssistedOnboarding - whether assisted onboarding flow is active
+ * @param {any} root0.userData - user data object (server/context)
+ * @param {any} [root0.assistedAgentDetails] - assisted onboarding user details (when assisted)
+ * @param {() => Promise<void>} root0.refreshAgentProfile - refresh callback to sync profile after step changes
+ * @param {string} [root0.initialLatLong] - pre-fetched geolocation string (lat,long,accuracy) to populate state early
+ * @returns {JSX.Element} OnboardingLayout with ContentRenderer
  */
-const OnboardingSteps = ({
+const OnboardingStepsContent = ({
 	isAssistedOnboarding,
-	logo,
-	appName,
-	orgName,
 	userData,
 	assistedAgentDetails,
 	refreshAgentProfile,
 	initialLatLong,
 }: {
 	isAssistedOnboarding: boolean;
-	logo?: string;
-	appName?: string;
-	orgName?: string;
 	userData: any;
 	assistedAgentDetails?: any;
 	refreshAgentProfile: () => Promise<void>;
 	initialLatLong?: string;
 }) => {
-	const { state, actions } = useOnboardingState();
-	const { isAndroid } = useAppSource();
+	const { state, actions, pipelineResults, setPipelineResult } =
+		useOnboardingContext();
+	const { isAndroid: _isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
-	const { banks: bankList } = useBankList();
-	const { shopTypes: shopTypesData } = useShopTypes();
-	const { states: stateTypesData } = useCountryStates();
 	const { orgDetail } = useOrgDetailContext();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
+
+	/**
+	 * Calculate the initial step ID to render.
+	 * Finds the first step that has a role and is not COMPLETED or SKIPPED.
+	 * Falls back to the first step if none found.
+	 */
+	const initialStepId = useMemo(() => {
+		const stepsData = state?.stepperData;
+		if (!stepsData || stepsData.length === 0) return undefined;
+
+		const initialStep = stepsData.find(
+			(step) =>
+				step.applicableRoles?.length &&
+				step.stepStatus !== ONBOARDING_STEP_STATUS.COMPLETED &&
+				step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
+		);
+
+		return initialStep?.id ?? stepsData[0]?.id;
+	}, [state?.stepperData]);
+
+	// Track the current active step for local form rendering
+	// Initialize with initialStepId to avoid first-render timing issues
+	const [currentStepId, setCurrentStepId] = useState<number | undefined>(
+		() => initialStepId
+	);
 
 	// Set initial location in state if provided (fetched early by parent)
 	useEffect(() => {
@@ -127,12 +107,6 @@ const OnboardingSteps = ({
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialLatLong]);
-
-	// Get theme primary color
-	const [primaryColor, accentColor] = useToken("colors", [
-		"primary.DEFAULT",
-		"accent.DEFAULT",
-	]);
 
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = useMemo(
@@ -174,11 +148,6 @@ const OnboardingSteps = ({
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
-	const userName = useMemo(
-		() => getUserNameFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
-	);
-
 	const mobile = useMemo(
 		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
@@ -188,31 +157,6 @@ const OnboardingSteps = ({
 		() =>
 			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
-	);
-
-	/**
-	 * Calculate the initial step ID to render.
-	 * Finds the first step that has a role and is not COMPLETED or SKIPPED.
-	 * Falls back to the first step if none found.
-	 */
-	const initialStepId = useMemo(() => {
-		const stepsData = state?.stepperData;
-		if (!stepsData || stepsData.length === 0) return undefined;
-
-		const initialStep = stepsData.find(
-			(step) =>
-				step.applicableRoles?.length &&
-				step.stepStatus !== ONBOARDING_STEP_STATUS.COMPLETED &&
-				step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
-		);
-
-		return initialStep?.id ?? stepsData[0]?.id;
-	}, [state?.stepperData]);
-
-	// Track the current active step for local form rendering
-	// Initialize with initialStepId to avoid first-render timing issues
-	const [currentStepId, setCurrentStepId] = useState<number | undefined>(
-		() => initialStepId
 	);
 
 	// Sync currentStepId when initialStepId changes (e.g., after data loads or profile refresh)
@@ -263,16 +207,51 @@ const OnboardingSteps = ({
 		[state.stepperData, stepConfiguration]
 	);
 
-	// Initialize specialized hooks
-	const esign = useEsignIntegration({
-		state,
-		actions,
-		isAndroid,
-		logo,
-		agreementId,
-		mobile,
-		onStepSubmit: (data) => handleStepDataSubmit(data),
-	});
+	/**
+	 * Advance to the next incomplete step in the onboarding flow.
+	 * This is called by step components when they confirm step success.
+	 * @param {number} completedStepId - The ID of the step that was just completed
+	 */
+	const advanceToNextStep = useCallback(
+		async (completedStepId: number) => {
+			console.log(
+				"[OnboardingSteps] advanceToNextStep called for:",
+				completedStepId
+			);
+
+			// Mark step as completed
+			updateStepStatus(completedStepId, ONBOARDING_STEP_STATUS.COMPLETED);
+
+			// Find next incomplete step
+			const nextStep = state?.stepperData?.find(
+				(step) =>
+					step.id !== completedStepId &&
+					step.applicableRoles?.length &&
+					step.stepStatus !== ONBOARDING_STEP_STATUS.COMPLETED &&
+					step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
+			);
+
+			if (nextStep) {
+				setCurrentStepId(nextStep.id);
+			}
+
+			// Find step config for post-submit actions
+			const stepConfig = masterOnboardingSteps.find(
+				(step) => step.id === completedStepId
+			);
+
+			// Refresh user profile if configured
+			if (stepConfig?.postSubmit?.refreshProfile) {
+				await refreshAgentProfile();
+			}
+		},
+		[
+			state?.stepperData,
+			updateStepStatus,
+			setCurrentStepId,
+			refreshAgentProfile,
+		]
+	);
 
 	const android = useAndroidIntegration({
 		agreementId,
@@ -294,6 +273,7 @@ const OnboardingSteps = ({
 	/**
 	 * Handle submission of step data from the external widget or local form.
 	 * Uses the pipeline executor to process steps according to their API configuration.
+	 * Supports smart retry: if a step has a previous failed result, resumes from failed API.
 	 *
 	 * Special cases:
 	 * - SELECTION_SCREEN: ignored (handled by RoleSelection elsewhere)
@@ -306,11 +286,6 @@ const OnboardingSteps = ({
 	 */
 	const handleStepDataSubmit = useCallback(
 		async (data) => {
-			if (data?.id === ONBOARDING_STEP_IDS.SELECTION_SCREEN) {
-				// Skip role selection as it's handled in RoleSelection component
-				return;
-			}
-
 			// Find step config from masterOnboardingSteps
 			const stepConfig = masterOnboardingSteps.find(
 				(step) => step.id === data?.id
@@ -334,6 +309,17 @@ const OnboardingSteps = ({
 			// Set API in progress
 			actions.setApiInProgress(true);
 
+			// Get existing result for smart retry (if previous attempt failed)
+			const existingResult = pipelineResults[data.id];
+			const isRetry = existingResult?.status === "failed";
+
+			if (isRetry) {
+				console.log(
+					`[OnboardingSteps] Smart retry for step ${stepConfig.name}`,
+					existingResult
+				);
+			}
+
 			try {
 				const pipelineResult = await executePipeline({
 					stepConfig,
@@ -351,56 +337,22 @@ const OnboardingSteps = ({
 						},
 						digilocker: state.digilocker,
 					},
-					onSuccess: async (response) => {
+					existingResult: isRetry ? existingResult : undefined,
+					onSuccess: async (result: PipelineResult) => {
 						console.log(
 							"[OnboardingSteps] Pipeline success:",
-							response
+							result
 						);
-						toast({
-							title: data.success_message || "Success",
-							status: "success",
-							duration: 2000,
-						});
-						// Update step status
-						updateStepStatus(
-							data.id,
-							ONBOARDING_STEP_STATUS.COMPLETED
-						);
-						// Advance to next incomplete step for local step tracking
-						const nextStep = state?.stepperData?.find(
-							(step) =>
-								step.id !== data.id &&
-								step.applicableRoles?.length &&
-								step.stepStatus !==
-									ONBOARDING_STEP_STATUS.COMPLETED &&
-								step.stepStatus !==
-									ONBOARDING_STEP_STATUS.SKIPPED
-						);
-						if (nextStep) {
-							setCurrentStepId(nextStep.id);
-						}
-						// Refresh user profile if configured
-						if (stepConfig?.postSubmit?.refreshProfile) {
-							await refreshAgentProfile();
-						}
+						// Store result for this step (enables smart retry + component watching)
+						setPipelineResult(data.id, result);
 					},
-					onError: async (error) => {
+					onError: async (result: PipelineResult) => {
 						console.error(
 							"[OnboardingSteps] Pipeline error:",
-							error
+							result
 						);
-						// Store error response for component error handling
-						actions.setLastStepResponse(error);
-						toast({
-							title: error?.message || "Something went wrong",
-							status: "error",
-							duration: 3000,
-						});
-						// Update step status to failed
-						updateStepStatus(
-							data.id,
-							ONBOARDING_STEP_STATUS.FAILED
-						);
+						// Store result for smart retry
+						setPipelineResult(data.id, result);
 					},
 				});
 
@@ -408,6 +360,9 @@ const OnboardingSteps = ({
 					"[OnboardingSteps] Pipeline result:",
 					pipelineResult
 				);
+
+				// Store result (in case callbacks weren't called)
+				setPipelineResult(data.id, pipelineResult);
 			} catch (error) {
 				console.error(
 					"[OnboardingSteps] Pipeline execution error:",
@@ -427,15 +382,14 @@ const OnboardingSteps = ({
 			accessToken,
 			generateNewToken,
 			mobile,
-			refreshAgentProfile,
+			pipelineResults,
+			setPipelineResult,
 			state.aadhaar?.accessKey,
 			state.aadhaar?.number,
 			state.aadhaar?.userCode,
 			state.digilocker,
 			state.latLong,
-			state?.stepperData,
 			toast,
-			updateStepStatus,
 		]
 	);
 
@@ -521,53 +475,6 @@ const OnboardingSteps = ({
 	);
 
 	/**
-	 * Handle callbacks dispatched by the external widget.
-	 * Supports actions for esign (legality and Android permission requests.
-	 * MARK: Widget Callbacks
-	 * @param {object} callType - callback descriptor from widget
-	 * @param {number} callType.type - step id constant indicating source step
-	 * @param {string} callType.method - specific method/action requested by the widget
-	 * @returns {void}
-	 */
-	const handleStepCallBack = (callType) => {
-		if (callType.type === ONBOARDING_STEP_IDS.SIGN_AGREEMENT) {
-			// Leegality Esign
-			if (callType.method === "getSignUrl") {
-				// Initialize script if not already loaded before getting sign URL
-				if (!document.getElementById("legality")) {
-					esign.initializeEsignScript();
-				}
-				esign.getSignUrl();
-			} else if (callType.method === "legalityOpen") {
-				esign.openEsign();
-			} else if (callType.method === "checkEsignStatus") {
-				esign.checkEsignStatus();
-			}
-		} else if (
-			callType.type === ONBOARDING_STEP_IDS.AADHAAR_NUMBER_OTP_VERIFY
-		) {
-			if (callType.method === "resendOtp") {
-				handleStepDataSubmit({
-					id: ONBOARDING_STEP_IDS.CONFIRM_AADHAAR_NUMBER,
-					form_data: {
-						aadhar: state.aadhaar.number,
-						is_consent: "Y",
-					},
-				});
-			}
-		} else if (callType.type === ONBOARDING_STEP_IDS.LOCATION_CAPTURE) {
-			if (callType.method === "grantPermission") {
-				if (isAndroid) {
-					doAndroidAction(
-						ANDROID_ACTION.GRANT_PERMISSION,
-						ANDROID_PERMISSION.LOCATION
-					);
-				}
-			}
-		}
-	};
-
-	/**
 	 * Setup Window Message Listener for eSign status updates to trigger step submission.
 	 * The eSign web library sends postMessage events with type "STATUS_UPDATE" on completion from its own tab.
 	 * MARK: eSign Resp
@@ -630,56 +537,91 @@ const OnboardingSteps = ({
 	}, [onboardingUserDetails]);
 
 	return (
+		<OnboardingLayout
+			steps={state?.stepperData || []}
+			currentStepId={currentStepId}
+		>
+			<ContentRenderer
+				stepConfig={currentStepConfig}
+				onSubmit={handleStepDataSubmit}
+				onAdvance={advanceToNextStep}
+				onSkip={handleOnboardingSkip}
+				isLoading={state?.ui?.apiInProgress}
+			/>
+		</OnboardingLayout>
+	);
+};
+
+/**
+ * OnboardingSteps
+ *
+ * Wrapper component that provides OnboardingContext to OnboardingStepsContent.
+ * Extracts user details and provides them to the context provider.
+ * @param {object} props - Component props
+ * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
+ * @param {string} [props.logo] - organization logo URL (reserved for future use)
+ * @param {string} [props.appName] - application display name (reserved for future use)
+ * @param {string} [props.orgName] - organization name (reserved for future use)
+ * @param {any} props.userData - user data object (server/context)
+ * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
+ * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
+ * @param {string} [props.initialLatLong] - pre-fetched geolocation string (lat,long,accuracy) to populate state early
+ * @returns {JSX.Element} OnboardingStepsContent wrapped with OnboardingProvider
+ */
+const OnboardingSteps = ({
+	isAssistedOnboarding,
+	logo: _logo,
+	appName: _appName,
+	orgName: _orgName,
+	userData,
+	assistedAgentDetails,
+	refreshAgentProfile,
+	initialLatLong,
+}: {
+	isAssistedOnboarding: boolean;
+	logo?: string;
+	appName?: string;
+	orgName?: string;
+	userData: any;
+	assistedAgentDetails?: any;
+	refreshAgentProfile: () => Promise<void>;
+	initialLatLong?: string;
+}) => {
+	// Determine the user details to use for onboarding
+	const onboardingUserDetails = useMemo(
+		() => (isAssistedOnboarding ? assistedAgentDetails : userData),
+		[isAssistedOnboarding, assistedAgentDetails, userData]
+	);
+
+	const userName = useMemo(
+		() => getUserNameFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
+	);
+
+	const mobile = useMemo(
+		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
+	);
+
+	const agreementId = useMemo(
+		() =>
+			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
+		[onboardingUserDetails, isAssistedOnboarding]
+	);
+
+	return (
 		<OnboardingProvider
 			userName={String(userName || "")}
 			mobile={String(mobile || "")}
 			agreementId={String(agreementId || "")}
-			externalState={{ state, dispatch: () => {}, actions }}
 		>
-			<OnboardingLayout
-				steps={state?.stepperData || []}
-				currentStepId={currentStepId}
-			>
-				<ContentRenderer
-					stepConfig={currentStepConfig}
-					onSubmit={handleStepDataSubmit}
-					onSkip={handleOnboardingSkip}
-					isLoading={state?.ui?.apiInProgress}
-					widgetContent={
-						<ExternalOnboardingWidget
-							{...({
-								appName: appName,
-								orgName: orgName,
-								primaryColor: primaryColor,
-								accentColor: accentColor,
-								shopTypes: shopTypesData,
-								stateTypes: stateTypesData,
-								bankList: bankList,
-								userData: onboardingUserDetails,
-								handleSubmit: handleStepDataSubmit,
-								stepResponse: state?.lastStepResponse,
-								stepsData: state?.stepperData,
-								handleStepCallBack: handleStepCallBack,
-								handleOnboardingSkip: handleOnboardingSkip,
-								apiInProgress: state?.ui?.apiInProgress,
-								esignStatus:
-									state?.esign?.status === "ready"
-										? 1
-										: state?.esign?.status === "failed"
-											? 2
-											: 0,
-								digilockerData: state?.digilocker?.data,
-								initialStepId: initialStepId,
-								constants: {
-									apiStatus: ONBOARDING_API_STATUS,
-									stepIds: ONBOARDING_STEP_IDS,
-									stepStatus: ONBOARDING_STEP_STATUS,
-								},
-							} as any)}
-						/>
-					}
-				/>
-			</OnboardingLayout>
+			<OnboardingStepsContent
+				isAssistedOnboarding={isAssistedOnboarding}
+				userData={userData}
+				assistedAgentDetails={assistedAgentDetails}
+				refreshAgentProfile={refreshAgentProfile}
+				initialLatLong={initialLatLong}
+			/>
 		</OnboardingProvider>
 	);
 };

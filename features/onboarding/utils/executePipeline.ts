@@ -1,10 +1,14 @@
 import { Endpoints } from "constants/EndPoints";
 import { fetcher } from "helpers";
-import type { ApiPipelineStep, OnboardingStep } from "../constants";
-import type { PipelineState } from "../context";
+import type {
+	ApiCallResponse,
+	ApiPipelineStep,
+	OnboardingStep,
+	PipelineResult,
+} from "../constants";
 
 /**
- * Result of a single API call in the pipeline
+ * Result of a single API call (internal use)
  */
 interface ApiCallResult {
 	success: boolean;
@@ -42,14 +46,17 @@ interface ExecutePipelineOptions {
 		aadhaar?: { number?: string; accessKey?: string; userCode?: string };
 		digilocker?: { data?: { requestId?: string } };
 	};
-	/** Previous pipeline state (for smart retry) */
-	existingPipelineState?: PipelineState;
-	/** Callback on success */
-	onSuccess?: (_response: any) => void;
-	/** Callback on error */
-	onError?: (_error: any) => void;
-	/** Progress callback for each step */
-	onStepComplete?: (_stepId: string, _status: "success" | "failed") => void;
+	/** Previous pipeline result (for smart retry - resumes from failed API) */
+	existingResult?: PipelineResult;
+	/** Callback on success (all APIs succeeded) */
+	onSuccess?: (_result: PipelineResult) => void;
+	/** Callback on error (any API failed) */
+	onError?: (_result: PipelineResult) => void;
+	/** Progress callback for each API call */
+	onApiComplete?: (
+		_apiId: string,
+		_status: "success" | "failed" | "skipped"
+	) => void;
 }
 
 /**
@@ -88,8 +95,28 @@ function filterFileDataFromForm(
 }
 
 /**
+ * Determine if API response indicates success based on pipeline step configuration
+ * @param {any} response - API response object
+ * @param {ApiPipelineStep} pipelineStep - Pipeline step configuration
+ * @returns {boolean} True if response indicates success
+ */
+function isApiSuccess(response: any, pipelineStep: ApiPipelineStep): boolean {
+	const successIds = pipelineStep.successResponseTypeIds ?? [0];
+	const checkInvalidParams = pipelineStep.checkInvalidParams ?? true;
+
+	const responseTypeId = response?.response_type_id ?? response?.status;
+	const isValidResponseType = successIds.includes(responseTypeId);
+	const hasInvalidParams =
+		checkInvalidParams &&
+		Object.keys(response?.invalid_params || {}).length > 0;
+
+	return isValidResponseType && !hasInvalidParams;
+}
+
+/**
  * Execute a form submission API call
- * @param {ApiPipelineStep} pipelineStep - Pipeline step configuration containing interaction type ID
+ * Uses fieldMapping to map form field names to API parameter names if provided.
+ * @param {ApiPipelineStep} pipelineStep - Pipeline step configuration containing interaction type ID and optional fieldMapping
  * @param {Record<string, any>} formData - Form data object to submit to the API
  * @param {string} mobile - User's mobile number used as user_id and csp_id
  * @param {string} accessToken - JWT access token for authentication
@@ -107,6 +134,15 @@ async function executeFormCall(
 		// Filter out file data - files cannot be sent as JSON, they must use upload calls
 		const filteredFormData = filterFileDataFromForm(formData);
 
+		// Apply field mapping if provided
+		const fieldMapping = pipelineStep.fieldMapping || {};
+		const mappedFormData: Record<string, any> = {};
+
+		for (const [key, value] of Object.entries(filteredFormData)) {
+			const mappedKey = fieldMapping[key] || key;
+			mappedFormData[mappedKey] = value;
+		}
+
 		const response = await fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -115,16 +151,14 @@ async function executeFormCall(
 					interaction_type_id: pipelineStep.interactionTypeId,
 					user_id: mobile,
 					csp_id: mobile,
-					...filteredFormData,
+					...mappedFormData,
 				},
 				timeout: 30000,
 			},
 			generateNewToken
 		);
 
-		const success =
-			(response?.status === 0 || response?.response_type_id === 0) &&
-			!(Object.keys(response?.invalid_params || {}).length > 0);
+		const success = isApiSuccess(response, pipelineStep);
 
 		return { success, response };
 	} catch (error) {
@@ -150,27 +184,10 @@ function objectToFormParams(obj: Record<string, any>): string {
 }
 
 /**
- * Resolve file key from mapping or generate default
- * @param {Record<string, string>} [fileKeyMapping] - Mapping from form paths to backend keys
- * @param {string} formPath - The form data path (e.g., "aadhaarImages.front")
- * @param {number} fileIndex - Current file index for fallback naming
- * @returns {string} The file key to use
- */
-function resolveFileKey(
-	fileKeyMapping: Record<string, string> | undefined,
-	formPath: string,
-	fileIndex: number
-): string {
-	if (fileKeyMapping && fileKeyMapping[formPath]) {
-		return fileKeyMapping[formPath];
-	}
-	return `file${fileIndex}`;
-}
-
-/**
  * Execute a file upload API call
- * Matches the legacy upload format from useFileUpload.ts
- * @param {ApiPipelineStep} pipelineStep - Pipeline step with docType, interaction type, and fileKeyMapping
+ * Uses fieldMapping to map form field names to API file keys (file1, file2, etc.)
+ * If mapping exists for a field, uses the mapped name; otherwise uses the original field key.
+ * @param {ApiPipelineStep} pipelineStep - Pipeline step with docType, interaction type, and optional fieldMapping
  * @param {Record<string, any>} formData - Form data containing files and metadata
  * @param {string} mobile - User's mobile number used as user_id and csp_id
  * @param {string} accessToken - JWT access token for authentication
@@ -189,19 +206,18 @@ async function executeUploadCall(
 	try {
 		// Build FormData for file upload (matching legacy format)
 		const uploadFormData = new FormData();
-		const { fileKeyMapping } = pipelineStep;
 
-		// Collect files and build file list for formdata params
+		// Get fieldMapping - use mapped name if exists, otherwise use original key
+		const fieldMapping = pipelineStep.fieldMapping || {};
 		const fileList: string[] = [];
-		let fileIndex = 1;
 
+		// Collect files and map them to API keys
 		for (const [key, value] of Object.entries(formData)) {
 			// CASE 1: Raw File object (from local Form/Dropzone rendering - preferred approach)
 			if (value instanceof File) {
-				const fileKey = resolveFileKey(fileKeyMapping, key, fileIndex);
+				const fileKey = fieldMapping[key] || key;
 				uploadFormData.append(fileKey, value);
 				fileList.push(fileKey);
-				fileIndex++;
 				continue;
 			}
 
@@ -212,48 +228,31 @@ async function executeUploadCall(
 
 			// CASE 2: { fileData: File } structure (legacy widget support)
 			if (value.fileData instanceof File) {
-				const fileKey = resolveFileKey(fileKeyMapping, key, fileIndex);
+				const fileKey = fieldMapping[key] || key;
 				uploadFormData.append(fileKey, value.fileData);
 				fileList.push(fileKey);
-				fileIndex++;
 				continue;
 			}
 
-			// CASE 3: Nested objects like aadhaarImages: { front: { fileData }, back: { fileData } } (legacy widget)
-			for (const [subKey, subValue] of Object.entries(value)) {
+			// CASE 3: Nested objects like aadhaarImages: { front: { fileData }, back: { fileData } }
+			for (const [, subValue] of Object.entries(value)) {
 				if (subValue instanceof File) {
-					// Nested raw File (unlikely but supported)
-					const formPath = `${key}.${subKey}`;
-					const fileKey = resolveFileKey(
-						fileKeyMapping,
-						formPath,
-						fileIndex
-					);
+					const fileKey = fieldMapping[key] || key;
 					uploadFormData.append(fileKey, subValue);
 					fileList.push(fileKey);
-					fileIndex++;
 				} else if (
 					subValue &&
 					typeof subValue === "object" &&
 					(subValue as any).fileData instanceof File
 				) {
-					// Nested { fileData: File } structure
-					const formPath = `${key}.${subKey}`;
-					const fileKey = resolveFileKey(
-						fileKeyMapping,
-						formPath,
-						fileIndex
-					);
+					const fileKey = fieldMapping[key] || key;
 					uploadFormData.append(fileKey, (subValue as any).fileData);
 					fileList.push(fileKey);
-					fileIndex++;
 				}
 			}
 		}
 
 		// Extract non-file fields from formData for inclusion in params
-		// This captures panNumber, shopType, shopName, etc.
-		const { fieldMapping } = pipelineStep;
 		const nonFileFields: Record<string, any> = {};
 		for (const [key, value] of Object.entries(formData)) {
 			// Skip file objects and nested file containers
@@ -261,11 +260,7 @@ async function executeUploadCall(
 			if (
 				value &&
 				typeof value === "object" &&
-				(value.fileData instanceof File ||
-					key === "aadhaarImages" ||
-					key === "panImage" ||
-					key === "videoKyc" ||
-					key === "passbookImage")
+				value.fileData instanceof File
 			) {
 				continue;
 			}
@@ -275,9 +270,7 @@ async function executeUploadCall(
 				typeof value === "number" ||
 				typeof value === "boolean"
 			) {
-				// Use fieldMapping if available, otherwise use original key
-				const apiKey = fieldMapping?.[key] ?? key;
-				nonFileFields[apiKey] = value;
+				nonFileFields[key] = value;
 			}
 		}
 
@@ -327,8 +320,7 @@ async function executeUploadCall(
 			}
 		});
 
-		const success =
-			response?.status === 0 || response?.response_type_id === 0;
+		const success = isApiSuccess(response, pipelineStep);
 
 		return { success, response };
 	} catch (error) {
@@ -379,13 +371,15 @@ function getValueByPath(obj: any, path: string): any {
  * executePipeline
  *
  * Executes the api.pipeline configuration for a step with smart retry support.
- * This is a standalone function (not a hook) that can be called at runtime.
+ * - Sequential execution: APIs run in order, stop on first failure
+ * - Smart retry: On retry, skips already-succeeded APIs and resumes from failed one
+ * - Returns PipelineResult with status and list of all API responses
  * @param {ExecutePipelineOptions} options - Pipeline execution options
- * @returns {Promise<PipelineState>} Final pipeline state
+ * @returns {Promise<PipelineResult>} Final pipeline result with status and list
  */
 export async function executePipeline(
 	options: ExecutePipelineOptions
-): Promise<PipelineState> {
+): Promise<PipelineResult> {
 	const {
 		stepConfig,
 		formData,
@@ -393,10 +387,10 @@ export async function executePipeline(
 		accessToken,
 		generateNewToken,
 		sharedState,
-		existingPipelineState = {},
+		existingResult,
 		onSuccess,
 		onError,
-		onStepComplete,
+		onApiComplete,
 	} = options;
 
 	const pipeline = stepConfig.api?.pipeline;
@@ -405,7 +399,7 @@ export async function executePipeline(
 			"[executePipeline] No pipeline configured for step:",
 			stepConfig.name
 		);
-		return existingPipelineState;
+		return { status: "failed", list: [] };
 	}
 
 	console.log(
@@ -413,7 +407,25 @@ export async function executePipeline(
 		pipeline
 	);
 
-	const state: PipelineState = { ...existingPipelineState };
+	// Initialize result list (copy from existing or create empty)
+	const resultList: ApiCallResponse[] = existingResult?.list
+		? [...existingResult.list]
+		: pipeline.map((step) => ({
+				id: step.id,
+				interactionTypeId: step.interactionTypeId,
+				status: "skipped" as const,
+				response: null,
+			}));
+
+	// Find resume point (first non-success API)
+	const resumeIndex = existingResult?.list
+		? existingResult.list.findIndex((item) => item.status !== "success")
+		: 0;
+
+	console.log(
+		`[executePipeline] Resume index: ${resumeIndex}`,
+		existingResult ? "(smart retry)" : "(fresh start)"
+	);
 
 	// Inject state values into form data
 	const enrichedFormData = injectStateValues(
@@ -424,9 +436,7 @@ export async function executePipeline(
 
 	console.log("[executePipeline] Enriched form data:", enrichedFormData);
 
-	// Filter formData to only include fields defined in current step's localRenderer.
-	// This prevents files from previous steps (e.g., Aadhaar) from being included when processing
-	// the current step (e.g., PAN), which would cause incorrect file key assignments.
+	// Filter formData to only include fields defined in current step's localRenderer
 	let filteredFormData = enrichedFormData;
 	const localRendererFields = stepConfig.localRenderer?.formFields;
 
@@ -445,27 +455,35 @@ export async function executePipeline(
 		);
 	}
 
-	for (const pipelineStep of pipeline) {
-		// SKIP already succeeded steps (smart retry)
-		if (state[pipelineStep.id]?.status === "success") {
+	// Execute pipeline APIs sequentially
+	let pipelineFailed = false;
+
+	for (let i = 0; i < pipeline.length; i++) {
+		const pipelineStep = pipeline[i];
+
+		// SKIP already succeeded APIs (smart retry)
+		if (i < resumeIndex && resultList[i]?.status === "success") {
 			console.log(
 				`[executePipeline] Skipping ${pipelineStep.id} — already succeeded`
 			);
 			continue;
 		}
 
-		// CHECK dependency — if dependency failed or not succeeded, stop
-		if (
-			pipelineStep.dependsOn &&
-			state[pipelineStep.dependsOn]?.status !== "success"
-		) {
-			console.log(
-				`[executePipeline] Stopping — dependency ${pipelineStep.dependsOn} not successful`
-			);
-			break;
+		// SKIP remaining APIs if pipeline already failed
+		if (pipelineFailed) {
+			resultList[i] = {
+				id: pipelineStep.id,
+				interactionTypeId: pipelineStep.interactionTypeId,
+				status: "skipped",
+				response: null,
+			};
+			if (onApiComplete) {
+				onApiComplete(pipelineStep.id, "skipped");
+			}
+			continue;
 		}
 
-		// EXECUTE this step
+		// EXECUTE this API
 		console.log(`[executePipeline] Executing ${pipelineStep.id}...`);
 		let result: ApiCallResult;
 
@@ -493,9 +511,12 @@ export async function executePipeline(
 			result = { success: false, error: "Unknown pipeline step type" };
 		}
 
-		// Update state
-		state[pipelineStep.id] = {
-			status: result.success ? "success" : "failed",
+		// Update result list
+		const status = result.success ? "success" : "failed";
+		resultList[i] = {
+			id: pipelineStep.id,
+			interactionTypeId: pipelineStep.interactionTypeId,
+			status,
 			response: result.response || result.error,
 		};
 
@@ -506,45 +527,38 @@ export async function executePipeline(
 		);
 
 		// Notify progress
-		if (onStepComplete) {
-			onStepComplete(
-				pipelineStep.id,
-				result.success ? "success" : "failed"
-			);
+		if (onApiComplete) {
+			onApiComplete(pipelineStep.id, status);
 		}
 
-		// STOP if this step failed and has continueOnSuccess flag
-		if (!result.success && pipelineStep.continueOnSuccess) {
+		// STOP on failure (stop-on-fail is default behavior)
+		if (!result.success) {
+			pipelineFailed = true;
 			console.log(
 				`[executePipeline] Stopping — ${pipelineStep.id} failed`
 			);
-			break;
 		}
 	}
 
-	// Check if entire pipeline succeeded
-	const allSucceeded = pipeline.every(
-		(step) => state[step.id]?.status === "success"
-	);
+	// Build final result
+	const allSucceeded = resultList.every((item) => item.status === "success");
+	const pipelineResult: PipelineResult = {
+		status: allSucceeded ? "success" : "failed",
+		list: resultList,
+	};
 
+	// Call callbacks
 	if (allSucceeded) {
 		console.log(`[executePipeline] Pipeline completed successfully`);
 		if (onSuccess) {
-			const lastResponse =
-				state[pipeline[pipeline.length - 1].id]?.response;
-			onSuccess(lastResponse);
+			onSuccess(pipelineResult);
 		}
 	} else {
 		console.log(`[executePipeline] Pipeline failed`);
 		if (onError) {
-			const failedStep = pipeline.find(
-				(step) => state[step.id]?.status === "failed"
-			);
-			onError(
-				failedStep ? state[failedStep.id]?.response : "Pipeline failed"
-			);
+			onError(pipelineResult);
 		}
 	}
 
-	return state;
+	return pipelineResult;
 }

@@ -1,4 +1,4 @@
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, VStack, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { ParamType } from "constants/trxnFramework";
 import {
@@ -9,9 +9,10 @@ import {
 	shopNameValidation,
 } from "constants/validation";
 import { useCountryStates } from "hooks";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
+import { useOnboardingContext } from "../../context";
 import type { CustomComponentProps } from "../ContentRenderer";
 
 /**
@@ -48,8 +49,13 @@ interface FormData {
 const BusinessDetailsStep = ({
 	stepConfig,
 	onSubmit,
+	onAdvance,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
+	const toast = useToast();
+	const { pipelineResults } = useOnboardingContext();
+	const hasAdvancedRef = useRef(false);
+
 	// Fetch states using the hook
 	const { states, isLoading: isLoadingStates } = useCountryStates();
 
@@ -256,6 +262,32 @@ const BusinessDetailsStep = ({
 			},
 		];
 	}, [states, isLoadingStates]);
+
+	/**
+	 * Check pipeline result for step completion - auto-advance if already successful
+	 */
+	useEffect(() => {
+		const result = pipelineResults[stepConfig.id];
+		if (!result || hasAdvancedRef.current) return;
+
+		if (result.status === "success") {
+			hasAdvancedRef.current = true;
+			toast({
+				title:
+					stepConfig.success_message ||
+					"Business details saved successfully!",
+				status: "success",
+				duration: 2000,
+			});
+			onAdvance(stepConfig.id);
+		}
+	}, [
+		pipelineResults,
+		stepConfig.id,
+		stepConfig.success_message,
+		onAdvance,
+		toast,
+	]);
 
 	// Handle form submission
 	const onFormSubmit = (data: FormData) => {

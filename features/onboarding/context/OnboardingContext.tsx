@@ -5,29 +5,23 @@ import {
 	useState,
 	type ReactNode,
 } from "react";
-import { ONBOARDING_STEP_STATUS, type OnboardingStep } from "../constants";
+import {
+	ONBOARDING_STEP_STATUS,
+	type OnboardingStep,
+	type PipelineResult,
+} from "../constants";
 import {
 	useOnboardingState,
 	type OnboardingStateHook,
 } from "../hooks/useOnboardingState";
 
 /**
- * Pipeline execution state for tracking step API calls
- */
-export interface PipelineState {
-	[_stepId: string]: {
-		status: "pending" | "success" | "failed";
-		response?: any;
-	};
-}
-
-/**
  * Extended context value with navigation and pipeline helpers
  */
 export interface OnboardingContextValue extends OnboardingStateHook {
-	// Pipeline states for smart retry
-	pipelineStates: Record<number, PipelineState>;
-	setPipelineState: (_stepId: number, _state: PipelineState) => void;
+	// Pipeline results for smart retry (stores last result per step)
+	pipelineResults: Record<number, PipelineResult>;
+	setPipelineResult: (_stepId: number, _result: PipelineResult) => void;
 
 	// Navigation helpers
 	currentStepConfig: OnboardingStep | undefined;
@@ -79,21 +73,21 @@ export const OnboardingProvider = ({
 	const internalStateHook = useOnboardingState();
 	const { state, dispatch, actions } = externalState || internalStateHook;
 
-	// Pipeline states for tracking API execution per step
-	const [pipelineStates, setPipelineStates] = useState<
-		Record<number, PipelineState>
+	// Pipeline results for tracking API execution per step (used for smart retry)
+	const [pipelineResults, setPipelineResults] = useState<
+		Record<number, PipelineResult>
 	>({});
 
 	/**
-	 * Set pipeline state for a specific step
+	 * Set pipeline result for a specific step (used for smart retry)
 	 * @param {number} stepId - Unique identifier of the onboarding step
-	 * @param {PipelineState} pipelineState - Pipeline state object containing API call statuses
+	 * @param {PipelineResult} result - Pipeline result containing status and list of API responses
 	 * @returns {void}
 	 */
-	const setPipelineState = (stepId: number, pipelineState: PipelineState) => {
-		setPipelineStates((prev) => ({
+	const setPipelineResult = (stepId: number, result: PipelineResult) => {
+		setPipelineResults((prev) => ({
 			...prev,
-			[stepId]: pipelineState,
+			[stepId]: result,
 		}));
 	};
 
@@ -141,9 +135,9 @@ export const OnboardingProvider = ({
 			dispatch,
 			actions,
 
-			// Pipeline states
-			pipelineStates,
-			setPipelineState,
+			// Pipeline results for smart retry
+			pipelineResults,
+			setPipelineResult,
 
 			// Navigation helpers
 			currentStepConfig,
@@ -160,7 +154,7 @@ export const OnboardingProvider = ({
 			state,
 			dispatch,
 			actions,
-			pipelineStates,
+			pipelineResults,
 			currentStepConfig,
 			userName,
 			mobile,
