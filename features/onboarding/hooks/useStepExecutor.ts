@@ -3,8 +3,11 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback, useState } from "react";
-import type { ApiPipelineStep, OnboardingStep } from "../constants";
-import type { PipelineState } from "../context";
+import type {
+	ApiPipelineStep,
+	OnboardingStep,
+	PipelineState,
+} from "../constants";
 
 /**
  * Result of a single API call in the pipeline
@@ -297,17 +300,6 @@ export const useStepExecutor = ({
 					continue;
 				}
 
-				// CHECK dependency — if dependency failed or not succeeded, stop
-				if (
-					pipelineStep.dependsOn &&
-					state[pipelineStep.dependsOn]?.status !== "success"
-				) {
-					console.log(
-						`[Pipeline] Stopping — dependency ${pipelineStep.dependsOn} not successful`
-					);
-					break;
-				}
-
 				// EXECUTE this step
 				console.log(`[Pipeline] Executing ${pipelineStep.id}...`);
 				let result: ApiCallResult;
@@ -338,23 +330,20 @@ export const useStepExecutor = ({
 					response: result.response || result.error,
 				};
 
-				// Show toast
+				// Log result
 				if (result.success) {
-					// toast({ title: _formData.success_message || "Success", status: "success", duration: 2000 });
-					console.log(
-						`Success: ${_formData.success_message || "Success"}`
-					);
+					console.log(`[Pipeline] ${pipelineStep.id} succeeded`);
 				} else {
-					// toast({ title: error_message, status: "error", duration: 3000 });
 					console.error(
+						`[Pipeline] ${pipelineStep.id} failed:`,
 						result.response?.message ||
 							result.error?.message ||
 							"Something went wrong"
 					);
 				}
 
-				// STOP if this step failed and has continueOnSuccess flag
-				if (!result.success && pipelineStep.continueOnSuccess) {
+				// STOP pipeline if this step failed (sequential stop-on-failure)
+				if (!result.success) {
 					console.log(
 						`[Pipeline] Stopping — ${pipelineStep.id} failed`
 					);

@@ -93,6 +93,9 @@ export const ONBOARDING_STEP_STATUS = {
 	SKIPPED: 4,
 } as const;
 
+export type OnboardingStepStatusType =
+	(typeof ONBOARDING_STEP_STATUS)[keyof typeof ONBOARDING_STEP_STATUS];
+
 /**
  * Role interface representing different user types in the onboarding process
  */
@@ -158,6 +161,11 @@ export interface ApiPipelineStep {
 	 * @default true
 	 */
 	checkInvalidParams?: boolean;
+	/**
+	 * Mapping for file upload keys (for 'upload' type)
+	 * Example: { "selfie_image": "file1" }
+	 */
+	fileKeyMapping?: Record<string, string>;
 }
 
 /**
@@ -183,6 +191,18 @@ export interface PipelineResult {
 	/** List of all API call responses in execution order */
 	list: ApiCallResponse[];
 }
+
+/**
+ * State of a pipeline execution (map of step ID to result)
+ * Used by useStepExecutor to track progress
+ */
+export type PipelineState = Record<
+	string,
+	{
+		status: "success" | "failed" | "skipped";
+		response?: any;
+	}
+>;
 
 /**
  * Local renderer configuration for steps rendered by this project

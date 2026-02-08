@@ -26,7 +26,6 @@ export {
 	OnboardingProvider,
 	useOnboardingContext,
 	type OnboardingContextValue,
-	type PipelineState,
 } from "./context";
 
 export type {
@@ -45,7 +44,6 @@ export {
 	filterOnboardingStepsByRoles,
 	generateRoleData,
 	masterOnboardingSteps,
-	ONBOARDING_API_STATUS,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
 	roleSelectionStepData,
@@ -54,10 +52,9 @@ export {
 
 // Types from constants
 export type {
-	OnboardingApiStatus,
 	OnboardingStep,
-	OnboardingStepId,
 	OnboardingStepStatusType,
+	PipelineState,
 	Role,
 	RoleConfig,
 } from "./constants";
