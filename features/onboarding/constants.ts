@@ -42,10 +42,10 @@ export const RESPONSE_TYPE_IDS = {
 	VIDEO_KYC: 1569,
 
 	/* Business Details Submission */
-	BUSINESS: 0,
+	BUSINESS: 1571,
 
 	/* Bank Account Verification */
-	BANK_VERIFICATION: 2095, // Check
+	BANK_VERIFICATION: 1445,
 	UPLOAD_PASSBOOK_IMAGE: 1569,
 
 	/* Secret Pin Creation */
