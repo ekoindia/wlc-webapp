@@ -266,7 +266,7 @@ const ProfilePanel = () => {
 	return (
 		<>
 			<PageTitle
-				title={isMenuVisible ? "Change Role" : "Agent Details"}
+				title={isMenuVisible ? "Change Role" : "Details"}
 				toolComponent={
 					isAdmin && changeRoleMenuList.length > 0 ? (
 						<ChangeRoleDesktop
