@@ -176,6 +176,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 										? `${rotateAntiClockwise} 1s linear infinite`
 										: "none",
 								}}
+								tabIndex={-1}
 							/>
 						</span>
 					</Tooltip>
