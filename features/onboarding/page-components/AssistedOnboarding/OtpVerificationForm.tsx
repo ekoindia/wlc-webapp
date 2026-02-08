@@ -66,6 +66,7 @@ const OtpVerificationForm = ({
 					message: "Required",
 				},
 			},
+			helperText: "OTP is valid for 15 minutes",
 			meta: { length: 3 },
 		},
 	];
