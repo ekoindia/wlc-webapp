@@ -237,9 +237,12 @@ const OnboardingDashboard = () => {
 			{onboardingAgentsTopPanelData?.length > 0 ? (
 				<>
 					<DashboardDateFilter
-						{...{ prevDate, currDate, dateRange, setDateRange }}
+						dateRange={dateRange}
+						prevDate={prevDate}
+						currDate={currDate}
+						setDateRange={setDateRange}
 					/>
-					<TopPanel panelDataList={onboardingAgentsTopPanelData} />{" "}
+					<TopPanel panelDataList={onboardingAgentsTopPanelData} />
 				</>
 			) : null}
 

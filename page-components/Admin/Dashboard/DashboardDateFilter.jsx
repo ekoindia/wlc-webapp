@@ -11,6 +11,7 @@ const defaultDateFilterList = [
 	{ id: 1, value: "yesterday", label: "Yesterday" },
 	{ id: 2, value: "last7", label: "Last 7 Days" },
 	{ id: 3, value: "last30", label: "Last 30 Days" },
+	{ id: 4, value: "yesterdayTillDate", label: "Yesterday Till Date " },
 ];
 
 /**
@@ -31,7 +32,6 @@ export const isToday = (date) => {
 /**
  * Dashboard date filter component.
  * @param {object} props - Component props
- * @param {Array} props.dateFilterList - List of date filter options
  * @param {string} props.prevDate - Previous date in ISO format
  * @param {string} props.currDate - Current date in ISO format
  * @param {string} props.dateRange - Selected date range
@@ -39,7 +39,6 @@ export const isToday = (date) => {
  * @returns {JSX.Element}
  */
 const DashboardDateFilter = ({
-	dateFilterList = defaultDateFilterList,
 	prevDate,
 	currDate,
 	dateRange,
@@ -113,7 +112,7 @@ const DashboardDateFilter = ({
 			</Text>
 
 			<SegmentedControl
-				segments={dateFilterList}
+				segments={defaultDateFilterList}
 				value={dateRange}
 				onChange={(value) => setDateRange(value)}
 				equalWidth={false}
@@ -163,6 +162,7 @@ export const getDateRange = (filter) => {
 		yesterday: 1,
 		last7: 7,
 		last30: 30,
+		yesterdayTillDate: 365, // Using 365 to cover all days till yesterday
 	};
 
 	let previousDate, currentEndDate;
