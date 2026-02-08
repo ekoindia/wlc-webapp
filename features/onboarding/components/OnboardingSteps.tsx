@@ -76,8 +76,8 @@ const OnboardingStepsContent = ({
 
 	/**
 	 * Calculate the initial step ID to render.
-	 * Finds the first step that has a role and is not COMPLETED or SKIPPED.
-	 * Falls back to the first step if none found.
+	 * Finds the first step that is not COMPLETED or SKIPPED.
+	 * Returns undefined if all steps are completed (success state).
 	 */
 	const initialStepId = useMemo(() => {
 		const stepsData = state?.stepperData;
@@ -90,7 +90,7 @@ const OnboardingStepsContent = ({
 				step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
 		);
 
-		return initialStep?.id ?? stepsData[0]?.id;
+		return initialStep?.id;
 	}, [state?.stepperData]);
 
 	// Track the current active step for local form rendering
