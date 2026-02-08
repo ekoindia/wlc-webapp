@@ -147,20 +147,27 @@ export const useSignAgreement = (): UseSignAgreementReturn => {
 				console.log("[useSignAgreement] Provider callback:", result);
 
 				if (result.error) {
-					toast({
-						title: result.error || "E-sign failed",
-						status: "error",
-						duration: 3000,
-					});
+					// toast({
+					// 	title: result.error || "E-sign failed",
+					// 	status: "error",
+					// 	duration: 3000,
+					// });
+					console.log(
+						"[useSignAgreement] E-sign failed",
+						result.error
+					);
 					setStatus("ready"); // Allow retry
 				} else if (result.documentId) {
 					// Mark as success after signing
 					setStatus("success");
-					toast({
-						title: "Agreement signed successfully!",
-						status: "success",
-						duration: 3000,
-					});
+					// toast({
+					// 	title: "Agreement signed successfully!",
+					// 	status: "success",
+					// 	duration: 3000,
+					// });
+					console.log(
+						"[useSignAgreement] Agreement signed successfully"
+					);
 				}
 			},
 		});

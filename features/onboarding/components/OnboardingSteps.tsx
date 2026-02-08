@@ -219,9 +219,6 @@ const OnboardingStepsContent = ({
 				completedStepId
 			);
 
-			// Mark step as completed
-			updateStepStatus(completedStepId, ONBOARDING_STEP_STATUS.COMPLETED);
-
 			// Find next incomplete step
 			const nextStep = state?.stepperData?.find(
 				(step) =>
@@ -231,18 +228,29 @@ const OnboardingStepsContent = ({
 					step.stepStatus !== ONBOARDING_STEP_STATUS.SKIPPED
 			);
 
-			if (nextStep) {
-				setCurrentStepId(nextStep.id);
-			}
+			// Always mark step as completed (even if it's the last step)
+			updateStepStatus(completedStepId, ONBOARDING_STEP_STATUS.COMPLETED);
 
 			// Find step config for post-submit actions
 			const stepConfig = masterOnboardingSteps.find(
 				(step) => step.id === completedStepId
 			);
 
-			// Refresh user profile if configured
+			// Refresh user profile if configured (important for last step too)
 			if (stepConfig?.postSubmit?.refreshProfile) {
 				await refreshAgentProfile();
+			}
+
+			// Only advance to next step if one exists
+			if (nextStep) {
+				setCurrentStepId(nextStep.id);
+				console.log(
+					`[OnboardingSteps] Advancing to next step: ${nextStep.name} (ID: ${nextStep.id})`
+				);
+			} else {
+				console.log(
+					"[OnboardingSteps] No next step found. This is the last step. Onboarding flow complete."
+				);
 			}
 		},
 		[

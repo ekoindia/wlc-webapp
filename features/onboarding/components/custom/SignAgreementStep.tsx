@@ -18,9 +18,7 @@ import { useSignAgreement } from "../../hooks/useSignAgreement";
 import type { CustomComponentProps } from "../ContentRenderer";
 
 /** Auto-advance countdown duration in seconds */
-
-/** Auto-advance countdown duration in seconds */
-const AUTO_ADVANCE_SECONDS = 50;
+const AUTO_ADVANCE_SECONDS = 5;
 
 /**
  * SignAgreementStep Component
@@ -110,8 +108,7 @@ const SignAgreementStep = ({
 				duration: 2000,
 			});
 			onAdvance(stepConfig.id);
-		} else if (responseTypeId === 1657) {
-			// 1657: User cancelled or didn't complete signing - re-enable sign button
+		} else if (responseTypeId === 1616 || responseTypeId === 1657) {
 			setNotSignedError(true);
 			setTimeoutError(false);
 			setHasOpenedSigning(false);
