@@ -103,6 +103,8 @@ const ProfilePanel = () => {
 	const { accessToken, isAdmin } = useSession();
 	const { mobile } = router.query;
 
+	// console.log("[ProfilePanel] agentData:", agentData);
+
 	/**
 	 * Helper function to fetch agent details from server
 	 */
@@ -207,6 +209,8 @@ const ProfilePanel = () => {
 						agent_type: agentData?.agent_type,
 						user_id: agentData?.user_id,
 						user_type_id: agentData?.user_type_id,
+						account_status: agentData?.account_status,
+						parent_agent: agentData?.super_csp,
 					}}
 				/>
 			),

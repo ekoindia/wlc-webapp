@@ -50,8 +50,18 @@ const CompanyPane = ({ data }) => {
 	const router = useRouter();
 	const { mobile } = router.query ?? {};
 	const { isAdmin } = useSession();
-	const { agent_name, eko_code, src, agent_type, plan_name, wallet_balance } =
-		data ?? {};
+	const {
+		agent_name,
+		eko_code,
+		src,
+		agent_type,
+		plan_name,
+		wallet_balance,
+		account_status,
+		parent_agent,
+	} = data ?? {};
+
+	// console.log("CompanyPane data:", data);
 
 	const { orgDetail } = useOrgDetailContext();
 	const { metadata } = orgDetail ?? {};
@@ -70,9 +80,10 @@ const CompanyPane = ({ data }) => {
 	};
 
 	const companyDataList = [
-		{ id: 1, label: "Type", value: userTypeLabel },
-		{ id: 2, label: "Plan", value: plan_name },
-		// { id: 3, label: "KYC status", value: "KYC Compliant" },
+		{ id: 1, label: "Account Status", value: account_status },
+		{ id: 2, label: "Type", value: userTypeLabel },
+		{ id: 3, label: "Plan", value: plan_name },
+		{ id: 4, label: "Parent User Code", value: parent_agent },
 	];
 
 	if (isMobileMappedUserId) {
