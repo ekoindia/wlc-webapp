@@ -210,7 +210,6 @@ const ProfilePanel = () => {
 						user_id: agentData?.user_id,
 						user_type_id: agentData?.user_type_id,
 						account_status: agentData?.account_status,
-						parent_agent: agentData?.super_csp,
 					}}
 				/>
 			),
