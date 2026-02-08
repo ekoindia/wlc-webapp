@@ -93,7 +93,7 @@ const OnboardingCompleted = ({
 					{/* Action Buttons */}
 					<VStack spacing={3} w="100%" pt={4}>
 						<Button
-							variant="primary"
+							variant="accent"
 							size="lg"
 							w="100%"
 							onClick={handleOnboardAnother}
@@ -101,7 +101,7 @@ const OnboardingCompleted = ({
 							Onboard Another Agent
 						</Button>
 						<Button
-							variant="outline"
+							variant="primary_outline"
 							size="lg"
 							w="100%"
 							onClick={handleGoHome}
