@@ -235,10 +235,8 @@ export interface OnboardingStep {
 	/** Optional success message to display when step is completed */
 	success_message?: string;
 
-	// === Rendering Configuration ===
-	/** Where this step should be rendered: 'widget' (oaas-widget) or 'local' (this project) */
-	renderSource?: "widget" | "local";
-	/** Configuration for local rendering (only used when renderSource is 'local') */
+	// === Local Rendering Configuration ===
+	/** Configuration for local rendering */
 	localRenderer?: LocalRendererConfig;
 
 	// === NEW: API Pipeline ===
@@ -572,7 +570,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload clear photos of both front and back of your Aadhaar card. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "Aadhaar uploaded successfully.",
-		renderSource: "local",
 		localRenderer: {
 			type: "form",
 			formFields: [
@@ -626,7 +623,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Please complete the verification process through Digilocker to continue with your onboarding.",
 		form_data: {},
 		success_message: "Digilocker verification successful.",
-		renderSource: "local",
 		localRenderer: {
 			type: "custom",
 			component: "DigilockerRedirectionStep",
@@ -660,7 +656,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "PAN verified successfully.",
-		renderSource: "local",
 		localRenderer: {
 			type: "form",
 			formFields: [
@@ -726,7 +721,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
 		form_data: {},
 		success_message: "PAN verified successfully.",
-		renderSource: "local",
 		localRenderer: {
 			type: "form",
 			formFields: [
@@ -792,7 +786,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Take a clear selfie in good lighting to complete your identity verification. Ensure your face is clearly visible.",
 		form_data: {},
 		success_message: "KYC completed.",
-		renderSource: "local",
 		localRenderer: {
 			type: "form",
 			formFields: [
@@ -844,7 +837,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Provide your business information including name, type, and registration details to complete your profile.",
 		form_data: {},
-		renderSource: "local",
 		localRenderer: {
 			type: "custom",
 			component: "BusinessDetailsStep",
@@ -880,7 +872,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",
 		form_data: {},
-		renderSource: "local",
 		localRenderer: {
 			type: "custom",
 			component: "AddBankAccountStep",
@@ -922,7 +913,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		description:
 			"Create a secure 4-digit PIN for transaction authorization. Keep it confidential and don't share with anyone.",
 		form_data: {},
-		renderSource: "local",
 		localRenderer: {
 			type: "custom",
 			component: "SecretPinStep",
@@ -960,7 +950,6 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			"Review and digitally sign the terms and conditions to activate your account and start using our services.",
 		form_data: {},
 		success_message: "Agreement signed successfully.",
-		renderSource: "local",
 		localRenderer: {
 			type: "custom",
 			component: "SignAgreementStep",

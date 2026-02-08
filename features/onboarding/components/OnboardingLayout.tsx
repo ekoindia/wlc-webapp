@@ -80,11 +80,11 @@ const mapStepStatus = (stepStatus: number): StepStatus => {
  *   currentStepId={currentStepId}
  *   filterConfig={{ excludeStepIds: [5] }}
  * >
- *   {currentStepConfig?.localRenderer?.type === "form" ? (
- *     <LocalStepForm stepConfig={currentStepConfig} onSubmit={handleSubmit} />
- *   ) : (
- *     <WidgetContent />
- *   )}
+ *   <ContentRenderer
+ *     stepConfig={currentStepConfig}
+ *     onSubmit={handleSubmit}
+ *     onAdvance={handleAdvance}
+ *   />
  * </OnboardingLayout>
  */
 const OnboardingLayout = ({

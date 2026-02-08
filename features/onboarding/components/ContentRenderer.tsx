@@ -59,8 +59,6 @@ export interface ContentRendererProps {
 	isLoading?: boolean;
 	/** Additional data to pass to custom components */
 	additionalData?: Record<string, any>;
-	/** Widget content to render when renderSource is "widget" or undefined */
-	widgetContent?: ReactNode;
 	/** Fallback content when no step config is provided */
 	fallbackContent?: ReactNode;
 }
@@ -81,10 +79,10 @@ const LoadingFallback = (): JSX.Element => (
 /**
  * ContentRenderer - Handles conditional rendering of onboarding step content
  *
- * Determines what to render based on the step configuration:
- * 1. If renderSource is "local" and localRenderer.type is "form" -> renders LocalStepForm
- * 2. If renderSource is "local" and localRenderer.type is "custom" -> renders custom component
- * 3. If renderSource is "widget" or undefined -> renders widget content
+ * All steps are rendered locally via the stepConfig.localRenderer configuration.
+ * 1. If localRenderer.type is "form" -> renders LocalStepForm
+ * 2. If localRenderer.type is "custom" -> renders custom component
+ * 3. Otherwise -> renders fallback content
  *
  * This component centralizes the rendering logic for all onboarding content types,
  * making it easier to manage and extend.
@@ -95,7 +93,6 @@ const LoadingFallback = (): JSX.Element => (
  *   onSubmit={handleStepDataSubmit}
  *   onSkip={handleOnboardingSkip}
  *   isLoading={state?.ui?.apiInProgress}
- *   widgetContent={<ExternalOnboardingWidget {...widgetProps} />}
  * />
  * ```
  * @param {ContentRendererProps} props - Component props
@@ -108,7 +105,6 @@ const ContentRenderer = ({
 	onSkip,
 	isLoading = false,
 	additionalData,
-	widgetContent,
 	fallbackContent,
 }: ContentRendererProps): JSX.Element => {
 	console.log("[ContentRenderer] Rendering with stepConfig:", stepConfig);
@@ -116,19 +112,19 @@ const ContentRenderer = ({
 	 * Determine the content type to render
 	 */
 	const contentType = useMemo(() => {
-		// If no stepConfig, check if we have widget content to show
+		// If no stepConfig, return fallback
 		if (!stepConfig) {
-			return widgetContent ? "widget" : "fallback";
+			return "fallback";
 		}
 
-		// Check if this step should render locally
-		if (stepConfig.renderSource === "local" && stepConfig.localRenderer) {
+		// Check if localRenderer is configured
+		if (stepConfig.localRenderer) {
 			return stepConfig.localRenderer.type; // "form" or "custom"
 		}
 
-		// Default to widget
-		return "widget";
-	}, [stepConfig, widgetContent]);
+		// Default to fallback when no localRenderer config
+		return "fallback";
+	}, [stepConfig]);
 
 	/**
 	 * Get the custom component if type is "custom"
@@ -193,10 +189,6 @@ const ContentRenderer = ({
 					/>
 				</Suspense>
 			);
-
-		case "widget":
-			// Render widget content
-			return <>{widgetContent}</>;
 
 		case "fallback":
 		default:

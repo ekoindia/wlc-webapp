@@ -46,19 +46,6 @@ const mockCustomStepConfig = {
 	},
 };
 
-const mockWidgetStepConfig = {
-	id: 4,
-	name: "aadhaar_verification",
-	label: "Aadhaar Verification",
-	description: "Verify your Aadhaar",
-	isRequired: true,
-	isVisible: true,
-	stepStatus: 1,
-	primaryCTAText: "Verify",
-	form_data: {},
-	renderSource: "widget",
-};
-
 // Mock handlers
 const mockOnSubmit = jest.fn();
 const mockOnSkip = jest.fn();
@@ -143,35 +130,6 @@ describe("ContentRenderer", () => {
 			expect(
 				screen.getByText("Custom: Sign Agreement")
 			).toBeInTheDocument();
-		});
-	});
-
-	describe("Widget Rendering", () => {
-		it("renders widget content when renderSource is 'widget'", () => {
-			render(
-				<ContentRenderer
-					stepConfig={mockWidgetStepConfig}
-					onSubmit={mockOnSubmit}
-					widgetContent={
-						<div data-testid="widget-content">Widget UI Here</div>
-					}
-				/>
-			);
-
-			expect(screen.getByTestId("widget-content")).toBeInTheDocument();
-			expect(screen.getByText("Widget UI Here")).toBeInTheDocument();
-		});
-
-		it("renders widget content when no stepConfig is provided but widgetContent exists", () => {
-			render(
-				<ContentRenderer
-					onSubmit={mockOnSubmit}
-					widgetContent={<div>Default Widget</div>}
-				/>
-			);
-
-			// Without stepConfig but with widgetContent, should render widget
-			expect(screen.getByText("Default Widget")).toBeInTheDocument();
 		});
 	});
 
