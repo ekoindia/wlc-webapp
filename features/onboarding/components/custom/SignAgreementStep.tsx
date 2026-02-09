@@ -3,7 +3,7 @@ import {
 	AlertDescription,
 	AlertIcon,
 	Box,
-	Button,
+	Button as ChakraButton,
 	Flex,
 	ListItem,
 	OrderedList,
@@ -11,7 +11,7 @@ import {
 	useToast,
 	VStack,
 } from "@chakra-ui/react";
-import { ActionButtonGroup, IcoButton, Icon } from "components";
+import { ActionButtonGroup, Button, Icon } from "components";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingContext } from "../../context";
 import { useSignAgreement } from "../../hooks/useSignAgreement";
@@ -320,69 +320,53 @@ const SignAgreementStep = ({
 			</Box>
 
 			<VStack gap={4} align="stretch">
-				{/* Status Banner */}
-				{/* {isInitializing && (
-					<Alert status="info" borderRadius="md">
-						<Spinner size="sm" mr={3} />
-						<AlertDescription>
-							{userName
-								? `Preparing agreement document for ${userName}...`
-								: "Preparing agreement document..."}
-						</AlertDescription>
-					</Alert>
-				)} */}
-
-				{/* {isError && !submitError && (
-					<Alert status="error" borderRadius="md">
-						<AlertIcon />
-						<AlertDescription>
-							{error || "Failed to initialize. Please try again."}
-						</AlertDescription>
-					</Alert>
+				{agreementLoadError && (
+					<Flex
+						align="center"
+						justify="space-between"
+						p={2}
+						pl={4}
+						bg="red.50"
+						border="1px solid"
+						borderColor="error"
+						borderRadius="md"
+					>
+						<Flex align="center" gap={3}>
+							<Icon name="error" size="md" color="error" />
+							<Text
+								color="error"
+								fontWeight="medium"
+								fontSize="sm"
+							>
+								Failed to load agreement. Please try again.
+							</Text>
+						</Flex>
+						<Button
+							size="sm"
+							variant="link"
+							color="error"
+							leftIcon={<Icon name="retry" size="sm" />}
+							onClick={() => initialize()}
+						>
+							Retry
+						</Button>
+					</Flex>
 				)}
 
-				{submitError && (
-					<Alert status="error" borderRadius="md">
-						<AlertIcon />
-						<AlertDescription>{submitError}</AlertDescription>
-					</Alert>
-				)} */}
-
-				{/* {isVerifying && (
-					<Alert status="info" borderRadius="md">
-						<Spinner size="sm" mr={3} />
-						<AlertDescription>
-							Verifying your signature...
-						</AlertDescription>
-					</Alert>
-				)} */}
-
 				{/* Sign Agreement Button */}
-				<Flex direction="row" align="center" gap={2}>
-					<Button
-						w="full"
-						colorScheme="blue"
-						onClick={handleSignClick}
-						isDisabled={agreementLoadError || isSignDisabled}
-						isLoading={isInitializing}
-						loadingText="Preparing..."
-						leftIcon={<Icon name="mode-edit" size="sm" />}
-					>
-						{hasOpenedSigning
-							? "Agreement signing opened"
-							: stepConfig.primaryCTAText || "Sign Agreement"}
-					</Button>
-					{agreementLoadError ? (
-						<IcoButton
-							title="Retry"
-							iconName="retry"
-							theme="ghost"
-							iconStyle={{ color: "error" }}
-							iconSize="md"
-							onClick={() => initialize()}
-						/>
-					) : null}
-				</Flex>
+				<ChakraButton
+					w="full"
+					colorScheme="blue"
+					onClick={handleSignClick}
+					isDisabled={agreementLoadError || isSignDisabled}
+					isLoading={isInitializing}
+					loadingText="Preparing..."
+					leftIcon={<Icon name="mode-edit" size="sm" />}
+				>
+					{hasOpenedSigning
+						? "Agreement signing opened"
+						: stepConfig.primaryCTAText || "Sign Agreement"}
+				</ChakraButton>
 
 				{/* Success Banner */}
 				{isSuccess && (
