@@ -12,16 +12,15 @@ import { UserTypeIcon } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { useHslColor, useRefreshToken, useUserTypes } from "hooks";
 import { useCallback, useState } from "react";
-import {
-	APPLICANT_TYPES,
-	createRoleSelectionStep,
-	masterOnboardingSteps,
-	ONBOARDING_STEP_IDS,
-	type Role,
-	visibleAgentTypes,
-} from "../constants";
+import { APPLICANT_TYPES, RESPONSE_TYPE_IDS } from "../constants";
 import { useOnboardingState } from "../hooks";
 import { executePipeline } from "../utils";
+import {
+	createRoleSelectionStep,
+	ROLE_SELECTION_STEP_CONFIG,
+	visibleAgentTypes,
+	type Role,
+} from "../utils/roleSelection";
 
 /**
  * Map applicant_type to user_type_id for icon lookup
@@ -188,30 +187,18 @@ const RoleSelection = ({
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 
-	// Get the role selection step config from masterOnboardingSteps
-	const roleStepConfig = masterOnboardingSteps.find(
-		(step) => step.id === ONBOARDING_STEP_IDS.SELECTION_SCREEN
-	);
-
 	/**
 	 * Submit role selection using the pipeline executor
 	 */
 	const submitRoleSelection = useCallback(
 		async (applicantType: number) => {
-			if (!roleStepConfig) {
-				console.error(
-					"[RoleSelection] Role selection step config not found"
-				);
-				return;
-			}
-
 			actions.setApiInProgress(true);
 
 			try {
 				await executePipeline({
-					stepConfig: roleStepConfig,
+					stepConfig: ROLE_SELECTION_STEP_CONFIG,
 					formData: {
-						id: ONBOARDING_STEP_IDS.SELECTION_SCREEN,
+						id: ROLE_SELECTION_STEP_CONFIG.id,
 						form_data: {
 							applicant_type: applicantType,
 							csp_id: mobile,
@@ -231,9 +218,15 @@ const RoleSelection = ({
 						);
 						// Check if role selection was successful (response_type_id 1566)
 						const apiResponse = result?.list?.[0]?.response;
-						if (apiResponse?.response_type_id === 1566) {
+						if (
+							apiResponse?.response_type_id ===
+							RESPONSE_TYPE_IDS.SELECTION_SCREEN
+						) {
 							// Refresh user profile if configured
-							if (roleStepConfig?.postSubmit?.refreshProfile) {
+							if (
+								ROLE_SELECTION_STEP_CONFIG.postSubmit
+									?.refreshProfile
+							) {
 								await refreshAgentProfile();
 							}
 							setStep("KYC_FLOW");
@@ -253,7 +246,6 @@ const RoleSelection = ({
 			}
 		},
 		[
-			roleStepConfig,
 			actions,
 			mobile,
 			accessToken,

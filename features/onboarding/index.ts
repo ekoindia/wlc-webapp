@@ -39,14 +39,10 @@ export * from "./utils";
 // Constants
 export {
 	APPLICANT_TYPES,
-	createRoleSelectionStep,
 	filterOnboardingStepsByRoles,
-	generateRoleData,
 	masterOnboardingSteps,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
-	roleSelectionStepData,
-	visibleAgentTypes,
 } from "./constants";
 
 // Types from constants
@@ -54,9 +50,10 @@ export type {
 	OnboardingStep,
 	OnboardingStepStatusType,
 	PipelineState,
-	Role,
-	RoleConfig,
 } from "./constants";
+
+// Role selection types re-exported from utils
+export type { Role, RoleConfig } from "./utils/roleSelection";
 
 // Page Components
 export {

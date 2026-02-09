@@ -105,6 +105,7 @@ const SecretPinStep = ({
 
 			if (response.response_status_id === 0 && response.data) {
 				// TODO: Add proper response validation here based on actual API response structure
+				// TODO
 				setBookletData(response.data);
 				console.log(
 					"[SecretPinStep] Booklet data fetched:",
