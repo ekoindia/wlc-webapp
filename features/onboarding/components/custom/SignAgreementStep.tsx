@@ -75,7 +75,7 @@ const SignAgreementStep = ({
 	const hasAutoSubmittedRef = useRef(false);
 
 	// Ref to track if we've already advanced (prevents double-advance)
-	const hasAdvancedRef = useRef(false);
+	const lastProcessedResultRef = useRef<any>(null);
 
 	// Initialize esign session on mount
 	useEffect(() => {
@@ -87,11 +87,13 @@ const SignAgreementStep = ({
 	/**
 	 * Listen to this step's pipeline result for success/errors
 	 * Updated to work with new PipelineResult structure
+	 * Uses lastProcessedResultRef to track the last processed result and prevent duplicate toasts
 	 */
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
 		console.log("[SignAgreementStep] result", result);
-		if (!result || hasAdvancedRef.current) return;
+		// Skip if no result or if we've already processed this exact result object
+		if (!result || result === lastProcessedResultRef.current) return;
 
 		// For pipeline result, check the first (and typically only) API response
 		const apiResponse = result.list?.[0]?.response;
@@ -99,7 +101,7 @@ const SignAgreementStep = ({
 
 		if (result.status === "success") {
 			// Success! Advance to next step
-			hasAdvancedRef.current = true;
+			lastProcessedResultRef.current = result;
 			toast({
 				title:
 					stepConfig.success_message ||
@@ -109,6 +111,7 @@ const SignAgreementStep = ({
 			});
 			onAdvance(stepConfig.id);
 		} else if (responseTypeId === 1616 || responseTypeId === 1657) {
+			lastProcessedResultRef.current = result;
 			setNotSignedError(true);
 			setTimeoutError(false);
 			setHasOpenedSigning(false);
@@ -119,6 +122,7 @@ const SignAgreementStep = ({
 			(apiResponse?.error && !responseTypeId)
 		) {
 			// Timeout/network error - keep sign disabled, show retry on proceed
+			lastProcessedResultRef.current = result;
 			setTimeoutError(true);
 			setNotSignedError(false);
 			setIsSubmittingStep(false);

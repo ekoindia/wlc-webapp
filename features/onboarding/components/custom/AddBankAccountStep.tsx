@@ -72,7 +72,7 @@ const AddBankAccountStep = ({
 }: CustomComponentProps): JSX.Element => {
 	const toast = useToast();
 	const { pipelineResults } = useOnboardingContext();
-	const hasAdvancedRef = useRef(false);
+	const lastProcessedResultRef = useRef<any>(null);
 
 	const {
 		banks,
@@ -159,13 +159,17 @@ const AddBankAccountStep = ({
 
 	/**
 	 * Check pipeline result for step completion - auto-advance if already successful
+	 * Uses lastProcessedResultRef to track the last processed result and prevent duplicate toasts
 	 */
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
-		if (!result || hasAdvancedRef.current) return;
+		// Skip if no result or if we've already processed this exact result object
+		if (!result || result === lastProcessedResultRef.current) return;
+
+		console.log("[AddBankAccount] result", result);
 
 		if (result.status === "success") {
-			hasAdvancedRef.current = true;
+			lastProcessedResultRef.current = result;
 			toast({
 				title:
 					stepConfig.success_message ||
@@ -174,6 +178,21 @@ const AddBankAccountStep = ({
 				duration: 2000,
 			});
 			onAdvance(stepConfig.id);
+		} else if (result.status === "failed") {
+			lastProcessedResultRef.current = result;
+			// Extract error message from failed step
+			const failedStep = result.list.find((r) => r.status === "failed");
+			const errorMessage =
+				failedStep?.response?.message ||
+				"Bank account verification failed. Please check your details.";
+
+			toast({
+				title: "Verification Failed",
+				description: errorMessage,
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
 		}
 	}, [
 		pipelineResults,

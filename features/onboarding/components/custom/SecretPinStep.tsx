@@ -52,7 +52,7 @@ const SecretPinStep = ({
 	const { mobile, state, pipelineResults } = useOnboardingContext();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const hasAdvancedRef = useRef(false);
+	const lastProcessedResultRef = useRef<any>(null);
 
 	// Booklet data state
 	const [bookletData, setBookletData] = useState<BookletDataResponse | null>(
@@ -134,13 +134,15 @@ const SecretPinStep = ({
 
 	/**
 	 * Check pipeline result for step completion - auto-advance if already successful
+	 * Uses lastProcessedResultRef to track the last processed result and prevent duplicate toasts
 	 */
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
-		if (!result || hasAdvancedRef.current) return;
+		// Skip if no result or if we've already processed this exact result object
+		if (!result || result === lastProcessedResultRef.current) return;
 
 		if (result.status === "success") {
-			hasAdvancedRef.current = true;
+			lastProcessedResultRef.current = result;
 			toast({
 				title:
 					stepConfig.success_message ||
@@ -149,6 +151,19 @@ const SecretPinStep = ({
 				duration: 2000,
 			});
 			onAdvance(stepConfig.id);
+		} else if (result.status === "failed") {
+			lastProcessedResultRef.current = result;
+			const failedStep = result.list.find((r) => r.status === "failed");
+			const errorMessage =
+				failedStep?.response?.message ||
+				"Failed to create secret PIN. Please try again.";
+			toast({
+				title: "Verification Failed",
+				description: errorMessage,
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
 		}
 	}, [
 		pipelineResults,

@@ -44,7 +44,7 @@ const DigilockerRedirectionStep = ({
 	const [requestId, setRequestId] = useState<string | null>(null);
 	const [hasOpenedDigilocker, setHasOpenedDigilocker] = useState(false);
 	const hasFetchedRef = useRef(false);
-	const hasAdvancedRef = useRef(false);
+	const lastProcessedResultRef = useRef<any>(null);
 
 	// Setup API fetch hook
 	const [fetchApiData, isDigilockerLoading] = useApiFetch(
@@ -109,13 +109,15 @@ const DigilockerRedirectionStep = ({
 
 	/**
 	 * Check pipeline result for step completion - auto-advance if successful
+	 * Uses lastProcessedResultRef to track the last processed result and prevent duplicate toasts
 	 */
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
-		if (!result || hasAdvancedRef.current) return;
+		// Skip if no result or if we've already processed this exact result object
+		if (!result || result === lastProcessedResultRef.current) return;
 
 		if (result.status === "success") {
-			hasAdvancedRef.current = true;
+			lastProcessedResultRef.current = result;
 			toast({
 				title:
 					stepConfig.success_message ||
@@ -125,6 +127,7 @@ const DigilockerRedirectionStep = ({
 			});
 			onAdvance(stepConfig.id);
 		}
+		// Note: Error handling for 1709 is done in a separate useEffect below
 	}, [
 		pipelineResults,
 		stepConfig.id,

@@ -368,9 +368,6 @@ const OnboardingStepsContent = ({
 					"[OnboardingSteps] Pipeline result:",
 					pipelineResult
 				);
-
-				// Store result (in case callbacks weren't called)
-				setPipelineResult(data.id, pipelineResult);
 			} catch (error) {
 				console.error(
 					"[OnboardingSteps] Pipeline execution error:",

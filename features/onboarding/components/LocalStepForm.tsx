@@ -41,7 +41,7 @@ const LocalStepForm = ({
 }: LocalStepFormProps) => {
 	const toast = useToast();
 	const { pipelineResults } = useOnboardingContext();
-	const hasAdvancedRef = useRef(false);
+	const lastProcessedResultRef = useRef<any>(null);
 
 	const {
 		register,
@@ -62,15 +62,17 @@ const LocalStepForm = ({
 	/**
 	 * Watch this step's pipeline result and call onAdvance when success is confirmed
 	 * Each step watches its own result from pipelineResults[stepConfig.id]
+	 * Uses lastProcessedResultRef to track the last processed result and prevent duplicate toasts
 	 */
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
-		if (!result || hasAdvancedRef.current) return;
+		// Skip if no result or if we've already processed this exact result object
+		if (!result || result === lastProcessedResultRef.current) return;
 
 		// Check pipeline status (not individual response_type_id)
 		if (result.status === "success") {
 			// Success confirmed - advance to next step
-			hasAdvancedRef.current = true;
+			lastProcessedResultRef.current = result;
 			toast({
 				title: stepConfig.success_message || "Success",
 				status: "success",
@@ -79,6 +81,7 @@ const LocalStepForm = ({
 			onAdvance(stepConfig.id);
 		} else if (result.status === "failed") {
 			// Pipeline failed - show error from first failed API
+			lastProcessedResultRef.current = result;
 			const failedApi = result.list.find(
 				(api) => api.status === "failed"
 			);
@@ -98,11 +101,6 @@ const LocalStepForm = ({
 		onAdvance,
 		toast,
 	]);
-
-	// Reset the advanced flag when step changes
-	useEffect(() => {
-		hasAdvancedRef.current = false;
-	}, [stepConfig.id]);
 
 	/**
 	 * Handle form submission - transforms data to pipeline format
