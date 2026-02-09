@@ -71,7 +71,7 @@ const getBaseRoleData = (
 		id: 2,
 		applicant_type: APPLICANT_TYPES.DISTRIBUTOR,
 		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
-		description: `I have a network of ${userTypeLabel[2] || "Retailer"} and i want to serve them`,
+		description: `I have a network of ${userTypeLabel[2] || "Retailer"} and I want to serve them`,
 		icon: "../assets/icons/user_distributor.png",
 		isVisible: true,
 		user_type: [{ key: 1, name: "Distributor" }],
