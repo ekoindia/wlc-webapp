@@ -103,14 +103,15 @@ const SecretPinStep = ({
 				generateNewToken
 			);
 
-			if (response.response_status_id === 0 && response.data) {
-				// TODO: Add proper response validation here based on actual API response structure
-				// TODO
+			if (
+				response?.response_status_id === 0 &&
+				response?.response_type_id === 1646
+			) {
 				setBookletData(response.data);
-				console.log(
-					"[SecretPinStep] Booklet data fetched:",
-					response.data
-				);
+				// console.log(
+				// 	"[SecretPinStep] Booklet data fetched:",
+				// 	response.data
+				// );
 			} else {
 				// API returned but with an error message
 				setBookletError(
