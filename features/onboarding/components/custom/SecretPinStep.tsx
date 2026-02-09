@@ -2,12 +2,13 @@ import {
 	Alert,
 	AlertIcon,
 	Box,
+	Flex,
 	Skeleton,
 	Text,
 	VStack,
 	useToast,
 } from "@chakra-ui/react";
-import { ActionButtonGroup } from "components";
+import { ActionButtonGroup, Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
@@ -219,34 +220,8 @@ const SecretPinStep = ({
 		);
 	}
 
-	// Error state - show error with retry button
-	if (bookletError) {
-		return (
-			<VStack gap={6} align="stretch" w="full">
-				<Box>
-					<Box fontSize="2xl" fontWeight="medium">
-						{stepConfig.label}
-					</Box>
-					<Box fontSize="sm" color="gray.600" mt={3}>
-						{stepConfig.description}
-					</Box>
-				</Box>
-				<Alert status="error" borderRadius="md">
-					<AlertIcon />
-					{bookletError}
-				</Alert>
-				<ActionButtonGroup
-					isFixedOnMobile={false}
-					buttonConfigList={[
-						{
-							label: "Retry",
-							onClick: fetchBookletData,
-						},
-					]}
-				/>
-			</VStack>
-		);
-	}
+	// Derived state: booklet failed to load
+	const bookletLoadError = !isLoadingBooklet && bookletError;
 
 	return (
 		<VStack gap={6} align="stretch" w="full">
@@ -260,52 +235,96 @@ const SecretPinStep = ({
 			</Box>
 
 			<VStack gap={6} align="stretch">
-				{/* Secret PIN Input */}
-				<Pintwin
-					label="Secret PIN"
-					length={4}
-					onPinChange={(pin) =>
-						setFirstPin((prev) => ({ ...prev, raw: pin }))
-					}
-					onPinComplete={(pin, encodedPin) =>
-						setFirstPin({ raw: pin, encoded: encodedPin })
-					}
-				/>
-
-				{/* Confirm PIN Input */}
-				<Pintwin
-					label="Confirm Secret PIN"
-					length={4}
-					onPinChange={(pin) =>
-						setSecondPin((prev) => ({ ...prev, raw: pin }))
-					}
-					onPinComplete={(pin, encodedPin) =>
-						setSecondPin({ raw: pin, encoded: encodedPin })
-					}
-				/>
-
-				{/* PIN mismatch error */}
-				{pinsMismatch && (
-					<Alert status="error" borderRadius="md">
-						<AlertIcon />
-						<Text>PINs do not match. Please try again.</Text>
-					</Alert>
+				{/* Error banner when booklet data fails to load */}
+				{bookletLoadError && (
+					<Flex
+						align="center"
+						justify="space-between"
+						p={2}
+						pl={4}
+						bg="red.50"
+						border="1px solid"
+						borderColor="error"
+						borderRadius="md"
+					>
+						<Flex align="center" gap={3}>
+							<Icon name="error" size="md" color="error" />
+							<Text
+								color="error"
+								fontWeight="medium"
+								fontSize="sm"
+							>
+								{bookletError}
+							</Text>
+						</Flex>
+						<Button
+							size="sm"
+							variant="link"
+							color="error"
+							leftIcon={<Icon name="retry" size="sm" />}
+							onClick={fetchBookletData}
+						>
+							Retry
+						</Button>
+					</Flex>
 				)}
 
-				<ActionButtonGroup
-					isFixedOnMobile={false}
-					buttonConfigList={[
-						{
-							label: isSubmitting
-								? "Loading..."
-								: stepConfig.primaryCTAText || "Proceed",
-							onClick: handleSubmit,
-							loading: isSubmitting,
-							disabled:
-								isSubmitting || !pinsMatch || !firstPin.encoded,
-						},
-					]}
-				/>
+				{/* Only show Pintwin inputs if booklet data is loaded */}
+				{bookletData && (
+					<>
+						{/* Secret PIN Input */}
+						<Pintwin
+							label="Secret PIN"
+							length={4}
+							onPinChange={(pin) =>
+								setFirstPin((prev) => ({ ...prev, raw: pin }))
+							}
+							onPinComplete={(pin, encodedPin) =>
+								setFirstPin({ raw: pin, encoded: encodedPin })
+							}
+						/>
+
+						{/* Confirm PIN Input */}
+						<Pintwin
+							label="Confirm Secret PIN"
+							length={4}
+							onPinChange={(pin) =>
+								setSecondPin((prev) => ({ ...prev, raw: pin }))
+							}
+							onPinComplete={(pin, encodedPin) =>
+								setSecondPin({ raw: pin, encoded: encodedPin })
+							}
+						/>
+
+						{/* PIN mismatch error */}
+						{pinsMismatch && (
+							<Alert status="error" borderRadius="md">
+								<AlertIcon />
+								<Text>
+									PINs do not match. Please try again.
+								</Text>
+							</Alert>
+						)}
+
+						<ActionButtonGroup
+							isFixedOnMobile={false}
+							buttonConfigList={[
+								{
+									label: isSubmitting
+										? "Loading..."
+										: stepConfig.primaryCTAText ||
+											"Proceed",
+									onClick: handleSubmit,
+									loading: isSubmitting,
+									disabled:
+										isSubmitting ||
+										!pinsMatch ||
+										!firstPin.encoded,
+								},
+							]}
+						/>
+					</>
+				)}
 			</VStack>
 		</VStack>
 	);
