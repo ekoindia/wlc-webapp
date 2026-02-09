@@ -11,7 +11,7 @@ import {
 	useToast,
 	VStack,
 } from "@chakra-ui/react";
-import { ActionButtonGroup, Icon } from "components";
+import { ActionButtonGroup, IcoButton, Icon } from "components";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingContext } from "../../context";
 import { useSignAgreement } from "../../hooks/useSignAgreement";
@@ -258,6 +258,7 @@ const SignAgreementStep = ({
 	const isInitializing = status === "idle" || status === "loading";
 	const isVerifying = status === "verifying" || isSubmittingStep;
 	const isSuccess = status === "success";
+	const agreementLoadError = status === "error"; // Failed to load agreement
 
 	// Proceed button should be disabled until user opens signing
 	// Also disabled if we got a "not signed" error (1657)
@@ -357,19 +358,31 @@ const SignAgreementStep = ({
 				)} */}
 
 				{/* Sign Agreement Button */}
-				<Button
-					w="full"
-					colorScheme="blue"
-					onClick={handleSignClick}
-					isDisabled={isSignDisabled}
-					isLoading={isInitializing}
-					loadingText="Preparing..."
-					leftIcon={<Icon name="mode-edit" size="sm" />}
-				>
-					{hasOpenedSigning
-						? "Agreement signing opened"
-						: stepConfig.primaryCTAText || "Sign Agreement"}
-				</Button>
+				<Flex direction="row" align="center" gap={2}>
+					<Button
+						w="full"
+						colorScheme="blue"
+						onClick={handleSignClick}
+						isDisabled={agreementLoadError || isSignDisabled}
+						isLoading={isInitializing}
+						loadingText="Preparing..."
+						leftIcon={<Icon name="mode-edit" size="sm" />}
+					>
+						{hasOpenedSigning
+							? "Agreement signing opened"
+							: stepConfig.primaryCTAText || "Sign Agreement"}
+					</Button>
+					{agreementLoadError ? (
+						<IcoButton
+							title="Retry"
+							iconName="retry"
+							theme="ghost"
+							iconStyle={{ color: "error" }}
+							iconSize="md"
+							onClick={() => initialize()}
+						/>
+					) : null}
+				</Flex>
 
 				{/* Success Banner */}
 				{isSuccess && (
