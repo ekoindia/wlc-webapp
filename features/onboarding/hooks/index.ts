@@ -1,5 +1,4 @@
 export { useAndroidIntegration } from "./useAndroidIntegration";
-export { useEsignIntegration } from "./useEsignIntegration";
 export { useOnboardingState } from "./useOnboardingState";
 export type {
 	OnboardingAction,

@@ -15,7 +15,6 @@ export {
 	createStepLookupMap,
 	extractStepConfiguration,
 	useAndroidIntegration,
-	useEsignIntegration,
 	useOnboardingState,
 	useStepConfiguration,
 	useStepExecutor,
