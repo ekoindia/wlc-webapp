@@ -668,7 +668,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		name: "BUSINESS",
 		label: "Business Details",
 		isRequired: true,
-		isVisible: false,
+		isVisible: true,
 		stepStatus: 0,
 		applicableRoles: [13300],
 		primaryCTAText: "Proceed",
