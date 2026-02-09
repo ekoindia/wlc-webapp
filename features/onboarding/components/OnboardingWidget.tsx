@@ -5,7 +5,7 @@ import { Button } from "components/Button";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
-import { getOnboardingStepsFromData } from "../utils";
+import { getOnboardingStepsFromData, getUserTypeFromData } from "../utils";
 import OnboardingSkeleton from "./OnboardingSkeleton";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
@@ -120,19 +120,32 @@ const OnboardingWidget = ({
 			isAssistedOnboarding
 		);
 
+		const userType = getUserTypeFromData(
+			onboardingUserDetails,
+			isAssistedOnboarding
+		);
+
 		console.log("[OnboardingWidget] Step determination:", {
 			onboardingSteps,
 			onboardingUserDetails,
 			isAssistedOnboarding,
+			userType,
 		});
 
 		// Determine which step to show based on data
 		if (onboardingSteps?.length > 0) {
 			console.log("[OnboardingWidget] Setting step to KYC_FLOW");
 			setStep(ONBOARDING_STEPS.KYC_FLOW);
-		} else {
+		} else if (!userType || userType === -1) {
+			// Only show role selection if user has no role assigned
+			// userType -1 indicates "no user type selected" (pending state)
 			console.log("[OnboardingWidget] Setting step to ROLE_SELECTION");
 			setStep(ONBOARDING_STEPS.ROLE_SELECTION);
+		} else {
+			// User has role but no steps (completed or loading), stay in LOADING/Skeleton
+			console.log(
+				"[OnboardingWidget] User has role but no steps - keeping LOADING state"
+			);
 		}
 	}, [onboardingUserDetails, isAssistedOnboarding, isInitializing]);
 
