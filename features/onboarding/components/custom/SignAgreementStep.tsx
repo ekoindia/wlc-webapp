@@ -96,8 +96,8 @@ const SignAgreementStep = ({
 		if (!result || result === lastProcessedResultRef.current) return;
 
 		// For pipeline result, check the first (and typically only) API response
-		const apiResponse = result.list?.[0]?.response;
-		const responseTypeId = apiResponse?.response_type_id;
+		// const apiResponse = result.list?.[0]?.response;
+		// const responseTypeId = apiResponse?.response_type_id;
 
 		if (result.status === "success") {
 			// Success! Advance to next step
@@ -110,23 +110,55 @@ const SignAgreementStep = ({
 				duration: 2000,
 			});
 			onAdvance(stepConfig.id);
-		} else if (responseTypeId === 1616 || responseTypeId === 1657) {
+		} else if (result.status === "failed") {
 			lastProcessedResultRef.current = result;
+			// Extract error message from failed step
+			const failedStep = result.list.find((r) => r.status === "failed");
+			const errorMessage =
+				failedStep?.response?.message ||
+				"Sign Agreement failed. Please try again.";
+
+			toast({
+				title: "Sign Agreement Failed",
+				description: errorMessage,
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+
 			setNotSignedError(true);
 			setTimeoutError(false);
 			setHasOpenedSigning(false);
 			setIsSubmittingStep(false);
-		} else if (
-			apiResponse?.message?.includes("timeout") ||
-			apiResponse?.message?.includes("network") ||
-			(apiResponse?.error && !responseTypeId)
-		) {
-			// Timeout/network error - keep sign disabled, show retry on proceed
-			lastProcessedResultRef.current = result;
-			setTimeoutError(true);
-			setNotSignedError(false);
-			setIsSubmittingStep(false);
 		}
+		// else if (
+		// 	responseTypeId === 1616 ||
+		// 	responseTypeId === 1657 ||
+		// 	responseTypeId === 1070
+		// ) {
+		// 	lastProcessedResultRef.current = result;
+		// 	setNotSignedError(true);
+		// 	setTimeoutError(false);
+		// 	setHasOpenedSigning(false);
+		// 	setIsSubmittingStep(false);
+
+		// 	toast({
+		// 		title: "Agreement not signed",
+		// 		description: "Please sign the agreement to proceed.",
+		// 		status: "error",
+		// 		duration: 2000,
+		// 	});
+		// } else if (
+		// 	apiResponse?.message?.includes("timeout") ||
+		// 	apiResponse?.message?.includes("network") ||
+		// 	(apiResponse?.error && !responseTypeId)
+		// ) {
+		// 	// Timeout/network error - keep sign disabled, show retry on proceed
+		// 	lastProcessedResultRef.current = result;
+		// 	setTimeoutError(true);
+		// 	setNotSignedError(false);
+		// 	setIsSubmittingStep(false);
+		// }
 	}, [
 		pipelineResults,
 		stepConfig.id,
