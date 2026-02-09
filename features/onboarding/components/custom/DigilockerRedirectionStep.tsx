@@ -167,6 +167,19 @@ const DigilockerRedirectionStep = ({
 
 				// Fetch new Digilocker URL (will bypass guard since digilockerLink is null)
 				void fetchDigilockerUrl();
+			} else {
+				// Handle generic errors (e.g. 500, network error)
+				lastProcessedResultRef.current = result;
+				const errorMessage =
+					apiResponse?.message ||
+					"Verification failed. Please try again.";
+				toast({
+					title: "Verification Failed",
+					description: errorMessage,
+					status: "error",
+					duration: 4000,
+					isClosable: true,
+				});
 			}
 		}
 	}, [
