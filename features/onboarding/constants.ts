@@ -42,7 +42,7 @@ export const RESPONSE_TYPE_IDS = {
 	VIDEO_KYC: 1569,
 
 	/* Business Details Submission */
-	BUSINESS: 1567, // 1571
+	BUSINESS: 1567,
 
 	/* Bank Account Verification */
 	BANK_VERIFICATION: 1445,
@@ -850,7 +850,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		name: "BUSINESS",
 		label: "Business Details",
 		isRequired: true,
-		isVisible: true,
+		isVisible: false,
 		stepStatus: 0,
 		applicableRoles: [13300],
 		primaryCTAText: "Proceed",
