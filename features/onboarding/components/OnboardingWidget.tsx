@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { Center, Flex, Spinner } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Button } from "components/Button";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
 import { getOnboardingStepsFromData } from "../utils";
+import OnboardingSkeleton from "./OnboardingSkeleton";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
 
@@ -188,11 +189,7 @@ const OnboardingWidget = ({
 					/>
 				);
 			default:
-				return (
-					<Center minH="200px">
-						<Spinner size="lg" color="primary.DEFAULT" />
-					</Center>
-				);
+				return <OnboardingSkeleton />;
 		}
 	};
 	// MARK: JSX

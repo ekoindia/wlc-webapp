@@ -2,6 +2,7 @@ import { Box, Spinner, Text, VStack } from "@chakra-ui/react";
 import type { ComponentType, ReactNode } from "react";
 import { Suspense, useMemo } from "react";
 import type { OnboardingStep } from "../constants";
+import ContentSkeleton from "./ContentSkeleton";
 import LocalStepForm from "./LocalStepForm";
 import AddBankAccountStep from "./custom/AddBankAccountStep";
 import BusinessDetailsStep from "./custom/BusinessDetailsStep";
@@ -197,7 +198,7 @@ const ContentRenderer = ({
 				<>
 					{fallbackContent ?? (
 						<VStack justify="center" align="center" h="200px">
-							<Text color="gray.400">No content available</Text>
+							<ContentSkeleton />
 						</VStack>
 					)}
 				</>
