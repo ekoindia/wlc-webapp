@@ -122,7 +122,7 @@ const OnboardingLayout = ({
 				<Card
 					flex={1}
 					maxW={{ base: "100%", md: "600px" }}
-					overflow="auto"
+					overflow="hidden"
 				>
 					{children}
 				</Card>
