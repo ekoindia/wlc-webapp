@@ -70,7 +70,7 @@ export const getSignUrl = async (
 		generateNewToken
 	);
 
-	if (!response?.data?.short_url) {
+	if (response?.response_type_id != 1613 && !response?.data?.short_url) {
 		throw new Error(
 			response?.message ||
 				"E-sign initialization failed, please try again."
