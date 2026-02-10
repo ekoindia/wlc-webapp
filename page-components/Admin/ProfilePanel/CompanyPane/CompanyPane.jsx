@@ -21,6 +21,228 @@ import { useRouter } from "next/router";
 import { blobToImageSrc } from "utils/fileUtils";
 import { capitalize } from "utils/textFormat";
 
+/**
+ * AgentHierarchy component displays a vertical timeline showing the agent's
+ * hierarchy from top-level parents down to the current agent.
+ * @param {object} props - Component props
+ * @param {Array} props.parents - Array of parent agents in the hierarchy
+ * @param {string} props.currentAgentName - Name of the current agent
+ * @param {Function} props.getUserCodeLabel - Function to get user code label by type ID
+ * @returns {JSX.Element|null} The hierarchy component or null if no parents
+ */
+const AgentHierarchy = ({ parents, currentAgentName, getUserCodeLabel }) => {
+	if (!parents || parents.length === 0) {
+		return null;
+	}
+
+	return (
+		<Box>
+			<Text color="light" fontSize="xs" mb="2" fontWeight="medium">
+				Hierarchy
+			</Text>
+			<Box
+				maxH="120px"
+				overflowY="auto"
+				overflowX="hidden"
+				pr="1"
+				sx={{
+					"&::-webkit-scrollbar": { width: "4px" },
+					"&::-webkit-scrollbar-thumb": {
+						bg: "gray.300",
+						borderRadius: "full",
+					},
+				}}
+			>
+				<Box position="relative">
+					{/* Vertical connector line */}
+					<Box
+						position="absolute"
+						left="11px"
+						top="0"
+						bottom="0"
+						width="2px"
+						bg="gray.200"
+						zIndex={0}
+					/>
+
+					<Flex direction="column" gap="0">
+						{/* Parent nodes */}
+						{parents
+							.slice()
+							.reverse()
+							.map((parent, index) => (
+								<Flex
+									key={parent.user_code}
+									align="center"
+									gap="3"
+									position="relative"
+									zIndex={1}
+									pb="3"
+								>
+									{/* Node dot */}
+									<Flex
+										align="center"
+										justify="center"
+										minW="24px"
+										h="24px"
+										borderRadius="full"
+										bg="gray.100"
+										border="2px solid"
+										borderColor="gray.300"
+										flexShrink={0}
+									>
+										<Box
+											w="8px"
+											h="8px"
+											borderRadius="full"
+											bg="gray.400"
+										/>
+									</Flex>
+
+									{/* Parent info */}
+									<Flex
+										flex="1"
+										align="center"
+										gap="2"
+										p="2"
+										px="3"
+										bg="gray.50"
+										borderRadius="md"
+										fontSize="sm"
+										borderLeft="3px solid"
+										borderColor="gray.200"
+										minW="0"
+										flexWrap="wrap"
+									>
+										<Text
+											fontWeight="medium"
+											color="dark"
+											noOfLines={1}
+										>
+											{capitalize(parent.name)}
+										</Text>
+										<Text
+											fontSize="2xs"
+											color="gray.500"
+											bg="gray.100"
+											px="1.5"
+											borderRadius="full"
+											flexShrink={0}
+										>
+											L{index + 1}
+										</Text>
+										<Flex
+											align="center"
+											gap="1"
+											color="light"
+											fontSize="xs"
+										>
+											<Text
+												color="gray.400"
+												flexShrink={0}
+											>
+												|
+											</Text>
+											<Text flexShrink={0} noOfLines={1}>
+												{getUserCodeLabel(
+													parent.user_type_id ?? 0
+												)}
+												:
+											</Text>
+											<Text
+												color="accent.DEFAULT"
+												fontWeight="medium"
+												noOfLines={1}
+											>
+												{parent.user_code}
+											</Text>
+											<CopyButton
+												text={parent.user_code}
+												size="xs"
+											/>
+										</Flex>
+									</Flex>
+								</Flex>
+							))}
+
+						{/* Current User (highlighted node) */}
+						<Flex
+							align="center"
+							gap="3"
+							position="relative"
+							zIndex={1}
+						>
+							{/* Active dot */}
+							<Flex
+								align="center"
+								justify="center"
+								minW="24px"
+								h="24px"
+								borderRadius="full"
+								bg="accent.50"
+								border="2px solid"
+								borderColor="accent.DEFAULT"
+								flexShrink={0}
+							>
+								<Box
+									w="8px"
+									h="8px"
+									borderRadius="full"
+									bg="accent.DEFAULT"
+								/>
+							</Flex>
+
+							{/* Current user info */}
+							<Flex
+								flex="1"
+								align="center"
+								gap="2"
+								p="2"
+								px="3"
+								bg="accent.50"
+								borderRadius="md"
+								fontSize="sm"
+								border="1px solid"
+								borderColor="accent.200"
+								borderLeft="3px solid"
+								borderLeftColor="accent.DEFAULT"
+								minW="0"
+								flexWrap="wrap"
+							>
+								<Text
+									fontWeight="semibold"
+									color="dark"
+									noOfLines={1}
+								>
+									{capitalize(currentAgentName)}
+								</Text>
+								<Text
+									fontSize="2xs"
+									color="accent.DEFAULT"
+									bg="accent.100"
+									px="1.5"
+									borderRadius="full"
+									fontWeight="medium"
+									flexShrink={0}
+								>
+									Current
+								</Text>
+							</Flex>
+						</Flex>
+					</Flex>
+				</Box>
+			</Box>
+		</Box>
+	);
+};
+
+/**
+ * CompanyPane component displays core agent information including
+ * profile avatar, hierarchy, account status, and wallet balance.
+ * @param {object} props - Component props
+ * @param {object} props.data - Agent data object
+ * @returns {JSX.Element} The CompanyPane component
+ */
 const CompanyPane = ({ data }) => {
 	const router = useRouter();
 	const { mobile } = router.query ?? {};
@@ -160,217 +382,11 @@ const CompanyPane = ({ data }) => {
 				</Stack>
 
 				{/* Hierarchy - Vertical Timeline */}
-				{parents && parents.length > 0 ? (
-					<Box>
-						<Text
-							color="light"
-							fontSize="xs"
-							mb="2"
-							fontWeight="medium"
-						>
-							Hierarchy
-						</Text>
-						<Box
-							maxH="120px"
-							overflowY="auto"
-							overflowX="hidden"
-							pr="1"
-							sx={{
-								"&::-webkit-scrollbar": { width: "4px" },
-								"&::-webkit-scrollbar-thumb": {
-									bg: "gray.300",
-									borderRadius: "full",
-								},
-							}}
-						>
-							<Box position="relative">
-								{/* Vertical connector line */}
-								<Box
-									position="absolute"
-									left="11px"
-									top="0"
-									bottom="0"
-									width="2px"
-									bg="gray.200"
-									zIndex={0}
-								/>
-
-								<Flex direction="column" gap="0">
-									{parents
-										.slice()
-										.reverse()
-										.map((parent, index) => (
-											<Flex
-												key={parent.user_code}
-												align="center"
-												gap="3"
-												position="relative"
-												zIndex={1}
-												pb="3"
-											>
-												{/* Node dot */}
-												<Flex
-													align="center"
-													justify="center"
-													minW="24px"
-													h="24px"
-													borderRadius="full"
-													bg="gray.100"
-													border="2px solid"
-													borderColor="gray.300"
-													flexShrink={0}
-												>
-													<Box
-														w="8px"
-														h="8px"
-														borderRadius="full"
-														bg="gray.400"
-													/>
-												</Flex>
-
-												{/* Single line content */}
-												<Flex
-													flex="1"
-													align="center"
-													gap="2"
-													p="2"
-													px="3"
-													bg="gray.50"
-													borderRadius="md"
-													fontSize="sm"
-													borderLeft="3px solid"
-													borderColor="gray.200"
-													minW="0"
-													flexWrap="wrap"
-												>
-													<Text
-														fontWeight="medium"
-														color="dark"
-														noOfLines={1}
-													>
-														{capitalize(
-															parent.name
-														)}
-													</Text>
-													<Text
-														fontSize="2xs"
-														color="gray.500"
-														bg="gray.100"
-														px="1.5"
-														borderRadius="full"
-														flexShrink={0}
-													>
-														L{index + 1}
-													</Text>
-													<Flex
-														align="center"
-														gap="1"
-														color="light"
-														fontSize="xs"
-													>
-														<Text
-															color="gray.400"
-															flexShrink={0}
-														>
-															|
-														</Text>
-														<Text
-															flexShrink={0}
-															noOfLines={1}
-														>
-															{getUserCodeLabel(
-																parent.user_type_id ??
-																	0
-															)}
-															:
-														</Text>
-														<Text
-															color="accent.DEFAULT"
-															fontWeight="medium"
-															noOfLines={1}
-														>
-															{parent.user_code}
-														</Text>
-														<CopyButton
-															text={
-																parent.user_code
-															}
-															size="xs"
-														/>
-													</Flex>
-												</Flex>
-											</Flex>
-										))}
-
-									{/* Current User (highlighted node) */}
-									<Flex
-										align="center"
-										gap="3"
-										position="relative"
-										zIndex={1}
-									>
-										{/* Active dot */}
-										<Flex
-											align="center"
-											justify="center"
-											minW="24px"
-											h="24px"
-											borderRadius="full"
-											bg="accent.50"
-											border="2px solid"
-											borderColor="accent.DEFAULT"
-											flexShrink={0}
-										>
-											<Box
-												w="8px"
-												h="8px"
-												borderRadius="full"
-												bg="accent.DEFAULT"
-											/>
-										</Flex>
-
-										{/* Current user single line */}
-										<Flex
-											flex="1"
-											align="center"
-											gap="2"
-											p="2"
-											px="3"
-											bg="accent.50"
-											borderRadius="md"
-											fontSize="sm"
-											border="1px solid"
-											borderColor="accent.200"
-											borderLeft="3px solid"
-											borderLeftColor="accent.DEFAULT"
-											minW="0"
-											flexWrap="wrap"
-										>
-											<Text
-												fontWeight="semibold"
-												color="dark"
-												noOfLines={1}
-											>
-												{capitalize(agent_name)}
-											</Text>
-											<Text
-												fontSize="2xs"
-												color="accent.DEFAULT"
-												bg="accent.100"
-												px="1.5"
-												borderRadius="full"
-												fontWeight="medium"
-												flexShrink={0}
-											>
-												Current
-											</Text>
-										</Flex>
-									</Flex>
-								</Flex>
-							</Box>
-						</Box>
-					</Box>
-				) : null}
+				<AgentHierarchy
+					parents={parents}
+					currentAgentName={agent_name}
+					getUserCodeLabel={getUserCodeLabel}
+				/>
 			</Flex>
 
 			<Flex
