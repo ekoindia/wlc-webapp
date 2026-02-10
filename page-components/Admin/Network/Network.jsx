@@ -39,8 +39,8 @@ const operation_type_list = [
 
 const status_list = [
 	{ label: "Active", value: "Active" },
+	{ label: "In Progress", value: "In-Progress" },
 	{ label: "Inactive", value: "Inactive" },
-	// { label: "Closed", value: "closed" },
 ];
 
 const generateQueryParams = (params) => {
