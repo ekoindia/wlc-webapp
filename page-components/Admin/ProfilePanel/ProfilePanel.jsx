@@ -144,7 +144,6 @@ const ProfilePanel = () => {
 		})
 			.then((data) => {
 				setAgentDocuments(data?.data?.cspDetails);
-				// setAgentData(data?.data?.agent_details[0]);
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
@@ -159,8 +158,8 @@ const ProfilePanel = () => {
 	useEffect(() => {
 		let _changeRoleMenuList = [];
 		let tabIndex = 0;
-		ChangeRoleMenuList.map(({ label, path, visibleString }) => {
-			if (visibleString.includes(agentData?.agent_type)) {
+		ChangeRoleMenuList.map(({ label, path, visible }) => {
+			if (visible.includes(+agentData?.user_type_id)) {
 				let _listItem = {};
 				_listItem.label = label;
 				_listItem.onClick = (() => {

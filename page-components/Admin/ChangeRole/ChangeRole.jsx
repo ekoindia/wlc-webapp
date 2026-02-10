@@ -42,10 +42,10 @@ const ChangeRole = () => {
 
 	useEffect(() => {
 		const tempTabList = ChangeRoleMenuList?.filter(
-			({ slug, visibleString, global }) =>
+			({ slug, visible, global }) =>
 				slugTabMapping[slug] &&
 				((showOrgChangeRoleView && global) ||
-					visibleString.includes(agentData?.agent_type))
+					visible.includes(agentData?.user_type_id))
 		).map(({ slug, label }) => ({
 			label,
 			comp: slugTabMapping[slug],

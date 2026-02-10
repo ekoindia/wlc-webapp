@@ -79,7 +79,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  * @param {string} props.mobile_number - Mobile number of the agent
  * @param {string} props.eko_code - Unique EKO code identifier for the agent
  * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive)
- * @param {string} props.agent_type - Type/role of the agent
+ * @param {number} props.user_type_id - User type ID of the agent (e.g., 1: Distributor, 2: Retailer, 3: Independent Retailer)
  * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
  * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
  * @example
@@ -87,7 +87,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  *   mobile_number="9876543210"
  *   eko_code="EKO123"
  *   account_status_id={16}
- *   agent_type="retailer"
+ *   user_type_id={2}
  *   onStatusUpdate={(code, status) => console.log(code, status)}
  * />
  */
@@ -95,7 +95,7 @@ const NetworkMenuWrapper = ({
 	mobile_number,
 	eko_code,
 	account_status_id,
-	agent_type,
+	user_type_id,
 	onStatusUpdate,
 }) => {
 	const { onOpen } = useDisclosure();
@@ -183,8 +183,8 @@ const NetworkMenuWrapper = ({
 
 	let _includeChangeRole = false;
 
-	for (let { global, visibleString } of ChangeRoleMenuList) {
-		if (isAdmin && !global && visibleString.includes(agent_type)) {
+	for (let { global, visible } of ChangeRoleMenuList) {
+		if (isAdmin && !global && visible.includes(+user_type_id)) {
 			_includeChangeRole = true;
 			break;
 		}

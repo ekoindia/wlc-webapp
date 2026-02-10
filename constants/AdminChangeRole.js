@@ -10,7 +10,6 @@
 
 /**
  * List to show ChangeRole Menu options & tabs inside it.
- * TODO: instead of visibleString, use an array of user-type-id to filter the options
  * @type {ChangeRoleOption[]}
  */
 export const ChangeRoleMenuList = [
@@ -18,40 +17,35 @@ export const ChangeRoleMenuList = [
 		slug: "transfer-retailer",
 		label: "Assign Distributor",
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2, 3],
-		visibleString: ["Independent Retailer"], //this need to be in sync with what we are getting in network table
+		visible: [3],
 		global: true,
 	},
 	{
 		slug: "transfer-retailer",
 		label: "Change Distributor",
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2, 3],
-		visibleString: ["Retailer"],
+		visible: [2],
 		global: false,
 	},
 	{
 		slug: "retailer-to-iretailer",
 		label: "Unassign Distributor",
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2],
-		visibleString: ["Retailer"],
+		visible: [2],
 		global: true,
 	},
 	{
 		slug: "retailer-to-distributor",
 		label: "Promote Retailer To Distributor",
 		path: "/admin/my-network/profile/change-role",
-		// visible: [],
-		visibleString: [],
+		visible: [],
 		global: true,
 	},
 	{
 		slug: "retailer-to-distributor",
 		label: "Promote To Distributor",
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2, 3],
-		visibleString: ["Retailer", "Independent Retailer"], //this need to be in sync with what we are getting in network table
+		visible: [2, 3],
 		global: false,
 	},
 	// {
@@ -59,7 +53,6 @@ export const ChangeRoleMenuList = [
 	// 	label: "Demote Distributor to Retailer",
 	// 	path: "/admin/my-network/profile/change-role",
 	// 	visible: [1],
-	// 	visibleString: ["Distributor"],
 	//	global: true,
 	// },
 ];

@@ -221,10 +221,10 @@ const NetworkTreeView = () => {
 															?.user_code
 													}
 													// account_status_id
-													agent_type={
+													user_type_id={
 														selectedItem?.meta
-															?.user_type
-													} // TODO: use user-type-id in NetworkMenuWrapper
+															?.user_type_id
+													}
 												/>
 											) : null}
 										</Flex>
