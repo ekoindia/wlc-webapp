@@ -263,8 +263,10 @@ const CompanyPane = ({ data }) => {
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 	const userIdLabel = login_meta?.user_id_label ?? "User ID";
 
-	const { aadhar_front } = docs ?? {};
-	const avatarSrc = aadhar_front ? blobToImageSrc(aadhar_front) : undefined;
+	const { customer_photo } = docs ?? {};
+	const avatarSrc = customer_photo
+		? blobToImageSrc(customer_photo)
+		: undefined;
 
 	const { getUserCodeLabel, getUserTypeLabel } = useUserTypes();
 	const { getParents } = useNetworkUsers();
@@ -301,7 +303,8 @@ const CompanyPane = ({ data }) => {
 				<Flex gap="5" align="center">
 					<Avatar
 						size={{ base: "lg", md: "xl" }}
-						src={avatarSrc}
+						src={avatarSrc ? avatarSrc : undefined}
+						icon={avatarSrc ? undefined : <Icon name="person" />}
 						showBorder={true}
 						borderColor="divider"
 					/>
