@@ -20,6 +20,7 @@ const DOCUMENT_DISPLAY_NAMES = {
 	aadhar_front: "Aadhaar Card Front",
 	aadhar_back: "Aadhaar Card Back",
 	pan_card: "PAN Card",
+	bank_statement: "Bank Passbook",
 } as const;
 
 /**
@@ -30,6 +31,7 @@ const DOCUMENT_ORDER: DocumentType[] = [
 	"aadhar_front",
 	"aadhar_back",
 	"pan_card",
+	"bank_statement",
 ];
 
 type DocumentType = keyof typeof DOCUMENT_DISPLAY_NAMES;
@@ -41,6 +43,7 @@ interface DocumentData {
 	aadhar_front?: string;
 	aadhar_back?: string;
 	pan_card?: string;
+	bank_statement?: string;
 	// customer_photo?: string;
 }
 
