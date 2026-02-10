@@ -18,6 +18,7 @@ import {
 import { useNetworkUsers, useOrgDetailContext, useSession } from "contexts";
 import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
+import { blobToImageSrc } from "utils/fileUtils";
 import { capitalize } from "utils/textFormat";
 
 const CompanyPane = ({ data }) => {
@@ -27,11 +28,11 @@ const CompanyPane = ({ data }) => {
 	const {
 		agent_name,
 		eko_code,
-		src,
 		agent_type,
 		plan_name,
 		wallet_balance,
 		account_status,
+		docs,
 	} = data ?? {};
 
 	const { orgDetail } = useOrgDetailContext();
@@ -39,6 +40,9 @@ const CompanyPane = ({ data }) => {
 	const { login_meta } = metadata ?? {};
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 	const userIdLabel = login_meta?.user_id_label ?? "User ID";
+
+	const { aadhar_front } = docs ?? {};
+	const avatarSrc = aadhar_front ? blobToImageSrc(aadhar_front) : undefined;
 
 	const { getUserCodeLabel, getUserTypeLabel } = useUserTypes();
 	const { getParents } = useNetworkUsers();
@@ -75,8 +79,7 @@ const CompanyPane = ({ data }) => {
 				<Flex gap="5" align="center">
 					<Avatar
 						size={{ base: "lg", md: "xl" }}
-						icon={<Icon name="person" />}
-						src={src}
+						src={avatarSrc}
 						showBorder={true}
 						borderColor="divider"
 					/>
