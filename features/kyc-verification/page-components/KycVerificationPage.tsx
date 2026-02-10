@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { toKebabCase } from "utils";
 import {
-	BulkUploadButton,
 	BulkVerificationModal,
 	CategoryTabs,
 	MultiServiceToggle,
@@ -155,9 +154,9 @@ export const KycVerificationPage = ({
 				hideBackIcon
 				toolComponent={
 					<Flex gap="2">
-						<BulkUploadButton
+						{/* <BulkUploadButton
 							onClick={() => setIsBulkModalOpen(true)}
-						/>
+						/> */}
 						{/* <AddUserButton
 							onClick={() => setIsAddUserModalOpen(true)}
 						/> */}
