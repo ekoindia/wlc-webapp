@@ -162,7 +162,7 @@ export const ROLE_SELECTION_STEP_CONFIG: OnboardingStep = {
 			{
 				id: "submit",
 				type: "form",
-				interactionTypeId: TransactionIds.USER_ONBOARDING_ROLE,
+				interactionTypeId: TransactionIds.CREATE_PARTIAL_ACCOUNT,
 				successResponseTypeIds: [RESPONSE_TYPE_IDS.SELECTION_SCREEN],
 			},
 		],

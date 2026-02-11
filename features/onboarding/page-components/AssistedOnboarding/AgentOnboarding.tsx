@@ -1,5 +1,6 @@
 import { Center, Spinner } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
+import { TransactionIds } from "constants/EpsTransactions";
 import { useOrgDetailContext, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -101,7 +102,8 @@ const AgentOnboarding = ({
 					method: "POST",
 					body: {
 						source: "WLC",
-						interaction_type_id: 521,
+						interaction_type_id:
+							TransactionIds.CREATE_PARTIAL_ACCOUNT,
 						user_id: userData?.id,
 						merchant_type: 1,
 						applicant_type: 0,
