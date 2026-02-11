@@ -17,7 +17,9 @@ import { RiEBike2Fill } from "react-icons/ri";
 import { formatMobile } from "utils";
 import { getInitials } from "utils/textFormat";
 import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
-// import { useSet } from "hooks";
+
+// Refresh throttling constants
+const REFRESH_THROTTLE = 2 * 60 * 1000; // 2 minutes
 
 /**
  * Show network users in an expandable tree view.
@@ -44,9 +46,6 @@ const NetworkTreeView = () => {
 			refreshUserList();
 		}
 	}, [fetchedAt]);
-
-	// Refresh throttling constants
-	const REFRESH_THROTTLE = 0.5 * 60 * 1000; // 2 minutes
 
 	const [now, setNow] = useState(Date.now());
 
