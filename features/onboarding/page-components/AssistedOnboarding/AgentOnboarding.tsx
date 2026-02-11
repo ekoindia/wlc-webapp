@@ -64,7 +64,7 @@ const AgentOnboarding = ({
 				{
 					method: "POST",
 					body: {
-						interaction_type_id: 151,
+						interaction_type_id: TransactionIds.GET_USER_PROFILE,
 						csp_id: agentMobile,
 						user_identity_type: "mobile_number",
 						user_identity: userData?.userId,
