@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
+import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -105,7 +106,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				{
 					method: "POST",
 					body: {
-						interaction_type_id: 151,
+						interaction_type_id: TransactionIds.GET_USER_PROFILE,
 						csp_id: mobile,
 						user_identity_type: "mobile_number",
 						user_identity: userData?.userId,
