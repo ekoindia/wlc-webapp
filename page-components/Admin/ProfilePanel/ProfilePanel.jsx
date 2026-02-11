@@ -1,6 +1,6 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Button, Icon, Menus, PageTitle } from "components";
-import { ChangeRoleMenuList, Endpoints } from "constants";
+import { AGENT_VIEW_TABS, Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -158,8 +158,8 @@ const ProfilePanel = () => {
 	useEffect(() => {
 		let _changeRoleMenuList = [];
 		let tabIndex = 0;
-		ChangeRoleMenuList.map(({ label, path, visible }) => {
-			if (visible.includes(+agentData?.user_type_id)) {
+		AGENT_VIEW_TABS.forEach(({ label, path, allowedUserTypes }) => {
+			if (allowedUserTypes.includes(+agentData?.user_type_id)) {
 				let _listItem = {};
 				_listItem.label = label;
 				_listItem.onClick = (() => {

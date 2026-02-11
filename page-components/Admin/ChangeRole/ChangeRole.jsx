@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
 import { PageTitle, ResponseCard, Tabs } from "components";
-import { ChangeRoleMenuList, Endpoints } from "constants";
+import { AGENT_VIEW_TABS, Endpoints, ORG_VIEW_TABS } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -41,15 +41,24 @@ const ChangeRole = () => {
 	}, [mobile]);
 
 	useEffect(() => {
-		const tempTabList = ChangeRoleMenuList?.filter(
-			({ slug, visible, global }) =>
-				slugTabMapping[slug] &&
-				((showOrgChangeRoleView && global) ||
-					visible.includes(agentData?.user_type_id))
-		).map(({ slug, label }) => ({
-			label,
-			comp: slugTabMapping[slug],
-		}));
+		let relevantTabs = [];
+
+		if (showOrgChangeRoleView) {
+			relevantTabs = ORG_VIEW_TABS;
+		} else {
+			const userTypeId = Number(agentData?.user_type_id);
+			relevantTabs = AGENT_VIEW_TABS.filter((tab) =>
+				tab.allowedUserTypes.includes(userTypeId)
+			);
+		}
+
+		const tempTabList = relevantTabs
+			.filter(({ slug }) => slugTabMapping[slug])
+			.map(({ slug, label }) => ({
+				label,
+				comp: slugTabMapping[slug],
+			}));
+
 		setTabList(tempTabList);
 	}, [mobile, showOrgChangeRoleView, agentData]);
 

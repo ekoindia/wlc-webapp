@@ -1,7 +1,7 @@
 import { Flex, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
 import { Button, Menus, Modal } from "components";
 import {
-	ChangeRoleMenuList,
+	AGENT_VIEW_TABS,
 	Endpoints,
 	ParamType,
 	TransactionTypes,
@@ -183,11 +183,10 @@ const NetworkMenuWrapper = ({
 
 	let _includeChangeRole = false;
 
-	for (let { global, visible } of ChangeRoleMenuList) {
-		if (isAdmin && !global && visible.includes(+user_type_id)) {
-			_includeChangeRole = true;
-			break;
-		}
+	if (isAdmin) {
+		_includeChangeRole = AGENT_VIEW_TABS.some((tab) =>
+			tab.allowedUserTypes.includes(+user_type_id)
+		);
 	}
 
 	const _finalMenuList = generateMenuList(
