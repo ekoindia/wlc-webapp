@@ -248,7 +248,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				title={stepBasedTitleMap[step]}
 				onBack={handleBackNavigation}
 			/>
-			<Flex direction="column" align="center" p={{ base: 6, md: 10 }}>
+			<Flex direction="column" align="center" px={{ base: 4, md: 0 }}>
 				{renderCurrentStep()}
 			</Flex>
 		</>
