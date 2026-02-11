@@ -1,10 +1,6 @@
-import { Center, Spinner } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
-import { TransactionIds } from "constants/EpsTransactions";
-import { useOrgDetailContext, useSession } from "contexts";
+import { useOrgDetailContext } from "contexts";
 import { useUser } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { OnboardingWidget } from "../../components";
 
 export interface AgentOnboardingProps {
@@ -28,174 +24,54 @@ export interface AgentOnboardingProps {
  */
 const AgentOnboarding = ({
 	agentMobile,
-	agentDetails: initialAgentDetails,
-	fetchAgentDetails: fetchAgentDetailsProp,
+	agentDetails: assistedAgentDetailsProp,
+	fetchAgentDetails,
 }: AgentOnboardingProps) => {
-	const { userData, updateUserInfo } = useUser();
-	// console.log("[AgentOnboarding] userData", userData);
+	const { userData } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { logo, app_name, org_name } = orgDetail ?? {};
-	const [agentDetails, setAgentDetails] = useState(initialAgentDetails ?? {});
-	const [isLoading, setIsLoading] = useState(true);
-	const [hasError, setHasError] = useState(false);
 
-	const { accessToken } = useSession();
+	// Local state to track agent details — updated when refreshAgentProfile fetches new data
+	const [localAgentDetails, setLocalAgentDetails] = useState<any>(null);
 
-	// console.log("[AgentOnboarding] userData", userData);
-	// console.log("[AgentOnboarding] initialAgentDetails", initialAgentDetails);
+	// Use local state if available (post-refresh), otherwise fall back to prop
+	const agentDetails = localAgentDetails || assistedAgentDetailsProp;
 
 	/**
-	 * Wrapper function to fetch agent details
-	 * Uses passed prop function if available, otherwise falls back to local implementation
-	 * @returns {Promise<any>} The agent details response
+	 * Enrich agentDetails to ensure mobile is always available.
+	 * This is critical for RoleSelection to get the csp_id.
 	 */
-	const fetchAgentDetails = async (): Promise<any> => {
-		// If fetchAgentDetails passed from parent, use it
-		if (fetchAgentDetailsProp && agentMobile) {
-			const details = await fetchAgentDetailsProp(agentMobile);
-			setAgentDetails(details);
-			return details;
-		}
-
-		// Fallback to local fetch if not provided
-		try {
-			const response = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					method: "POST",
-					body: {
-						interaction_type_id: TransactionIds.GET_USER_PROFILE,
-						csp_id: agentMobile,
-						user_identity_type: "mobile_number",
-						user_identity: userData?.userId,
-						mobile: userData?.userId,
-						id_type: "Mobile",
-					},
-					token: accessToken,
-				}
-			);
-
-			if (response?.data) {
-				// console.log(
-				// 	"[AgentOnboarding] Agent details fetched:",
-				// 	response.data
-				// );
-				setAgentDetails(response.data);
-				return response.data;
-			}
-			return null;
-		} catch (error) {
-			console.error(
-				"[AgentOnboarding] Error fetching agent details:",
-				error
-			);
-			throw error;
-		}
+	const enrichedAgentDetails = {
+		...agentDetails,
+		user_detail: {
+			...agentDetails?.user_detail,
+			mobile: agentDetails?.user_detail?.mobile || agentMobile,
+		},
 	};
 
-	// call api for creating partial account (521)
-	const createPartialAccount = async (): Promise<any> => {
-		try {
-			const response = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					method: "POST",
-					body: {
-						source: "WLC",
-						interaction_type_id:
-							TransactionIds.CREATE_PARTIAL_ACCOUNT,
-						user_id: userData?.id,
-						merchant_type: 1,
-						applicant_type: 0,
-						csp_id: agentMobile,
-						client_ref_id: Date.now().toString(),
-					},
-					token: accessToken,
+	/**
+	 * Refresh agent profile and capture the updated data locally.
+	 * For new agents (no partial account yet), the fetch is expected to fail —
+	 * this is handled gracefully so OnboardingWidget can proceed to ROLE_SELECTION.
+	 */
+	const refreshAgentProfile = useCallback(async () => {
+		const mobile = agentMobile || agentDetails?.user_detail?.mobile;
+		if (fetchAgentDetails && mobile) {
+			try {
+				const details = await fetchAgentDetails(mobile);
+				if (details) {
+					setLocalAgentDetails(details);
 				}
-			);
-
-			if (response?.data) {
-				// console.log(
-				// 	"[AgentOnboarding] Partial account created:",
-				// 	response.data
-				// );
-				return response.data;
-			} else {
-				console.error(
-					"[AgentOnboarding] No data in response:",
-					response
+			} catch (error) {
+				// Expected for new agents — profile doesn't exist until partial account is created
+				console.log(
+					"[AgentOnboarding] Profile not found (expected for new agents)",
+					error
 				);
-				return null;
 			}
-		} catch (error) {
-			console.error(
-				"[AgentOnboarding] Error creating partial account:",
-				error
-			);
-			throw error;
 		}
-	};
-
-	/**
-	 * Initializes agent onboarding flow
-	 * If agent details are pre-fetched, only creates partial account
-	 * Otherwise, creates account and fetches details
-	 */
-	const initializeAgentOnboarding = async () => {
-		setIsLoading(true);
-		setHasError(false);
-
-		try {
-			// If agent details already provided, skip fetching
-			if (initialAgentDetails) {
-				// console.log(
-				// 	"[AgentOnboarding] Using pre-fetched agent details, only creating partial account..."
-				// );
-				await createPartialAccount();
-				setIsLoading(false);
-				return;
-			}
-
-			// Otherwise, perform full initialization
-			// console.log("[AgentOnboarding] Starting sequential API calls...");
-
-			// Step 1: Create partial account
-			await createPartialAccount();
-
-			// Step 2: Wait for 1 second before calling next API
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
-			// Step 3: Fetch agent details AFTER the delay
-			await fetchAgentDetails();
-
-			setIsLoading(false);
-		} catch (error) {
-			console.error(
-				"[AgentOnboarding] Error in sequential API calls:",
-				error
-			);
-			setHasError(true);
-			setIsLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		initializeAgentOnboarding();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	// MARK: JSX
-	if (isLoading) {
-		return (
-			<Center>
-				<Spinner size="md" />
-			</Center>
-		);
-	}
-
-	if (hasError) {
-		return <div>Error loading agent onboarding. Please try again.</div>;
-	}
+	}, [agentMobile, fetchAgentDetails]);
 
 	return (
 		<OnboardingWidget
@@ -203,11 +79,10 @@ const AgentOnboarding = ({
 			appName={app_name}
 			orgName={org_name}
 			userData={userData}
-			updateUserInfo={updateUserInfo}
+			updateUserInfo={() => {}}
 			isAssistedOnboarding={true}
-			assistedAgentDetails={agentDetails}
-			allowedMerchantTypes={[1]} // Restrict to Retailer role only
-			refreshAgentProfile={fetchAgentDetails}
+			assistedAgentDetails={enrichedAgentDetails}
+			refreshAgentProfile={refreshAgentProfile}
 		/>
 	);
 };

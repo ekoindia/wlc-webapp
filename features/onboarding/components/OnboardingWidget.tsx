@@ -60,7 +60,6 @@ const OnboardingWidget = ({
 	refreshAgentProfile,
 }: OnboardingWidgetProps): JSX.Element => {
 	const [_selectedRole, setSelectedRole] = useState<string>("");
-	const [isInitializing, setIsInitializing] = useState<boolean>(true);
 
 	// Fetch geolocation early on widget mount
 	const { latitude, longitude, accuracy } = useGeolocation({
@@ -92,28 +91,8 @@ const OnboardingWidget = ({
 		? assistedAgentDetails
 		: userData;
 
-	// Initialize onboarding by refreshing profile and determining the step
-	useEffect(() => {
-		const initializeOnboarding = async () => {
-			// Refresh agent profile to get the latest onboarding state
-			await refreshAgentProfile();
-
-			// Mark initialization as complete after refresh
-			setIsInitializing(false);
-		};
-
-		initializeOnboarding();
-		// if passing refreshAgentProfile in dependency array, it creates infinite loop
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	// React to userData changes after refresh to determine correct step
-	// Only run after initialization is complete
 	useEffect(() => {
-		if (isInitializing) {
-			return; // Don't determine step until refresh completes
-		}
-
 		// Get onboarding steps from user data
 		const onboardingSteps = getOnboardingStepsFromData(
 			onboardingUserDetails,
@@ -147,7 +126,7 @@ const OnboardingWidget = ({
 				"[OnboardingWidget] User has role but no steps - keeping LOADING state"
 			);
 		}
-	}, [onboardingUserDetails, isAssistedOnboarding, isInitializing]);
+	}, [onboardingUserDetails, isAssistedOnboarding]);
 
 	if (
 		isAssistedOnboarding !== true &&

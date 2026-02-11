@@ -11,7 +11,7 @@ import { Button, Icon } from "components";
 import { UserTypeIcon } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { useHslColor, useRefreshToken, useUserTypes } from "hooks";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { APPLICANT_TYPES, RESPONSE_TYPE_IDS } from "../constants";
 import { useOnboardingState } from "../hooks";
 import { executePipeline } from "../utils";
@@ -201,6 +201,8 @@ const RoleSelection = ({
 						id: ROLE_SELECTION_STEP_CONFIG.id,
 						form_data: {
 							applicant_type: applicantType,
+							merchant_type:
+								APPLICANT_TO_USER_TYPE[applicantType],
 							csp_id: mobile,
 						},
 					},
@@ -267,6 +269,37 @@ const RoleSelection = ({
 	});
 
 	const roles: Role[] = onboardingRoleStep?.form_data?.roles || [];
+
+	// Track if auto-submit has been triggered to prevent duplicate submissions
+	const autoSubmitTriggered = useRef(false);
+
+	/**
+	 * Auto-select and auto-submit when only one role is available
+	 * This optimizes the flow for assisted onboarding where typically only one user type exists
+	 */
+	useEffect(() => {
+		// Only auto-submit if:
+		// 1. Exactly one role is available
+		// 2. Not already submitting
+		// 3. Haven't already auto-submitted
+		if (
+			roles.length === 1 &&
+			!state.ui?.apiInProgress &&
+			!autoSubmitTriggered.current
+		) {
+			autoSubmitTriggered.current = true;
+			const singleRole = roles[0];
+
+			// Auto-select the role
+			setSelectedApplicantType(singleRole.applicant_type);
+
+			// Update selected role state
+			setSelectedRole(singleRole.applicant_type);
+
+			// Auto-submit via pipeline executor
+			submitRoleSelection(singleRole.applicant_type);
+		}
+	}, [roles, state.ui?.apiInProgress, submitRoleSelection, setSelectedRole]);
 
 	/**
 	 * Handle role tile selection
