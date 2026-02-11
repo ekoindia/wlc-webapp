@@ -241,6 +241,17 @@ const NetworkTreeView = () => {
 												selectedItem?.meta?.mobile
 											)}
 										</Box>
+										{selectedItem?.meta?.account_status ? (
+											<Box>
+												<strong>
+													Account Status:{" "}
+												</strong>
+												{
+													selectedItem.meta
+														.account_status
+												}
+											</Box>
+										) : null}
 										{/* <Box>
 											<strong>User Code: </strong>
 											{selectedItem?.meta?.user_code}
