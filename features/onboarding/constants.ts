@@ -433,7 +433,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "upload",
 					type: "upload",
 					docType: 1, // Aadhaar document
-					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
 					fieldMapping: {
 						aadhaar_front_image: "file1",
 						aadhaar_back_image: "file2",
@@ -532,7 +532,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "upload",
 					type: "upload",
 					docType: 2, // PAN document
-					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
 					fieldMapping: {
 						pan_image: "file1",
 					},
@@ -597,7 +597,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "upload",
 					type: "upload",
 					docType: 2, // PAN document
-					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
 					fieldMapping: {
 						pan_image: "file1",
 					},
@@ -650,7 +650,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				{
 					id: "upload",
 					type: "upload",
-					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
 					docType: 3, // Video/Selfie document
 					fieldMapping: {
 						selfie_image: "file1",
@@ -728,7 +728,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					id: "upload",
 					type: "upload",
 					docType: 7, // Bank passbook document
-					interactionTypeId: TransactionIds.USER_ONBOARDING_AADHAR,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
 					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.UPLOAD_PASSBOOK_IMAGE,
 					],
