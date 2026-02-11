@@ -324,6 +324,7 @@ const RoleSelection = ({
 		submitRoleSelection(selectedApplicantType);
 	};
 
+	// MARK: JSX
 	return (
 		<Flex
 			direction="column"
@@ -333,7 +334,6 @@ const RoleSelection = ({
 			minH="100vh"
 			py={8}
 			px={{ base: 4, md: 8 }}
-			bg="gray.100"
 		>
 			<Box w="100%" maxW="480px">
 				{/* Title */}
