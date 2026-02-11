@@ -1,4 +1,5 @@
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Button } from "components/Button";
 import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
 import useHslColor from "hooks/useHslColor";
@@ -44,6 +45,29 @@ const NetworkTreeView = () => {
 		}
 	}, [fetchedAt]);
 
+	// Refresh throttling constants
+	const REFRESH_THROTTLE = 0.5 * 60 * 1000; // 2 minutes
+
+	const [now, setNow] = useState(Date.now());
+
+	// Update 'now' every 30 seconds to trigger re-renders for the timer
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setNow(Date.now());
+		}, 30 * 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	const timeSinceLastUpdate = fetchedAt
+		? now - new Date(fetchedAt).getTime()
+		: Infinity;
+	const showRefresh = timeSinceLastUpdate >= REFRESH_THROTTLE;
+
+	const handleRefresh = () => {
+		if (loading) return;
+		refreshUserList(true);
+	};
+
 	// Prepare the Tree View Data for react-complex-tree component
 	const dataProvider = useMemo(
 		() =>
@@ -86,7 +110,6 @@ const NetworkTreeView = () => {
 				w="100%"
 				gap={5}
 			>
-				{/* MARK: Tree Box */}
 				<Box
 					flex="3"
 					maxW="100%"
@@ -144,7 +167,7 @@ const NetworkTreeView = () => {
 						direction="column"
 						gap={3}
 						position={{ lg: "fixed" }}
-						top={{ lg: "268px" }}
+						// top={{ lg: "268px" }}
 					>
 						{/* MARK: Filters */}
 						{/* <Box
@@ -182,9 +205,9 @@ const NetworkTreeView = () => {
 						{/* MARK: Info */}
 						<Box
 							w={{ base: "100%", lg: "unset" }}
-							minW="280px"
+							minW="320px"
 							bg="white"
-							p={{ base: 3, md: 6 }}
+							p={{ base: 3, md: 5 }}
 							borderRadius={6}
 							shadow="md"
 						>
@@ -273,16 +296,28 @@ const NetworkTreeView = () => {
 				</Box>
 			</Flex>
 
-			<Text
-				fontSize="xxs"
-				color="light"
-				mt="2em"
-				width="100%"
-				textAlign="center"
-			>
-				<strong>Last Updated:</strong>{" "}
-				{new Date(fetchedAt).toLocaleString()}
-			</Text>
+			<Flex direction="column" align="center" w="100%" gap={2} mt="2em">
+				<Text fontSize="xxs" color="light">
+					<strong>Last Updated:</strong>{" "}
+					{new Date(fetchedAt).toLocaleString()}
+				</Text>
+
+				{showRefresh ? (
+					<Flex align="center" gap={2}>
+						<Text fontSize="xs" color="light">
+							Seeing old results?
+						</Text>
+						<Button
+							size="xs"
+							variant="outline"
+							loading={loading}
+							onClick={handleRefresh}
+						>
+							Refresh
+						</Button>
+					</Flex>
+				) : null}
+			</Flex>
 		</>
 	);
 };
