@@ -1,6 +1,7 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
-import { Endpoints, ParamType, UserType, UserTypeLabel } from "constants";
+import { Endpoints, ParamType } from "constants";
+import { UserType, UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";

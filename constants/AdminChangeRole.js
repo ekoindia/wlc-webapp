@@ -1,3 +1,5 @@
+import { UserType, UserTypeLabel } from "./UserTypes";
+
 /**
  * An array containing options for the ChangeRole menu, along with their respective paths.
  * Each option represents a specific role change action with a corresponding path.
@@ -12,7 +14,6 @@
  * List to show ChangeRole Menu options & tabs inside it.
  * @type {ChangeRoleOption[]}
  */
-import { UserType } from "./UserTypes";
 
 /**
  * An array containing options for the ChangeRole menu, along with their respective paths.
@@ -30,24 +31,26 @@ import { UserType } from "./UserTypes";
 export const ORG_VIEW_TABS = [
 	{
 		slug: "transfer-retailer",
-		label: "Assign Distributor",
+		label: `Assign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
 		transferConfig: { targetUserType: UserType.MERCHANT },
 	},
 	{
 		slug: "transfer-fos",
-		label: "Assign FOS",
+		label: `Assign ${UserTypeLabel[UserType.FOS]}`,
 		path: "/admin/my-network/profile/change-role",
 		transferConfig: { targetUserType: UserType.FOS },
 	},
 	{
 		slug: "retailer-to-iretailer",
-		label: "Unassign Distributor",
+		label: `Unassign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
 	},
 	{
 		slug: "retailer-to-distributor",
-		label: "Promote Retailer To Distributor",
+		label: `Promote ${UserTypeLabel[UserType.MERCHANT]} To ${
+			UserTypeLabel[UserType.DISTRIBUTOR]
+		}`,
 		path: "/admin/my-network/profile/change-role",
 	},
 ];
@@ -60,25 +63,25 @@ export const ORG_VIEW_TABS = [
 export const AGENT_VIEW_TABS = [
 	{
 		slug: "transfer-retailer",
-		label: "Assign Distributor",
+		label: `Assign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
 		allowedUserTypes: [UserType.I_MERCHANT],
 	},
 	{
 		slug: "transfer-retailer",
-		label: "Change Distributor",
+		label: `Change ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
 		allowedUserTypes: [UserType.MERCHANT],
 	},
 	{
 		slug: "retailer-to-iretailer",
-		label: "Unassign Distributor",
+		label: `Unassign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
 		allowedUserTypes: [UserType.MERCHANT],
 	},
 	{
 		slug: "retailer-to-distributor",
-		label: "Promote To Distributor",
+		label: `Promote To ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
 		allowedUserTypes: [UserType.MERCHANT, UserType.I_MERCHANT],
 	},
