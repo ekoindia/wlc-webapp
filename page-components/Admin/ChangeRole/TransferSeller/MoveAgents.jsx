@@ -191,8 +191,8 @@ const MoveAgents = ({
 			<Flex align="center" gap="8">
 				<Flex
 					direction="column"
-					w={{ base: "100vw", md: "500px" }}
-					h={{ base: "100vh", md: "auto" }}
+					w={{ base: "100%", md: "500px" }}
+					h={{ base: "73vh", md: "auto" }}
 					top={{ base: "0", md: "initial" }}
 					left={{ base: "0", md: "initial" }}
 					position={{ base: "absolute", md: "initial" }}
