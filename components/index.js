@@ -48,7 +48,6 @@ import { PillTab } from "./PillTab";
 import { PrintReceipt } from "./PrintReceipt";
 import { ProfileCard } from "./ProfileCard";
 import { Radio } from "./Radio";
-import { ResponseCard } from "./ResponseCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
@@ -115,7 +114,6 @@ export {
 	PrintReceipt,
 	ProfileCard,
 	Radio,
-	ResponseCard,
 	RouteProtecter,
 	SearchBar,
 	Select,
