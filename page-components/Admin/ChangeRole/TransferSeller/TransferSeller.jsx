@@ -6,7 +6,7 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { MoveAgents } from ".";
+import MoveAgents from "./MoveAgents";
 
 const renderer = {
 	label: "name",

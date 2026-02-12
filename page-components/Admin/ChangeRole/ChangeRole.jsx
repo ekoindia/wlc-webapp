@@ -4,13 +4,20 @@ import { AGENT_VIEW_TABS, Endpoints, ORG_VIEW_TABS } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import {
-	DemoteDistributor,
-	PromoteSellerToDistributor,
-	TransferSeller,
-	UpgradeSellerToIseller,
-} from ".";
+import { useEffect, useState } from "react";
+import PromoteSellerToDistributor from "./PromoteSellerToDistributor";
+import { TransferSeller } from "./TransferSeller";
+import UpgradeSellerToIseller from "./UpgradeSellerToIseller";
+
+/**
+ * Mapping of slugs to their corresponding role change components.
+ */
+const CHANGE_ROLE_COMPONENTS = {
+	"transfer-retailer": TransferSeller,
+	"transfer-fos": TransferSeller,
+	"retailer-to-distributor": PromoteSellerToDistributor,
+	"retailer-to-iretailer": UpgradeSellerToIseller,
+};
 
 /**
  * A ChangeRole page-component
@@ -52,11 +59,12 @@ const ChangeRole = () => {
 			);
 		}
 
+		// Modified to use CHANGE_ROLE_COMPONENTS
 		const tempTabList = relevantTabs
-			.filter(({ slug }) => slugTabMapping[slug])
+			.filter(({ slug }) => CHANGE_ROLE_COMPONENTS[slug])
 			.map(({ slug, label, transferConfig }) => ({
 				label,
-				comp: slugTabMapping[slug],
+				Component: CHANGE_ROLE_COMPONENTS[slug],
 				transferConfig: transferConfig,
 			}));
 
@@ -90,47 +98,6 @@ const ChangeRole = () => {
 	};
 
 	const handleClickResponseCard = () => router.push("/admin/my-network");
-
-	/**
-	 * Maps slugs to the corresponding components for the ChangeRole tabs.
-	 */
-	const slugTabMapping = {
-		"transfer-retailer": (
-			<TransferSeller
-				agentData={agentData}
-				setResponseDetails={setResponseDetails}
-				showOrgChangeRoleView={showOrgChangeRoleView}
-			/>
-		),
-		"transfer-fos": (
-			<TransferSeller
-				agentData={agentData}
-				setResponseDetails={setResponseDetails}
-				showOrgChangeRoleView={showOrgChangeRoleView}
-			/>
-		),
-		"retailer-to-distributor": (
-			<PromoteSellerToDistributor
-				agentData={agentData}
-				setResponseDetails={setResponseDetails}
-				showOrgChangeRoleView={showOrgChangeRoleView}
-			/>
-		),
-		"retailer-to-iretailer": (
-			<UpgradeSellerToIseller
-				agentData={agentData}
-				setResponseDetails={setResponseDetails}
-				showOrgChangeRoleView={showOrgChangeRoleView}
-			/>
-		),
-		"demote-distributor": (
-			<DemoteDistributor
-				agentData={agentData}
-				setResponseDetails={setResponseDetails}
-				showOrgChangeRoleView={showOrgChangeRoleView}
-			/>
-		),
-	};
 
 	return (
 		<>
@@ -188,16 +155,23 @@ const ChangeRole = () => {
 							<Tabs defaultIndex={+tab || 0}>
 								{tabList.map(
 									(
-										{ label, comp, transferConfig },
+										{ label, Component, transferConfig },
 										index
 									) => (
 										<div
 											key={`${index}-${label}`}
 											label={label}
 										>
-											{React.cloneElement(comp, {
-												...(transferConfig ?? {}),
-											})}
+											<Component
+												agentData={agentData}
+												setResponseDetails={
+													setResponseDetails
+												}
+												showOrgChangeRoleView={
+													showOrgChangeRoleView
+												}
+												{...(transferConfig ?? {})}
+											/>
 										</div>
 									)
 								)}
