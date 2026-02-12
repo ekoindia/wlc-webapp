@@ -6,6 +6,7 @@ import {
 	Flex,
 	Text,
 	useBreakpointValue,
+	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints } from "constants";
@@ -30,7 +31,6 @@ const selectAllObj = { value: "*", label: "Select All" };
  * @param prop.transferAgentsFrom
  * @param prop.transferAgentsTo
  * @param prop.selectedAgentsToTransfer
- * @param prop.setResponseDetails
  * @param prop.onChange
  * @example	`<MoveAgents></MoveAgents>`
  */
@@ -41,7 +41,6 @@ const MoveAgents = ({
 	transferAgentsFrom,
 	transferAgentsTo,
 	selectedAgentsToTransfer,
-	setResponseDetails,
 	onChange = () => {},
 }) => {
 	const isSmallScreen = useBreakpointValue(
@@ -51,7 +50,9 @@ const MoveAgents = ({
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [optionsValueList, setOptionsValueList] = useState([]);
+	const [isSuccess, setIsSuccess] = useState(false);
 	const { accessToken } = useSession();
+	const toast = useToast();
 
 	useEffect(() => {
 		let _optionsValueList = [];
@@ -128,10 +129,35 @@ const MoveAgents = ({
 			},
 			body: body,
 			token: accessToken,
-		}).then((res) => {
-			setShowSelectAgent(false);
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		})
+			.then((res) => {
+				// Success Response Type ID for transfer csps is 1872
+				if (res.response_type_id === 1872) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					setIsSuccess(true);
+					setShowSelectAgent(false);
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const buttonConfigList = [
@@ -140,7 +166,7 @@ const MoveAgents = ({
 			size: "lg",
 			label: "Move",
 			onClick: () => handleMoveAgent(),
-			disabled: !selectedAgentsToTransfer?.length > 0,
+			disabled: !selectedAgentsToTransfer?.length > 0 || isSuccess,
 		},
 		{
 			variant: "link",

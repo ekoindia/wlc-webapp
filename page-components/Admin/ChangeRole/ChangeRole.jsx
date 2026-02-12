@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
-import { PageTitle, ResponseCard, Tabs } from "components";
+import { PageTitle, Tabs } from "components";
 import { AGENT_VIEW_TABS, Endpoints, ORG_VIEW_TABS } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -27,7 +27,6 @@ const ChangeRole = () => {
 	const [agentData, setAgentData] = useState(null);
 	const { accessToken } = useSession();
 	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);
-	const [responseDetails, setResponseDetails] = useState();
 	const router = useRouter();
 	const { mobile, tab } = router.query;
 	const [tabList, setTabList] = useState([]);
@@ -97,100 +96,79 @@ const ChangeRole = () => {
 			});
 	};
 
-	const handleClickResponseCard = () => router.push("/admin/my-network");
-
 	return (
 		<>
 			<PageTitle
 				title={showOrgChangeRoleView ? "Change Roles" : "Change Role"}
 			/>
-
-			{responseDetails === undefined ? (
-				<Flex
-					direction="column"
-					w="100%"
-					gap={{ base: "4", md: "0" }}
-					fontSize="sm"
-					mt={{
-						base: showOrgChangeRoleView ? "8" : "-10px",
-						md: "initial",
-					}}
-					mb="32"
-				>
-					{!showOrgChangeRoleView && (
-						<>
-							<Flex
-								direction="column"
-								gap="2"
-								bg="white"
-								p={{ base: "16px", md: "20px 30px" }}
-								borderRadius={{
-									base: "0",
-									md: "10px 10px 0 0",
-								}}
+			<Flex
+				direction="column"
+				w="100%"
+				gap={{ base: "4", md: "0" }}
+				fontSize="sm"
+				mt={{
+					base: showOrgChangeRoleView ? "8" : "-10px",
+					md: "initial",
+				}}
+				mb="32"
+			>
+				{!showOrgChangeRoleView && (
+					<>
+						<Flex
+							direction="column"
+							gap="2"
+							bg="white"
+							p={{ base: "16px", md: "20px 30px" }}
+							borderRadius={{
+								base: "0",
+								md: "10px 10px 0 0",
+							}}
+						>
+							<Text
+								fontSize="2xl"
+								color="primary.DEFAULT"
+								fontWeight="semibold"
 							>
-								<Text
-									fontSize="2xl"
-									color="primary.DEFAULT"
-									fontWeight="semibold"
-								>
-									{agentData?.agent_name}
-								</Text>
-								<span>{agentData?.agent_type}</span>
-							</Flex>
-							<Divider display={{ base: "none", md: "block" }} />
-						</>
-					)}
-					<Box
-						bg="white"
-						borderRadius={{
-							base: "10px",
-							md: showOrgChangeRoleView
-								? "10px"
-								: "0 0 10px 10px",
-						}}
-						mx={{ base: "4", md: "0" }}
-					>
-						{tabList?.length > 0 && (
-							<Tabs defaultIndex={+tab || 0}>
-								{tabList.map(
-									(
-										{ label, Component, transferConfig },
-										index
-									) => (
-										<div
-											key={`${index}-${label}`}
-											label={label}
-										>
-											<Component
-												agentData={agentData}
-												setResponseDetails={
-													setResponseDetails
-												}
-												showOrgChangeRoleView={
-													showOrgChangeRoleView
-												}
-												{...(transferConfig ?? {})}
-											/>
-										</div>
-									)
-								)}
-							</Tabs>
-						)}
-					</Box>
-				</Flex>
-			) : (
+								{agentData?.agent_name}
+							</Text>
+							<span>{agentData?.agent_type}</span>
+						</Flex>
+						<Divider display={{ base: "none", md: "block" }} />
+					</>
+				)}
 				<Box
-					mt={{ base: "8", md: "2.5" }}
-					px={{ base: "16px", md: "initial" }}
+					bg="white"
+					borderRadius={{
+						base: "10px",
+						md: showOrgChangeRoleView ? "10px" : "0 0 10px 10px",
+					}}
+					mx={{ base: "4", md: "0" }}
 				>
-					<ResponseCard
-						status={responseDetails.status}
-						message={responseDetails.message}
-						onClick={handleClickResponseCard}
-					/>
+					{tabList?.length > 0 && (
+						<Tabs defaultIndex={+tab || 0}>
+							{tabList.map(
+								(
+									{ label, Component, transferConfig },
+									index
+								) => (
+									<div
+										key={`${index}-${label}`}
+										label={label}
+									>
+										<Component
+											agentData={agentData}
+											showOrgChangeRoleView={
+												showOrgChangeRoleView
+											}
+											{...(transferConfig ?? {})}
+										/>
+									</div>
+								)
+							)}
+						</Tabs>
+					)}
 				</Box>
-			)}
+			</Flex>
 		</>
 	);
 };

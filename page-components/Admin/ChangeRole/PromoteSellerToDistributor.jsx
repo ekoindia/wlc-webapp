@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints, ParamType, UserTypeLabel } from "constants";
 import { useSession } from "contexts";
@@ -33,17 +33,13 @@ const retailer_type_list = [
  * PromoteSellerToDistributor page-component
  * @param root0
  * @param root0.agentData
- * @param root0.setResponseDetails
  * @param root0.showOrgChangeRoleView
  * @returns
  */
-const PromoteSellerToDistributor = ({
-	agentData,
-	setResponseDetails,
-	showOrgChangeRoleView,
-}) => {
+const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
+	const toast = useToast();
 
 	const router = useRouter();
 
@@ -55,6 +51,7 @@ const PromoteSellerToDistributor = ({
 		control,
 		register,
 		setValue,
+		reset,
 	} = useForm({
 		defaultValues: {
 			retailer_type: "3",
@@ -119,20 +116,51 @@ const PromoteSellerToDistributor = ({
 			console.error("Retailer is required.");
 			return;
 		}
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/changeRole/promotecsps",
-				"tf-req-method": "PUT",
-			},
-			body: {
-				operation_type: 1,
-				agent_mobile: default_agent_mobile ?? retailer[renderer.value],
-			},
-			token: accessToken,
-		}).then((res) => {
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		return fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri":
+						"/network/agents/profile/changeRole/promotecsps",
+					"tf-req-method": "PUT",
+				},
+				body: {
+					operation_type: 1,
+					agent_mobile:
+						default_agent_mobile ?? retailer[renderer.value],
+				},
+				token: accessToken,
+			}
+		)
+			.then((res) => {
+				// Success Response Type ID for promotecsps is 1967
+				if (res.response_type_id === 1967) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					reset(data);
+					return;
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const buttonConfigList = [

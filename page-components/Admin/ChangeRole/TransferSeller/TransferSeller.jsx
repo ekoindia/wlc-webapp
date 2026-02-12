@@ -1,4 +1,9 @@
-import { Flex, FormControl, useBreakpointValue } from "@chakra-ui/react";
+import {
+	Flex,
+	FormControl,
+	useBreakpointValue,
+	useToast,
+} from "@chakra-ui/react";
 import { ActionButtonGroup, Select } from "components";
 import { Endpoints } from "constants";
 import { UserType } from "constants/UserTypes";
@@ -24,20 +29,19 @@ const independent_retailer_select_option = {
  * A TransferSeller Tab inside ChangeRole page-component
  * @param root0
  * @param root0.agentData
- * @param root0.setResponseDetails
  * @param root0.showOrgChangeRoleView
  * @param root0.targetUserType
  * @example	`<TransferSeller></TransferSeller>`
  */
 const TransferSeller = ({
 	agentData,
-	setResponseDetails,
 	showOrgChangeRoleView,
 	targetUserType = 2, // Default to Merchant
 }) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
 	const [transferAgentsTo, setTransferAgentsTo] = useState(null);
+	const toast = useToast();
 
 	const [distributors, setDistributors] = useState([]);
 	const [filteredDistributors, setFilteredDistributors] = useState([]);
@@ -81,9 +85,33 @@ const TransferSeller = ({
 					default_agent_code ?? `${selectedAgentsToTransfer}`,
 			},
 			token: accessToken,
-		}).then((res) => {
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		})
+			.then((res) => {
+				if (res.response_type_id === 1872) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					// Optional: Refresh data or redirect if needed
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const handleTransferAgentsSelectChange = (value, type) => {
@@ -284,7 +312,6 @@ const TransferSeller = ({
 						transferAgentsTo,
 						transferAgentsFrom,
 						selectedAgentsToTransfer,
-						setResponseDetails,
 						onChange: handleSelectedAgents,
 						options: agentListToTransferAgentsFrom,
 						agentList: agentListToTransferAgentsTo,
