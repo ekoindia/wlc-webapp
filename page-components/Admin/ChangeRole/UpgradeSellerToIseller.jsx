@@ -25,6 +25,7 @@ const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
 	const toast = useToast();
+	const [isSuccess, setIsSuccess] = useState(false);
 
 	const router = useRouter();
 
@@ -75,7 +76,7 @@ const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 
 	const onSubmit = (data) => {
 		const { retailer } = data || {};
-		if (!retailer) {
+		if (!retailer && !default_agent_mobile) {
 			console.error("Retailer is required.");
 			return;
 		}
@@ -105,6 +106,7 @@ const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 						isClosable: true,
 					});
 					reset(data);
+					setIsSuccess(true);
 				} else {
 					toast({
 						title: res.message,
@@ -130,7 +132,7 @@ const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 			size: "lg",
 			label: "Unassign",
 			loading: isSubmitting,
-			disabled: !isValid || !isDirty,
+			disabled: showOrgChangeRoleView ? !isValid || !isDirty : isSuccess,
 		},
 		{
 			variant: "link",

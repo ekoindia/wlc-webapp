@@ -45,6 +45,7 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
 	const toast = useToast();
+	const [isSuccess, setIsSuccess] = useState(false);
 
 	const router = useRouter();
 
@@ -117,7 +118,7 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 	const onSubmit = (data) => {
 		delete data.retailer_type;
 		const { retailer } = data || {};
-		if (!retailer) {
+		if (!retailer && !default_agent_mobile) {
 			console.error("Retailer is required.");
 			return;
 		}
@@ -148,6 +149,7 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 						isClosable: true,
 					});
 					reset(data);
+					setIsSuccess(true);
 					return;
 				} else {
 					toast({
@@ -174,7 +176,7 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 			size: "lg",
 			label: "Promote",
 			loading: isSubmitting,
-			disabled: !isValid || !isDirty,
+			disabled: showOrgChangeRoleView ? !isValid || !isDirty : isSuccess,
 		},
 		{
 			variant: "link",
