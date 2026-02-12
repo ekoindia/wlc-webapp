@@ -65,6 +65,7 @@ const MoveAgents = ({
 
 	useEffect(() => {
 		onChange(selectedOptions);
+		if (isSuccess) setIsSuccess(false);
 	}, [selectedOptions]);
 
 	/* handle when user click on option */

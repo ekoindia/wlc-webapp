@@ -41,6 +41,7 @@ const TransferSeller = ({
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
 	const [transferAgentsTo, setTransferAgentsTo] = useState(null);
+	const [isSuccess, setIsSuccess] = useState(false);
 	const toast = useToast();
 
 	const [distributors, setDistributors] = useState([]);
@@ -60,6 +61,7 @@ const TransferSeller = ({
 
 	const handleSelectedAgents = (_agents) => {
 		setSelectedAgentsToTransfer(_agents);
+		if (isSuccess) setIsSuccess(false);
 	};
 
 	const fetchList = (headers, cb) => {
@@ -94,6 +96,7 @@ const TransferSeller = ({
 						duration: 3000,
 						isClosable: true,
 					});
+					setIsSuccess(true);
 					// Optional: Refresh data or redirect if needed
 				} else {
 					toast({
@@ -120,6 +123,7 @@ const TransferSeller = ({
 		} else {
 			setTransferAgentsTo(value);
 		}
+		if (isSuccess) setIsSuccess(false);
 
 		if (!isSmallScreen) {
 			setShowSelectAgent(true);
@@ -219,9 +223,10 @@ const TransferSeller = ({
 			size: "lg",
 			label: "Move",
 			onClick: () => handleMoveAgent(),
-			disabled: showOrgChangeRoleView
-				? !selectedAgentsToTransfer?.length > 0
-				: default_agent_code && !transferAgentsTo,
+			disabled:
+				(showOrgChangeRoleView
+					? !selectedAgentsToTransfer?.length > 0
+					: default_agent_code && !transferAgentsTo) || isSuccess,
 		},
 		{
 			variant: "link",
