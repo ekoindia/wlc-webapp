@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints } from "constants";
+import { UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
@@ -32,6 +33,7 @@ const selectAllObj = { value: "*", label: "Select All" };
  * @param prop.transferAgentsTo
  * @param prop.selectedAgentsToTransfer
  * @param prop.onChange
+ * @param prop.targetUserType
  * @example	`<MoveAgents></MoveAgents>`
  */
 const MoveAgents = ({
@@ -42,6 +44,7 @@ const MoveAgents = ({
 	transferAgentsTo,
 	selectedAgentsToTransfer,
 	onChange = () => {},
+	targetUserType = 2,
 }) => {
 	const isSmallScreen = useBreakpointValue(
 		{ base: true, md: false },
@@ -203,7 +206,7 @@ const MoveAgents = ({
 						display={{ base: "none", md: "flex" }}
 					>
 						<Text color="light">
-							Move Retailers From: &thinsp;
+							Move {UserTypeLabel[targetUserType]}s From: &thinsp;
 							<Text as="span" color="dark">
 								{transferAgentsFrom[renderer.label]}
 							</Text>
@@ -303,7 +306,9 @@ const MoveAgents = ({
 						/>
 					</Circle>
 				)}
-				<TransferAgentsToBox {...{ agentList, transferAgentsTo }} />
+				<TransferAgentsToBox
+					{...{ agentList, transferAgentsTo, targetUserType }}
+				/>
 			</Flex>
 
 			{isSmallScreen ? (
@@ -315,7 +320,11 @@ const MoveAgents = ({
 
 export default MoveAgents;
 
-const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
+const TransferAgentsToBox = ({
+	agentList,
+	transferAgentsTo,
+	targetUserType,
+}) => {
 	return (
 		<Flex
 			display={{ base: "none", md: "flex" }}
@@ -325,7 +334,7 @@ const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
 		>
 			<Flex fontWeight="semibold" gap="1">
 				<Text color="light">
-					Move Retailers To: &thinsp;
+					Move {UserTypeLabel[targetUserType]}s To: &thinsp;
 					<Text as="span" color="dark">
 						{transferAgentsTo[renderer.label]}
 					</Text>

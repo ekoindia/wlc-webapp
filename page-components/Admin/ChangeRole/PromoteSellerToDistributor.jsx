@@ -1,6 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
-import { Endpoints, ParamType, UserTypeLabel } from "constants";
+import { Endpoints, ParamType, UserType, UserTypeLabel } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -21,11 +21,15 @@ const AGENT_TYPE = {
 const retailer_type_list = [
 	{
 		value: AGENT_TYPE.INDEPENDENT_RETAILER,
-		label: "Retailers not mapped to any distributor",
+		label: `${UserTypeLabel[UserType.MERCHANT]}s (${
+			UserTypeLabel[UserType.MERCHANT]
+		}s not mapped to any ${UserTypeLabel[UserType.DISTRIBUTOR]})`,
 	},
 	{
 		value: AGENT_TYPE.RETAILER,
-		label: "Retailers already mapped to a distributor",
+		label: `${UserTypeLabel[UserType.MERCHANT]}s already mapped to a ${
+			UserTypeLabel[UserType.DISTRIBUTOR]
+		}`,
 	},
 ];
 
@@ -87,7 +91,7 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 	const promote_retailer_parameter_list = [
 		{
 			name: "retailer_type",
-			label: `Select Retailer Type to Search`,
+			label: `Select ${UserTypeLabel[UserType.MERCHANT]} Type to Search`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: retailer_type_list,
 			is_inactive: !showOrgChangeRoleView && default_agent_mobile,

@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Select } from "components";
 import { Endpoints } from "constants";
-import { UserType } from "constants/UserTypes";
+import { UserType, UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -20,7 +20,11 @@ const renderer = {
 
 const independent_retailer_select_option = {
 	user_code: "3",
-	name: "No Distributor – Transfer Independent Retailers (Retailers not mapped to any distributor)",
+	name: `No ${UserTypeLabel[UserType.DISTRIBUTOR]} – Transfer ${
+		UserTypeLabel[UserType.I_MERCHANT]
+	}s (${UserTypeLabel[UserType.MERCHANT]}s not mapped to any ${
+		UserTypeLabel[UserType.DISTRIBUTOR]
+	})`,
 	mobile: "",
 	customer_id: "",
 };
@@ -253,7 +257,9 @@ const TransferSeller = ({
 					<FormControl w={{ base: "100%", md: "500px" }}>
 						<Select
 							id="from-select"
-							label="Select distributor to transfer agents from"
+							label={`Select ${
+								UserTypeLabel[UserType.DISTRIBUTOR]
+							} to transfer ${UserTypeLabel[targetUserType]}s from`}
 							required={true}
 							value={transferAgentsFrom}
 							onChange={(value) =>
@@ -282,10 +288,19 @@ const TransferSeller = ({
 						id="to-select"
 						label={
 							!showOrgChangeRoleView && default_agent_code
-								? default_agent_type == "Retailer" // check if we can avoid this hardcode value
-									? "Select New Distributor"
-									: "Select Distributor"
-								: "Select distributor to transfer agents to"
+								? default_agent_type ==
+									UserTypeLabel[UserType.MERCHANT] // check if we can avoid this hardcode value
+									? `Select New ${
+											UserTypeLabel[UserType.DISTRIBUTOR]
+										}`
+									: `Select ${
+											UserTypeLabel[UserType.DISTRIBUTOR]
+										}`
+								: `Select ${
+										UserTypeLabel[UserType.DISTRIBUTOR]
+									} to transfer ${
+										UserTypeLabel[targetUserType]
+									}s to`
 						}
 						required={true}
 						value={transferAgentsTo}
@@ -320,6 +335,7 @@ const TransferSeller = ({
 						onChange: handleSelectedAgents,
 						options: agentListToTransferAgentsFrom,
 						agentList: agentListToTransferAgentsTo,
+						targetUserType,
 					}}
 				/>
 			) : null}

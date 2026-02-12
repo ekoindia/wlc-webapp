@@ -1,6 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
-import { Endpoints, ParamType } from "constants";
+import { Endpoints, ParamType, UserType, UserTypeLabel } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -60,7 +60,7 @@ const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 	const unassign_retailer_parameter_list = [
 		{
 			name: "retailer",
-			label: "Select Retailer",
+			label: `Select ${UserTypeLabel[UserType.MERCHANT]}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
 			renderer: renderer,
