@@ -4,7 +4,7 @@ import { AGENT_VIEW_TABS, Endpoints, ORG_VIEW_TABS } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	DemoteDistributor,
 	PromoteSellerToDistributor,
@@ -54,9 +54,10 @@ const ChangeRole = () => {
 
 		const tempTabList = relevantTabs
 			.filter(({ slug }) => slugTabMapping[slug])
-			.map(({ slug, label }) => ({
+			.map(({ slug, label, transferConfig }) => ({
 				label,
 				comp: slugTabMapping[slug],
+				transferConfig: transferConfig,
 			}));
 
 		setTabList(tempTabList);
@@ -96,22 +97,37 @@ const ChangeRole = () => {
 	const slugTabMapping = {
 		"transfer-retailer": (
 			<TransferSeller
-				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+				agentData={agentData}
+				setResponseDetails={setResponseDetails}
+				showOrgChangeRoleView={showOrgChangeRoleView}
+			/>
+		),
+		"transfer-fos": (
+			<TransferSeller
+				agentData={agentData}
+				setResponseDetails={setResponseDetails}
+				showOrgChangeRoleView={showOrgChangeRoleView}
 			/>
 		),
 		"retailer-to-distributor": (
 			<PromoteSellerToDistributor
-				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+				agentData={agentData}
+				setResponseDetails={setResponseDetails}
+				showOrgChangeRoleView={showOrgChangeRoleView}
 			/>
 		),
 		"retailer-to-iretailer": (
 			<UpgradeSellerToIseller
-				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+				agentData={agentData}
+				setResponseDetails={setResponseDetails}
+				showOrgChangeRoleView={showOrgChangeRoleView}
 			/>
 		),
 		"demote-distributor": (
 			<DemoteDistributor
-				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+				agentData={agentData}
+				setResponseDetails={setResponseDetails}
+				showOrgChangeRoleView={showOrgChangeRoleView}
 			/>
 		),
 	};
@@ -170,14 +186,21 @@ const ChangeRole = () => {
 					>
 						{tabList?.length > 0 && (
 							<Tabs defaultIndex={+tab || 0}>
-								{tabList.map(({ label, comp }, index) => (
-									<div
-										key={`${index}-${label}`}
-										label={label}
-									>
-										{comp}
-									</div>
-								))}
+								{tabList.map(
+									(
+										{ label, comp, transferConfig },
+										index
+									) => (
+										<div
+											key={`${index}-${label}`}
+											label={label}
+										>
+											{React.cloneElement(comp, {
+												...(transferConfig ?? {}),
+											})}
+										</div>
+									)
+								)}
 							</Tabs>
 						)}
 					</Box>

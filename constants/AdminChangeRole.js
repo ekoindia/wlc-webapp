@@ -32,11 +32,13 @@ export const ORG_VIEW_TABS = [
 		slug: "transfer-retailer",
 		label: "Assign Distributor",
 		path: "/admin/my-network/profile/change-role",
+		transferConfig: { targetUserType: UserType.MERCHANT },
 	},
 	{
-		slug: "transfer-retailer",
+		slug: "transfer-fos",
 		label: "Assign FOS",
 		path: "/admin/my-network/profile/change-role",
+		transferConfig: { targetUserType: UserType.FOS },
 	},
 	{
 		slug: "retailer-to-iretailer",

@@ -1,6 +1,7 @@
 import { Flex, FormControl, useBreakpointValue } from "@chakra-ui/react";
 import { ActionButtonGroup, Select } from "components";
 import { Endpoints } from "constants";
+import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -25,12 +26,14 @@ const independent_retailer_select_option = {
  * @param root0.agentData
  * @param root0.setResponseDetails
  * @param root0.showOrgChangeRoleView
+ * @param root0.targetUserType
  * @example	`<TransferSeller></TransferSeller>`
  */
 const TransferSeller = ({
 	agentData,
 	setResponseDetails,
 	showOrgChangeRoleView,
+	targetUserType = 2, // Default to Merchant
 }) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
@@ -120,7 +123,7 @@ const TransferSeller = ({
 			const isIndependentRetailer = transferAgentsFrom.user_code === "3";
 			const _uri = isIndependentRetailer
 				? "/network/agent-list?usertype=3"
-				: `/network/agent-list?usertype=2&user_id=${
+				: `/network/agent-list?usertype=${targetUserType}&user_id=${
 						transferAgentsFrom[renderer.value]
 					}`;
 
@@ -147,7 +150,7 @@ const TransferSeller = ({
 			fetchList(
 				{
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${
+					"tf-req-uri": `/network/agent-list?usertype=${targetUserType}&user_id=${
 						transferAgentsTo[renderer.value]
 					}`,
 					"tf-req-method": "GET",
@@ -224,10 +227,14 @@ const TransferSeller = ({
 								handleTransferAgentsSelectChange(value, "FROM")
 							}
 							renderer={renderer}
-							options={[
-								independent_retailer_select_option,
-								...distributors,
-							]}
+							options={
+								targetUserType === UserType.MERCHANT
+									? [
+											independent_retailer_select_option,
+											...distributors,
+										]
+									: [...distributors]
+							}
 							getOptionLabel={(option) =>
 								option.mobile
 									? `${option.name} ✆ ${option.mobile}`
