@@ -39,11 +39,6 @@ export const ORG_VIEW_TABS = [
 		path: "/admin/my-network/profile/change-role",
 	},
 	{
-		slug: "transfer-retailer",
-		label: "Assign Agents",
-		path: "/admin/my-network/profile/change-role",
-	},
-	{
 		slug: "retailer-to-iretailer",
 		label: "Unassign Distributor",
 		path: "/admin/my-network/profile/change-role",
