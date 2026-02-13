@@ -2,11 +2,15 @@ import {
 	Alert,
 	AlertDescription,
 	AlertIcon,
+	Badge,
 	Box,
 	Button as ChakraButton,
+	Circle,
 	Flex,
+	HStack,
 	ListItem,
 	OrderedList,
+	Spinner,
 	Text,
 	useToast,
 	VStack,
@@ -80,7 +84,7 @@ const SignAgreementStep = ({
 	// Derived states from hook status
 	const isAgreementIdle = status === "idle";
 	const isAgreementLoadingStatus = status === "loading";
-	const isAgreementReadyToSign = status === "ready";
+	// const isAgreementReadyToSign = status === "ready";
 	const isAgreementVerifyingStatus = status === "verifying";
 	const isSignAgreementSuccessfullySigned = status === "success";
 	const isAgreementError = status === "error";
@@ -99,21 +103,13 @@ const SignAgreementStep = ({
 
 	/**
 	 * Listen to this step's pipeline result for success/errors
-	 * Updated to work with new PipelineResult structure
-	 * Uses lastProcessedResultRef to track the last processed result and prevent duplicate toasts
 	 */
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
 		console.log("[SignAgreementStep] result", result);
-		// Skip if no result or if we've already processed this exact result object
 		if (!result || result === lastProcessedResultRef.current) return;
 
-		// For pipeline result, check the first (and typically only) API response
-		// const apiResponse = result.list?.[0]?.response;
-		// const responseTypeId = apiResponse?.response_type_id;
-
 		if (result.status === "success") {
-			// Success! Advance to next step
 			lastProcessedResultRef.current = result;
 			toast({
 				title:
@@ -125,7 +121,6 @@ const SignAgreementStep = ({
 			onAdvance(stepConfig.id);
 		} else if (result.status === "failed") {
 			lastProcessedResultRef.current = result;
-			// Extract error message from failed step
 			const failedStep = result.list.find((r) => r.status === "failed");
 			const errorMessage =
 				failedStep?.response?.message ||
@@ -144,34 +139,6 @@ const SignAgreementStep = ({
 			setHasOpenedSigning(false);
 			setIsSubmittingStep(false);
 		}
-		// else if (
-		// 	responseTypeId === 1616 ||
-		// 	responseTypeId === 1657 ||
-		// 	responseTypeId === 1070
-		// ) {
-		// 	lastProcessedResultRef.current = result;
-		// 	setNotSignedError(true);
-		// 	setTimeoutError(false);
-		// 	setHasOpenedSigning(false);
-		// 	setIsSubmittingStep(false);
-
-		// 	toast({
-		// 		title: "Agreement not signed",
-		// 		description: "Please sign the agreement to proceed.",
-		// 		status: "error",
-		// 		duration: 2000,
-		// 	});
-		// } else if (
-		// 	apiResponse?.message?.includes("timeout") ||
-		// 	apiResponse?.message?.includes("network") ||
-		// 	(apiResponse?.error && !responseTypeId)
-		// ) {
-		// 	// Timeout/network error - keep sign disabled, show retry on proceed
-		// 	lastProcessedResultRef.current = result;
-		// 	setTimeoutError(true);
-		// 	setNotSignedError(false);
-		// 	setIsSubmittingStep(false);
-		// }
 	}, [
 		pipelineResults,
 		stepConfig.id,
@@ -197,8 +164,6 @@ const SignAgreementStep = ({
 					agreement_id: agreementId,
 				},
 			});
-			// Note: onSubmit may be async and handled by parent
-			// If it fails, the parent should show an error
 		} catch (err: any) {
 			console.error("[SignAgreementStep] Submit error:", err);
 			setSubmitError(
@@ -216,7 +181,7 @@ const SignAgreementStep = ({
 		if (hasOpenedSigning && !notSignedError) return;
 		openSigning();
 		setHasOpenedSigning(true);
-		setNotSignedError(false); // Clear the error state
+		setNotSignedError(false);
 		setTimeoutError(false);
 		setSubmitError(null);
 	}, [hasOpenedSigning, notSignedError, openSigning]);
@@ -231,7 +196,6 @@ const SignAgreementStep = ({
 			countdownIntervalRef.current = setInterval(() => {
 				setCountdown((prev) => {
 					if (prev === null || prev <= 1) {
-						// Clear interval and trigger submit
 						if (countdownIntervalRef.current) {
 							clearInterval(countdownIntervalRef.current);
 							countdownIntervalRef.current = null;
@@ -267,9 +231,6 @@ const SignAgreementStep = ({
 		}
 	}, [countdown, isSubmittingStep, handleProceedClick]);
 
-	// Proceed button should be disabled until user opens signing
-	// Also disabled if we got a "not signed" error (1657)
-	// But ENABLED if timeout error (to allow retry)
 	const isProceedDisabled =
 		(!hasOpenedSigning && !timeoutError) ||
 		isAgreementLoading ||
@@ -277,9 +238,6 @@ const SignAgreementStep = ({
 		isSubmitting ||
 		notSignedError;
 
-	// Sign button disabled after clicked or during loading states
-	// Re-enabled if we got a "not signed" error (1657) - user needs to retry signing
-	// Stays disabled on timeout (signing may have succeeded)
 	const isSignDisabled =
 		(hasOpenedSigning && !notSignedError) ||
 		isAgreementLoading ||
@@ -298,35 +256,105 @@ const SignAgreementStep = ({
 					{stepConfig.description ||
 						"Sign the agreement using your Aadhaar number to complete your registration."}
 				</Box>
-				{isAgreementReadyToSign && (
-					<Box
-						mt={3}
-						p={3}
-						bg="blue.50"
-						borderRadius="md"
-						borderLeft="4px solid"
-						borderColor="blue.500"
-					>
-						<Text fontSize="sm" color="blue.800">
-							{userName ? (
-								<>
-									Hey,{" "}
-									<Text as="span" fontWeight="semibold">
-										{userName}
-									</Text>
-									, the agreement has been prepared for you.
-									Please review it carefully before
-									proceeding.
-								</>
-							) : (
-								"Hi there, your agreement has been prepared. Please review it carefully before proceeding."
-							)}
-						</Text>
-					</Box>
-				)}
 			</Box>
 
 			<VStack gap={4} align="stretch">
+				{/* Step Progress Indicators */}
+				<VStack align="stretch" gap={3}>
+					{/* Step 1: Document Preparation */}
+					<HStack gap={3} align="center">
+						{isAgreementLoading ? (
+							<Spinner
+								size="sm"
+								color="blue.500"
+								thickness="2px"
+							/>
+						) : (
+							<Icon
+								name="check-circle"
+								size="sm"
+								color={
+									agreementLoadError ? "error" : "green.500"
+								}
+							/>
+						)}
+						<Text
+							fontSize="sm"
+							color={
+								isAgreementLoading
+									? "gray.600"
+									: agreementLoadError
+										? "error"
+										: "success"
+							}
+							fontWeight="medium"
+						>
+							{isAgreementLoading ? (
+								"Preparing your document"
+							) : agreementLoadError ? (
+								"Failed to prepare document"
+							) : (
+								<>
+									Document is generated for{" "}
+									{userName && (
+										<Text as="span" fontWeight="semibold">
+											{userName}
+										</Text>
+									)}
+									{documentId && (
+										<Badge variant="outlineSuccess">
+											(#{documentId})
+										</Badge>
+									)}
+								</>
+							)}
+						</Text>
+					</HStack>
+
+					{/* Step 2: Document Esign */}
+					<HStack gap={3} align="center">
+						{isSignAgreementSuccessfullySigned ? (
+							<Icon
+								name="check-circle"
+								size="sm"
+								color="green.500"
+							/>
+						) : (
+							<Circle
+								size="18px"
+								border="2px solid"
+								borderColor="gray.300"
+							/>
+						)}
+						<HStack gap={2} align="center">
+							<Text
+								fontSize="sm"
+								color="gray.700"
+								fontWeight="medium"
+							>
+								Document Esign
+							</Text>
+							{isSignAgreementSuccessfullySigned ? (
+								<Badge
+									colorScheme="green"
+									fontSize="xs"
+									variant="subtle"
+								>
+									Completed
+								</Badge>
+							) : (
+								<Badge
+									colorScheme="yellow"
+									fontSize="xs"
+									variant="subtle"
+								>
+									Pending
+								</Badge>
+							)}
+						</HStack>
+					</HStack>
+				</VStack>
+
 				{agreementLoadError && (
 					<Flex
 						align="center"
@@ -360,20 +388,20 @@ const SignAgreementStep = ({
 					</Flex>
 				)}
 
-				{/* Sign Agreement Button */}
-				<ChakraButton
-					w="full"
-					colorScheme="blue"
-					onClick={handleSignClick}
-					isDisabled={agreementLoadError || isSignDisabled}
-					isLoading={isAgreementLoading}
-					loadingText="Preparing..."
-					leftIcon={<Icon name="mode-edit" size="sm" />}
-				>
-					{hasOpenedSigning
-						? "Agreement signing opened"
-						: stepConfig.primaryCTAText || "Sign Agreement"}
-				</ChakraButton>
+				{/* Sign Agreement Button - only show when document is ready (not loading) */}
+				{!isAgreementLoading && (
+					<ChakraButton
+						w="full"
+						colorScheme="blue"
+						onClick={handleSignClick}
+						isDisabled={agreementLoadError || isSignDisabled}
+						leftIcon={<Icon name="mode-edit" size="sm" />}
+					>
+						{hasOpenedSigning
+							? "Agreement signing opened"
+							: stepConfig.primaryCTAText || "Sign Agreement"}
+					</ChakraButton>
+				)}
 
 				{/* Success Banner */}
 				{isSignAgreementSuccessfullySigned && (
