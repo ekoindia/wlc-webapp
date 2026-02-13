@@ -51,8 +51,8 @@ const operation_type_list = [
 
 const status_list = [
 	{ label: "Active", value: "Active" },
-	{ label: "In Progress", value: "In-Progress" },
-	{ label: "Inactive", value: "Inactive" },
+	{ label: "In Progress", value: "InProgress" },
+	{ label: "Inactive", value: "InActive" },
 ];
 
 const generateQueryParams = (params) => {
