@@ -41,7 +41,7 @@ const AgentHierarchy = ({ parents, currentAgentName, getUserCodeLabel }) => {
 				Hierarchy
 			</Text>
 			<Box
-				maxH="120px"
+				maxH="100px"
 				overflowY="auto"
 				overflowX="hidden"
 				pr="1"
