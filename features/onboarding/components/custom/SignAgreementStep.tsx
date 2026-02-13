@@ -77,12 +77,25 @@ const SignAgreementStep = ({
 	// Ref to track if we've already advanced (prevents double-advance)
 	const lastProcessedResultRef = useRef<any>(null);
 
+	// Derived states from hook status
+	const isAgreementIdle = status === "idle";
+	const isAgreementLoadingStatus = status === "loading";
+	const isAgreementReadyToSign = status === "ready";
+	const isAgreementVerifyingStatus = status === "verifying";
+	const isSignAgreementSuccessfullySigned = status === "success";
+	const isAgreementError = status === "error";
+
+	// Combined states for logic
+	const isAgreementLoading = isAgreementIdle || isAgreementLoadingStatus;
+	const isVerifying = isAgreementVerifyingStatus || isSubmittingStep;
+	const agreementLoadError = isAgreementError;
+
 	// Initialize esign session on mount
 	useEffect(() => {
-		if (status === "idle") {
+		if (isAgreementIdle) {
 			initialize();
 		}
-	}, [status, initialize]);
+	}, [isAgreementIdle, initialize]);
 
 	/**
 	 * Listen to this step's pipeline result for success/errors
@@ -212,7 +225,7 @@ const SignAgreementStep = ({
 	 * Start auto-advance countdown when status becomes success
 	 */
 	useEffect(() => {
-		if (status === "success" && !hasAutoSubmittedRef.current) {
+		if (isSignAgreementSuccessfullySigned && !hasAutoSubmittedRef.current) {
 			setCountdown(AUTO_ADVANCE_SECONDS);
 
 			countdownIntervalRef.current = setInterval(() => {
@@ -238,7 +251,7 @@ const SignAgreementStep = ({
 		}
 
 		return undefined;
-	}, [status]);
+	}, [isSignAgreementSuccessfullySigned]);
 
 	/**
 	 * Auto-submit when countdown reaches 0
@@ -254,18 +267,12 @@ const SignAgreementStep = ({
 		}
 	}, [countdown, isSubmittingStep, handleProceedClick]);
 
-	// Derived states for button logic
-	const isInitializing = status === "idle" || status === "loading";
-	const isVerifying = status === "verifying" || isSubmittingStep;
-	const isSuccess = status === "success";
-	const agreementLoadError = status === "error"; // Failed to load agreement
-
 	// Proceed button should be disabled until user opens signing
 	// Also disabled if we got a "not signed" error (1657)
 	// But ENABLED if timeout error (to allow retry)
 	const isProceedDisabled =
 		(!hasOpenedSigning && !timeoutError) ||
-		isInitializing ||
+		isAgreementLoading ||
 		isVerifying ||
 		isSubmitting ||
 		notSignedError;
@@ -275,7 +282,7 @@ const SignAgreementStep = ({
 	// Stays disabled on timeout (signing may have succeeded)
 	const isSignDisabled =
 		(hasOpenedSigning && !notSignedError) ||
-		isInitializing ||
+		isAgreementLoading ||
 		isVerifying ||
 		isSubmitting ||
 		timeoutError;
@@ -291,7 +298,7 @@ const SignAgreementStep = ({
 					{stepConfig.description ||
 						"Sign the agreement using your Aadhaar number to complete your registration."}
 				</Box>
-				{status === "ready" && (
+				{isAgreementReadyToSign && (
 					<Box
 						mt={3}
 						p={3}
@@ -359,7 +366,7 @@ const SignAgreementStep = ({
 					colorScheme="blue"
 					onClick={handleSignClick}
 					isDisabled={agreementLoadError || isSignDisabled}
-					isLoading={isInitializing}
+					isLoading={isAgreementLoading}
 					loadingText="Preparing..."
 					leftIcon={<Icon name="mode-edit" size="sm" />}
 				>
@@ -369,7 +376,7 @@ const SignAgreementStep = ({
 				</ChakraButton>
 
 				{/* Success Banner */}
-				{isSuccess && (
+				{isSignAgreementSuccessfullySigned && (
 					<Alert status="success" borderRadius="md">
 						<AlertIcon />
 						<AlertDescription>
@@ -422,7 +429,8 @@ const SignAgreementStep = ({
 								type: "submit",
 								label: timeoutError
 									? "Retry"
-									: isSuccess && countdown !== null
+									: isSignAgreementSuccessfullySigned &&
+										  countdown !== null
 										? `Proceed now`
 										: isVerifying
 											? "Verifying..."
