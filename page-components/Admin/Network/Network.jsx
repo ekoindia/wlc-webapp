@@ -1,7 +1,7 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
-import { useAppSource, useSession } from "contexts";
+import { useAppSource, useNetworkUsers, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag, useUserTypes } from "hooks";
 import { useColumnVisibility } from "hooks/useColumnVisibility";
@@ -42,13 +42,6 @@ const export_type_options = [
 	},
 ];
 
-const operation_type_list = [
-	{ label: "Distributor", value: "1" },
-	{ label: "Field Agent", value: "4" },
-	{ label: "Retailer", value: "2" },
-	{ label: "Independent Retailer", value: "3" },
-];
-
 const status_list = [
 	{ label: "Active", value: "Active" },
 	{ label: "In Progress", value: "InProgress" },
@@ -78,6 +71,14 @@ const Network = () => {
 	const { accessToken, isAdmin, userType } = useSession();
 	const { isAndroid } = useAppSource();
 	const { getUserTypeLabel } = useUserTypes();
+	const { userTypeIdList } = useNetworkUsers();
+
+	const operation_type_list = useMemo(() => {
+		return userTypeIdList.map((typeId) => ({
+			label: getUserTypeLabel(typeId),
+			value: String(typeId),
+		}));
+	}, [userTypeIdList, getUserTypeLabel]);
 
 	const [pageNumber, setPageNumber] = useState(1);
 	const [isLoading, setIsLoading] = useState(true);
