@@ -9,6 +9,7 @@ import BusinessDetailsStep from "./custom/BusinessDetailsStep";
 import DigilockerRedirectionStep from "./custom/DigilockerRedirectionStep";
 import SecretPinStep from "./custom/SecretPinStep";
 import SignAgreementStep from "./custom/SignAgreementStep";
+import VideoKycStep from "./custom/VideoKycStep";
 
 /**
  * Registry of custom onboarding components
@@ -24,6 +25,7 @@ const CUSTOM_COMPONENT_REGISTRY: Record<
 	DigilockerRedirectionStep: DigilockerRedirectionStep,
 	SecretPinStep: SecretPinStep,
 	SignAgreementStep: SignAgreementStep,
+	VideoKycStep: VideoKycStep,
 };
 
 /**
