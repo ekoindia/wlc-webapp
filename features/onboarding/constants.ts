@@ -28,8 +28,7 @@ export const RESPONSE_TYPE_IDS = {
 	DIGILOCKER_REDIRECTION: 1621,
 
 	/* PAN Verification */
-	PAN_VERIFICATION_RETAILER: 1569,
-	PAN_VERIFICATION_DISTRIBUTOR: 1569,
+	PAN_VERIFICATION: 1569,
 
 	/* Video KYC */
 	VIDEO_KYC: 1569,
@@ -330,43 +329,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: false,
 		stepStatus: 0,
-		applicableRoles: [12400],
-		primaryCTAText: "Capture Location",
-		description:
-			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
-		form_data: {},
-		success_message: "Location captured successfully.",
-		onPreSubmit: (data, actions) => {
-			// Save location to state for subsequent steps
-			if (data?.form_data?.latlong) {
-				actions.setLocation(data.form_data.latlong);
-			}
-		},
-		api: {
-			pipeline: [
-				{
-					id: "submit",
-					type: "form",
-					interactionTypeId:
-						TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE,
-					successResponseTypeIds: [
-						RESPONSE_TYPE_IDS.LOCATION_CAPTURE,
-					],
-				},
-			],
-		},
-		postSubmit: {
-			refreshProfile: false,
-		},
-	},
-	{
-		id: ONBOARDING_STEP_IDS.LOCATION_CAPTURE,
-		name: "LOCATION_CAPTURE",
-		label: "Location Capturing",
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		applicableRoles: [13000],
+		applicableRoles: [12400, 13000],
 		primaryCTAText: "Capture Location",
 		description:
 			"Allow us to capture your business location for verification purposes. This helps us serve you better.",
@@ -488,7 +451,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		applicableRoles: [12300],
+		applicableRoles: [12300, 13000],
 		primaryCTAText: "Proceed",
 		description:
 			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
@@ -537,72 +500,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 						pan_image: "file1",
 					},
 					successResponseTypeIds: [
-						RESPONSE_TYPE_IDS.PAN_VERIFICATION_RETAILER,
-					],
-				},
-			],
-		},
-		postSubmit: {
-			refreshProfile: false,
-		},
-	},
-	{
-		id: ONBOARDING_STEP_IDS.PAN_VERIFICATION,
-		name: "PAN_VERIFICATION",
-		label: "PAN Verification",
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		applicableRoles: [13000],
-		primaryCTAText: "Proceed",
-		description:
-			"Upload a clear photo of your PAN card for business verification. Accepted formats: JPG, PNG, PDF",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-		localRenderer: {
-			type: "form",
-			formFields: [
-				{
-					name: "doc_id",
-					label: "PAN Number",
-					parameter_type_id: ParamType.TEXT,
-					required: true,
-					validations: {
-						pattern: {
-							value: /^([A-Z]){5}([0-9]){4}([A-Z]){1}$/,
-							message: "Invalid PAN format (e.g., ABCDE1234F)",
-						},
-						minLength: {
-							value: 10,
-							message: "PAN must be 10 characters",
-						},
-						maxLength: {
-							value: 10,
-							message: "PAN must be 10 characters",
-						},
-					},
-				},
-				{
-					name: "pan_image",
-					label: "PAN Card Image",
-					parameter_type_id: ParamType.FILE,
-					required: true,
-					meta: { accept: "image/jpeg,image/png" },
-				},
-			],
-		},
-		api: {
-			pipeline: [
-				{
-					id: "upload",
-					type: "upload",
-					docType: 2, // PAN document
-					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
-					fieldMapping: {
-						pan_image: "file1",
-					},
-					successResponseTypeIds: [
-						RESPONSE_TYPE_IDS.PAN_VERIFICATION_DISTRIBUTOR,
+						RESPONSE_TYPE_IDS.PAN_VERIFICATION,
 					],
 				},
 			],
