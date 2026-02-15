@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { toKebabCase } from "utils";
 import {
-	BulkVerificationModal,
 	CategoryTabs,
 	MultiServiceToggle,
 	SelectedServicesPill,
@@ -39,7 +38,6 @@ export const KycVerificationPage = ({
 
 	// Services data and filtering
 	const {
-		services,
 		filteredServices,
 		categories,
 		selectedCategory,
@@ -50,9 +48,6 @@ export const KycVerificationPage = ({
 		error,
 		getServicesByCodes,
 	} = useKycServices();
-
-	// Bulk verification modal state
-	const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
 	// Add user modal state
 	// const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
@@ -154,9 +149,6 @@ export const KycVerificationPage = ({
 				hideBackIcon
 				toolComponent={
 					<Flex gap="2">
-						{/* <BulkUploadButton
-							onClick={() => setIsBulkModalOpen(true)}
-						/> */}
 						{/* <AddUserButton
 							onClick={() => setIsAddUserModalOpen(true)}
 						/> */}
@@ -173,11 +165,6 @@ export const KycVerificationPage = ({
 						</Button>
 					</Flex>
 				}
-			/>
-			<BulkVerificationModal
-				isOpen={isBulkModalOpen}
-				onClose={() => setIsBulkModalOpen(false)}
-				services={services}
 			/>
 			{/* <AddUserModal
 				isOpen={isAddUserModalOpen}
