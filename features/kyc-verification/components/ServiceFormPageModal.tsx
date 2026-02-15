@@ -16,10 +16,9 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "components";
 import ActionButtonGroup from "components/ActionButtonGroup/ActionButtonGroup";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
-import { SelectedServicesPill } from "../components";
 import { useKycServices, useKycVerification } from "../hooks";
 import type {
 	FormField,
@@ -158,6 +157,11 @@ export const ServiceFormPageModal = ({
 }: ServiceFormPageModalProps): JSX.Element => {
 	const [submitError, setSubmitError] = useState<string | null>(null);
 
+	// NEW: Use a ref to track the last data sent to parent to prevent loops
+	const lastNotifiedDataRef = useRef<string>("");
+	// NEW: Track if we have already prefilled the form
+	const hasPrefilledRef = useRef(false);
+
 	// Local state to track active service codes
 	const [activeServiceCodes, setActiveServiceCodes] =
 		useState<string[]>(initialServiceCodes);
@@ -207,7 +211,6 @@ export const ServiceFormPageModal = ({
 		control,
 		handleSubmit,
 		watch,
-		unregister,
 		reset: resetForm,
 		formState: { errors, isValid, isDirty },
 	} = useForm({
@@ -218,12 +221,19 @@ export const ServiceFormPageModal = ({
 
 	// Prefill form with initial data after fields are registered
 	useEffect(() => {
-		if (initialFormData && formFields.length > 0) {
+		if (
+			initialFormData &&
+			formFields.length > 0 &&
+			!hasPrefilledRef.current
+		) {
+			resetForm(initialFormData);
+			hasPrefilledRef.current = true; // Mark as done
+
 			// Small delay to ensure form fields are registered
-			const timer = setTimeout(() => {
-				resetForm(initialFormData);
-			}, 100);
-			return () => clearTimeout(timer);
+			// const timer = setTimeout(() => {
+			// 	resetForm(initialFormData);
+			// }, 100);
+			// return () => clearTimeout(timer);
 		}
 	}, [initialFormData, resetForm, formFields.length]);
 
@@ -234,7 +244,18 @@ export const ServiceFormPageModal = ({
 			formValues &&
 			Object.keys(formValues).length > 0
 		) {
-			onFormDataChange(formValues);
+			const currentDataString = JSON.stringify(formValues);
+
+			// Only notify parent if the data is actually different from last time
+			if (
+				currentDataString !== lastNotifiedDataRef.current &&
+				Object.keys(formValues).length > 0
+			) {
+				lastNotifiedDataRef.current = currentDataString;
+				onFormDataChange(formValues);
+			}
+
+			// onFormDataChange(formValues);
 		}
 	}, [formValues, onFormDataChange]);
 
@@ -258,49 +279,49 @@ export const ServiceFormPageModal = ({
 	}, [resetForm, formFields]);
 
 	// Handle service removal - updates local state only (no URL changes in modal)
-	const handleRemoveService = useCallback(
-		(serviceCode: string) => {
-			const newCodes = activeServiceCodes.filter(
-				(code) => code !== serviceCode
-			);
+	// const handleRemoveService = useCallback(
+	// 	(serviceCode: string) => {
+	// 		const newCodes = activeServiceCodes.filter(
+	// 			(code) => code !== serviceCode
+	// 		);
 
-			if (newCodes.length === 0) {
-				// No services left, close modal
-				onCancel();
-				return;
-			}
+	// 		if (newCodes.length === 0) {
+	// 			// No services left, close modal
+	// 			onCancel();
+	// 			return;
+	// 		}
 
-			// Update local state to trigger form re-render
-			setActiveServiceCodes(newCodes);
+	// 		// Find fields that are no longer needed BEFORE updating state
+	// 		const removedService = selectedServiceObjects.find(
+	// 			(s) => s.serviceCode === serviceCode
+	// 		);
+	// 		if (removedService) {
+	// 			const remainingServicesForFields =
+	// 				selectedServiceObjects.filter(
+	// 					(s) => s.serviceCode !== serviceCode
+	// 				);
+	// 			const remainingParamNames = new Set<string>();
+	// 			remainingServicesForFields.forEach((service) => {
+	// 				service.requestParams.forEach((param) => {
+	// 					if (param.name !== "eko_tid") {
+	// 						remainingParamNames.add(param.name);
+	// 					}
+	// 				});
+	// 			});
 
-			// Find fields that are no longer needed
-			const removedService = selectedServiceObjects.find(
-				(s) => s.serviceCode === serviceCode
-			);
-			if (removedService) {
-				const remainingServicesForFields =
-					selectedServiceObjects.filter(
-						(s) => s.serviceCode !== serviceCode
-					);
-				const remainingParamNames = new Set<string>();
-				remainingServicesForFields.forEach((service) => {
-					service.requestParams.forEach((param) => {
-						if (param.name !== "eko_tid") {
-							remainingParamNames.add(param.name);
-						}
-					});
-				});
+	// 			// Unregister and clear fields that are only in the removed service
+	// 			removedService.requestParams.forEach((param) => {
+	// 				if (!remainingParamNames.has(param.name)) {
+	// 					unregister(param.name);
+	// 				}
+	// 			});
+	// 		}
 
-				// Unregister fields that are no longer needed
-				removedService.requestParams.forEach((param) => {
-					if (!remainingParamNames.has(param.name)) {
-						unregister(param.name);
-					}
-				});
-			}
-		},
-		[activeServiceCodes, selectedServiceObjects, unregister, onCancel]
-	);
+	// 		// Update local state to trigger form re-render with updated formFields
+	// 		setActiveServiceCodes(newCodes);
+	// 	},
+	// 	[activeServiceCodes, selectedServiceObjects, unregister, onCancel]
+	// );
 
 	// Handle form submission - start verification directly
 	const onSubmit = useCallback(
@@ -385,7 +406,7 @@ export const ServiceFormPageModal = ({
 	return (
 		<Flex direction="column" gap="4" p={6}>
 			{/* Selected services display - show when more than 1 service */}
-			{selectedServiceObjects.length > 1 && (
+			{/* {selectedServiceObjects.length > 1 && (
 				<Card p="4">
 					<SelectedServicesPill
 						services={selectedServiceObjects}
@@ -393,7 +414,7 @@ export const ServiceFormPageModal = ({
 						removable
 					/>
 				</Card>
-			)}
+			)} */}
 
 			{/* Form */}
 			<Box>
