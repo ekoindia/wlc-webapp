@@ -355,7 +355,7 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 					{
 						headers: {
 							"tf-req-uri-root-path": TF_ROOT_PATH,
-							"tf-req-uri": `${BULK_PAYOUT_TF_URIS.DOWNLOAD_REPORT}?batchNumber=${batchNumber}`,
+							"tf-req-uri": `${BULK_PAYOUT_TF_URIS.DOWNLOAD_REPORT}?batchNumber=${batchNumber}${isVerification ? "&reporttype=pdf" : ""}`,
 							"tf-req-method": "GET",
 						},
 						body: {},
@@ -445,6 +445,7 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 
 							return (
 								<HistoryCard
+									isVerification={isVerification}
 									key={batch.batchNumber}
 									batch={batch}
 									statusProps={statusProps}
@@ -464,7 +465,9 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 								<Thead bg="shade">
 									<Tr>
 										<Th textAlign="center">Upload Date</Th>
-										<Th textAlign="center">Vendor</Th>
+										{!isVerification ? (
+											<Th textAlign="center">Vendor</Th>
+										) : null}
 										<Th textAlign="center" isNumeric>
 											Records
 										</Th>
@@ -518,26 +521,33 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 														)}
 													</Text>
 												</Td>
-												<Td>
-													<HStack gap="3" spacing={0}>
-														<Avatar
-															name={
-																batch.customerName
-															}
-															size="sm"
-															bg="primary.light"
-															color="white"
-															fontSize="xs"
-														/>
-														<Text
-															fontSize="sm"
-															fontWeight="medium"
-															color="dark"
+												{!isVerification ? (
+													<Td>
+														<HStack
+															gap="3"
+															spacing={0}
 														>
-															{batch.customerName}
-														</Text>
-													</HStack>
-												</Td>
+															<Avatar
+																name={
+																	batch.customerName
+																}
+																size="sm"
+																bg="primary.light"
+																color="white"
+																fontSize="xs"
+															/>
+															<Text
+																fontSize="sm"
+																fontWeight="medium"
+																color="dark"
+															>
+																{
+																	batch.customerName
+																}
+															</Text>
+														</HStack>
+													</Td>
+												) : null}
 												<Td isNumeric>
 													<Text fontSize="sm">
 														{batch.totalRecords}

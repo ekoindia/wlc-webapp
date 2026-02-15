@@ -23,6 +23,7 @@ interface HistoryCardProps {
 	processedCount: number;
 	canDownload: boolean;
 	onDownload: (_batchNumber: string) => void;
+	isVerification?: boolean;
 }
 
 const StatItem = ({
@@ -51,31 +52,34 @@ const HistoryCard = ({
 	processedCount,
 	canDownload,
 	onDownload,
+	isVerification = false,
 }: HistoryCardProps): JSX.Element => {
 	return (
 		<Card w="100%" gap="4">
 			<Flex justify="space-between" align="flex-start" gap="3">
-				<HStack align="center" gap="3">
-					<Avatar
-						name={batch.customerName}
-						size="md"
-						bg="primary.light"
-						color="white"
-						fontSize="sm"
-					/>
-					<Box>
-						<Text
-							fontWeight="semibold"
-							fontSize={{ base: "sm", md: "md" }}
-							color="dark"
-						>
-							{batch.customerName}
-						</Text>
-						<Text fontSize="xs" color="light">
-							{formatDateTime(batch.batchUploadDate)}
-						</Text>
-					</Box>
-				</HStack>
+				{!isVerification ? (
+					<HStack align="center" gap="3">
+						<Avatar
+							name={batch.customerName}
+							size="md"
+							bg="primary.light"
+							color="white"
+							fontSize="sm"
+						/>
+						<Box>
+							<Text
+								fontWeight="semibold"
+								fontSize={{ base: "sm", md: "md" }}
+								color="dark"
+							>
+								{batch.customerName}
+							</Text>
+							<Text fontSize="xs" color="light">
+								{formatDateTime(batch.batchUploadDate)}
+							</Text>
+						</Box>
+					</HStack>
+				) : null}
 				<Stack direction="row" spacing="3" align="center">
 					<Badge
 						colorScheme={statusProps.colorScheme}
