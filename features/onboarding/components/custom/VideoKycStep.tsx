@@ -1,7 +1,7 @@
-import { Box, Button, Text, useToast, VStack } from "@chakra-ui/react";
-import { ActionButtonGroup } from "components";
+import { Box, useToast, VStack } from "@chakra-ui/react";
+import { ActionButtonGroup, LocationCapture } from "components";
 import { ParamType } from "constants/trxnFramework";
-import { useGeolocation, useShopTypes } from "hooks";
+import { useShopTypes } from "hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
@@ -24,12 +24,6 @@ const VideoKycStep = ({
 	const lastProcessedResultRef = useRef<any>(null);
 
 	// Location State
-	const {
-		latitude,
-		longitude,
-		accuracy,
-		error: locationError,
-	} = useGeolocation();
 	const [capturedLocation, setCapturedLocation] = useState<string | null>(
 		null
 	);
@@ -88,39 +82,6 @@ const VideoKycStep = ({
 			},
 		];
 	}, [shopTypes, isLoadingShopTypes]);
-
-	const handleCaptureLocation = () => {
-		if (locationError) {
-			toast({
-				title: "Location Error",
-				description:
-					locationError ||
-					"Unable to access location. Please enable permissions.",
-				status: "error",
-				duration: 3000,
-			});
-			return;
-		}
-
-		if (latitude && longitude) {
-			// Format: "lat,long,accuracy"
-			const locString = `${latitude},${longitude},${accuracy || 0}`;
-			setCapturedLocation(locString);
-			toast({
-				title: "Location Captured",
-				description: `Lat: ${latitude}, Long: ${longitude}`,
-				status: "success",
-				duration: 2000,
-			});
-		} else {
-			toast({
-				title: "Fetching Location",
-				description: "Please wait while we fetch your location...",
-				status: "info",
-				duration: 2000,
-			});
-		}
-	};
 
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
@@ -196,43 +157,7 @@ const VideoKycStep = ({
 			</Box>
 
 			{/* Location Capture Section */}
-			<Box
-				p={4}
-				borderWidth="1px"
-				borderRadius="md"
-				borderColor={capturedLocation ? "green.200" : "gray.200"}
-				bg={capturedLocation ? "green.50" : "white"}
-			>
-				<VStack align="start" spacing={3}>
-					<Text fontWeight="medium" fontSize="sm">
-						Location Verification
-					</Text>
-					{capturedLocation ? (
-						<Text fontSize="xs" color="green.700">
-							✓ Location captured successfully
-						</Text>
-					) : (
-						<Text fontSize="xs" color="gray.500">
-							{locationError
-								? "Error accessing location"
-								: latitude && longitude
-									? "Ready to capture"
-									: "Detecting location..."}
-						</Text>
-					)}
-					<Button
-						size="sm"
-						onClick={handleCaptureLocation}
-						colorScheme={capturedLocation ? "green" : "blue"}
-						variant={capturedLocation ? "outline" : "solid"}
-						isDisabled={!latitude || !longitude || !!locationError}
-					>
-						{capturedLocation
-							? "Recapture Location"
-							: "Capture Location"}
-					</Button>
-				</VStack>
-			</Box>
+			<LocationCapture onCaptured={setCapturedLocation} />
 
 			<form onSubmit={handleSubmit(onFormSubmit)}>
 				<VStack gap={6} align="stretch">
