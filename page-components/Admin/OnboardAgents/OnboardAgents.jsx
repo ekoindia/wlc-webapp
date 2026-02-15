@@ -71,7 +71,7 @@ const OnboardAgents = () => {
 		}, // Multiple agent onboarding via file upload
 
 		{
-			label: "Add Demo User",
+			label: "Add Demo Account",
 			comp: (
 				<OnboardDemoViaForm
 					permissions={permissions}
