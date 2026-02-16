@@ -47,8 +47,11 @@ const SecretPinStep = ({
 	stepConfig,
 	onSubmit,
 	onAdvance,
+	onSkip,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
+	// Determine if step can be skipped (not required)
+	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
 	const { mobile, state, pipelineResults } = useOnboardingContext();
 	const { accessToken } = useSession();
@@ -321,6 +324,36 @@ const SecretPinStep = ({
 										!pinsMatch ||
 										!firstPin.encoded,
 								},
+								...(canSkip
+									? [
+											{
+												type: "button",
+												variant: "link",
+												label: "Skip",
+												disabled: isSubmitting,
+												onClick: () =>
+													onSkip?.(stepConfig.id),
+												styles: {
+													color: "primary.DEFAULT",
+													bg: {
+														base: "white",
+														md: "none",
+													},
+													h: {
+														base: "64px",
+														md: "64px",
+													},
+													w: {
+														base: "100%",
+														md: "auto",
+													},
+													_hover: {
+														textDecoration: "none",
+													},
+												},
+											},
+										]
+									: []),
 							]}
 						/>
 					</>

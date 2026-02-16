@@ -19,7 +19,7 @@ export type StepStatus = (typeof STEP_STATUS)[keyof typeof STEP_STATUS];
 export const DEFAULT_STATUS_COLORS: StatusColorConfig = {
 	completed: "success",
 	failed: "error",
-	skipped: "hint",
+	skipped: "shade",
 	inProgress: "primary.DEFAULT",
 	notStarted: "shade",
 } as const;
