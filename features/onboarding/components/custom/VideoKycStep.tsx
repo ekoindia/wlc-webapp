@@ -12,6 +12,7 @@ interface FormData {
 	selfie_image: File | null;
 	shop_type: number | { value: number; label: string } | null;
 	captured_latlong?: string;
+	shop_name?: string;
 }
 
 const VideoKycStep = ({
@@ -32,21 +33,46 @@ const VideoKycStep = ({
 		control,
 		watch,
 		handleSubmit,
+		setValue,
 		formState: { errors },
 	} = useForm<FormData>({
 		mode: "onChange",
 		defaultValues: {
 			selfie_image: null,
 			shop_type: undefined,
+			shop_name: "",
 		},
 	});
 
 	const formValues = watch();
 
+	// Calculate visibility of shop_name based on selected shop_type
+	const isShopNameVisible = useMemo(() => {
+		const selectedValue =
+			typeof formValues.shop_type === "object" &&
+			formValues.shop_type !== null
+				? (formValues.shop_type as any).value
+				: formValues.shop_type;
+
+		if (!selectedValue) return false;
+
+		const selectedOption = shopTypes.find((s) => s.value == selectedValue);
+		const dependentParams = selectedOption?.dependent_params;
+
+		if (Array.isArray(dependentParams)) {
+			const shopNameParam = dependentParams.find(
+				(p: any) => p.name === "shop_name"
+			);
+			return shopNameParam?.is_visible === 1;
+		}
+
+		return false;
+	}, [formValues.shop_type, shopTypes]);
+
 	// Parameter list for Form component (Image then Shop Type)
 	// Note: Location is handled separately at the top
 	const parameterList = useMemo(() => {
-		return [
+		const params: any[] = [
 			{
 				name: "captured_latlong",
 				label: "Location",
@@ -83,7 +109,27 @@ const VideoKycStep = ({
 				},
 			},
 		];
-	}, [shopTypes, isLoadingShopTypes]);
+
+		if (isShopNameVisible) {
+			params.push({
+				name: "shop_name",
+				label: "Shop Name",
+				parameter_type_id: ParamType.TEXT,
+				required: true,
+				meta: {
+					placeholder: "Enter Shop Name",
+				},
+			});
+		}
+
+		return params;
+	}, [shopTypes, isLoadingShopTypes, isShopNameVisible]);
+
+	useEffect(() => {
+		if (!isShopNameVisible) {
+			setValue("shop_name", "");
+		}
+	}, [isShopNameVisible, setValue]);
 
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
@@ -135,11 +181,15 @@ const VideoKycStep = ({
 				? (data.shop_type as any).value
 				: data.shop_type;
 
-		const formData = {
+		const formData: any = {
 			captured_latlong: data.captured_latlong,
 			shop_type: shopTypeValue,
 			selfie_image: data.selfie_image,
 		};
+
+		if (data.shop_name) {
+			formData.shop_name = data.shop_name;
+		}
 
 		onSubmit({
 			id: stepConfig.id,
