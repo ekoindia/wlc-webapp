@@ -35,6 +35,7 @@ import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { JsonViewer } from "./JsonViewer";
 import { Kbd } from "./Kbd";
+import { LocationCapture } from "./LocationCapture";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
 import { NavBar } from "./NavBar";
@@ -101,6 +102,7 @@ export {
 	InputMsg,
 	JsonViewer,
 	Kbd,
+	LocationCapture,
 	Menus,
 	Modal,
 	NavBar,
@@ -150,7 +152,3 @@ export { CopyButton } from "./CopyButton";
 export { SegmentedControl } from "./SegmentedControl";
 
 export { default as ToggleColumns } from "./ToggleColumns";
-
-export { default as LocationCapture } from "./LocationCapture";
-
-export { LocationCapture } from "./LocationCapture";
