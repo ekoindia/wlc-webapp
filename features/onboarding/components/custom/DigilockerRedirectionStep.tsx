@@ -34,8 +34,11 @@ const DigilockerRedirectionStep = ({
 	stepConfig,
 	onSubmit,
 	onAdvance,
+	onSkip,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
+	// Determine if step can be skipped (not required)
+	const canSkip = !stepConfig.isRequired && onSkip;
 	const { pipelineResults, setPipelineResult } = useOnboardingContext();
 	const toast = useToast();
 
@@ -305,6 +308,30 @@ const DigilockerRedirectionStep = ({
 								disabled: isSubmitting || !hasOpenedDigilocker,
 								onClick: handleProceed,
 							},
+							...(canSkip
+								? [
+										{
+											type: "button",
+											variant: "link",
+											label: "Skip",
+											disabled: isSubmitting,
+											onClick: () =>
+												onSkip?.(stepConfig.id),
+											styles: {
+												color: "primary.DEFAULT",
+												bg: {
+													base: "white",
+													md: "none",
+												},
+												h: { base: "64px", md: "64px" },
+												w: { base: "100%", md: "auto" },
+												_hover: {
+													textDecoration: "none",
+												},
+											},
+										},
+									]
+								: []),
 						]}
 					/>
 				</Flex>

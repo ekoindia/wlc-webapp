@@ -45,8 +45,11 @@ const SignAgreementStep = ({
 	stepConfig,
 	onSubmit,
 	onAdvance,
+	onSkip,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
+	// Determine if step can be skipped (not required)
+	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
 	const {
 		userName,
@@ -452,6 +455,31 @@ const SignAgreementStep = ({
 								disabled: isProceedDisabled,
 								onClick: handleProceedClick,
 							},
+							...(canSkip
+								? [
+										{
+											type: "button",
+											variant: "link",
+											label: "Skip",
+											disabled:
+												isSubmitting || isVerifying,
+											onClick: () =>
+												onSkip?.(stepConfig.id),
+											styles: {
+												color: "primary.DEFAULT",
+												bg: {
+													base: "white",
+													md: "none",
+												},
+												h: { base: "64px", md: "64px" },
+												w: { base: "100%", md: "auto" },
+												_hover: {
+													textDecoration: "none",
+												},
+											},
+										},
+									]
+								: []),
 						]}
 					/>
 				</Flex>

@@ -8,9 +8,19 @@ import {
 import { type UnifiedUserData } from "../utils";
 
 /**
- * Session storage key for onboarding step states
+ * Session storage key prefix for onboarding step states.
+ * The full key includes the user identifier to prevent cache collisions
+ * between different onboarding users (e.g., assisted onboarding).
  */
-const ONBOARDING_STEPS_STORAGE_KEY = "onboarding_steps_state";
+const ONBOARDING_STEPS_STORAGE_KEY_PREFIX = "onboarding_steps_state";
+
+/**
+ * Generates a per-user session storage key
+ * @param {string} userIdentifier - Mobile number or user code
+ * @returns {string} Unique storage key for this user
+ */
+const getStorageKey = (userIdentifier: string): string =>
+	`${ONBOARDING_STEPS_STORAGE_KEY_PREFIX}_${userIdentifier}`;
 
 /**
  * Saves step states to session storage for persistence across page refreshes
@@ -35,7 +45,7 @@ const saveStepsToSessionStorage = (
 			userIdentifier,
 		};
 		sessionStorage.setItem(
-			ONBOARDING_STEPS_STORAGE_KEY,
+			getStorageKey(userIdentifier),
 			JSON.stringify(stateToSave)
 		);
 		console.log("[StepConfiguration] Saved step states to session storage");
@@ -60,7 +70,7 @@ const loadStepsFromSessionStorage = (
 	if (!userIdentifier) return statusMap;
 
 	try {
-		const stored = sessionStorage.getItem(ONBOARDING_STEPS_STORAGE_KEY);
+		const stored = sessionStorage.getItem(getStorageKey(userIdentifier));
 		if (!stored) return statusMap;
 
 		const parsed = JSON.parse(stored);
@@ -70,7 +80,7 @@ const loadStepsFromSessionStorage = (
 			console.log(
 				"[StepConfiguration] Session storage cache invalid: different user"
 			);
-			sessionStorage.removeItem(ONBOARDING_STEPS_STORAGE_KEY);
+			sessionStorage.removeItem(getStorageKey(userIdentifier));
 			return statusMap;
 		}
 
@@ -78,7 +88,7 @@ const loadStepsFromSessionStorage = (
 		const age = Date.now() - (parsed.lastUpdated || 0);
 		if (age > 24 * 60 * 60 * 1000) {
 			console.log("[StepConfiguration] Session storage cache expired");
-			sessionStorage.removeItem(ONBOARDING_STEPS_STORAGE_KEY);
+			sessionStorage.removeItem(getStorageKey(userIdentifier));
 			return statusMap;
 		}
 

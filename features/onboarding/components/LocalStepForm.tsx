@@ -143,6 +143,12 @@ const LocalStepForm = ({
 				<ActionButtonGroup
 					isFixedOnMobile={false}
 					buttonConfigList={[
+						{
+							type: "submit",
+							label: stepConfig.primaryCTAText || "Submit",
+							loading: isLoading,
+							disabled: isLoading,
+						},
 						...(canSkip
 							? [
 									{
@@ -161,12 +167,6 @@ const LocalStepForm = ({
 									},
 								]
 							: []),
-						{
-							type: "submit",
-							label: stepConfig.primaryCTAText || "Submit",
-							loading: isLoading,
-							disabled: isLoading,
-						},
 					]}
 				/>
 			</VStack>
