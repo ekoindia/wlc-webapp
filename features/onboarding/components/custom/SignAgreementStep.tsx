@@ -261,58 +261,80 @@ const SignAgreementStep = ({
 			<VStack gap={4} align="stretch">
 				{/* Step Progress Indicators */}
 				<VStack align="stretch" gap={3}>
-					{/* Step 1: Document Preparation */}
-					<HStack gap={3} align="center">
-						{isAgreementLoading ? (
-							<Spinner
-								size="sm"
-								color="blue.500"
-								thickness="2px"
-							/>
-						) : (
-							<Icon
-								name="check-circle"
-								size="sm"
-								color={
-									agreementLoadError ? "error" : "green.500"
-								}
-							/>
-						)}
-						<Text
-							fontSize="sm"
-							color={
-								isAgreementLoading
-									? "gray.600"
-									: agreementLoadError
-										? "error"
-										: "success"
-							}
-							fontWeight="medium"
-						>
+					{/* Step 1: Document Preparation (UPDATED) */}
+					<HStack gap={3} align="center" justify="space-between">
+						<HStack gap={3}>
 							{isAgreementLoading ? (
-								"Preparing your document"
+								<Spinner
+									size="sm"
+									color="blue.500"
+									thickness="2px"
+								/>
 							) : agreementLoadError ? (
-								"Failed to prepare document"
+								<Icon name="error" size="sm" color="error" />
 							) : (
-								<>
-									Document is generated for{" "}
-									{userName && (
-										<Text as="span" fontWeight="semibold">
-											{userName}
-										</Text>
-									)}
-									{documentId && (
-										<Badge variant="outlineSuccess">
-											(#{documentId})
-										</Badge>
-									)}
-								</>
+								<Icon
+									name="check-circle"
+									size="sm"
+									color="green.500"
+								/>
 							)}
-						</Text>
+
+							<Text
+								fontSize="sm"
+								fontWeight="medium"
+								color={
+									isAgreementLoading
+										? "gray.600"
+										: agreementLoadError
+											? "error"
+											: "success"
+								}
+							>
+								{isAgreementLoading ? (
+									"Preparing your document"
+								) : agreementLoadError ? (
+									"Failed to prepare document"
+								) : (
+									<>
+										Document is generated for{" "}
+										{userName && (
+											<Text
+												as="span"
+												fontWeight="semibold"
+											>
+												{userName}
+											</Text>
+										)}
+										{documentId && (
+											<Badge variant="outlineSuccess">
+												(#{documentId})
+											</Badge>
+										)}
+									</>
+								)}
+							</Text>
+						</HStack>
+
+						{agreementLoadError && (
+							<Button
+								size="sm"
+								variant="link"
+								color="error"
+								leftIcon={<Icon name="retry" size="sm" />}
+								onClick={() => initialize()}
+							>
+								Retry
+							</Button>
+						)}
 					</HStack>
 
-					{/* Step 2: Document Esign */}
-					<HStack gap={3} align="center">
+					{/* Step 2: Document Esign (UPDATED) */}
+					<HStack
+						gap={3}
+						align="center"
+						opacity={agreementLoadError ? 0.4 : 1}
+					>
 						{isSignAgreementSuccessfullySigned ? (
 							<Icon
 								name="check-circle"
@@ -326,6 +348,7 @@ const SignAgreementStep = ({
 								borderColor="gray.300"
 							/>
 						)}
+
 						<HStack gap={2} align="center">
 							<Text
 								fontSize="sm"
@@ -334,67 +357,30 @@ const SignAgreementStep = ({
 							>
 								Document Esign
 							</Text>
-							{isSignAgreementSuccessfullySigned ? (
-								<Badge
-									colorScheme="green"
-									fontSize="xs"
-									variant="subtle"
-								>
-									Completed
-								</Badge>
-							) : (
-								<Badge
-									colorScheme="yellow"
-									fontSize="xs"
-									variant="subtle"
-								>
-									Pending
-								</Badge>
-							)}
+							<Badge
+								colorScheme={
+									isSignAgreementSuccessfullySigned
+										? "green"
+										: "yellow"
+								}
+								fontSize="xs"
+								variant="subtle"
+							>
+								{isSignAgreementSuccessfullySigned
+									? "Completed"
+									: "Pending"}
+							</Badge>
 						</HStack>
 					</HStack>
 				</VStack>
 
-				{agreementLoadError && (
-					<Flex
-						align="center"
-						justify="space-between"
-						p={2}
-						pl={4}
-						bg="red.50"
-						border="1px solid"
-						borderColor="error"
-						borderRadius="md"
-					>
-						<Flex align="center" gap={3}>
-							<Icon name="error" size="md" color="error" />
-							<Text
-								color="error"
-								fontWeight="medium"
-								fontSize="sm"
-							>
-								Failed to load agreement. Please try again.
-							</Text>
-						</Flex>
-						<Button
-							size="sm"
-							variant="link"
-							color="error"
-							leftIcon={<Icon name="retry" size="sm" />}
-							onClick={() => initialize()}
-						>
-							Retry
-						</Button>
-					</Flex>
-				)}
-
-				{/* Sign Agreement Button - only show when document is ready (not loading) */}
-				{!isAgreementLoading && (
+				{/* Sign Agreement Button (HIDDEN ON ERROR) */}
+				{!isAgreementLoading && !agreementLoadError && (
 					<ChakraButton
 						w="full"
 						colorScheme="blue"
 						onClick={handleSignClick}
-						isDisabled={agreementLoadError || isSignDisabled}
+						isDisabled={isSignDisabled}
 						leftIcon={<Icon name="mode-edit" size="sm" />}
 					>
 						{hasOpenedSigning
@@ -440,7 +426,6 @@ const SignAgreementStep = ({
 							Complete your e-signature in the new window using
 							Aadhaar or IRIS
 						</ListItem>
-
 						<ListItem>
 							Return here and click &quot;Proceed&quot; once
 							finished
