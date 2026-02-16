@@ -152,3 +152,5 @@ export { SegmentedControl } from "./SegmentedControl";
 export { default as ToggleColumns } from "./ToggleColumns";
 
 export { default as LocationCapture } from "./LocationCapture";
+
+export { LocationCapture } from "./LocationCapture";
