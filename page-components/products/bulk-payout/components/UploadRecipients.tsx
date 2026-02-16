@@ -10,7 +10,7 @@ import { Endpoints } from "constants/EndPoints";
 import { useSession, useUser } from "contexts";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import InputPintwin from "tf-components/InputPintwin";
+import { Pintwin } from "tf-components/Pintwin";
 import { useBulkPayout } from "../context/BulkPayoutContext";
 
 const SAMPLE_DOWNLOAD_LINK =
@@ -37,7 +37,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 	const [pintwinEncoded, setPintwinEncoded] = useState<string>("");
 	const [pinLength, setPinLength] = useState(0);
 	const { customerParams, processingBatchCount } = useBulkPayout();
-	const [pinResetTrigger, setPinResetTrigger] = useState(0);
+	const [pintwinKey, setPintwinKey] = useState(0);
 
 	const {
 		handleSubmit,
@@ -132,7 +132,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 				setFile(null); // Clear selected file
 				setPintwinEncoded(""); // Clear encoded PIN
 				setPinLength(0); // Reset PIN length
-				setPinResetTrigger((prev) => prev + 1);
+				setPintwinKey((prev) => prev + 1); // Remount Pintwin to fetch fresh key
 				reset(); // Reset react-hook-form if you add fields later
 
 				// Redirect to batch history tab
@@ -163,7 +163,7 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 				if (isPinError) {
 					setPintwinEncoded("");
 					setPinLength(0);
-					setPinResetTrigger((prev) => prev + 1);
+					setPintwinKey((prev) => prev + 1); // Remount Pintwin to fetch fresh key
 				}
 
 				reset();
@@ -252,18 +252,14 @@ const UploadRecipients: React.FC = (): JSX.Element => {
 
 					{/* Pintwin */}
 					<Box maxW={{ base: "100%", md: "300px" }}>
-						<InputPintwin
+						<Pintwin
+							key={pintwinKey}
 							label="Secret PIN"
-							lengthMin={4}
-							lengthMax={4}
-							required={true}
-							pintwinApp={true}
-							resetTrigger={pinResetTrigger}
-							// useMockData={true}
-							onChange={(value, masked) => {
-								setPintwinEncoded(value);
-								// Track PIN length based on masked value (which shows actual digit count)
-								setPinLength(masked.length);
+							length={4}
+							onPinChange={(pin) => setPinLength(pin.length)}
+							onPinComplete={(pin, encodedPin) => {
+								setPintwinEncoded(encodedPin);
+								setPinLength(pin.length);
 							}}
 						/>
 					</Box>

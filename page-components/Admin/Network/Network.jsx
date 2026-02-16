@@ -1,7 +1,7 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
-import { useSession } from "contexts";
+import { useAppSource, useNetworkUsers, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag, useUserTypes } from "hooks";
 import { useColumnVisibility } from "hooks/useColumnVisibility";
@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { ANDROID_ACTION, doAndroidAction, saveDataToFile } from "utils";
 import { NetworkTable, NetworkToggleColumns, NetworkToolbar } from ".";
 import { useNetworkTableParameterList } from "./NetworkTable/NetworkTable";
 
@@ -26,21 +27,25 @@ const PAGE_LIMIT = 10;
 
 const action = {
 	FILTER: 0,
-	// EXPORT: 1,
+	EXPORT: 1,
 	TOGGLE_COLUMNS: 2,
 };
 
-const operation_type_list = [
-	{ label: "Distributor", value: "1" },
-	{ label: "Field Agent", value: "4" },
-	{ label: "Retailer", value: "2" },
-	{ label: "Independent Retailer", value: "3" },
+const export_type_options = [
+	{
+		value: "pdf",
+		label: "PDF",
+	},
+	{
+		value: "xlsx",
+		label: "Excel",
+	},
 ];
 
 const status_list = [
 	{ label: "Active", value: "Active" },
-	{ label: "Inactive", value: "Inactive" },
-	// { label: "Closed", value: "closed" },
+	{ label: "In Progress", value: "InProgress" },
+	{ label: "Inactive", value: "InActive" },
 ];
 
 const generateQueryParams = (params) => {
@@ -64,7 +69,16 @@ const Network = () => {
 	};
 	const router = useRouter();
 	const { accessToken, isAdmin, userType } = useSession();
+	const { isAndroid } = useAppSource();
 	const { getUserTypeLabel } = useUserTypes();
+	const { userTypeIdList } = useNetworkUsers();
+
+	const operation_type_list = useMemo(() => {
+		return userTypeIdList.map((typeId) => ({
+			label: getUserTypeLabel(typeId),
+			value: String(typeId),
+		}));
+	}, [userTypeIdList, getUserTypeLabel]);
 
 	const [pageNumber, setPageNumber] = useState(1);
 	const [isLoading, setIsLoading] = useState(true);
@@ -75,10 +89,20 @@ const Network = () => {
 	const [prevSearch, setPrevSearch] = useState("");
 	const [queryParam, setQueryParam] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
+	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
 	const [finalFormState, setFinalFormState] = useState({});
 	const [today] = useState(() => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
+	});
+	const [firstDateOfMonth] = useState(() => {
+		const _currentDate = new Date();
+		const _firstDateOfMonth = new Date(
+			_currentDate.getFullYear(),
+			_currentDate.getMonth(),
+			1
+		);
+		return formatDate(_firstDateOfMonth, "yyyy-MM-dd");
 	});
 	const [viewType, setViewType] = useState("list"); // List or Tree view
 
@@ -105,12 +129,30 @@ const Network = () => {
 		reset: resetFilter,
 	} = useForm({ mode: "onChange" });
 
+	const {
+		handleSubmit: handleSubmitExport,
+		register: registerExport,
+		control: controlExport,
+		formState: { errors: errorsExport, isSubmitting: isSubmittingExport },
+		reset: resetExport,
+	} = useForm({
+		defaultValues: {
+			reporttype: "pdf",
+			onBoardingDateFrom: firstDateOfMonth,
+			onBoardingDateTo: today,
+		},
+	});
+
 	const watcherSearch = useWatch({
 		control: controlSearch,
 	});
 
 	const watcherFilter = useWatch({
 		control: controlFilter,
+	});
+
+	const watcherExport = useWatch({
+		control: controlExport,
 	});
 
 	// Column visibility management
@@ -220,13 +262,78 @@ const Network = () => {
 		setPrevSearch("");
 		resetSearch({ search_value: "" });
 		setFinalFormState(filteredData);
+
+		resetExport({
+			...data,
+			onBoardingDateFrom:
+				watcherFilter.onBoardingDateFrom ??
+				watcherExport.onBoardingDateFrom,
+			onBoardingDateTo:
+				watcherFilter.onBoardingDateTo ??
+				watcherExport.onBoardingDateTo,
+			reporttype: watcherExport.reporttype,
+		});
 	};
 
 	const clearFilter = () => {
 		setIsFiltered(false);
 		setQueryParam(null);
 		resetFilter({ ...formElements });
+		resetExport({
+			reporttype: "pdf",
+			onBoardingDateFrom: firstDateOfMonth,
+			onBoardingDateTo: today,
+		});
 		setFinalFormState({});
+	};
+
+	const onReportDownload = (data) => {
+		setOpenModalId(null);
+
+		const filteredData = Object.entries(data)?.reduce(
+			(acc, [key, value]) => {
+				if (value) {
+					acc[key] =
+						typeof value === "object" && value?.value !== undefined
+							? value.value
+							: value;
+				}
+				return acc;
+			},
+			{}
+		);
+
+		const download_params = generateQueryParams({
+			filter: true,
+			...filteredData,
+		});
+
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-is-file-download": "1",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents?record_count=50000&page_number=1&${download_params}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((data) => {
+				const _blob = data?.file?.blob;
+				const _filename = data?.file?.name || "network-report";
+				const _type = data?.file?.["content-type"];
+				const _b64 = true;
+				if (isAndroid) {
+					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
+						blob: _blob,
+						name: _filename,
+					});
+				} else {
+					saveDataToFile(_blob, _filename, _type, _b64);
+				}
+			})
+			.catch((err) => {
+				console.error("[Network] export error: ", err);
+			});
 	};
 
 	const network_filter_parameter_list = [
@@ -287,39 +394,22 @@ const Network = () => {
 			name: "onBoardingDateFrom",
 			label: "From",
 			parameter_type_id: ParamType.FROM_DATE,
-			required: false,
+			required: openModalId == action.EXPORT ? true : false,
 			minDate: calendar_min_date,
 			maxDate: today,
-			// validations: {
-			// 	required:
-			// 		openModalId == action.EXPORT
-			// 			? watcherExport.tid
-			// 				? false
-			// 				: true
-			// 			: false,
-			// },
 		},
 		{
 			name: "onBoardingDateTo",
 			label: "To",
 			parameter_type_id: ParamType.TO_DATE,
-			required: false,
-
+			required: openModalId == action.EXPORT ? true : false,
 			minDate:
 				openModalId == action.FILTER
 					? minDateFilter
-					: // : openModalId == action.EXPORT
-						// ? minDateExport
-						null,
+					: openModalId == action.EXPORT
+						? minDateExport
+						: null,
 			maxDate: today,
-			// validations: {
-			// 	required:
-			// 		openModalId == action.EXPORT
-			// 			? watcherExport.tid
-			// 				? false
-			// 				: true
-			// 			: false,
-			// },
 		},
 	];
 
@@ -375,6 +465,30 @@ const Network = () => {
 				: null,
 		},
 		{
+			id: action.EXPORT,
+			label: "Export",
+			icon: "file-download",
+			parameter_list: [
+				...network_filter_parameter_list,
+				{
+					name: "reporttype",
+					label: "Download Report as",
+					parameter_type_id: ParamType.LIST,
+					list_elements: export_type_options,
+				},
+			],
+			handleSubmit: handleSubmitExport,
+			register: registerExport,
+			control: controlExport,
+			errors: errorsExport,
+			isSubmitting: isSubmittingExport,
+			formValues: watcherExport,
+			handleFormSubmit: onReportDownload,
+			submitButtonText: "Download",
+			secondaryButtonText: "Cancel",
+			secondaryButtonAction: () => setOpenModalId(null),
+		},
+		{
 			id: action.TOGGLE_COLUMNS,
 			label: "Columns",
 			icon: "visibility",
@@ -398,14 +512,35 @@ const Network = () => {
 			}
 
 			if (_fromDateFilter > _txDateFilter) {
-				// reset filter form tx_date to from_date
 				resetFilter({
 					..._valuesFilter,
 					onBoardingDateTo: _fromDateFilter,
 				});
 			}
 		}
-	}, [watcherFilter.onBoardingDateFrom, watcherFilter.onBoardingDateTo]);
+
+		if (openModalId == action.EXPORT) {
+			const _fromDateExport = watcherExport.onBoardingDateFrom;
+			const _txDateExport = watcherExport.onBoardingDateTo;
+			const _valuesExport = watcherExport;
+
+			if (_fromDateExport) {
+				setMinDateExport(_fromDateExport);
+			}
+
+			if (_fromDateExport > _txDateExport) {
+				resetExport({
+					..._valuesExport,
+					onBoardingDateTo: _fromDateExport,
+				});
+			}
+		}
+	}, [
+		watcherFilter.onBoardingDateFrom,
+		watcherFilter.onBoardingDateTo,
+		watcherExport.onBoardingDateFrom,
+		watcherExport.onBoardingDateTo,
+	]);
 
 	const filteredItemLabels = useMemo(() => {
 		const _labels = [];

@@ -1,4 +1,5 @@
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Button } from "components/Button";
 import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
 import useHslColor from "hooks/useHslColor";
@@ -16,7 +17,9 @@ import { RiEBike2Fill } from "react-icons/ri";
 import { formatMobile } from "utils";
 import { getInitials } from "utils/textFormat";
 import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
-// import { useSet } from "hooks";
+
+// Refresh throttling constants
+const REFRESH_THROTTLE = 2 * 60 * 1000; // 2 minutes
 
 /**
  * Show network users in an expandable tree view.
@@ -43,6 +46,26 @@ const NetworkTreeView = () => {
 			refreshUserList();
 		}
 	}, [fetchedAt]);
+
+	const [now, setNow] = useState(Date.now());
+
+	// Update 'now' every 30 seconds to trigger re-renders for the timer
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setNow(Date.now());
+		}, 30 * 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	const timeSinceLastUpdate = fetchedAt
+		? now - new Date(fetchedAt).getTime()
+		: Infinity;
+	const showRefresh = timeSinceLastUpdate >= REFRESH_THROTTLE;
+
+	const handleRefresh = () => {
+		if (loading) return;
+		refreshUserList(true);
+	};
 
 	// Prepare the Tree View Data for react-complex-tree component
 	const dataProvider = useMemo(
@@ -86,7 +109,6 @@ const NetworkTreeView = () => {
 				w="100%"
 				gap={5}
 			>
-				{/* MARK: Tree Box */}
 				<Box
 					flex="3"
 					maxW="100%"
@@ -144,7 +166,7 @@ const NetworkTreeView = () => {
 						direction="column"
 						gap={3}
 						position={{ lg: "fixed" }}
-						top={{ lg: "268px" }}
+						// top={{ lg: "268px" }}
 					>
 						{/* MARK: Filters */}
 						{/* <Box
@@ -182,9 +204,9 @@ const NetworkTreeView = () => {
 						{/* MARK: Info */}
 						<Box
 							w={{ base: "100%", lg: "unset" }}
-							minW="280px"
+							minW="320px"
 							bg="white"
-							p={{ base: 3, md: 6 }}
+							p={{ base: 3, md: 5 }}
 							borderRadius={6}
 							shadow="md"
 						>
@@ -221,10 +243,10 @@ const NetworkTreeView = () => {
 															?.user_code
 													}
 													// account_status_id
-													agent_type={
+													user_type_id={
 														selectedItem?.meta
-															?.user_type
-													} // TODO: use user-type-id in NetworkMenuWrapper
+															?.user_type_id
+													}
 												/>
 											) : null}
 										</Flex>
@@ -241,6 +263,17 @@ const NetworkTreeView = () => {
 												selectedItem?.meta?.mobile
 											)}
 										</Box>
+										{selectedItem?.meta?.account_status ? (
+											<Box>
+												<strong>
+													Account Status:{" "}
+												</strong>
+												{
+													selectedItem.meta
+														.account_status
+												}
+											</Box>
+										) : null}
 										{/* <Box>
 											<strong>User Code: </strong>
 											{selectedItem?.meta?.user_code}
@@ -262,16 +295,28 @@ const NetworkTreeView = () => {
 				</Box>
 			</Flex>
 
-			<Text
-				fontSize="xxs"
-				color="light"
-				mt="2em"
-				width="100%"
-				textAlign="center"
-			>
-				<strong>Last Updated:</strong>{" "}
-				{new Date(fetchedAt).toLocaleString()}
-			</Text>
+			<Flex direction="column" align="center" w="100%" gap={2} mt="2em">
+				<Text fontSize="xxs" color="light">
+					<strong>Last Updated:</strong>{" "}
+					{new Date(fetchedAt).toLocaleString()}
+				</Text>
+
+				{showRefresh ? (
+					<Flex align="center" gap={2}>
+						<Text fontSize="xs" color="light">
+							Seeing old results?
+						</Text>
+						<Button
+							size="xs"
+							variant="outline"
+							loading={loading}
+							onClick={handleRefresh}
+						>
+							Refresh
+						</Button>
+					</Flex>
+				) : null}
+			</Flex>
 		</>
 	);
 };
