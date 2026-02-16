@@ -59,7 +59,7 @@ const OnboardingDashboard = () => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [onboardingAgentsTopPanelData, setOnboardingAgentsTopPanelData] =
 		useState([]);
-	console.log("onboardingDashboardData", onboardingAgentsTopPanelData);
+	// console.log("onboardingDashboardData", onboardingAgentsTopPanelData);
 	const [dateRange, setDateRange] = useState("today");
 	const { onboardingDashboardData, setOnboardingDashboardData } =
 		useDashboard();

@@ -11,7 +11,7 @@ const defaultDateFilterList = [
 	{ id: 1, value: "yesterday", label: "Yesterday" },
 	{ id: 2, value: "last7", label: "Last 7 Days" },
 	{ id: 3, value: "last30", label: "Last 30 Days" },
-	{ id: 4, value: "yesterdayTillDate", label: "Yesterday Till Date " },
+	{ id: 4, value: "yearTillYesterday", label: "Year Till Yesterday" },
 ];
 
 /**
@@ -162,7 +162,7 @@ export const getDateRange = (filter) => {
 		yesterday: 1,
 		last7: 7,
 		last30: 30,
-		yesterdayTillDate: 365, // Using 365 to cover all days till yesterday
+		yearTillYesterday: 365, // Using 365 to cover all days till yesterday
 	};
 
 	let previousDate, currentEndDate;
