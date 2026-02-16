@@ -4,6 +4,7 @@ import {
 	Dropzone,
 	Input,
 	InputLabel,
+	LocationCapture,
 	OtpInput,
 	Radio,
 	Select,
@@ -579,6 +580,53 @@ const Form = ({
 								</FormControl>
 							);
 						}
+
+						case ParamType.GEOLOCATION:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({ field: { onChange } }) => (
+											<LocationCapture
+												{...{
+													id: name,
+													label,
+													onCaptured: onChange,
+													required,
+													disabled,
+													labelStyle,
+													size,
+													hideOptionalMark,
+												}}
+												{...rest}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+												)}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
 
 						case ParamType.LIST:
 							if (list_elements) {

@@ -146,6 +146,9 @@ const useGeolocation = (
 
 	// ---- 4. Error Handler ----
 	const errorHandler = useCallback((err: GeolocationPositionError) => {
+		if (err.code === 1) {
+			setPermissionState("denied");
+		}
 		setError(err.message);
 		setIsLoading(false);
 		isRequestingRef.current = false;

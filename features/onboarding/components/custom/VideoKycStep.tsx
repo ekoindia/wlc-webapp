@@ -1,8 +1,8 @@
 import { Box, useToast, VStack } from "@chakra-ui/react";
-import { ActionButtonGroup, LocationCapture } from "components";
+import { ActionButtonGroup } from "components";
 import { ParamType } from "constants/trxnFramework";
 import { useShopTypes } from "hooks";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
 import { useOnboardingContext } from "../../context";
@@ -11,6 +11,7 @@ import type { CustomComponentProps } from "../ContentRenderer";
 interface FormData {
 	selfie_image: File | null;
 	shop_type: number | { value: number; label: string } | null;
+	captured_latlong?: string;
 }
 
 const VideoKycStep = ({
@@ -22,11 +23,6 @@ const VideoKycStep = ({
 	const toast = useToast();
 	const { pipelineResults } = useOnboardingContext();
 	const lastProcessedResultRef = useRef<any>(null);
-
-	// Location State
-	const [capturedLocation, setCapturedLocation] = useState<string | null>(
-		null
-	);
 
 	// Shop Types
 	const { shopTypes, isLoading: isLoadingShopTypes } = useShopTypes();
@@ -51,6 +47,12 @@ const VideoKycStep = ({
 	// Note: Location is handled separately at the top
 	const parameterList = useMemo(() => {
 		return [
+			{
+				name: "captured_latlong",
+				label: "Location",
+				parameter_type_id: ParamType.GEOLOCATION,
+				required: true,
+			},
 			{
 				name: "selfie_image",
 				label: "Take a live photo with ID proof",
@@ -118,7 +120,7 @@ const VideoKycStep = ({
 	]);
 
 	const onFormSubmit = (data: FormData) => {
-		if (!capturedLocation) {
+		if (!data.captured_latlong) {
 			toast({
 				title: "Location Required",
 				description: "Please capture your location before proceeding.",
@@ -134,7 +136,7 @@ const VideoKycStep = ({
 				: data.shop_type;
 
 		const formData = {
-			captured_latlong: capturedLocation,
+			captured_latlong: data.captured_latlong,
 			shop_type: shopTypeValue,
 			selfie_image: data.selfie_image,
 		};
@@ -155,9 +157,6 @@ const VideoKycStep = ({
 					{stepConfig.description}
 				</Box>
 			</Box>
-
-			{/* Location Capture Section */}
-			<LocationCapture onCaptured={setCapturedLocation} />
 
 			<form onSubmit={handleSubmit(onFormSubmit)}>
 				<VStack gap={6} align="stretch">

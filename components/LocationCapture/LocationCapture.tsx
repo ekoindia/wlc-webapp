@@ -14,6 +14,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
+import { useAppSource } from "contexts/AppSourceContext";
 import useGeolocation from "hooks/useGeolocation";
 import { useEffect, useMemo, useState } from "react";
 import { MdCheck, MdCopyAll, MdGpsFixed, MdRefresh } from "react-icons/md";
@@ -48,6 +49,8 @@ const LocationCapture = ({
 		isLoading,
 		requestLocation,
 	} = useGeolocation();
+
+	const { isAndroid } = useAppSource();
 
 	const [isStale, setIsStale] = useState(false);
 	const { hasCopied, onCopy } = useClipboard(
@@ -198,23 +201,64 @@ const LocationCapture = ({
 		</VStack>
 	);
 
-	const ErrorView = () => (
-		<Alert status="error" borderRadius="md" size="sm">
-			<AlertIcon />
-			<VStack align="start" spacing={0} flex={1}>
-				<Text fontWeight="bold" fontSize="xs">
-					{permissionState === "denied"
-						? "Permission Denied"
-						: "Location Error"}
-				</Text>
-				<Text fontSize="xs">
-					{permissionState === "denied"
-						? "Enable location in browser settings."
-						: error || "Unknown error"}
-				</Text>
-			</VStack>
-		</Alert>
-	);
+	const ErrorView = () => {
+		const steps = isAndroid
+			? [
+					"Open Device Settings",
+					"Select Apps",
+					"Find and select this app",
+					"Tap Permissions",
+					"Enable Location",
+				]
+			: [
+					"Click the lock icon in the address bar",
+					"Click Site Settings",
+					"Set Location to Allow",
+					"Reload the page",
+				];
+
+		return (
+			<Alert
+				status="error"
+				borderRadius="md"
+				size="sm"
+				flexDirection="column"
+				alignItems="flex-start"
+				p={3}
+			>
+				<HStack spacing={2} mb={2}>
+					<AlertIcon boxSize={4} />
+					<Text fontWeight="bold" fontSize="sm">
+						{permissionState === "denied"
+							? "Permission Denied"
+							: "Location Error"}
+					</Text>
+				</HStack>
+
+				<Box pl={6} w="full">
+					{permissionState === "denied" ? (
+						<VStack align="start" spacing={1} w="full">
+							<Text fontSize="xs" fontWeight="medium" mb={1}>
+								To enable location:
+							</Text>
+							<Box
+								as="ol"
+								pl={4}
+								fontSize="xs"
+								style={{ listStyleType: "decimal" }}
+							>
+								{steps.map((step, index) => (
+									<li key={index}>{step}</li>
+								))}
+							</Box>
+						</VStack>
+					) : (
+						<Text fontSize="xs">{error || "Unknown error"}</Text>
+					)}
+				</Box>
+			</Alert>
+		);
+	};
 
 	return (
 		<Box
