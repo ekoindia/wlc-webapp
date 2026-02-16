@@ -81,7 +81,7 @@ const VideoKycStep = ({
 			},
 			{
 				name: "selfie_image",
-				label: "Take a live photo with ID proof",
+				label: "Take a live photo",
 				parameter_type_id: ParamType.FILE,
 				required: true,
 				meta: {
