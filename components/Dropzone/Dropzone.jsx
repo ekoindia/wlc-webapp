@@ -575,7 +575,7 @@ const Dropzone = ({
  * @param {boolean} [props.disabled] - Whether the button is disabled
  * @param {Function} [props.onClick] - Click handler
  * @param {React.ReactNode} [props.children] - Button content
- * @param {...*} [props.rest] - standard button props
+ * @param {any} [props.rest] - standard button props
  * @returns {JSX.Element} The Button component
  */
 const Btn = ({ disabled, onClick, children, ...rest }) => {
