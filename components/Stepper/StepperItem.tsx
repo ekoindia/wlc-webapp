@@ -100,7 +100,7 @@ const StepperItem = ({
 	const getIndicatorTextColor = (): string => {
 		if (isInProgress || isFailed) return "white";
 		if (isNotStarted) return "gray.500";
-		if (isSkipped) return "gray.600";
+		if (isSkipped) return "gray.500";
 		return "white";
 	};
 
@@ -150,7 +150,7 @@ const StepperItem = ({
 		if (isSkipped) {
 			return (
 				<Icon
-					name="remove"
+					name="radio-button-unchecked"
 					color={getIndicatorTextColor()}
 					size={{ base: "18px", "2xl": "22px" }}
 				/>
