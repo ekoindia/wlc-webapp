@@ -1,43 +1,47 @@
 import {
 	Alert,
 	AlertIcon,
-	Badge,
 	Box,
 	Button,
-	Fade,
+	Circle,
 	Flex,
 	HStack,
 	Icon,
 	Text,
-	Tooltip,
-	useClipboard,
 	VStack,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { useAppSource } from "contexts/AppSourceContext";
 import useGeolocation from "hooks/useGeolocation";
-import { useEffect, useMemo, useState } from "react";
-import { MdCheck, MdCopyAll, MdGpsFixed, MdRefresh } from "react-icons/md";
+import { useEffect, useMemo } from "react";
+import {
+	MdCheck,
+	MdGpsFixed,
+	MdLocationOn,
+	MdMyLocation,
+	MdRefresh,
+	MdWarningAmber,
+} from "react-icons/md";
 
 interface LocationCaptureProps {
 	onCaptured?: (_latLong: string) => void;
-	requiredAccuracy?: number; // in meters (e.g., 50)
+	requiredAccuracy?: number;
 }
 
-// --- Animations ---
 const pulse = keyframes`
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 0; }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.5); }
+  70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(66, 153, 225, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(66, 153, 225, 0); }
 `;
-const radar = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+const ripple = keyframes`
+  0% { width: 0; height: 0; opacity: 0.5; }
+  100% { width: 120px; height: 120px; opacity: 0; }
 `;
 
 const LocationCapture = ({
 	onCaptured,
-	requiredAccuracy = 100, // Default requirement: 100m
+	requiredAccuracy = 100,
 }: LocationCaptureProps) => {
 	const {
 		latitude,
@@ -52,12 +56,6 @@ const LocationCapture = ({
 
 	const { isAndroid } = useAppSource();
 
-	const [isStale, setIsStale] = useState(false);
-	const { hasCopied, onCopy } = useClipboard(
-		`${latitude},${longitude} (Acc: ${accuracy}m)`
-	);
-
-	// --- Computed State ---
 	const isAccurateEnough = useMemo(() => {
 		if (!accuracy) return false;
 		return accuracy <= requiredAccuracy;
@@ -73,7 +71,6 @@ const LocationCapture = ({
 		};
 	}, [latitude, longitude, accuracy, timestamp]);
 
-	// --- Effects ---
 	useEffect(() => {
 		if (locationData && onCaptured) {
 			onCaptured(
@@ -82,137 +79,177 @@ const LocationCapture = ({
 		}
 	}, [locationData, onCaptured]);
 
-	// Check for stale data (every 30s)
-	useEffect(() => {
-		const interval = setInterval(() => {
-			if (timestamp) {
-				const secondsOld = (Date.now() - timestamp) / 1000;
-				setIsStale(secondsOld > 120); // Mark stale after 2 mins
-			}
-		}, 30000);
-		return () => clearInterval(interval);
-	}, [timestamp]);
+	const getAccuracyLabel = () => {
+		if (!accuracy) return null;
+		if (accuracy <= 10) return { text: "Excellent", color: "green.500" };
+		if (accuracy <= 30) return { text: "Good", color: "green.500" };
+		if (accuracy <= 100) return { text: "Fair", color: "yellow.500" };
+		return { text: "Poor", color: "orange.500" };
+	};
 
-	// --- Sub-Components ---
-
-	const RadarLoader = () => (
-		<VStack spacing={4} py={6}>
-			<Box position="relative" w="80px" h="80px">
-				{/* Pulse Rings */}
-				<Box
-					position="absolute"
-					top="0"
-					left="0"
-					w="100%"
-					h="100%"
-					borderRadius="full"
-					border="2px solid"
-					borderColor="blue.300"
-					animation={`${pulse} 2s infinite`}
-				/>
-				{/* Radar Sweep */}
-				<Box
-					position="absolute"
-					top="0"
-					left="0"
-					w="100%"
-					h="100%"
-					borderRadius="full"
-					background="conic-gradient(from 0deg, transparent 0deg, rgba(66, 153, 225, 0.4) 30deg, transparent 60deg)"
-					animation={`${radar} 2s linear infinite`}
-				/>
-				{/* Center Icon */}
-				<Flex
-					position="absolute"
-					top="50%"
-					left="50%"
-					transform="translate(-50%, -50%)"
-					bg="blue.500"
-					borderRadius="full"
-					p={3}
-					boxShadow="0 0 15px rgba(66, 153, 225, 0.6)"
-				>
-					<Icon as={MdGpsFixed} color="white" boxSize={6} />
-				</Flex>
-			</Box>
-			<Text color="blue.600" fontSize="sm" fontWeight="medium">
-				Acquiring Satellite Signal...
-			</Text>
-		</VStack>
-	);
-
-	const SuccessView = () => (
-		<VStack spacing={3} w="100%">
-			{/* Status Header */}
-			<HStack w="100%" justify="space-between">
-				<HStack>
-					<Icon
-						as={MdCheck}
-						color={isAccurateEnough ? "green.500" : "orange.500"}
-						boxSize={5}
-					/>
-					<Text fontWeight="bold" fontSize="sm">
-						Location Captured
-					</Text>
-				</HStack>
-				{isStale && (
-					<Badge colorScheme="red" variant="subtle">
-						Stale Data
-					</Badge>
-				)}
-			</HStack>
-
-			{/* Data Card */}
-			<Box
-				w="100%"
-				bg="gray.50"
-				p={3}
-				borderRadius="md"
-				borderWidth="1px"
-				borderColor="gray.100"
-			>
-				<HStack justify="space-between" mb={1}>
-					<Badge
-						colorScheme={isAccurateEnough ? "green" : "orange"}
-						variant="outline"
-					>
-						{accuracy ? `${Math.round(accuracy)}m Accuracy` : "N/A"}
-					</Badge>
-					<Tooltip label="Copy Coordinates">
-						<Icon
-							as={hasCopied ? MdCheck : MdCopyAll}
-							onClick={onCopy}
-							color="gray.500"
-							cursor="pointer"
-							_hover={{ color: "blue.500" }}
-						/>
-					</Tooltip>
-				</HStack>
-				<Text fontFamily="monospace" fontSize="sm" color="gray.700">
-					{latitude}, {longitude}
+	// ── Idle State ──
+	const IdleView = () => (
+		<VStack spacing={4} py={4}>
+			<Circle size="64px" bg="blue.50">
+				<Icon as={MdMyLocation} boxSize={7} color="primary.DEFAULT" />
+			</Circle>
+			<VStack spacing={1}>
+				<Text fontSize="sm" fontWeight="semibold" color="gray.700">
+					Location Required
 				</Text>
-				{!isAccurateEnough && (
-					<Text fontSize="xs" color="orange.600" mt={2}>
-						⚠️ Low accuracy. For better results, move to an open
-						area.
-					</Text>
-				)}
-			</Box>
+				<Text
+					fontSize="xs"
+					color="gray.500"
+					textAlign="center"
+					maxW="240px"
+				>
+					Tap the button below to share your current location for
+					verification.
+				</Text>
+			</VStack>
 		</VStack>
 	);
 
+	// ── Loading State ──
+	const LoadingView = () => (
+		<VStack spacing={4} py={4}>
+			<Flex
+				position="relative"
+				align="center"
+				justify="center"
+				w="80px"
+				h="80px"
+			>
+				{[0, 1, 2].map((i) => (
+					<Box
+						key={i}
+						position="absolute"
+						borderRadius="full"
+						border="2px solid"
+						borderColor="blue.200"
+						animation={`${ripple} 2s ${i * 0.6}s infinite ease-out`}
+					/>
+				))}
+				<Circle
+					size="48px"
+					bg="blue.500"
+					animation={`${pulse} 2s infinite`}
+				>
+					<Icon as={MdGpsFixed} boxSize={6} color="white" />
+				</Circle>
+			</Flex>
+			<VStack spacing={0}>
+				<Text fontSize="sm" fontWeight="semibold" color="blue.700">
+					Acquiring Location…
+				</Text>
+				<Text fontSize="xs" color="gray.500">
+					Stay still for best accuracy
+				</Text>
+			</VStack>
+		</VStack>
+	);
+
+	// ── Success State ──
+	const SuccessView = () => {
+		const accLabel = getAccuracyLabel();
+		const bgColor = isAccurateEnough
+			? "rgba(0, 195, 65, 0.08)"
+			: "orange.50";
+		const borderColor = isAccurateEnough
+			? "rgba(0, 195, 65, 0.3)"
+			: "orange.100";
+		const iconBg = isAccurateEnough
+			? "rgba(0, 195, 65, 0.1)"
+			: "orange.100";
+		const iconColor = isAccurateEnough ? "success" : "orange.500";
+		const textColor = isAccurateEnough ? "success" : "orange.700";
+
+		return (
+			<VStack spacing={3} w="100%">
+				<Box
+					w="100%"
+					bg={bgColor}
+					border="1px solid"
+					borderColor={borderColor}
+					borderRadius="lg"
+					p={4}
+				>
+					<HStack spacing={3}>
+						<Circle size="40px" bg={iconBg} flexShrink={0}>
+							<Icon
+								as={isAccurateEnough ? MdCheck : MdWarningAmber}
+								boxSize={5}
+								color={iconColor}
+							/>
+						</Circle>
+						<VStack align="start" spacing={0} flex={1}>
+							<HStack spacing={2}>
+								<Text
+									fontSize="sm"
+									fontWeight="bold"
+									color={textColor}
+								>
+									{isAccurateEnough
+										? "Location Verified"
+										: "Location Captured"}
+								</Text>
+							</HStack>
+							<HStack spacing={2} mt={0.5}>
+								{accLabel && (
+									<HStack spacing={1}>
+										<Box
+											w="6px"
+											h="6px"
+											borderRadius="full"
+											bg={accLabel.color}
+										/>
+										<Text fontSize="xs" color="gray.600">
+											{accLabel.text} accuracy
+											{accuracy
+												? ` (${Math.round(accuracy)}m)`
+												: ""}
+										</Text>
+									</HStack>
+								)}
+							</HStack>
+						</VStack>
+					</HStack>
+				</Box>
+
+				{!isAccurateEnough && (
+					<HStack
+						w="100%"
+						bg="orange.50"
+						px={3}
+						py={2}
+						borderRadius="md"
+						spacing={2}
+					>
+						<Icon
+							as={MdWarningAmber}
+							color="orange.500"
+							boxSize={4}
+						/>
+						<Text fontSize="xs" color="orange.700">
+							Move to an open area and refresh for better
+							accuracy.
+						</Text>
+					</HStack>
+				)}
+			</VStack>
+		);
+	};
+
+	// ── Error State ──
 	const ErrorView = () => {
 		const steps = isAndroid
 			? [
 					"Open Device Settings",
-					"Select Apps",
-					"Find and select this app",
-					"Tap Permissions",
-					"Enable Location",
+					"Select Apps → Find this app",
+					"Tap Permissions → Enable Location",
 				]
 			: [
 					"Click the lock icon in the address bar",
-					"Click Site Settings",
 					"Set Location to Allow",
 					"Reload the page",
 				];
@@ -220,106 +257,173 @@ const LocationCapture = ({
 		return (
 			<Alert
 				status="error"
-				borderRadius="md"
-				size="sm"
+				borderRadius="lg"
 				flexDirection="column"
 				alignItems="flex-start"
-				p={3}
+				p={4}
+				bg="rgba(255, 64, 129, 0.08)"
+				border="1px solid"
+				borderColor="rgba(255, 64, 129, 0.3)"
 			>
 				<HStack spacing={2} mb={2}>
-					<AlertIcon boxSize={4} />
-					<Text fontWeight="bold" fontSize="sm">
+					<AlertIcon boxSize={4} color="error" />
+					<Text fontWeight="bold" fontSize="sm" color="error">
 						{permissionState === "denied"
-							? "Permission Denied"
+							? "Location Permission Denied"
 							: "Location Error"}
 					</Text>
 				</HStack>
 
-				<Box pl={6} w="full">
-					{permissionState === "denied" ? (
+				{permissionState === "denied" ? (
+					<VStack align="start" spacing={2} pl={6} w="full">
+						<Text
+							fontSize="xs"
+							color="gray.600"
+							fontWeight="medium"
+						>
+							To enable location access:
+						</Text>
 						<VStack align="start" spacing={1} w="full">
-							<Text fontSize="xs" fontWeight="medium" mb={1}>
-								To enable location:
-							</Text>
-							<Box
-								as="ol"
-								pl={4}
-								fontSize="xs"
-								style={{ listStyleType: "decimal" }}
-							>
-								{steps.map((step, index) => (
-									<li key={index}>{step}</li>
-								))}
-							</Box>
+							{steps.map((step, i) => (
+								<HStack key={i} spacing={2} align="start">
+									<Circle
+										size="16px"
+										bg="rgba(255, 64, 129, 0.1)"
+										flexShrink={0}
+										mt={0.5}
+									>
+										<Text
+											fontSize="2xs"
+											fontWeight="bold"
+											color="error"
+										>
+											{i + 1}
+										</Text>
+									</Circle>
+									<Text fontSize="xs" color="gray.700">
+										{step}
+									</Text>
+								</HStack>
+							))}
 						</VStack>
-					) : (
-						<Text fontSize="xs">{error || "Unknown error"}</Text>
-					)}
-				</Box>
+					</VStack>
+				) : (
+					<Text fontSize="xs" color="gray.600" pl={6}>
+						{error ||
+							"An unknown error occurred. Please try again."}
+					</Text>
+				)}
 			</Alert>
 		);
 	};
 
+	const hasCaptured = latitude && !error;
+
 	return (
 		<Box
-			p={5}
 			bg="white"
 			borderRadius="xl"
 			borderWidth="1px"
-			borderColor="gray.200"
+			borderColor={
+				hasCaptured && isAccurateEnough
+					? "rgba(0, 195, 65, 0.3)"
+					: "gray.200"
+			}
 			boxShadow="sm"
-			transition="all 0.2s"
+			overflow="hidden"
+			transition="all 0.3s ease"
 		>
-			<VStack spacing={4} align="stretch">
-				{/* Header */}
-				<HStack>
-					<Text fontSize="md" fontWeight="bold" color="gray.700">
-						📍 Verify Location
-					</Text>
-				</HStack>
+			{/* Header Bar */}
+			<HStack
+				px={4}
+				py={3}
+				bg={
+					hasCaptured
+						? isAccurateEnough
+							? "rgba(0, 195, 65, 0.08)"
+							: "orange.50"
+						: "gray.50"
+				}
+				borderBottom="1px solid"
+				borderColor={
+					hasCaptured
+						? isAccurateEnough
+							? "rgba(0, 195, 65, 0.3)"
+							: "orange.100"
+						: "gray.200"
+				}
+				transition="all 0.3s ease"
+			>
+				<Icon
+					as={MdLocationOn}
+					boxSize={5}
+					color={
+						hasCaptured
+							? isAccurateEnough
+								? "success"
+								: "orange.500"
+							: "gray.500"
+					}
+				/>
+				<Text fontSize="sm" fontWeight="bold" color="gray.700" flex={1}>
+					Location Verification
+				</Text>
+				{hasCaptured && (
+					<Circle
+						size="20px"
+						bg={isAccurateEnough ? "success" : "orange.500"}
+					>
+						<Icon
+							as={isAccurateEnough ? MdCheck : MdWarningAmber}
+							boxSize={3}
+							color="white"
+						/>
+					</Circle>
+				)}
+			</HStack>
 
-				{/* Dynamic Content Area */}
+			{/* Content */}
+			<VStack spacing={4} p={4} align="stretch">
 				<Box
-					minH="120px"
+					minH="100px"
 					display="flex"
 					alignItems="center"
 					justifyContent="center"
 				>
 					{isLoading ? (
-						<RadarLoader />
-					) : latitude && !error ? (
-						<Fade in>
-							<SuccessView />
-						</Fade>
+						<LoadingView />
+					) : hasCaptured ? (
+						<SuccessView />
 					) : error || permissionState === "denied" ? (
 						<ErrorView />
 					) : (
-						<Text color="gray.500" fontSize="sm" textAlign="center">
-							We need your location to verify your identity.
-						</Text>
+						<IdleView />
 					)}
 				</Box>
 
-				{/* Footer Action */}
-				{permissionState !== "unsupported" && (
-					<Button
-						size="md"
-						colorScheme={latitude ? "gray" : "blue"}
-						variant={latitude ? "outline" : "solid"}
-						onClick={requestLocation}
-						isLoading={isLoading}
-						leftIcon={
-							<Icon as={latitude ? MdRefresh : MdGpsFixed} />
-						}
-						_active={{ transform: "scale(0.98)" }}
-					>
-						{isLoading
-							? "Listening..."
-							: latitude
+				{permissionState !== "unsupported" &&
+					(!hasCaptured || !isAccurateEnough) && (
+						<Button
+							size="md"
+							// colorScheme={hasCaptured ? "gray" : "blue"}
+							variant={hasCaptured ? "outline" : "primary"}
+							onClick={requestLocation}
+							isLoading={isLoading}
+							loadingText="Listening…"
+							leftIcon={
+								<Icon
+									as={hasCaptured ? MdRefresh : MdGpsFixed}
+								/>
+							}
+							borderRadius="lg"
+							fontWeight="semibold"
+							_active={{ transform: "scale(0.98)" }}
+						>
+							{hasCaptured
 								? "Refresh Location"
 								: "Capture Location"}
-					</Button>
-				)}
+						</Button>
+					)}
 			</VStack>
 		</Box>
 	);
