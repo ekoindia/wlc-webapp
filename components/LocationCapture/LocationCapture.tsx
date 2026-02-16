@@ -142,9 +142,6 @@ const LocationCapture = ({
 				<Text fontSize="sm" fontWeight="semibold" color="blue.700">
 					Acquiring Location…
 				</Text>
-				<Text fontSize="xs" color="gray.500">
-					Stay still for best accuracy
-				</Text>
 			</VStack>
 		</VStack>
 	);
