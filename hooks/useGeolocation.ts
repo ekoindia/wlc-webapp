@@ -1,3 +1,4 @@
+import { usePubSub } from "contexts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	ANDROID_ACTION,
@@ -64,6 +65,8 @@ const useGeolocation = (
 	const [permissionState, setPermissionState] =
 		useState<PermissionStateType>("prompt");
 	const [isLoading, setIsLoading] = useState(false);
+
+	const { subscribe, TOPICS } = usePubSub();
 
 	// Refs for tracking IDs and state without triggering re-renders
 	const watchIdRef = useRef<number | null>(null);
@@ -152,6 +155,76 @@ const useGeolocation = (
 		[decimalPlaces, watchPosition, maxWatchUpdates, stopWatching]
 	);
 
+	// ---- 3.5 Android Response Handler ----
+	useEffect(() => {
+		if (isAndroidApp() && subscribe && TOPICS.ANDROID_RESPONSE) {
+			const unsubscribe = subscribe(
+				TOPICS.ANDROID_RESPONSE,
+				(data: any) => {
+					if (
+						data?.action === ANDROID_ACTION.GEOLOCATION_RESPONSE ||
+						data?.action === ANDROID_ACTION.GPS_STATUS_RESPONSE
+					) {
+						console.log(
+							"[useGeolocation] Android Response:",
+							data.data
+						);
+						try {
+							let response = data.data;
+							if (typeof response === "string") {
+								response = JSON.parse(response);
+							}
+
+							if (response) {
+								const lat =
+									response.latitude ||
+									response.lat ||
+									response.lati;
+								const lng =
+									response.longitude ||
+									response.long ||
+									response.longi;
+								const acc = response.accuracy || response.acc;
+
+								if (lat && lng) {
+									setLatitude(
+										parseFloat(
+											Number(lat).toFixed(decimalPlaces)
+										)
+									);
+									setLongitude(
+										parseFloat(
+											Number(lng).toFixed(decimalPlaces)
+										)
+									);
+									setAccuracy(Number(acc || 0));
+									setTimestamp(Date.now());
+									setError(null);
+									setPermissionState("granted");
+									setIsLoading(false);
+									isRequestingRef.current = false;
+								} else if (response.error) {
+									setError(response.error);
+									setIsLoading(false);
+									isRequestingRef.current = false;
+								}
+							}
+						} catch (e) {
+							console.error(
+								"[useGeolocation] Failed to parse Android response",
+								e
+							);
+							setError("Failed to parse location data");
+							setIsLoading(false);
+							isRequestingRef.current = false;
+						}
+					}
+				}
+			);
+			return unsubscribe;
+		}
+	}, [subscribe, TOPICS.ANDROID_RESPONSE, decimalPlaces]);
+
 	// ---- 4. Error Handler ----
 	const errorHandler = useCallback((err: GeolocationPositionError) => {
 		if (err.code === 1) {
@@ -173,17 +246,21 @@ const useGeolocation = (
 		// Prevent duplicate requests while one is active
 		if (isRequestingRef.current) return;
 
-		// On Android WebView, prompt native permission before using Web API
-		if (isAndroidApp() && permissionState !== "granted") {
-			doAndroidAction(
-				ANDROID_ACTION.GRANT_PERMISSION,
-				ANDROID_PERMISSION.LOCATION
-			);
-		}
-
 		isRequestingRef.current = true;
 		setIsLoading(true);
 		setError(null);
+
+		// On Android WebView, use Native Location Service
+		// This bypasses blocking WebView permissions logic
+		if (isAndroidApp()) {
+			console.log("[useGeolocation] Requesting Android Native Location");
+			// Check permission first just in case, or directly request
+			// GET_GEOLOCATION usually handles permission checks internally in the wrapper
+			doAndroidAction(ANDROID_ACTION.GET_GEOLOCATION);
+			// Also prompt to enable GPS if needed
+			// doAndroidAction(ANDROID_ACTION.ENABLE_GPS_PROMPT);
+			return;
+		}
 
 		// UPGRADE 3: Safer Timeout handling
 		// Some older browsers trip on Infinity, though modern ones are fine.
