@@ -49,7 +49,7 @@ export const useNetworkTableParameterList = () => {
 			visible_in_table: true,
 		},
 		{
-			name: "agent_type",
+			name: "user_type_label",
 			label: "Type",
 			sorting: true,
 			visible_in_table: true,
@@ -163,12 +163,15 @@ const NetworkTable = ({
 }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
+	const { getUserTypeLabel } = useUserTypes();
 
 	agentDetails?.forEach((agent) => {
 		const commission_type = agent?.commission_duration;
 		const agent_balance = agent?.profile?.wallet_balance || 0;
+		const user_type_label = getUserTypeLabel(agent?.user_type_id);
 		agent.commission_type = getCommissionType(commission_type);
 		agent.agent_balance = agent_balance;
+		agent.user_type_label = user_type_label;
 		agent._onStatusUpdate = onStatusUpdate;
 	});
 

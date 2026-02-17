@@ -16,6 +16,7 @@ const NetworkCard = ({ item }) => {
 		eko_code,
 		account_status_id,
 		agent_type,
+		user_type_label,
 		address_details,
 		agent_name,
 		agent_mobile,
@@ -56,7 +57,7 @@ const NetworkCard = ({ item }) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{agent_type}
+						{user_type_label}
 					</Box>
 				</Flex>
 				<Flex gap="2">
