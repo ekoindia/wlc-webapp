@@ -4,6 +4,7 @@ import {
 	Dropzone,
 	Input,
 	InputLabel,
+	LocationCapture,
 	OtpInput,
 	Radio,
 	Select,
@@ -11,6 +12,7 @@ import {
 } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
+import { Pintwin } from "tf-components";
 import { getFormErrorMessage } from "utils";
 
 /**
@@ -163,6 +165,64 @@ const Form = ({
 									value={paramMetaValue ?? value}
 									{...register(name)}
 								/>
+							);
+
+						case ParamType.PINTWIN:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{
+											..._validations,
+											validate: (value) => {
+												const requiredLength =
+													rest?.length ?? 4;
+												if (
+													value.length >=
+													requiredLength
+												) {
+													return true;
+												}
+												return false;
+											},
+										}}
+										render={({ field: { onChange } }) => (
+											<Pintwin
+												label={label}
+												disabled={disabled}
+												onPinChange={(pin) => {
+													onChange(pin); // Raw PIN while typing
+												}}
+												onPinComplete={(
+													_pin,
+													encodedPin
+												) => {
+													onChange(encodedPin); // Encoded PIN when complete
+												}}
+												{...rest}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (Required) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
 							);
 
 						case ParamType.LABEL:
@@ -424,7 +484,7 @@ const Form = ({
 												id={name}
 												name={name}
 												// label={label}
-												value={value}
+												value={value || ""}
 												length={meta?.length ?? 4}
 												onChange={onChange}
 												size={size}
@@ -520,6 +580,53 @@ const Form = ({
 								</FormControl>
 							);
 						}
+
+						case ParamType.GEOLOCATION:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({ field: { onChange } }) => (
+											<LocationCapture
+												{...{
+													id: name,
+													label,
+													onCaptured: onChange,
+													required,
+													disabled,
+													labelStyle,
+													size,
+													hideOptionalMark,
+												}}
+												{...rest}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+												)}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
 
 						case ParamType.LIST:
 							if (list_elements) {

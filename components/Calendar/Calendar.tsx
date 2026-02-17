@@ -133,10 +133,11 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 							bg="transparent"
 							borderColor="hint"
 							borderLeftRadius="5px"
-							fontSize={{ base: "sm", md: "sm" }}
+							fontSize="sm"
 							fontWeight="medium"
 							color="dark"
 							px="12px"
+							w="56px"
 						>
 							{leftAddon}
 						</InputLeftAddon>

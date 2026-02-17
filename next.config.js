@@ -37,6 +37,7 @@ const EKO_DOMAINS = [
 const SCRIPT_SRC_DOMAINS = [
 	SELF,
 	"'unsafe-inline'", // Required for inline scripts (GTM, etc.)
+	"'wasm-unsafe-eval'", // Required for wasm in mobile browsers & web-view
 	"data:", // Required for data: URIs in scripts
 	"*.eko.in", // Eko platform scripts
 	"accounts.google.com", // Google authentication scripts

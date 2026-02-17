@@ -62,13 +62,15 @@ const AddressPane = ({ data }) => {
 					align="center"
 					gap="6"
 				>
-					<Button
-						onClick={handleUpdateAddress}
-						w={{ base: "100%", lg: "240px" }}
-						h="60px"
-					>
-						Update Address
-					</Button>
+					{isAdmin ? (
+						<Button
+							onClick={handleUpdateAddress}
+							w={{ base: "100%", lg: "240px" }}
+							h="60px"
+						>
+							Update Address
+						</Button>
+					) : null}
 
 					{isLocationAvailable ? (
 						<Flex
