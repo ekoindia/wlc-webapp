@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
-import { OnboardAgentResponse } from "..";
 import { Endpoints, ParamType } from "../../../../constants";
 
 export interface DemoOnboardFormValues {
@@ -30,7 +29,6 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 	agentTypeValueToApi,
 }) => {
 	const [applicantType, setApplicantType] = useState<string>("");
-	const [response, setResponse] = useState<any>(null);
 
 	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
 
@@ -55,6 +53,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 	const watcher = useWatch({ control });
 	const { accessToken } = useSession();
 	const router = useRouter();
+	const toast = useToast();
 
 	useEffect(() => {
 		if (applicantType === "" && agentTypeList.length > 0) {
@@ -112,7 +111,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 		},
 		{
 			name: "demo_credit_limit",
-			label: "Demo Credit Limit",
+			label: "Demo Credit Limit(₹)",
 			parameter_type_id: ParamType.MONEY,
 			validations: { required: "Credit limit is required" },
 		},
@@ -121,8 +120,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 			label: "Validity (Days)",
 			parameter_type_id: ParamType.NUMERIC,
 			required: false,
-			helperText:
-				"Note: If left blank, the account will automatically expire in 7 days.",
+			defaultValue: 7,
 		},
 	];
 
@@ -136,7 +134,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 					is_demo_account: true,
 					demo_account_validity: data.demo_account_validity
 						? Number(data.demo_account_validity)
-						: undefined,
+						: 7, // Default to 7 days if not provided
 					demo_credit_limit: data.demo_credit_limit,
 				},
 			],
@@ -160,9 +158,39 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 			}
 		)
 			.then((res) => {
-				if (res.status === 0) setResponse(res);
+				// 1. Extract the specific agent result
+				const agentResult = res?.data?.csp_list?.[0];
+
+				if (agentResult?.status === "Fail") {
+					// 2. Show Error Toast with Reason from API
+					toast({
+						title: "Onboarding Failed",
+						description:
+							agentResult?.reason || "Reason not provided",
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+					});
+				} else if (res.status === 0) {
+					// 3. Success Case
+					toast({
+						title: "Success",
+						description: "Demo user created successfully",
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					reset(); // Clear form only on success
+				}
 			})
-			.catch((err) => console.error("Demo Onboard Error", err));
+			.catch((err) => {
+				console.error("Demo Onboard Error", err);
+				toast({
+					title: "Error",
+					description: "Connection error. Please try again.",
+					status: "error",
+				});
+			});
 	};
 
 	const buttonConfigList = [
@@ -189,75 +217,24 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 
 	return (
 		<div>
-			{response === null ? (
-				// Agent onboarding form - shown before submission
-				<form onSubmit={handleSubmit(handleFormSubmit)}>
-					<Flex direction="column" gap="8">
-						{/* Dynamic form generated based on parameter_list */}
-						<Form
-							{...{
-								parameter_list,
-								formValues: watcher,
-								control: control as any,
-								register: register as any,
-								errors: errors as any,
-							}}
-						/>
+			{/* // Agent onboarding form - shown before submission */}
+			<form onSubmit={handleSubmit(handleFormSubmit)}>
+				<Flex direction="column" gap="8">
+					{/* Dynamic form generated based on parameter_list */}
+					<Form
+						{...{
+							parameter_list,
+							formValues: watcher,
+							control: control as any,
+							register: register as any,
+							errors: errors as any,
+						}}
+					/>
 
-						{/* Action buttons for form submission */}
-						<ActionButtonGroup {...{ buttonConfigList }} />
-					</Flex>
-				</form>
-			) : (
-				// Results display - shown after successful submission
-				<Flex direction="column" gap="2">
-					{/* Response message and statistics summary */}
-					<Flex fontSize="sm" direction="column" gap="1">
-						{/* API response message or fallback */}
-						<span>
-							{response?.message || "Something went wrong"}!
-						</span>
-
-						{/* Show accepted records count if any */}
-						{response?.data?.processed_records > 0 && (
-							<Flex gap="1">
-								<Box as="span" fontWeight="semibold">
-									Accepted:
-								</Box>
-								<span>{response?.data?.processed_records}</span>
-								<span>
-									{response?.data?.processed_records === 1
-										? "record"
-										: "records"}
-								</span>
-							</Flex>
-						)}
-
-						{/* Show rejected records count if any */}
-						{response?.data?.failed_count > 0 && (
-							<Flex gap="1">
-								<Box as="span" fontWeight="semibold">
-									Rejected:
-								</Box>
-								<span>{response?.data?.failed_count}</span>
-								<span>
-									{response?.data?.failed_count === 1
-										? "record"
-										: "records"}
-								</span>
-							</Flex>
-						)}
-					</Flex>
-
-					{/* Display detailed results table if there are records to show */}
-					{response?.data?.csp_list?.length > 0 && (
-						<OnboardAgentResponse
-							responseList={response?.data?.csp_list}
-							applicantType={applicantType}
-						/>
-					)}
+					{/* Action buttons for form submission */}
+					<ActionButtonGroup {...{ buttonConfigList }} />
 				</Flex>
-			)}
+			</form>
 		</div>
 	);
 };
