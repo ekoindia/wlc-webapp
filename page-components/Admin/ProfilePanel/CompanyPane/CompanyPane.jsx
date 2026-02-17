@@ -278,7 +278,7 @@ const CompanyPane = ({ data }) => {
 	const { userData } = useUser();
 	const loggedInUserCode = userData?.userDetails?.code;
 
-	console.log("[CompanyPane] loggedInUserCode", loggedInUserCode);
+	// console.log("[CompanyPane] loggedInUserCode", loggedInUserCode);
 
 	const userCodeLabel = getUserCodeLabel(data?.user_type_id ?? 0);
 	const userTypeLabel = data?.user_type_id
