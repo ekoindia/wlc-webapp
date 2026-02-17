@@ -50,7 +50,7 @@ function useLogin(login, setStep, setEmail) {
 			}
 		)
 			.then((responseData) => {
-				console.log("LOGIN RESPONSE >>>> ", responseData);
+				console.log("LOGIN RESPONSE >>>> ", { data, responseData });
 
 				if (
 					!(
@@ -64,7 +64,10 @@ function useLogin(login, setStep, setEmail) {
 						// responseData.details.mobile.toString().length > 6
 					)
 				) {
+					console.log("[useLogin] access_token not found.");
+
 					if (responseData.otpFailed) {
+						console.log("[useLogin] Wrong OTP.");
 						toast({
 							title: "Wrong OTP. Please try again.",
 							status: "error",
@@ -74,6 +77,7 @@ function useLogin(login, setStep, setEmail) {
 					}
 
 					if (responseData.accountInactive) {
+						console.log("[useLogin] Account is inactive.");
 						toast({
 							title: "Your account has been temporarily blocked.",
 							description: "Please contact support.",
@@ -84,23 +88,14 @@ function useLogin(login, setStep, setEmail) {
 						return;
 					}
 
-					if (
-						responseData?.details?.user_type === -1 &&
-						data?.id_type === "Google"
-					) {
-						console.log("Setting states");
-
-						setStep("SOCIAL_VERIFY");
-						setEmail(responseData.details.email);
-						return;
-					}
-
 					// if (responseData.details.mobile === "1") {
 					// 	processLoginResponse(responseData);
 					// 	router.push("/signup");
 					// 	return;
 					// }
 					// TODO: Start Onboarding Process
+					console.log("[useLogin] Login Failed → Back to Login");
+
 					// Login Failed
 					toast({
 						title: "Login failed.",
@@ -119,6 +114,9 @@ function useLogin(login, setStep, setEmail) {
 						process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING
 					)
 				) {
+					console.log(
+						"[useLogin] Self-Onboarding Disabled → User Not Found → Back to Login"
+					);
 					toast({
 						title: "User not found!",
 						status: "error",
@@ -128,7 +126,24 @@ function useLogin(login, setStep, setEmail) {
 					return;
 				}
 
-				// Login Success
+				// Social Signup → Verify mobile number before starting signup process
+				if (
+					responseData?.details?.user_type === -1 &&
+					data?.id_type === "Google" &&
+					responseData?.details?.email
+				) {
+					console.log(
+						"[useLogin] Google Login → Social Verify (mobile number verification)."
+					);
+					setStep("SOCIAL_VERIFY");
+					setEmail(responseData.details.email);
+					return;
+				}
+
+				// Login Success (or, signup of new user)
+				console.log(
+					"[useLogin] Login Successful → Processing Login Response (dispatch `LOGIN` to UserReducer)"
+				);
 				processLoginResponse(responseData);
 			})
 			.catch((e) => {

@@ -74,6 +74,7 @@ export const CopilotProvider = ({
 		<CopilotKit
 			runtimeUrl={runtimeUrl}
 			showDevConsole={process.env.NEXT_PUBLIC_COPILOT_DEBUG === "true"}
+			// enableInspector={false}	// TODO: uncomment after upgrade to copilotkit v1.50.x
 			// transcribeAudioUrl="/spt"
 			// textToSpeechUrl="/tts"
 		>
