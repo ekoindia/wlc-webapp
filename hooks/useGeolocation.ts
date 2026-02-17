@@ -1,4 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+	ANDROID_ACTION,
+	ANDROID_PERMISSION,
+	doAndroidAction,
+	isAndroidApp,
+} from "utils";
 
 interface UseGeolocationOptions {
 	highAccuracy?: boolean;
@@ -22,6 +28,8 @@ interface GeolocationResult {
 	isLoading: boolean;
 	requestLocation: () => void;
 	stopWatching: () => void;
+	/** Request native Android location permission (no-op on web) */
+	requestAndroidPermission: () => void;
 }
 
 const DEFAULT_OPTIONS: Required<UseGeolocationOptions> = {
@@ -165,6 +173,14 @@ const useGeolocation = (
 		// Prevent duplicate requests while one is active
 		if (isRequestingRef.current) return;
 
+		// On Android WebView, prompt native permission before using Web API
+		if (isAndroidApp() && permissionState !== "granted") {
+			doAndroidAction(
+				ANDROID_ACTION.GRANT_PERMISSION,
+				ANDROID_PERMISSION.LOCATION
+			);
+		}
+
 		isRequestingRef.current = true;
 		setIsLoading(true);
 		setError(null);
@@ -207,7 +223,21 @@ const useGeolocation = (
 		successHandler,
 		errorHandler,
 		stopWatching,
+		permissionState,
 	]);
+
+	/**
+	 * Explicitly request native Android location permission.
+	 * No-op on non-Android platforms.
+	 */
+	const requestAndroidPermission = useCallback(() => {
+		if (isAndroidApp()) {
+			doAndroidAction(
+				ANDROID_ACTION.GRANT_PERMISSION,
+				ANDROID_PERMISSION.LOCATION
+			);
+		}
+	}, []);
 
 	// ---- Auto Request Support ----
 	useEffect(() => {
@@ -229,6 +259,7 @@ const useGeolocation = (
 		isLoading,
 		requestLocation,
 		stopWatching,
+		requestAndroidPermission,
 	};
 };
 
