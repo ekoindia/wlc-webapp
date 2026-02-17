@@ -14,6 +14,7 @@ import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
 import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
+import { matchAndMapFilters } from "./BusinessDashboard";
 
 // Product Chart Colors
 const COLORS = [
@@ -33,11 +34,11 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
 	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
 };
 
-const calculateVariation = (current, lastMonth) => {
-	if (!current || !lastMonth || lastMonth == 0) return null; // Hide if new metric or missing data
-	if (Number(current) === Number(lastMonth)) return null; // Hide 0% change
+const calculateVariation = (current, lastPeriod) => {
+	if (!current || !lastPeriod || lastPeriod == 0) return null; // Hide if new metric or missing data
+	if (Number(current) === Number(lastPeriod)) return null; // Hide 0% change
 
-	const percentageChange = ((current - lastMonth) / lastMonth) * 100;
+	const percentageChange = ((current - lastPeriod) / lastPeriod) * 100;
 
 	if (percentageChange > 100) {
 		return `${Math.floor(percentageChange / 100)}X`; // Return as X multiplier (string)
@@ -65,7 +66,7 @@ const calculateVariation = (current, lastMonth) => {
 const EarningOverview = ({
 	dateFrom,
 	dateTo,
-	productFilterList,
+	productFilterList: masterProductList,
 	setTotalBusiness,
 	isDraggable,
 }) => {
@@ -73,6 +74,9 @@ const EarningOverview = ({
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 	const [productWiseData, setProductWiseData] = useState([]);
+	const [filteredProductList, setFilteredProductList] = useState([
+		{ label: "All Products", value: "" },
+	]);
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
@@ -107,7 +111,7 @@ const EarningOverview = ({
 		}
 	);
 
-	// Calculate/parse Product-wise data...
+	// Calculate/parse Product-wise data and generate product filter list from typeBreakdown
 	useEffect(() => {
 		let typeBreakdown = earningOverviewData?.gtv?.typeBreakdown;
 
@@ -118,35 +122,42 @@ const EarningOverview = ({
 		} catch (error) {
 			console.error("Error parsing product-wise data:", error);
 			setProductWiseData([]);
+			setFilteredProductList([{ label: "All Products", value: "" }]);
 			return;
 		}
 
-		// if (!typeBreakdown) return;
+		if (typeBreakdown && Object.keys(typeBreakdown).length > 0) {
+			// 1. Map data for the Waffle Chart
+			const parsedData = Object.entries(typeBreakdown)
+				.map(([key, value]) => ({
+					id: key,
+					...value,
+					label: value.name,
+					value: value.amount,
+				}))
+				.sort((a, b) => b.value - a.value);
 
-		const parsedData = typeBreakdown
-			? Object.entries(typeBreakdown)
-					?.map(([key, value]) => ({
-						id: key,
-						...value,
-						label: value.name, // For Waffle Chart
-						value: value.amount, // For Waffle Chart
-					}))
-					.sort((a, b) => b.value - a.value)
-			: null;
+			setProductWiseData(parsedData);
 
-		// const parsedData = typeBreakdown.map((item) => ({
-		// 	...item,
-		// 	value: item.value || 0,
-		// 	label: item.label || "Unknown",
-		// }));
-		// console.log("Earning Overview Data - parsed data:", parsedData);
+			console.log("masterProductList:", masterProductList);
 
-		if (parsedData && Array.isArray(parsedData) && parsedData.length > 0) {
-			setProductWiseData(parsedData || []);
+			// 2. USE UTIL: Match master prop list against current breakdown
+			const matchedOptions = matchAndMapFilters(
+				masterProductList,
+				typeBreakdown
+			);
+
+			console.log("matchFilter:", matchedOptions);
+
+			setFilteredProductList([
+				{ label: "All Products", value: "" },
+				...matchedOptions,
+			]);
 		} else {
 			setProductWiseData([]);
+			setFilteredProductList([{ label: "All Products", value: "" }]);
 		}
-	}, [earningOverviewData]);
+	}, [earningOverviewData, masterProductList]);
 
 	// MARK: Fetch Data
 	useEffect(() => {
@@ -187,6 +198,7 @@ const EarningOverview = ({
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
 		setTotalBusiness,
+		fetchEarningOverviewData,
 	]);
 
 	const earningOverviewList = [
@@ -194,66 +206,88 @@ const EarningOverview = ({
 			key: "gtv",
 			label: "GTV",
 			value: earningOverviewData?.gtv?.amount || 0,
-			lastPeriod: earningOverviewData?.gtv?.lastMonth || 0,
+			lastPeriod: earningOverviewData?.gtv?.lastPeriod || 0,
 			type: "amount",
 			variation: calculateVariation(
 				earningOverviewData?.gtv?.amount,
-				earningOverviewData?.gtv?.lastMonth
+				earningOverviewData?.gtv?.lastPeriod
+			),
+		},
+		{
+			key: "revenue",
+			label: "Revenue",
+			value: earningOverviewData?.gtv?.revenue || 0,
+			lastPeriod: earningOverviewData?.gtv?.revenuelastPeriod || 0,
+			type: "amount",
+			variation: calculateVariation(
+				earningOverviewData?.gtv?.revenue || 0,
+				earningOverviewData?.gtv?.revenuelastPeriod || 0
+			),
+		},
+		{
+			key: "averageRevenue",
+			label: "Average Revenue",
+			value: earningOverviewData?.gtv?.averageRevenue || 0,
+			lastPeriod: earningOverviewData?.gtv?.averageRevenueLastPeriod || 0,
+			type: "amount",
+			variation: calculateVariation(
+				earningOverviewData?.gtv?.averageRevenue || 0,
+				earningOverviewData?.gtv?.averageRevenueLastPeriod || 0
 			),
 		},
 		{
 			key: "transactions",
-			label: "Transactions",
+			label: "API Calls",
 			value: earningOverviewData?.transactions?.transactions || 0,
-			lastPeriod: earningOverviewData?.transactions?.lastMonth || 0,
+			lastPeriod: earningOverviewData?.transactions?.lastPeriod || 0,
 			type: "number",
 			variation: calculateVariation(
 				earningOverviewData?.transactions?.transactions,
-				earningOverviewData?.transactions?.lastMonth
+				earningOverviewData?.transactions?.lastPeriod
+			),
+		},
+		{
+			key: "failedCases",
+			label: "Failed Cases",
+			value: earningOverviewData?.failedCases?.failedCases || 0,
+			lastPeriod: earningOverviewData?.failedCases?.lastPeriod || 0,
+			type: "number",
+			variation: calculateVariation(
+				earningOverviewData?.failedCases?.failedCases || 0,
+				earningOverviewData?.failedCases?.lastPeriod || 0
 			),
 		},
 		{
 			key: "activeAgents",
 			label: "Transacting Agents",
 			value: earningOverviewData?.activeAgents?.active || 0,
-			lastPeriod: earningOverviewData?.activeAgents?.lastMonth || 0,
+			lastPeriod: earningOverviewData?.activeAgents?.lastPeriod || 0,
 			type: "number",
 			variation: calculateVariation(
 				earningOverviewData?.activeAgents?.active,
-				earningOverviewData?.activeAgents?.lastMonth
-			),
-		},
-		{
-			key: "onboardedAgents",
-			label: "Onboarded Agents",
-			value: earningOverviewData?.onboardedAgents?.onboarded || 0,
-			lastPeriod: earningOverviewData?.onboardedAgents?.lastMonth || 0,
-			type: "number",
-			variation: calculateVariation(
-				earningOverviewData?.onboardedAgents?.onboarded,
-				earningOverviewData?.onboardedAgents?.lastMonth
+				earningOverviewData?.activeAgents?.lastPeriod
 			),
 		},
 		{
 			key: "raCases",
 			label: "Pending Transactions",
 			value: earningOverviewData?.raCases?.raCases || 0,
-			lastPeriod: earningOverviewData?.raCases?.lastMonth || 0,
+			lastPeriod: earningOverviewData?.raCases?.lastPeriod || 0,
 			type: "number",
 			variation: calculateVariation(
 				earningOverviewData?.raCases?.raCases,
-				earningOverviewData?.raCases?.lastMonth
+				earningOverviewData?.raCases?.lastPeriod
 			),
 		},
 		{
 			key: "commissionDue",
 			label: "Commission Due",
 			value: earningOverviewData?.commissionDue?.commissionDue || 0,
-			lastPeriod: earningOverviewData?.commissionDue?.lastMonth || 0,
+			lastPeriod: earningOverviewData?.commissionDue?.lastPeriod || 0,
 			type: "amount",
 			variation: calculateVariation(
 				earningOverviewData?.commissionDue?.commissionDue,
-				earningOverviewData?.commissionDue?.lastMonth
+				earningOverviewData?.commissionDue?.lastPeriod
 			),
 		},
 	];
@@ -265,7 +299,6 @@ const EarningOverview = ({
 			bg="white"
 			p="20px 20px 30px"
 			borderRadius="10"
-			border="basic"
 			gap="4"
 			w="100%"
 			h="100%"
@@ -296,7 +329,7 @@ const EarningOverview = ({
 							size="xs"
 							w="auto"
 						>
-							{productFilterList.map(({ label, value }) => (
+							{filteredProductList.map(({ label, value }) => (
 								<option key={value} value={value}>
 									{label}
 								</option>
@@ -329,7 +362,7 @@ const EarningOverview = ({
 						size="xs"
 						w="100%"
 					>
-						{productFilterList.map(({ label, value }) => (
+						{filteredProductList.map(({ label, value }) => (
 							<option key={value} value={value}>
 								{label}
 							</option>

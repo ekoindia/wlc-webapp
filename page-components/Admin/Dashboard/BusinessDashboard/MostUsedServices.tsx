@@ -54,12 +54,14 @@ interface ServiceDisplayItem {
 	typeId: string;
 	name: string;
 	totalCount: number;
+	totalRevenue?: number; // Optional, in case revenue data is added later
 }
 
 /** API response data structure for most used services */
 interface MostUsedServicesData {
 	[typeId: string]: {
 		totalCount: number;
+		totalRevenue?: number;
 	};
 }
 
@@ -89,7 +91,7 @@ const CustomTooltip = ({
 	label: _label,
 }: CustomTooltipProps): JSX.Element | null => {
 	if (active && payload && payload.length) {
-		const { totalCount, name } = payload[0].payload;
+		const { totalCount, name, totalRevenue } = payload[0].payload;
 
 		return (
 			<Flex
@@ -107,7 +109,13 @@ const CustomTooltip = ({
 				<Text fontSize="xs" color="gray.600">
 					Transactions:{" "}
 					<Text as="span" fontWeight="600" color="primary.DEFAULT">
-						{totalCount.toLocaleString()}
+						{totalCount?.toLocaleString()}
+					</Text>
+				</Text>
+				<Text fontSize="xs" color="gray.600">
+					Revenue:{" "}
+					<Text as="span" fontWeight="600" color="primary.DEFAULT">
+						{totalRevenue?.toLocaleString()}
 					</Text>
 				</Text>
 			</Flex>
@@ -199,6 +207,7 @@ const MostUsedServices = ({
 				typeId,
 				name: labelMap[typeId] ?? `Service ${typeId}`,
 				totalCount: data.totalCount ?? 0,
+				totalRevenue: data.totalRevenue ?? 0,
 			}))
 			.sort((a, b) => b.totalCount - a.totalCount);
 	}, [mostUsedServicesData, productFilterList]);
