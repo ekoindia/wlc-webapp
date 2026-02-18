@@ -5,7 +5,7 @@
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
-import { useSession } from "contexts/index";
+import { useSession } from "contexts";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { toKebabCase } from "utils";
