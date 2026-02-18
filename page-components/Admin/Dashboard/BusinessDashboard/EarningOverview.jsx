@@ -10,12 +10,11 @@ import {
 import { Currency, WaffleChart } from "components";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
+import { productmatchAndMapFilters } from "features/kyc-verification/utils";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useRef, useState } from "react";
 import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
-import { matchAndMapFilters } from "./BusinessDashboard";
-
 // Product Chart Colors
 const COLORS = [
 	"#7eb0d5",
@@ -144,8 +143,8 @@ const EarningOverview = ({
 
 			setProductWiseData(parsedData);
 
-			// 2. USE UTIL: Match master prop list against current breakdown
-			const matchedOptions = matchAndMapFilters(
+			// 2. USE UTIL: Match product master prop list against current breakdown
+			const matchedOptions = productmatchAndMapFilters(
 				masterProductList,
 				typeBreakdown
 			);

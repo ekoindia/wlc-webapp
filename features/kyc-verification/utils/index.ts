@@ -7,4 +7,5 @@ export {
 	getServiceDescription,
 	getServiceIcon,
 	normalizeServices,
+	productmatchAndMapFilters,
 } from "./serviceUtils";

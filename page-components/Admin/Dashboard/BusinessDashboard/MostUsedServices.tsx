@@ -268,7 +268,7 @@ const MostUsedServices = ({
 						accessibilityLayer={false}
 						layout="vertical"
 						data={servicesDisplayData}
-						barCategoryGap="15%"
+						barCategoryGap="25%"
 						margin={{
 							top: 5,
 							right: 60,
