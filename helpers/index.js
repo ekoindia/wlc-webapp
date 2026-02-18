@@ -5,7 +5,7 @@ export {
 	/* dummyOrgDetails,  */ fetchOrgDetails,
 } from "./fetchOrgDetailsHelper";
 export { localStorageProvider } from "./localStorageProvider";
-export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
+export { sendOtpRequest } from "./loginHelper";
 export {
 	filterTransactionLists,
 	processTransactionData,

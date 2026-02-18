@@ -70,7 +70,10 @@ export const leegalityProvider: IEsignProvider = {
 			if (res.error) {
 				onCallback?.({ error: res.error });
 			} else {
-				onCallback?.({ documentId: res.documentId });
+				// Accept documentId in various formats, fallback to known documentId from options
+				onCallback?.({
+					documentId: res.documentId || res.document_id || documentId,
+				});
 			}
 		};
 

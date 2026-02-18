@@ -380,12 +380,13 @@ const LocationCapture = ({
 			</HStack>
 
 			{/* Content */}
-			<VStack spacing={4} p={4} align="stretch">
+			<VStack spacing={4} p={4} align="center">
 				<Box
 					minH="100px"
 					display="flex"
 					alignItems="center"
 					justifyContent="center"
+					w="full"
 				>
 					{isLoading ? (
 						<LoadingView />

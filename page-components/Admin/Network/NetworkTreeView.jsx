@@ -1,5 +1,5 @@
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
-import { Button } from "components/Button";
+import { Icon } from "components/Icon";
 import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
 import useHslColor from "hooks/useHslColor";
@@ -295,26 +295,18 @@ const NetworkTreeView = () => {
 				</Box>
 			</Flex>
 
-			<Flex direction="column" align="center" w="100%" gap={2} mt="2em">
+			<Flex justify="center" w="100%" gap={2} mt="2em">
 				<Text fontSize="xxs" color="light">
 					<strong>Last Updated:</strong>{" "}
 					{new Date(fetchedAt).toLocaleString()}
 				</Text>
-
 				{showRefresh ? (
-					<Flex align="center" gap={2}>
-						<Text fontSize="xs" color="light">
-							Seeing old results?
-						</Text>
-						<Button
-							size="xs"
-							variant="outline"
-							loading={loading}
-							onClick={handleRefresh}
-						>
-							Refresh
-						</Button>
-					</Flex>
+					<Icon
+						name="refresh"
+						size="xs"
+						onClick={handleRefresh}
+						_hover={{ cursor: "pointer" }}
+					/>
 				) : null}
 			</Flex>
 		</>

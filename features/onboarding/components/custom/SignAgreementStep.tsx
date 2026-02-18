@@ -265,23 +265,29 @@ const SignAgreementStep = ({
 				{/* Step Progress Indicators */}
 				<VStack align="stretch" gap={3}>
 					{/* Step 1: Document Preparation (UPDATED) */}
-					<HStack gap={3} align="center" justify="space-between">
-						<HStack gap={3}>
-							{isAgreementLoading ? (
-								<Spinner
-									size="sm"
-									color="blue.500"
-									thickness="2px"
-								/>
-							) : agreementLoadError ? (
-								<Icon name="error" size="sm" color="error" />
-							) : (
-								<Icon
-									name="check-circle"
-									size="sm"
-									color="green.500"
-								/>
-							)}
+					<HStack gap={3} align="flex-start" justify="space-between">
+						<HStack gap={3} align="flex-start" flex={1}>
+							<Box mt={0.5}>
+								{isAgreementLoading ? (
+									<Spinner
+										size="sm"
+										color="blue.500"
+										thickness="2px"
+									/>
+								) : agreementLoadError ? (
+									<Icon
+										name="error"
+										size="sm"
+										color="error"
+									/>
+								) : (
+									<Icon
+										name="check-circle"
+										size="sm"
+										color="green.500"
+									/>
+								)}
+							</Box>
 
 							<Text
 								fontSize="sm"
@@ -310,9 +316,14 @@ const SignAgreementStep = ({
 											</Text>
 										)}
 										{documentId && (
-											<Badge variant="outlineSuccess">
-												(#{documentId})
-											</Badge>
+											<Text
+												color="gray.500"
+												fontWeight="normal"
+												fontSize="xs"
+												fontStyle="italic"
+											>
+												(Document ID: {documentId})
+											</Text>
 										)}
 									</>
 								)}

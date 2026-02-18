@@ -598,7 +598,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		applicableRoles: [12500],
+		applicableRoles: [51700],
 		primaryCTAText: "Proceed",
 		description:
 			"Please provide your bank account details to proceed with the onboarding process.",
