@@ -1,6 +1,5 @@
 export {
 	default as BusinessDashboard,
-	matchAndMapFilters,
 	resetDashboardLayout,
 } from "./BusinessDashboard";
 export { BusinessDashboardCard } from "./BusinessDashboardCard";
