@@ -165,6 +165,7 @@ const NetworkTable = ({
 	const router = useRouter();
 	const { getUserTypeLabel } = useUserTypes();
 
+	//  TODO  memoize this agentDetails for the  performance improvement, currently it is modifying the original data which is not a good practice
 	agentDetails?.forEach((agent) => {
 		const commission_type = agent?.commission_duration;
 		const agent_balance = agent?.profile?.wallet_balance || 0;

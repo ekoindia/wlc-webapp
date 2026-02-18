@@ -26,13 +26,13 @@ const status = {
 	ACTIVE: 16,
 	// CLOSE: 17,
 	INACTIVE: 18,
-	ACTIVE_DEMO_USER_ACCOUNT: 60,
+	DEMO_USER: 60,
 };
 
 const statusLabels = {
 	13: "Pending Approval",
 	16: "Active",
-	60: "Active Demo User Account",
+	60: "Demo User Account",
 	// 17: "Close",
 	18: "Inactive",
 };
@@ -58,7 +58,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 
 		// We hide the item if the status is 60 OR if the status is already in the item's ID list
 		if (
-			currentStatus !== status.ACTIVE_DEMO_USER_ACCOUNT && // Hide EVERYTHING from 'list' if it's a demo user
+			currentStatus !== status.DEMO_USER && // Hide EVERYTHING from 'list' if it's a demo user
 			Object.values(status).includes(currentStatus) &&
 			!_id.includes(currentStatus)
 		) {
@@ -89,11 +89,11 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 /**
  * NetworkMenuWrapper component that provides a menu for managing agent network status and actions.
  * Allows admins to mark agents as Active/Inactive, change roles, view details, download agreements, and delete demo users.
- * For Active Demo User accounts (status_id: 51), only shows "View Details" and "Delete Demo User" options.
+ * For Demo User accounts (status_id: 60), only shows "View Details" and "Delete Demo User" options.
  * @param {object} props - Component properties
  * @param {string} props.mobile_number - Mobile number of the agent
  * @param {string} props.eko_code - Unique EKO code identifier for the agent
- * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive, 60: Active Demo User)
+ * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive, 60:	 Demo User)
  * @param {number} props.user_type_id - User type ID of the agent (e.g., 1: Distributor, 2: Retailer, 3: Independent Retailer)
  * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
  * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
