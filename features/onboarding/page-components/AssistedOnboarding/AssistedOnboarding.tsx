@@ -2,7 +2,7 @@ import { Flex } from "@chakra-ui/react";
 import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
-import { useSession } from "contexts";
+import { useNetworkUsers, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import dynamic from "next/dynamic";
@@ -84,6 +84,7 @@ const AssistedOnboarding = (): JSX.Element => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const { accessToken } = useSession();
+	const { refreshUserList } = useNetworkUsers();
 
 	const [step, setStep] = useState<keyof typeof ASSISTED_ONBOARDING_STEPS>(
 		ASSISTED_ONBOARDING_STEPS.ADD_AGENT
@@ -125,6 +126,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				);
 				// check if agentData.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
 				if (agentData?.user_detail?.onboarding === 0) {
+					refreshUserList(true);
 					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
 					return;
 				}

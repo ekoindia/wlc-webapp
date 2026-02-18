@@ -71,14 +71,16 @@ const Network = () => {
 	const { accessToken, isAdmin, userType } = useSession();
 	const { isAndroid } = useAppSource();
 	const { getUserTypeLabel } = useUserTypes();
-	const { userTypeIdList } = useNetworkUsers();
+
+	const { refreshUserList, userTypeIdList, fetchedAt, loading } =
+		useNetworkUsers();
 
 	const operation_type_list = useMemo(() => {
 		return userTypeIdList.map((typeId) => ({
 			label: getUserTypeLabel(typeId),
 			value: String(typeId),
 		}));
-	}, [userTypeIdList, getUserTypeLabel]);
+	}, [userTypeIdList, getUserTypeLabel, loading]);
 
 	const [pageNumber, setPageNumber] = useState(1);
 	const [isLoading, setIsLoading] = useState(true);
@@ -500,6 +502,13 @@ const Network = () => {
 			desktopOnly: true,
 		},
 	];
+
+	// Fetch Network User List for the UserTypeList when the component mounts for the UserType Filter
+	useEffect(() => {
+		if (fetchedAt === null && !loading) {
+			refreshUserList();
+		}
+	}, [fetchedAt]);
 
 	useEffect(() => {
 		if (openModalId == action.FILTER) {
