@@ -1,5 +1,5 @@
 import { PaddingBox } from "components";
-import { AssistedOnboarding } from "page-components";
+import { AssistedOnboarding } from "features/onboarding";
 
 /**
  * An AgentOnboarding page for agent onboarding

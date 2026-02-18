@@ -19,7 +19,7 @@ import { MdCameraAlt, MdFolderOpen, MdPhotoLibrary } from "react-icons/md";
  * A Dropzone component to upload file either by selecting or by drag & drop
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.label]	Label for the dropzone
- * @param	{File}		prop.file	File object to be uploaded
+ * @param	{object}	prop.file	File object to be uploaded
  * @param	{Function}	prop.setFile	Function to set the file object
  * @param	{string}	[prop.accept]	Accepted file types
  * @param	{boolean}	[prop.cameraOnly]	Only allow camera to capture image. No file upload or drag/drop.
@@ -39,7 +39,7 @@ import { MdCameraAlt, MdFolderOpen, MdPhotoLibrary } from "react-icons/md";
  * @param	{boolean}	[prop.disabled]	Disable the dropzone
  * @param	{boolean}	[prop.hideOptionalMark]	Hide the "optional" mark for the label
  * @param	{object}	[prop.labelStyle]	Style for the label
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @returns {JSX.Element} The Dropzone component
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
  */
 const Dropzone = ({
@@ -82,6 +82,7 @@ const Dropzone = ({
 		error: locationError,
 	} = useGeolocation({
 		highAccuracy: true,
+		autoRequest: true,
 	});
 
 	// Get the user's IP address, if watermark is enabled
@@ -100,7 +101,7 @@ const Dropzone = ({
 			.catch((error) => {
 				console.error("Error getting IP:", error);
 			});
-	}, [watermark]);
+	}, [watermark, ip, access_token]);
 
 	// Generate memoised watermark text
 	const watermarkText = useMemo(() => {
@@ -117,7 +118,18 @@ const Dropzone = ({
 		return `${_name} (${_code})\n${_org}\n${_location} – ${
 			ip || ""
 		}\n${timestamp} @ ${window.location.host}`;
-	}, [watermark, name, code, org_id, app_name, location, ip]);
+	}, [
+		watermark,
+		name,
+		code,
+		org_id,
+		app_name,
+		latitude,
+		longitude,
+		accuracy,
+		locationError,
+		ip,
+	]);
 
 	// Log file
 	useEffect(() => {
@@ -142,8 +154,8 @@ const Dropzone = ({
 
 	/**
 	 * Open the Image Editor for the file
-	 * @param image
-	 * @param {*} file
+	 * @param {string|object} image - The image to edit
+	 * @param {object} file - The file object
 	 */
 	const openImageEditor = (image, file) => {
 		if (!image && !file) return;
@@ -205,8 +217,8 @@ const Dropzone = ({
 
 	/**
 	 * Convert image file/blob to preview image data URL
-	 * @param {*} _file
-	 * @param {*} type
+	 * @param {object} _file - The file or blob to convert
+	 * @param {string} type - The type of conversion ('file' or 'blob')
 	 */
 	const convertImage = (_file, type = "file") => {
 		if (type === "blob") {
@@ -256,7 +268,7 @@ const Dropzone = ({
 
 	/**
 	 * Handle drag leave event. It marks that the file
-	 * @param {*} event
+	 * @param {object} event - The drag event
 	 */
 	const handleDragLeave = (event) => {
 		event.preventDefault();
@@ -266,7 +278,7 @@ const Dropzone = ({
 
 	/**
 	 * Handle file/image drop event. It sets the dropped file, if the format is allowed.
-	 * @param {*} event
+	 * @param {object} event - The drop event
 	 */
 	const handleDrop = async (event) => {
 		if (cameraOnly) return;
@@ -350,10 +362,10 @@ const Dropzone = ({
 
 	/**
 	 * Handle the image returned from the Camera
-	 * @param {object} data
+	 * @param {object} data - The data object returned from the camera
 	 * @param {boolean} data.accepted - Is the image accepted?
 	 * @param {string} data.image - Image data URL
-	 * @param {File} data.file - File object for the image
+	 * @param {object} data.file - File object for the image
 	 */
 	const handleCameraResponse = (data) => {
 		if (data.accepted) {
@@ -366,10 +378,10 @@ const Dropzone = ({
 	/**
 	 * Handle the image returned from the Image Editor.
 	 * Set the file and image preview.
-	 * @param {object} data
+	 * @param {object} data - The data object returned from the editor
 	 * @param {boolean} data.accepted - Is the image accepted?
 	 * @param {string} data.image - Image data URL
-	 * @param {File} data.file - File object for the image
+	 * @param {object} data.file - File object for the image
 	 */
 	const handleImageEditorResponse = (data) => {
 		console.log("Image Editor result: ", data);
@@ -559,10 +571,12 @@ const Dropzone = ({
 
 /**
  * Custom Button component for Dropzone
- * @param root0
- * @param root0.disabled
- * @param root0.onClick
- * @param root0.children
+ * @param {object} props - The props object
+ * @param {boolean} [props.disabled] - Whether the button is disabled
+ * @param {Function} [props.onClick] - Click handler
+ * @param {React.ReactNode} [props.children] - Button content
+ * @param {any} [props.rest] - standard button props
+ * @returns {JSX.Element} The Button component
  */
 const Btn = ({ disabled, onClick, children, ...rest }) => {
 	return (
@@ -580,7 +594,8 @@ const Btn = ({ disabled, onClick, children, ...rest }) => {
 
 /**
  * Check if the mime-type is for an image
- * @param type
+ * @param {string} type - The MIME type to check
+ * @returns {boolean} True if it is an image type
  */
 function isImageType(type) {
 	return type && type.toLowerCase().startsWith("image/");

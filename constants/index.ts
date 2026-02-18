@@ -1,4 +1,4 @@
-export { ChangeRoleMenuList } from "./AdminChangeRole";
+export { AGENT_VIEW_TABS, ORG_VIEW_TABS } from "./AdminChangeRole";
 export { allowedCategories } from "./allowedCategories";
 export {
 	MyNetworkBreadcrumbs,

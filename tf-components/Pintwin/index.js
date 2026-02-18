@@ -1,1 +1,1 @@
-export { default } from "./Pintwin";
+export { default as Pintwin } from "./Pintwin";
