@@ -96,21 +96,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
 
-	// TSP Bank Demo (Payments via TSP Bank Account)
-	// TODO: REMOVE after demo
-	TSP_BANK: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			development: {
-				forOrgId: [27],
-			},
-			staging: {
-				forOrgId: [27],
-			},
-		},
-	},
-
 	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
 	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
@@ -278,6 +263,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Face detector for images, videos, and live streams.
 	FACE_DETECTOR: {
+		enabled: true,
+	},
+
+	// TSP Bank Account Support (Multi-wallet) – Show bank balance and statement for TSP Bank Accounts.
+	// This is used for making payments from bank accounts using UPI and other payment methods,
+	// directly from the user's own bank account instead of their e-wallet).
+	TSP_BANK: {
 		enabled: true,
 	},
 

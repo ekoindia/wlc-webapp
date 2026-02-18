@@ -1,6 +1,6 @@
 export const MyNetworkBreadcrumbs = {
 	"/admin/my-network": "My Network",
-	"/admin/my-network/profile": "Agent Details",
+	"/admin/my-network/profile": "Details",
 	"/admin/my-network/profile/up-sell-info": "Update Agent Information",
 	"/admin/my-network/profile/up-sell-add": "Update Agent Address",
 	"/admin/my-network/profile/up-per-info": "Update Personal Information",

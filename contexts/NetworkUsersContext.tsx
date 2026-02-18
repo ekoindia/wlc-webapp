@@ -34,7 +34,7 @@ interface NetworkUsersContextValue {
 	userTypeIdList: number[];
 	fetchedAt: string | null;
 	loading: boolean;
-	refreshUserList: () => void;
+	refreshUserList: (_force?: boolean) => void;
 }
 
 /**
@@ -144,26 +144,48 @@ export const NetworkUsersProvider = ({
 	/**
 	 * Fetch the network users data from the server.
 	 */
-	const refreshUserList = useCallback(() => {
-		if (!isLoggedIn || !accessToken || isOnboarding) return;
-		if (loading) return;
-		if (isValid && networkUsers?.userId === userId) return;
-		fetchUsers({
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent-list",
-				"tf-req-method": "GET",
-			},
-		});
-	}, [
-		isLoggedIn,
-		accessToken,
-		isOnboarding,
-		isAdmin,
-		loading,
-		isValid,
-		userId,
-	]);
+	const refreshUserList = useCallback(
+		(force: boolean = false) => {
+			if (!isLoggedIn || !accessToken || isOnboarding) return;
+			if (loading) return;
+
+			// If force is true, we bypass the cache check (isValid)
+			// But we still want to throttle requests to prevent spamming
+			if (force) {
+				const lastFetchedAt = networkUsers?.asof
+					? new Date(networkUsers.asof).getTime()
+					: 0;
+				const now = Date.now();
+				// Throttle: 30 seconds
+				if (now - lastFetchedAt < 30 * 1000) {
+					// console.warn("Network users refresh throttled.");
+					return;
+				}
+			} else {
+				// Normal check: if cache is valid and belongs to current user, don't fetch
+				if (isValid && networkUsers?.userId === userId) return;
+			}
+
+			fetchUsers({
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agent-list",
+					"tf-req-method": "GET",
+				},
+			});
+		},
+		[
+			isLoggedIn,
+			accessToken,
+			isOnboarding,
+			isAdmin,
+			loading,
+			isValid,
+			userId,
+			networkUsers,
+			fetchUsers,
+		]
+	);
 
 	/**
 	 * Return a list of (grand) parents for any user. Used in UserProfile to show the hierarchy.
