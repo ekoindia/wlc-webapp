@@ -15,6 +15,8 @@ import {
 } from "react-icons/md";
 import ReactCrop, { type Crop } from "react-image-crop";
 
+const FaceDetectionTimeoutDuration = 3000; // 3s timeout to avoid blocking the user on slow WASM loads
+
 // Declare the props interface
 interface ImageEditorProps {
 	image: string;
@@ -99,78 +101,109 @@ const ImageEditor = ({
 	const [isFaceDetectionEnabled] = useFeatureFlag("FACE_DETECTOR");
 	const [faceDetector, setFaceDetector] = useState<any>(null);
 	const [detectedFaceCount, setDetectedFaceCount] = useState(0);
-	// const [confidence, setConfidence] = useState("");
+	const [faceDetectionStatus, setFaceDetectionStatus] = useState<
+		"idle" | "loading" | "ready" | "detected" | "failed"
+	>("idle");
 
 	// FaceDetector dynamic initialization
+	// - timeout to avoid blocking the user on slow WASM loads
+	// - AbortController to prevent state updates on unmounted component
 	useEffect(() => {
 		if (!detectFace) return;
 		if (!isFaceDetectionEnabled) return;
 
-		initializeFaceDetector("IMAGE").then((detector) => {
-			setFaceDetector(detector);
-		});
+		const abortController = new AbortController();
+		let timeoutId: ReturnType<typeof setTimeout>;
+
+		setFaceDetectionStatus("loading");
+
+		// timeout — if WASM hasn't loaded by then, fail gracefully
+		timeoutId = setTimeout(() => {
+			if (!abortController.signal.aborted) {
+				console.warn(
+					"[FaceDetector] ⏱️ Initialization timed out after 3s"
+				);
+				abortController.abort();
+				setFaceDetectionStatus("failed");
+			}
+		}, FaceDetectionTimeoutDuration);
+
+		initializeFaceDetector("IMAGE")
+			.then((detector) => {
+				if (abortController.signal.aborted) return;
+				clearTimeout(timeoutId);
+				setFaceDetector(detector);
+				setFaceDetectionStatus("ready");
+			})
+			.catch((err) => {
+				if (abortController.signal.aborted) return;
+				clearTimeout(timeoutId);
+				console.error("[FaceDetector] ❌ Failed to initialize:", err);
+				setFaceDetectionStatus("failed");
+			});
+
+		// Cleanup on unmount or dependency change
+		return () => {
+			abortController.abort();
+			clearTimeout(timeoutId);
+		};
 	}, [detectFace, isFaceDetectionEnabled]);
 
 	// Detect Face when the image is loaded and the faceDetector is ready
 	useEffect(() => {
 		if (imageLoaded && imageRef && faceDetector) {
-			const detections = faceDetector.detect(imageRef.current).detections;
+			try {
+				const detections = faceDetector.detect(
+					imageRef.current
+				).detections;
 
-			console.log("🙄 FACE DETECTED::: ", detections);
+				console.log("[FaceDetector] 🙄 Faces detected:", detections);
 
-			const face = detections[0]?.boundingBox;
+				setDetectedFaceCount(detections?.length ?? 0);
+				setFaceDetectionStatus("detected");
 
-			if (detections?.length > 0 && face) {
-				// const score = detections[0]?.categories[0]?.score;
-				// setConfidence(
-				// 	detections.length === 1
-				// 		? "Face detected: " +
-				// 				Math.round(score * 100) +
-				// 				"% confidence"
-				// 		: detections.length +
-				// 				" faces detected: " +
-				// 				Math.round(score * 100) +
-				// 				"% confidence, ..."
-				// );
+				const face = detections[0]?.boundingBox;
 
-				setDetectedFaceCount(detections.length);
+				if (detections?.length > 0 && face) {
+					// If the user has already started cropping the image manually,
+					// don't change the crop area
+					if (manualCropStarted) {
+						return;
+					}
 
-				// const fullFace = getFullFaceBound(face);
+					const fullFace = getCompositeFaceBound(
+						detections,
+						maxFaceCount
+					);
 
-				// If the user has already started cropping the image manually,
-				// don't change the crop area
-				if (manualCropStarted) {
-					return;
+					console.log("[FaceDetector] 🙄 Face bounds:", {
+						face,
+						fullFace,
+						crop,
+						width: imageRef.current.width,
+						naturalWidth: imageRef.current.naturalWidth,
+					});
+
+					// Set the crop area to the detected face
+					const scaleFactor =
+						imageRef.current.height /
+						imageRef.current.naturalHeight;
+					const faceX = fullFace.x * scaleFactor;
+					const faceY = fullFace.y * scaleFactor;
+					const faceWidth = fullFace.width * scaleFactor;
+					const faceHeight = fullFace.height * scaleFactor;
+
+					setCrop({
+						unit: "px",
+						x: faceX,
+						y: faceY,
+						width: faceWidth,
+						height: faceHeight,
+					});
 				}
-
-				const fullFace = getCompositeFaceBound(
-					detections,
-					maxFaceCount
-				);
-
-				console.log("🙄 FACE 1 ::: ", {
-					face,
-					fullFace,
-					crop,
-					width: imageRef.current.width,
-					naturalWidth: imageRef.current.naturalWidth,
-				});
-
-				// Set the crop area to the detected face
-				const scaleFactor =
-					imageRef.current.height / imageRef.current.naturalHeight;
-				const faceX = fullFace.x * scaleFactor;
-				const faceY = fullFace.y * scaleFactor;
-				const faceWidth = fullFace.width * scaleFactor;
-				const faceHeight = fullFace.height * scaleFactor;
-
-				setCrop({
-					unit: "px",
-					x: faceX, // face.originX,
-					y: faceY, // face.originY,
-					width: faceWidth,
-					height: faceHeight,
-				});
+			} catch (err) {
+				console.error("[FaceDetector] ❌ Detection failed:", err);
+				setFaceDetectionStatus("failed");
 			}
 		}
 	}, [imageLoaded, imageRef, faceDetector, manualCropStarted]);
@@ -232,10 +265,15 @@ const ImageEditor = ({
 			return;
 		}
 
-		// Check if minimum face count is satisfied
+		// Only enforce face count if detection actually completed successfully.
+		// If detection is still loading, timed out, or failed to initialize,
+		// let the user proceed — face detection is a delight feature, not a gate.
+		const faceDetectionCompleted = faceDetectionStatus === "detected";
+
 		if (
 			detectFace &&
 			minFaceCount > 0 &&
+			faceDetectionCompleted &&
 			detectedFaceCount < minFaceCount
 		) {
 			const errorMsg =
@@ -248,6 +286,12 @@ const ImageEditor = ({
 				duration: 6000,
 			});
 			return;
+		}
+
+		if (detectFace && !faceDetectionCompleted) {
+			console.warn(
+				`[FaceDetector] ⚠️ User proceeded without face detection (status: ${faceDetectionStatus})`
+			);
 		}
 
 		// Get the cropped image

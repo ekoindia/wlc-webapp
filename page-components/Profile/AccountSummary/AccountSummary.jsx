@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
  * A AccountSummary page-component
  */
 const AccountSummary = () => {
-	const { isAdmin, accessToken } = useSession();
+	const { accessToken } = useSession();
 	const { accountList } = useWallet();
 
 	const [gstin, setGstin] = useState("");
@@ -33,11 +33,6 @@ const AccountSummary = () => {
 				console.error("[AccountSummary] Get GSTIN Error:", error);
 			});
 	}, []);
-
-	// TODO: Allow for Non-Admins as well
-	if (!isAdmin) {
-		return null;
-	}
 
 	const bankAccounts = accountList?.filter((acc) => acc.type_id == 3);
 

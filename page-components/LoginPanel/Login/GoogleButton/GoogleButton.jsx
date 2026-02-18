@@ -18,6 +18,7 @@ import { useLogin } from "hooks";
  * @param root0.setNumber
  * @param root0.setEmail
  * @param root0.org_token
+ * @param root0.setCachedSocialResponse
  * @example	`<GoogleButton></GoogleButton>`
  */
 const GoogleButtonContent = ({
@@ -27,10 +28,16 @@ const GoogleButtonContent = ({
 	setLoginType,
 	setNumber,
 	setEmail,
+	setCachedSocialResponse,
 	...rest
 }) => {
 	const { login } = useUser();
-	const [_busy, submitLogin] = useLogin(login, setStep, setEmail);
+	const [_busy, submitLogin] = useLogin(
+		login,
+		setStep,
+		setEmail,
+		setCachedSocialResponse
+	);
 	// const { orgDetail } = useOrgDetailContext();
 
 	const onGoogleLoginSuccess = (response) => {

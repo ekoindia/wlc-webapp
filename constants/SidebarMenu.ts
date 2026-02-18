@@ -150,17 +150,17 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		beta: true,
 		featureFlag: "KYC_VERIFICATION",
 	},
-	{
-		id: 36,
-		label: "Bulk Verification",
-		icon: "verified-user",
-		link: "/admin/products/bulk-verification",
-		summary: "Bulk Verify KYC documents for customers",
-		fullDescription:
-			"Bulk Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single service verification.",
-		beta: true,
-		featureFlag: "BULK_VERIFICATION",
-	},
+	// {
+	// 	id: 36,
+	// 	label: "Bulk Verification",
+	// 	icon: "verified-user",
+	// 	link: "/admin/products/bulk-verification",
+	// 	summary: "Bulk Verify KYC documents for customers",
+	// 	fullDescription:
+	// 		"Bulk Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single service verification.",
+	// 	beta: true,
+	// 	featureFlag: "BULK_VERIFICATION",
+	// },
 	// {
 	// 	id: 30,
 	// 	label: "Company Profile",
@@ -288,17 +288,6 @@ export const sidebarMenu: sidebarMenuType[] = [
 			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
 		beta: true,
 		featureFlag: "KYC_VERIFICATION",
-	},
-	{
-		id: 37,
-		label: "Bulk Verification",
-		icon: "verified-user",
-		link: "/products/bulk-verification",
-		summary: "Bulk Verify KYC documents for customers",
-		fullDescription:
-			"Bulk Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single service verification.",
-		beta: true,
-		featureFlag: "BULK_VERIFICATION",
 	},
 	{
 		id: 215,

@@ -5,10 +5,12 @@
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
+import { useSession } from "contexts/index";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { toKebabCase } from "utils";
 import {
+	BulkUploadButton,
 	CategoryTabs,
 	MultiServiceToggle,
 	SelectedServicesPill,
@@ -35,6 +37,7 @@ export const KycVerificationPage = ({
 	basePath = "/products/kyc-verification",
 }: KycVerificationPageProps = {}): JSX.Element => {
 	const router = useRouter();
+	const { isAdmin } = useSession();
 
 	// Services data and filtering
 	const {
@@ -149,9 +152,15 @@ export const KycVerificationPage = ({
 				hideBackIcon
 				toolComponent={
 					<Flex gap="2">
-						{/* <AddUserButton
-							onClick={() => setIsAddUserModalOpen(true)}
-						/> */}
+						<BulkUploadButton
+							onClick={() =>
+								isAdmin
+									? router.push(
+											"/admin/products/bulk-verification"
+										)
+									: router.push("/products/bulk-verification")
+							}
+						/>
 						<Button
 							onClick={() => setIsManageMode(!isManageMode)}
 							size="sm"
@@ -166,10 +175,7 @@ export const KycVerificationPage = ({
 					</Flex>
 				}
 			/>
-			{/* <AddUserModal
-				isOpen={isAddUserModalOpen}
-				onClose={() => setIsAddUserModalOpen(false)}
-			/> */}
+
 			{/* Conditional content based on manage mode */}
 			{isManageMode ? (
 				<ManageAgentServicesPage />

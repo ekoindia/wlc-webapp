@@ -1,4 +1,4 @@
-import { BulkVerification } from "features/bulk-verification";
+import BulkVerification from "features/kyc-verification/components/BulkVerification";
 
 /**
  * Entry point for the Bulk Verification page.

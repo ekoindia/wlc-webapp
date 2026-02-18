@@ -16,20 +16,22 @@ import { blobToImageSrc } from "utils/fileUtils";
  * Document type mapping for display names
  */
 const DOCUMENT_DISPLAY_NAMES = {
-	customer_photo: "Customer Photo",
+	// customer_photo: "Customer Photo",
 	aadhar_front: "Aadhaar Card Front",
 	aadhar_back: "Aadhaar Card Back",
 	pan_card: "PAN Card",
+	bank_statement: "Bank Passbook",
 } as const;
 
 /**
  * Ordered array of document types to control display order
  */
 const DOCUMENT_ORDER: DocumentType[] = [
-	"customer_photo",
+	// "customer_photo",
 	"aadhar_front",
 	"aadhar_back",
 	"pan_card",
+	"bank_statement",
 ];
 
 type DocumentType = keyof typeof DOCUMENT_DISPLAY_NAMES;
@@ -41,7 +43,8 @@ interface DocumentData {
 	aadhar_front?: string;
 	aadhar_back?: string;
 	pan_card?: string;
-	customer_photo?: string;
+	bank_statement?: string;
+	// customer_photo?: string;
 }
 
 /**

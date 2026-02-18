@@ -11,7 +11,7 @@ import { Endpoints } from "constants/EndPoints";
 import { useSession, useUser } from "contexts";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import InputPintwin from "tf-components/InputPintwin";
+import { Pintwin } from "tf-components/Pintwin";
 import { useBulkPayout } from "../context/BulkPayoutContext";
 
 export interface ServiceOption {
@@ -67,7 +67,6 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 	const [isUploading, setIsUploading] = useState(false);
 	const [pintwinEncoded, setPintwinEncoded] = useState<string>("");
 	const [pinLength, setPinLength] = useState(0);
-	const [pinResetTrigger, setPinResetTrigger] = useState(0);
 
 	const {
 		handleSubmit,
@@ -145,7 +144,6 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 				if (showPinInput) {
 					setPintwinEncoded("");
 					setPinLength(0);
-					setPinResetTrigger((p) => p + 1);
 				}
 
 				setTimeout(() => setTab("history"), 500);
@@ -159,7 +157,6 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 				// Handle PIN error reset only if used
 				if (showPinInput && data?.response_type_id === 2413) {
 					setPintwinEncoded("");
-					setPinResetTrigger((p) => p + 1);
 				}
 			}
 		} catch (error) {
@@ -251,16 +248,14 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 
 					{showPinInput && (
 						<Box maxW="300px">
-							<InputPintwin
+							<Pintwin
 								label="Secret PIN"
-								lengthMin={4}
-								lengthMax={4}
-								required={true}
-								pintwinApp={true}
-								resetTrigger={pinResetTrigger}
-								onChange={(value, masked) => {
-									setPintwinEncoded(value);
-									setPinLength(masked.length);
+								onPinChange={(value) => {
+									setPinLength(value.length);
+								}}
+								onPinComplete={(_raw, encoded) => {
+									setPintwinEncoded(encoded);
+									setPinLength(_raw.length);
 								}}
 							/>
 						</Box>

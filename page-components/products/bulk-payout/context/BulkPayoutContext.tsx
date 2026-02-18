@@ -47,6 +47,13 @@ export const BulkPayoutProvider = ({ children }: { children: ReactNode }) => {
  */
 export const useBulkPayoutContext = () => {
 	const context = useContext(BulkPayoutContext);
+
+	if (!context) {
+		throw new Error(
+			"useBulkPayoutContext must be used within a BulkPayoutProvider"
+		);
+	}
+
 	return context;
 };
 
