@@ -138,8 +138,6 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 					demo_credit_limit: data.demo_credit_limit,
 				},
 			],
-			// Note: client_ref_id, user_code, etc., are usually handled by the backend
-			// or your fetcher/middleware, but added here if needed.
 			source: "WLC",
 			version: "v1",
 		};

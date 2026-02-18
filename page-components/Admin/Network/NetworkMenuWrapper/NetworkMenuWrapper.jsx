@@ -1,4 +1,10 @@
-import { Flex, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+	Flex,
+	IconButton,
+	Text,
+	useDisclosure,
+	useToast,
+} from "@chakra-ui/react";
 import { Button, Menus, Modal } from "components";
 import {
 	ChangeRoleMenuList,
@@ -20,11 +26,13 @@ const status = {
 	ACTIVE: 16,
 	// CLOSE: 17,
 	INACTIVE: 18,
+	ACTIVE_DEMO_USER_ACCOUNT: 60,
 };
 
 const statusLabels = {
 	13: "Pending Approval",
 	16: "Active",
+	60: "Active Demo User Account",
 	// 17: "Close",
 	18: "Inactive",
 };
@@ -74,11 +82,12 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 
 /**
  * NetworkMenuWrapper component that provides a menu for managing agent network status and actions.
- * Allows admins to mark agents as Active/Inactive, change roles, view details, and download agreements.
+ * Allows admins to mark agents as Active/Inactive, change roles, view details, download agreements, and delete demo users.
+ * For Active Demo User accounts (status_id: 51), only shows "View Details" and "Delete Demo User" options.
  * @param {object} props - Component properties
  * @param {string} props.mobile_number - Mobile number of the agent
  * @param {string} props.eko_code - Unique EKO code identifier for the agent
- * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive)
+ * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive, 60: Active Demo User)
  * @param {string} props.agent_type - Type/role of the agent
  * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
  * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
@@ -88,6 +97,15 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  *   eko_code="EKO123"
  *   account_status_id={16}
  *   agent_type="retailer"
+ *   onStatusUpdate={(code, status) => console.log(code, status)}
+ * />
+ * @example
+ * // For demo user account:
+ * <NetworkMenuWrapper
+ *   mobile_number="9311019478"
+ *   eko_code="10004011"
+ *   account_status_id={60}
+ *   agent_type="Enterprise"
  *   onStatusUpdate={(code, status) => console.log(code, status)}
  * />
  */
@@ -100,6 +118,7 @@ const NetworkMenuWrapper = ({
 }) => {
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 	const [accountStatusId, setAccountStatusId] = useState();
 	const { accessToken, isAdmin } = useSession();
 	const router = useRouter();
@@ -129,6 +148,65 @@ const NetworkMenuWrapper = ({
 			.catch((err) => {
 				console.error("Error: ", err);
 			});
+	};
+
+	const deleteDemoUser = () => {
+		setDeleteModalOpen(true);
+	};
+
+	const handleDeleteDemoUserConfirm = async () => {
+		setDeleteModalOpen(false);
+
+		try {
+			const response = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `/network/agent`,
+						"tf-req-method": "POST",
+					},
+					body: {
+						csp_code: eko_code,
+						source: "WLC",
+						version: "v1",
+					},
+					token: accessToken,
+				}
+			);
+
+			const isSuccess = response.status === 0;
+
+			if (isSuccess) {
+				toast({
+					title:
+						response.message || "Demo user deleted successfully!",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+
+				// Trigger table refresh after successful deletion
+				if (onStatusUpdate) {
+					onStatusUpdate(eko_code, null); // Signal deletion
+				}
+			} else if (response.status === 1) {
+				toast({
+					title: response.message || "Failed to delete demo user",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			}
+		} catch (error) {
+			console.error("Error deleting demo user:", error);
+			toast({
+				title: "Network error. Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const menuList = [
@@ -179,24 +257,38 @@ const NetworkMenuWrapper = ({
 				downloadAgreement();
 			},
 		},
+		{
+			label: "Delete Demo User",
+			visible: +account_status_id === status.ACTIVE_DEMO_USER_ACCOUNT,
+			onClick: () => {
+				deleteDemoUser();
+			},
+		},
 	];
 
 	let _includeChangeRole = false;
 
-	for (let { global, visibleString } of ChangeRoleMenuList) {
-		if (isAdmin && !global && visibleString.includes(agent_type)) {
-			_includeChangeRole = true;
-			break;
+	// For Active Demo User Account, skip standard menu items and only show custom items
+	const isDemoUser = +account_status_id === status.ACTIVE_DEMO_USER_ACCOUNT;
+
+	if (!isDemoUser) {
+		for (let { global, visibleString } of ChangeRoleMenuList) {
+			if (isAdmin && !global && visibleString.includes(agent_type)) {
+				_includeChangeRole = true;
+				break;
+			}
 		}
 	}
 
-	const _finalMenuList = generateMenuList(
-		menuList,
-		account_status_id,
-		changeRoleMenuItem,
-		_includeChangeRole,
-		others
-	);
+	const _finalMenuList = isDemoUser
+		? others.filter((item) => item.visible)
+		: generateMenuList(
+				menuList,
+				account_status_id,
+				changeRoleMenuItem,
+				_includeChangeRole,
+				others
+			);
 
 	const parameter_list = [
 		{
@@ -349,6 +441,38 @@ const NetworkMenuWrapper = ({
 						</Button>
 					</Flex>
 				</form>
+			</Modal>
+			<Modal
+				isOpen={isDeleteModalOpen}
+				onClose={() => setDeleteModalOpen(false)}
+				title="Delete Demo User"
+			>
+				<Flex direction="column" gap="8" pb="4">
+					<Text>
+						Are you sure you want to delete this demo user account?
+						This action cannot be undone.
+					</Text>
+					<Flex gap="4">
+						<Button
+							onClick={() => setDeleteModalOpen(false)}
+							variant="ghost"
+							size="lg"
+							width="100%"
+							fontSize="lg"
+						>
+							Cancel
+						</Button>
+						<Button
+							onClick={handleDeleteDemoUserConfirm}
+							size="lg"
+							width="100%"
+							fontSize="lg"
+							colorScheme="red"
+						>
+							Delete
+						</Button>
+					</Flex>
+				</Flex>
 			</Modal>
 		</div>
 	);

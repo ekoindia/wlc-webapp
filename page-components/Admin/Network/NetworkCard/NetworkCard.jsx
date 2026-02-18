@@ -31,7 +31,12 @@ const NetworkCard = ({ item }) => {
 		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
 				<Box color="primary.DEFAULT" fontSize={{ base: "md" }}>
-					{getNameStyle(agent_name)}
+					{getNameStyle(
+						agent_name,
+						undefined,
+						undefined,
+						account_status_id
+					)}
 				</Box>
 				<NetworkMenuWrapper
 					{...{
