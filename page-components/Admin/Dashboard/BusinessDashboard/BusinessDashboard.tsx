@@ -79,25 +79,6 @@ export const resetDashboardLayout = (): void => {
 };
 
 /**
- * Matches items from a master filter list against the keys present in an API breakdown.
- * @param {Array} masterList - The prop productFilterList [{label, value}]
- * @param {object} typeBreakdown - The parsed object from the API
- * @returns {Array} - Filtered and mapped options
- */
-
-export const matchAndMapFilters = (masterList, typeBreakdown) => {
-	if (!typeBreakdown || !masterList) return [];
-
-	// Get the IDs (keys) available in the current API response
-	const availableIds = Object.keys(typeBreakdown);
-
-	// Filter the master list to only include what's in the breakdown
-	return masterList.filter((item) =>
-		availableIds.includes(String(item.value))
-	);
-};
-
-/**
  * Business Dashboard component displaying analytics widgets in a draggable grid
  * @returns {JSX.Element} The rendered business dashboard
  */
