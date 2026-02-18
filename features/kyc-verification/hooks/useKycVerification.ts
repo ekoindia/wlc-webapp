@@ -73,6 +73,42 @@ interface UseKycVerificationReturn {
 }
 
 /**
+ * Merges retry results with previously preserved successful results.
+ * Success determined by response_status_id === 0 (based on API response structure).
+ * @param {VerificationResult[]} previousSuccessResults - Successfully completed results to preserve
+ * @param {VerificationResult[]} newRetryResults - New results from retry verification
+ * @returns {VerificationResult[]} Merged array with all success results (previous + new)
+ */
+export const mergeVerificationResults = (
+	previousSuccessResults: VerificationResult[],
+	newRetryResults: VerificationResult[]
+): VerificationResult[] => {
+	// Create a map of new results by serviceCode for quick lookup
+	const newResultsMap = new Map<string, VerificationResult>();
+	newRetryResults.forEach((result) => {
+		newResultsMap.set(result.serviceCode, result);
+	});
+
+	// Start with previous success results
+	const mergedResults = [...previousSuccessResults];
+
+	// Add new results that aren't duplicates of previous successes
+	newRetryResults.forEach((result) => {
+		const existsInPrevious = previousSuccessResults.some(
+			(prev) => prev.serviceCode === result.serviceCode
+		);
+		if (!existsInPrevious) {
+			mergedResults.push(result);
+		}
+	});
+
+	// Sort by service name for consistent display
+	return mergedResults.sort((a, b) =>
+		a.serviceName.localeCompare(b.serviceName)
+	);
+};
+
+/**
  * Hook for managing KYC verification API calls.
  * Supports single and multi-service verification with progress tracking.
  * @returns {UseKycVerificationReturn} Object with verification state and control functions
@@ -122,6 +158,10 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 			// Filter to only include params relevant to this service
 			const filteredData = getServiceSpecificParams(service, formData);
 
+			// Generate unique client_ref_id before API call
+			const clientRefId =
+				Date.now() + "" + Math.floor(Math.random() * 1000);
+
 			// Mark as in_progress
 			setState((prev) => ({
 				...prev,
@@ -138,7 +178,10 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 					headers: {
 						"tf-req-uri": service.endpointPath,
 					},
-					body: filteredData,
+					body: {
+						...filteredData,
+						client_ref_id: clientRefId,
+					},
 				});
 
 				// console.log(
@@ -162,6 +205,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 						responseData,
 						timestamp: getTimestamp(),
 						tid: responseData.tid as string | undefined,
+						clientRefId,
 					};
 				} else {
 					// API returned error
@@ -176,6 +220,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 							response?.data?.message ||
 							"Verification failed. Please try again.",
 						timestamp: getTimestamp(),
+						clientRefId,
 					};
 				}
 			} catch (err) {
@@ -194,6 +239,7 @@ export const useKycVerification = (): UseKycVerificationReturn => {
 							? err.message
 							: "Network error. Please check your connection.",
 					timestamp: getTimestamp(),
+					clientRefId,
 				};
 			}
 		},
