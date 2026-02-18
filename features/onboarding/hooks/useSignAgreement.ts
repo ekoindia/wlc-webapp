@@ -147,24 +147,13 @@ export const useSignAgreement = (): UseSignAgreementReturn => {
 				console.log("[useSignAgreement] Provider callback:", result);
 
 				if (result.error) {
-					// toast({
-					// 	title: result.error || "E-sign failed",
-					// 	status: "error",
-					// 	duration: 3000,
-					// });
 					console.log(
 						"[useSignAgreement] E-sign failed",
 						result.error
 					);
 					setStatus("ready"); // Allow retry
-				} else if (result.documentId) {
-					// Mark as success after signing
+				} else {
 					setStatus("success");
-					// toast({
-					// 	title: "Agreement signed successfully!",
-					// 	status: "success",
-					// 	duration: 3000,
-					// });
 					console.log(
 						"[useSignAgreement] Agreement signed successfully"
 					);
@@ -191,8 +180,26 @@ export const useSignAgreement = (): UseSignAgreementReturn => {
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
 				console.log("[useSignAgreement] Android response:", data?.data);
 
-				const response = data?.data;
-				if (response?.status === "success" || response?.documentId) {
+				// Android sends response as JSON string, parse it
+				let response = data?.data;
+				if (typeof response === "string") {
+					try {
+						response = JSON.parse(response);
+					} catch (e) {
+						console.error(
+							"[useSignAgreement] Failed to parse Android response:",
+							e
+						);
+					}
+				}
+
+				// Android response uses agreement_status/status and document_id/documentId
+				if (
+					response?.agreement_status === "success" ||
+					response?.status === "success" ||
+					response?.documentId ||
+					response?.document_id
+				) {
 					setStatus("success");
 					toast({
 						title: "Agreement signed successfully!",

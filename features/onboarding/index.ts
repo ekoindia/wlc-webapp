@@ -14,7 +14,6 @@ export { OnboardingSteps, OnboardingWidget, RoleSelection } from "./components";
 export {
 	createStepLookupMap,
 	extractStepConfiguration,
-	useAndroidIntegration,
 	useOnboardingState,
 	useStepConfiguration,
 	useStepExecutor,
@@ -39,10 +38,10 @@ export * from "./utils";
 // Constants
 export {
 	APPLICANT_TYPES,
-	filterOnboardingStepsByRoles,
-	masterOnboardingSteps,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
+	filterOnboardingStepsByRoles,
+	masterOnboardingSteps,
 } from "./constants";
 
 // Types from constants
@@ -57,12 +56,12 @@ export type { Role, RoleConfig } from "./utils/roleSelection";
 
 // Page Components
 export {
+	ASSISTED_ONBOARDING_STEPS,
 	// Assisted Onboarding
 	AddAgentForm,
 	AgentAlreadyExistsScreen,
 	AgentOnboarding,
 	AgentStatusCheck,
-	ASSISTED_ONBOARDING_STEPS,
 	AssistedOnboarding,
 	// Self-Onboarding
 	Onboarding,

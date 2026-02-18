@@ -15,7 +15,12 @@ import {
 	IcoButton,
 	Icon,
 } from "components";
-import { useNetworkUsers, useOrgDetailContext, useSession } from "contexts";
+import {
+	useNetworkUsers,
+	useOrgDetailContext,
+	useSession,
+	useUser,
+} from "contexts";
 import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { blobToImageSrc } from "utils/fileUtils";
@@ -270,13 +275,28 @@ const CompanyPane = ({ data }) => {
 
 	const { getUserCodeLabel, getUserTypeLabel } = useUserTypes();
 	const { getParents } = useNetworkUsers();
+	const { userData } = useUser();
+	const loggedInUserCode = userData?.userDetails?.code;
+
+	// console.log("[CompanyPane] loggedInUserCode", loggedInUserCode);
 
 	const userCodeLabel = getUserCodeLabel(data?.user_type_id ?? 0);
 	const userTypeLabel = data?.user_type_id
 		? getUserTypeLabel(data?.user_type_id)
 		: agent_type;
 
-	const parents = getParents(eko_code);
+	// Get parents and filter hierarchy based on who is viewing:
+	// - Own profile: show one level above the logged-in user
+	// - Other's profile: logged-in user is the topmost node
+	const allParents = getParents(eko_code);
+	const isOwnProfile = eko_code === loggedInUserCode;
+	const loggedInUserIndex = loggedInUserCode
+		? allParents.findIndex((p) => p.user_code === loggedInUserCode)
+		: -1;
+	const parents =
+		loggedInUserIndex >= 0
+			? allParents.slice(0, loggedInUserIndex + (isOwnProfile ? 2 : 1))
+			: allParents;
 
 	const onViewAllTrxnClick = () => {
 		router.push(`/admin/network-statement?agent_mobile=${mobile}`);
