@@ -1,3 +1,5 @@
+import { UserType, UserTypeLabel } from "./UserTypes";
+
 /**
  * An array containing options for the ChangeRole menu, along with their respective paths.
  * Each option represents a specific role change action with a corresponding path.
@@ -10,56 +12,77 @@
 
 /**
  * List to show ChangeRole Menu options & tabs inside it.
- * TODO: instead of visibleString, use an array of user-type-id to filter the options
  * @type {ChangeRoleOption[]}
  */
-export const ChangeRoleMenuList = [
+
+/**
+ * An array containing options for the ChangeRole menu, along with their respective paths.
+ * Each option represents a specific role change action with a corresponding path.
+ * @typedef {object} ChangeRoleOption
+ * @property {string} slug - A unique identifier for the role change option.
+ * @property {string} label - The display label for the role change option.
+ * @property {string} path - The URL path for navigating to the role change page with a specific tab.
+ */
+
+/**
+ * List to show ChangeRole Menu options & tabs inside it for Organization View.
+ * @type {ChangeRoleOption[]}
+ */
+export const ORG_VIEW_TABS = [
 	{
 		slug: "transfer-retailer",
-		label: "Assign Distributor",
+		label: `Assign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2, 3],
-		visibleString: ["Independent Retailer"], //this need to be in sync with what we are getting in network table
-		global: true,
+		transferConfig: { targetUserType: UserType.MERCHANT },
 	},
 	{
-		slug: "transfer-retailer",
-		label: "Change Distributor",
+		slug: "transfer-fos",
+		label: `Assign ${UserTypeLabel[UserType.FOS]}`,
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2, 3],
-		visibleString: ["Retailer"],
-		global: false,
+		transferConfig: { targetUserType: UserType.FOS },
 	},
 	{
 		slug: "retailer-to-iretailer",
-		label: "Unassign Distributor",
+		label: `Unassign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2],
-		visibleString: ["Retailer"],
-		global: true,
 	},
 	{
 		slug: "retailer-to-distributor",
-		label: "Promote Retailer To Distributor",
+		label: `Promote ${UserTypeLabel[UserType.MERCHANT]} To ${
+			UserTypeLabel[UserType.DISTRIBUTOR]
+		}`,
 		path: "/admin/my-network/profile/change-role",
-		// visible: [],
-		visibleString: [],
-		global: true,
+	},
+];
+
+/**
+ * List to show ChangeRole Menu options & tabs inside it for Agent View.
+ * Includes `allowedUserTypes` to filter availability.
+ * @type {(ChangeRoleOption & { allowedUserTypes: number[] })[]}
+ */
+export const AGENT_VIEW_TABS = [
+	{
+		slug: "transfer-retailer",
+		label: `Assign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
+		path: "/admin/my-network/profile/change-role",
+		allowedUserTypes: [UserType.I_MERCHANT],
+	},
+	{
+		slug: "transfer-retailer",
+		label: `Change ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
+		path: "/admin/my-network/profile/change-role",
+		allowedUserTypes: [UserType.MERCHANT],
+	},
+	{
+		slug: "retailer-to-iretailer",
+		label: `Unassign ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
+		path: "/admin/my-network/profile/change-role",
+		allowedUserTypes: [UserType.MERCHANT],
 	},
 	{
 		slug: "retailer-to-distributor",
-		label: "Promote To Distributor",
+		label: `Promote To ${UserTypeLabel[UserType.DISTRIBUTOR]}`,
 		path: "/admin/my-network/profile/change-role",
-		// visible: [2, 3],
-		visibleString: ["Retailer", "Independent Retailer"], //this need to be in sync with what we are getting in network table
-		global: false,
+		allowedUserTypes: [UserType.MERCHANT, UserType.I_MERCHANT],
 	},
-	// {
-	// 	slug: "demote-distributor",
-	// 	label: "Demote Distributor to Retailer",
-	// 	path: "/admin/my-network/profile/change-role",
-	// 	visible: [1],
-	// 	visibleString: ["Distributor"],
-	//	global: true,
-	// },
 ];

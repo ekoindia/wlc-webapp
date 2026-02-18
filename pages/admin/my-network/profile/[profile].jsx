@@ -14,7 +14,7 @@ const Profile = () => {
 };
 
 Profile.pageMeta = {
-	title: "My Network > Agent Details | Admin",
+	title: "My Network > Details | Admin",
 };
 
 export default Profile;

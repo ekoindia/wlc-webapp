@@ -15,8 +15,8 @@ const NetworkCard = ({ item }) => {
 		mobile_number,
 		eko_code,
 		account_status_id,
-		agent_type,
 		user_type_label,
+		user_type_id,
 		address_details,
 		agent_name,
 		agent_mobile,
@@ -43,7 +43,7 @@ const NetworkCard = ({ item }) => {
 						mobile_number,
 						eko_code,
 						account_status_id,
-						agent_type,
+						user_type_id,
 						onStatusUpdate: _onStatusUpdate,
 					}}
 				/>

@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Menus, Modal } from "components";
 import {
-	ChangeRoleMenuList,
+	AGENT_VIEW_TABS,
 	Endpoints,
 	ParamType,
 	TransactionTypes,
@@ -52,9 +52,15 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 	for (const listItem of list) {
 		let _isArray = Array.isArray(listItem.id);
 		let _id = _isArray ? listItem.id : [listItem.id];
+
+		// 1. Convert statusId to a number once
+		const currentStatus = +statusId;
+
+		// We hide the item if the status is 60 OR if the status is already in the item's ID list
 		if (
-			Object.values(status).includes(+statusId) &&
-			!_id.includes(+statusId)
+			currentStatus !== status.ACTIVE_DEMO_USER_ACCOUNT && // Hide EVERYTHING from 'list' if it's a demo user
+			Object.values(status).includes(currentStatus) &&
+			!_id.includes(currentStatus)
 		) {
 			_list.push(listItem);
 		}
@@ -88,7 +94,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  * @param {string} props.mobile_number - Mobile number of the agent
  * @param {string} props.eko_code - Unique EKO code identifier for the agent
  * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive, 60: Active Demo User)
- * @param {string} props.agent_type - Type/role of the agent
+ * @param {number} props.user_type_id - User type ID of the agent (e.g., 1: Distributor, 2: Retailer, 3: Independent Retailer)
  * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
  * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
  * @example
@@ -96,7 +102,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  *   mobile_number="9876543210"
  *   eko_code="EKO123"
  *   account_status_id={16}
- *   agent_type="retailer"
+ *   user_type_id={2}
  *   onStatusUpdate={(code, status) => console.log(code, status)}
  * />
  * @example
@@ -113,7 +119,7 @@ const NetworkMenuWrapper = ({
 	mobile_number,
 	eko_code,
 	account_status_id,
-	agent_type,
+	user_type_id,
 	onStatusUpdate,
 }) => {
 	const { onOpen } = useDisclosure();
@@ -268,27 +274,19 @@ const NetworkMenuWrapper = ({
 
 	let _includeChangeRole = false;
 
-	// For Active Demo User Account, skip standard menu items and only show custom items
-	const isDemoUser = +account_status_id === status.ACTIVE_DEMO_USER_ACCOUNT;
-
-	if (!isDemoUser) {
-		for (let { global, visibleString } of ChangeRoleMenuList) {
-			if (isAdmin && !global && visibleString.includes(agent_type)) {
-				_includeChangeRole = true;
-				break;
-			}
-		}
+	if (isAdmin) {
+		_includeChangeRole = AGENT_VIEW_TABS.some((tab) =>
+			tab.allowedUserTypes.includes(+user_type_id)
+		);
 	}
 
-	const _finalMenuList = isDemoUser
-		? others.filter((item) => item.visible)
-		: generateMenuList(
-				menuList,
-				account_status_id,
-				changeRoleMenuItem,
-				_includeChangeRole,
-				others
-			);
+	const _finalMenuList = generateMenuList(
+		menuList,
+		account_status_id,
+		changeRoleMenuItem,
+		_includeChangeRole,
+		others
+	);
 
 	const parameter_list = [
 		{

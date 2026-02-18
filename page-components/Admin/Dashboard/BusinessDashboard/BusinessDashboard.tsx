@@ -188,7 +188,6 @@ const BusinessDashboard = (): JSX.Element => {
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
 			<TopPanel panelDataList={[...activeAgents]} />
 
-			{/* @ts-expect-error - DashboardDateFilter props are loosely typed */}
 			<DashboardDateFilter
 				dateRange={dateRange}
 				prevDate={prevDate}
