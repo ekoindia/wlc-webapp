@@ -10,7 +10,6 @@ import {
 import { Currency, WaffleChart } from "components";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
-import { productmatchAndMapFilters } from "features/kyc-verification/utils";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useRef, useState } from "react";
 import { LuActivity } from "react-icons/lu";
@@ -31,6 +30,27 @@ const COLORS = [
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
 	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
+};
+
+/**
+ * Matches items from a Product master filter list against the keys present in an API productTypeBreakdown.
+ * @param {Array} productMasterList - The complete list of all products available in the system, retrieved from the products API.
+ * @param {object} productTypeBreakdown - The breakdown object from the GTV API where keys represent product IDs and values contain transaction details.
+ * @returns {Array} - A filtered array of product definitions that exist in the GTV breakdown.
+ */
+export const filterAvailableProducts = (
+	productMasterList,
+	productTypeBreakdown
+) => {
+	if (!productTypeBreakdown || !productMasterList) return [];
+
+	// Get the IDs (keys) available in the current API response
+	const availableIds = Object.keys(productTypeBreakdown);
+
+	// Filter the master list to only include what's in the breakdown
+	return productMasterList.filter((item) =>
+		availableIds.includes(String(item.value))
+	);
 };
 
 const calculateVariation = (current, lastPeriod) => {
@@ -144,7 +164,7 @@ const EarningOverview = ({
 			setProductWiseData(parsedData);
 
 			// 2. USE UTIL: Match product master prop list against current breakdown
-			const matchedOptions = productmatchAndMapFilters(
+			const matchedOptions = filterAvailableProducts(
 				masterProductList,
 				typeBreakdown
 			);
@@ -300,6 +320,17 @@ const EarningOverview = ({
 			variation: calculateVariation(
 				earningOverviewData?.activeAgents?.active,
 				earningOverviewData?.activeAgents?.lastPeriod
+			),
+		},
+		{
+			key: "onboardedAgents",
+			label: "Onboarded Agents",
+			value: earningOverviewData?.onboardedAgents?.onboarded || 0,
+			lastPeriod: earningOverviewData?.onboardedAgents?.lastMonth || 0,
+			type: "number",
+			variation: calculateVariation(
+				earningOverviewData?.onboardedAgents?.onboarded,
+				earningOverviewData?.onboardedAgents?.lastMonth
 			),
 		},
 		{
@@ -485,6 +516,110 @@ const EarningOverview = ({
 											</Skeleton>
 										</Text>
 									</Flex>
+									{/* last Period */}
+									{/* {item.lastPeriod !== 0 && (
+										<Flex
+											direction="column"
+											align={{
+												base: "flex-end",
+												md: "center",
+											}}
+											gap="1"
+										>
+											<Flex
+												fontSize="xs"
+												whiteSpace="nowrap"
+												gap="1"
+											>
+												<span>Last Period:</span>
+												<Flex fontWeight="semibold">
+													<Skeleton
+														isLoaded={!isLoading}
+													>
+														{item.type ===
+														"amount" ? (
+															<Currency
+																amount={
+																	item.lastPeriod
+																}
+															/>
+														) : (
+															<span>
+																{
+																	item.lastPeriod
+																}
+															</span>
+														)}
+													</Skeleton>
+												</Flex>
+											</Flex>
+											{item.variation && (
+												<Flex gap="1" align="center">
+													<Skeleton
+														isLoaded={!isLoading}
+													>
+														<Icon
+															name={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "arrow-increase"
+																	: "arrow-decrease"
+															}
+															color={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "success"
+																	: "error"
+															}
+															size="xs"
+														/>
+													</Skeleton>
+													<Flex
+														fontSize="10px"
+														wrap="nowrap"
+														gap="1"
+													>
+														<Text
+															color={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "success"
+																	: "error"
+															}
+														>
+															<Skeleton
+																isLoaded={
+																	!isLoading
+																}
+															>
+																{isNaN(
+																	item.variation
+																)
+																	? item.variation
+																	: `${item.variation}%`}
+															</Skeleton>
+														</Text>
+														<Text>
+															<Skeleton
+																isLoaded={
+																	!isLoading
+																}
+															>
+																{parseFloat(
+																	item.variation
+																) > 0
+																	? "Increase"
+																	: "Decrease"}
+															</Skeleton>
+														</Text>
+													</Flex>
+												</Flex>
+											)}
+										</Flex>
+									)} */}
 								</Flex>
 							)
 					)}

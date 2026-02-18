@@ -13,28 +13,6 @@ import {
 import type { CategoryOption, VerificationService } from "../types";
 
 /**
- * Matches items from a Product master filter list against the keys present in an API productTypeBreakdown.
- * @param {Array} productMasterList - The prop productFilterList [{label, value}]
- * @param {object} productTypeBreakdown - The parsed object from the API
- * @returns {Array} - Filtered and mapped options
- */
-
-export const productmatchAndMapFilters = (
-	productMasterList,
-	productTypeBreakdown
-) => {
-	if (!productTypeBreakdown || !productMasterList) return [];
-
-	// Get the IDs (keys) available in the current API response
-	const availableIds = Object.keys(productTypeBreakdown);
-
-	// Filter the master list to only include what's in the breakdown
-	return productMasterList.filter((item) =>
-		availableIds.includes(String(item.value))
-	);
-};
-
-/**
  * Derives an icon for a service based on its category or name.
  * Falls back to DEFAULT_ICON if no match is found.
  * @param {VerificationService} service - The service to get icon for
