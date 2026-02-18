@@ -6,11 +6,22 @@ import { useEffect, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 import { Cell, Label, Pie, PieChart } from "recharts";
 
+// Helper function to generate cache key
+const getCacheKey = (productFilterList, dateFrom, dateTo) => {
+	const productIds = (productFilterList || [])
+		.map((p) => p.value)
+		.sort()
+		.join(",");
+	return `${productIds}-${dateFrom}-${dateTo}`;
+};
+
 const SuccessRate = ({
 	dateFrom,
 	dateTo,
 	isDraggable,
 	productFilterList: masterProductList,
+	businessDashboardData,
+	setBusinessDashboardData,
 }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
 
@@ -22,22 +33,13 @@ const SuccessRate = ({
 			onSuccess: (res) => {
 				const _data = res?.data?.dashboard_object?.successRate || {};
 
-				// 1. Get the keys (IDs) from the API response (e.g., "392", "814")
 				const successRateKeys = Object.keys(_data);
-
-				// 2. Map through the keys and find the label from masterProductList
 				const formattedData = successRateKeys.map((id) => {
-					// Find matching product in masterProductList
-					// We use == instead of === because id is a string "392"
-					// and value might be a number 392
 					const product = masterProductList?.find(
 						(p) => p.value == id
 					);
-
 					const successCount = _data[id]?.successCount;
 					const totalCount = _data[id]?.totalCount;
-
-					// Calculate percentage
 					const percentage =
 						totalCount > 0
 							? Number(
@@ -46,7 +48,6 @@ const SuccessRate = ({
 									)
 								)
 							: 0;
-
 					return {
 						id: id,
 						label: product?.label,
@@ -56,7 +57,22 @@ const SuccessRate = ({
 					};
 				});
 
-				// 3. Update the state
+				// Cache data for future use
+				if (setBusinessDashboardData) {
+					const cacheKey = getCacheKey(
+						masterProductList,
+						dateFrom,
+						dateTo
+					);
+					setBusinessDashboardData((prev) => ({
+						...prev,
+						successRateCache: {
+							...(prev?.successRateCache || {}),
+							[cacheKey]: formattedData,
+						},
+					}));
+				}
+
 				setSuccessRateData(formattedData);
 			},
 		}
@@ -64,6 +80,13 @@ const SuccessRate = ({
 
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
+
+		const cacheKey = getCacheKey(masterProductList, dateFrom, dateTo);
+		const cachedData = businessDashboardData?.successRateCache?.[cacheKey];
+		if (cachedData) {
+			setSuccessRateData(cachedData);
+			return;
+		}
 
 		fetchSuccessRateData({
 			body: {
@@ -76,7 +99,12 @@ const SuccessRate = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo]);
+	}, [
+		dateFrom,
+		dateTo,
+		masterProductList,
+		businessDashboardData?.successRateCache,
+	]);
 
 	// MARK: jsx
 	return (
@@ -103,8 +131,6 @@ const SuccessRate = ({
 				</Flex>
 			</DragHandle>
 
-			{/* <Divider /> */}
-
 			<Flex
 				direction="column"
 				className="customScrollbars"
@@ -113,7 +139,6 @@ const SuccessRate = ({
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
 				maxH="180px"
-				// gap="10px"
 			>
 				{successRateData?.length ? (
 					successRateData.map((item, index) => {
@@ -144,8 +169,8 @@ const SuccessRate = ({
 								</Text>
 								{showNewDashboard ? (
 									<Chart
-										successCount={item.success}
-										totalCount={item.total}
+										successCount={item.successCount}
+										totalCount={item.totalCount}
 										size={30}
 										innerRadius="60%"
 										hideLabel
