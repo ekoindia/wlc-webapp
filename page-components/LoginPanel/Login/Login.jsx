@@ -48,14 +48,13 @@ const Login = ({
 	const { login_meta } = metadata ?? {};
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 	const mobileMappedUserIdLabel = login_meta?.user_id_label || "User ID";
+	const UserIdType = isMobileMappedUserId
+		? mobileMappedUserIdLabel
+		: "Mobile Number";
 
 	const [value, setValue] = useState(number.original || "");
 	const [errorMsg, setErrorMsg] = useState("");
 	const [invalid, setInvalid] = useState(false);
-
-	const UserIdType = isMobileMappedUserId
-		? mobileMappedUserIdLabel
-		: "mobile number";
 
 	useEffect(() => {
 		if (lastMobileFormatted && !value) {
@@ -219,7 +218,7 @@ const Login = ({
 			<Box flex="0.5 1 40px" />
 
 			<Input
-				label={`Login with your ${UserIdType}`} // "Enter mobile number"
+				label={`Login With Your ${UserIdType}`} // "Enter mobile number"
 				placeholder={isMobileMappedUserId ? "" : "XXX XXX XXXX"}
 				required
 				leftAddon={isMobileMappedUserId ? undefined : "+91"}
@@ -228,7 +227,6 @@ const Login = ({
 				errorMsg={errorMsg}
 				borderRadius={10}
 				maxW="100%"
-				onChange={onChangeHandler}
 				maxLength={10}
 				isNumInput={true}
 				labelStyle={{
@@ -237,6 +235,7 @@ const Login = ({
 				onFocus={() => {
 					setInvalid(false);
 				}}
+				onChange={onChangeHandler}
 				onKeyDown={onkeyHandler}
 			/>
 

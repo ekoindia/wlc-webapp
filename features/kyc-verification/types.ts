@@ -262,6 +262,8 @@ export interface VerificationResult {
 	timestamp?: string;
 	/** Transaction ID from API response (used for downloading reports) */
 	tid?: string;
+	/** Client reference ID from API response (used for downloading reports) */
+	clientRefId?: string;
 }
 
 /**

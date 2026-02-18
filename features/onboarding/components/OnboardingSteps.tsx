@@ -1,16 +1,10 @@
 import { useToast } from "@chakra-ui/react";
-import {
-	useAppSource,
-	useOrgDetailContext,
-	usePubSub,
-	useSession,
-} from "contexts";
+import { useAppSource, useOrgDetailContext, useSession } from "contexts";
 import { useRefreshToken } from "hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ANDROID_ACTION } from "utils";
+
 import {
 	masterOnboardingSteps,
-	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
 	type PipelineResult,
 } from "../constants";
@@ -18,7 +12,6 @@ import { OnboardingProvider, useOnboardingContext } from "../context";
 import {
 	createStepLookupMap,
 	extractStepConfiguration,
-	useAndroidIntegration,
 	useStepConfiguration,
 } from "../hooks";
 import {
@@ -68,7 +61,6 @@ const OnboardingStepsContent = ({
 	const { state, actions, pipelineResults, setPipelineResult } =
 		useOnboardingContext();
 	const { isAndroid: _isAndroid } = useAppSource();
-	const { subscribe, TOPICS } = usePubSub();
 	const { orgDetail } = useOrgDetailContext();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
@@ -150,12 +142,6 @@ const OnboardingStepsContent = ({
 
 	const mobile = useMemo(
 		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
-	);
-
-	const agreementId = useMemo(
-		() =>
-			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
@@ -260,11 +246,6 @@ const OnboardingStepsContent = ({
 			refreshAgentProfile,
 		]
 	);
-
-	const android = useAndroidIntegration({
-		agreementId,
-		onStepSubmit: (data) => handleStepDataSubmit(data),
-	});
 
 	/**
 	 * Initialize step configuration from provided user data.
@@ -478,50 +459,6 @@ const OnboardingStepsContent = ({
 		},
 		[state.stepperData, stepConfiguration]
 	);
-
-	/**
-	 * Setup Window Message Listener for eSign status updates to trigger step submission.
-	 * The eSign web library sends postMessage events with type "STATUS_UPDATE" on completion from its own tab.
-	 * MARK: eSign Resp
-	 */
-	useEffect(() => {
-		const handleMessage = (event) => {
-			if (event.data.type === "STATUS_UPDATE") {
-				handleStepDataSubmit({
-					id: ONBOARDING_STEP_IDS.SIGN_AGREEMENT,
-					form_data: {
-						document_id: state.esign.signUrlData?.document_id ?? "",
-						agreement_id: agreementId,
-					},
-				});
-			}
-		};
-
-		// Use AbortController to remove the event listeners when the component is unmounted
-		const controller = new AbortController();
-		const { signal } = controller;
-
-		window.addEventListener("message", handleMessage, { signal });
-
-		// Cleanup listener on component unmount
-		return () => {
-			controller.abort();
-		};
-	}, [state.esign.signUrlData, agreementId, handleStepDataSubmit]);
-
-	/**
-	 * Subscribe to Android responses for eSign status updates.
-	 * MARK: Android Esign Resp
-	 */
-	useEffect(() => {
-		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
-			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
-				android.androidleegalityResponseHandler(data?.data);
-			}
-		});
-
-		return unsubscribe;
-	}, [TOPICS.ANDROID_RESPONSE, subscribe, android]);
 
 	/**
 	 * Initialize step configuration when onboarding user details become available.
