@@ -4,5 +4,8 @@
 
 export { useAgentServices } from "./useAgentServices";
 export { useKycServices } from "./useKycServices";
-export { useKycVerification } from "./useKycVerification";
+export {
+	mergeVerificationResults,
+	useKycVerification,
+} from "./useKycVerification";
 export { useServiceSelection } from "./useServiceSelection";
