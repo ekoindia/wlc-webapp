@@ -40,7 +40,11 @@ const SuccessRate = ({
 					// Calculate percentage
 					const percentage =
 						totalCount > 0
-							? ((successCount / totalCount) * 100).toFixed(2)
+							? Number(
+									((successCount / totalCount) * 100).toFixed(
+										2
+									)
+								)
 							: 0;
 
 					return {
@@ -127,7 +131,7 @@ const SuccessRate = ({
 							>
 								<Text flex="1" fontSize="0.75rem">
 									<Skeleton isLoaded={!isLoading}>
-										{item.label}
+										{item?.label}
 									</Skeleton>
 								</Text>
 								<Text

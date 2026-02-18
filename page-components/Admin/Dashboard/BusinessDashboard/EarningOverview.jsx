@@ -7,11 +7,11 @@ import {
 	Text,
 	useBreakpointValue,
 } from "@chakra-ui/react";
-import { Currency, Icon, WaffleChart } from "components";
+import { Currency, WaffleChart } from "components";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
 import { matchAndMapFilters } from "./BusinessDashboard";
@@ -77,6 +77,8 @@ const EarningOverview = ({
 	const [filteredProductList, setFilteredProductList] = useState([
 		{ label: "All Products", value: "" },
 	]);
+	const [cachedFullProductList, setCachedFullProductList] = useState(null);
+	const prevDateRef = useRef({ dateFrom, dateTo });
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
@@ -122,7 +124,10 @@ const EarningOverview = ({
 		} catch (error) {
 			console.error("Error parsing product-wise data:", error);
 			setProductWiseData([]);
-			setFilteredProductList([{ label: "All Products", value: "" }]);
+			// Don't reset filteredProductList here if we have cached data
+			if (!cachedFullProductList) {
+				setFilteredProductList([{ label: "All Products", value: "" }]);
+			}
 			return;
 		}
 
@@ -139,29 +144,59 @@ const EarningOverview = ({
 
 			setProductWiseData(parsedData);
 
-			console.log("masterProductList:", masterProductList);
-
 			// 2. USE UTIL: Match master prop list against current breakdown
 			const matchedOptions = matchAndMapFilters(
 				masterProductList,
 				typeBreakdown
 			);
 
-			console.log("matchFilter:", matchedOptions);
-
-			setFilteredProductList([
-				{ label: "All Products", value: "" },
-				...matchedOptions,
-			]);
+			// 3. Only update filter list if no filter is selected (showing "All Products")
+			// This ensures we capture the full list and cache it
+			if (!productFilter && matchedOptions.length > 0) {
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
+				setCachedFullProductList(fullList);
+			} else if (cachedFullProductList) {
+				// Use cached full list when a specific product is selected
+				setFilteredProductList(cachedFullProductList);
+			}
 		} else {
 			setProductWiseData([]);
-			setFilteredProductList([{ label: "All Products", value: "" }]);
+			// Don't reset filteredProductList here if we have cached data
+			if (!cachedFullProductList) {
+				setFilteredProductList([{ label: "All Products", value: "" }]);
+			}
 		}
-	}, [earningOverviewData, masterProductList]);
+	}, [
+		earningOverviewData,
+		masterProductList,
+		productFilter,
+		cachedFullProductList,
+	]);
 
 	// MARK: Fetch Data
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
+
+		// Check if date has changed
+		const dateChanged =
+			prevDateRef.current.dateFrom !== dateFrom ||
+			prevDateRef.current.dateTo !== dateTo;
+
+		// Reset product filter to "All Products" when date changes
+		if (dateChanged && productFilter) {
+			prevDateRef.current = { dateFrom, dateTo };
+			setProductFilter("");
+			return; // The effect will re-run with empty productFilter
+		}
+
+		// Update ref after handling date change
+		if (dateChanged) {
+			prevDateRef.current = { dateFrom, dateTo };
+		}
 
 		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
@@ -322,19 +357,24 @@ const EarningOverview = ({
 							<LuActivity color="#3c83f6" />
 							Business Overview
 						</Flex>
-						<Select
-							variant="filled"
-							value={productFilter}
-							onChange={(e) => setProductFilter(e.target.value)}
-							size="xs"
-							w="auto"
-						>
-							{filteredProductList.map(({ label, value }) => (
-								<option key={value} value={value}>
-									{label}
-								</option>
-							))}
-						</Select>
+						{/* Product Filter */}
+						{filteredProductList.length > 1 && (
+							<Select
+								variant="filled"
+								value={productFilter}
+								onChange={(e) =>
+									setProductFilter(e.target.value)
+								}
+								size="xs"
+								w="auto"
+							>
+								{filteredProductList.map(({ label, value }) => (
+									<option key={value} value={value}>
+										{label}
+									</option>
+								))}
+							</Select>
+						)}
 					</DragHandle>
 				</Flex>
 
@@ -355,19 +395,21 @@ const EarningOverview = ({
 							Business Overview
 						</Flex>
 					</DragHandle>
-					<Select
-						variant="filled"
-						value={productFilter}
-						onChange={(e) => setProductFilter(e.target.value)}
-						size="xs"
-						w="100%"
-					>
-						{filteredProductList.map(({ label, value }) => (
-							<option key={value} value={value}>
-								{label}
-							</option>
-						))}
-					</Select>
+					{filteredProductList.length > 1 && (
+						<Select
+							variant="filled"
+							value={productFilter}
+							onChange={(e) => setProductFilter(e.target.value)}
+							size="xs"
+							w="100%"
+						>
+							{filteredProductList.map(({ label, value }) => (
+								<option key={value} value={value}>
+									{label}
+								</option>
+							))}
+						</Select>
+					)}
 				</Flex>
 			</Flex>
 
@@ -445,7 +487,7 @@ const EarningOverview = ({
 										</Text>
 									</Flex>
 
-									{item.lastPeriod !== 0 && (
+									{/* {item.lastPeriod !== 0 && (
 										<Flex
 											direction="column"
 											align={{
@@ -547,7 +589,7 @@ const EarningOverview = ({
 												</Flex>
 											)}
 										</Flex>
-									)}
+									)} */}
 								</Flex>
 							)
 					)}
