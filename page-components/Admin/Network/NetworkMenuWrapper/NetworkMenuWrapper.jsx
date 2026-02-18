@@ -165,17 +165,18 @@ const NetworkMenuWrapper = ({
 
 		try {
 			const response = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.TRANSACTION_JSON,
 				{
+					method: "POST",
 					headers: {
+						"Content-Type": "application/json",
 						"tf-req-uri-root-path": "/ekoicici/v1",
 						"tf-req-uri": `/network/agent`,
-						"tf-req-method": "POST",
+						"tf-req-method": "DELETE",
 					},
 					body: {
 						csp_code: eko_code,
-						source: "WLC",
-						version: "v1",
 					},
 					token: accessToken,
 				}
