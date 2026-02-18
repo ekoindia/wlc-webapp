@@ -28,7 +28,9 @@ export {
 export {
 	CategoryTabs,
 	MultiServiceToggle,
+	RetryFormModal,
 	SelectedServicesPill,
+	ServiceFormPageModal,
 	ServiceSearch,
 	VerificationProgress,
 	VerificationResultCard,
@@ -40,6 +42,7 @@ export { KycServicesProvider, useKycServicesContext } from "./contexts";
 
 // Hooks
 export {
+	mergeVerificationResults,
 	useAgentServices,
 	useKycServices,
 	useKycVerification,
