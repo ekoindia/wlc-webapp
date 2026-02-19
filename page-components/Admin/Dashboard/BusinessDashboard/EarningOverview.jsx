@@ -184,6 +184,7 @@ const EarningOverview = ({
 			}
 		} else {
 			setProductWiseData([]);
+			setFilteredProductList([{ label: "All Products", value: "" }]);
 			// Don't reset filteredProductList here if we have cached data
 			if (!cachedFullProductList) {
 				setFilteredProductList([{ label: "All Products", value: "" }]);
@@ -253,6 +254,7 @@ const EarningOverview = ({
 		businessDashboardData?.earningOverviewCache,
 		setTotalBusiness,
 		fetchEarningOverviewData,
+		fetchEarningOverviewData,
 	]);
 
 	const earningOverviewList = [
@@ -289,9 +291,10 @@ const EarningOverview = ({
 				earningOverviewData?.gtv?.averageRevenueLastPeriod || 0
 			),
 		},
+		// TODO: Display Transaction and API Calls according to feature flag
 		{
 			key: "transactions",
-			label: "API Calls",
+			label: "Transactions",
 			value: earningOverviewData?.transactions?.transactions || 0,
 			lastPeriod: earningOverviewData?.transactions?.lastPeriod || 0,
 			type: "number",
@@ -626,7 +629,8 @@ const EarningOverview = ({
 				</Grid>
 			</Flex>
 
-			{/*TODO: Need IcoButton -- Download Reports */}
+			{/* eslint-disable-next-line no-warning-comments */}
+			{/* TODO: Need IcoButton -- Download Reports */}
 		</Flex>
 	);
 };

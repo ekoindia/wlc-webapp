@@ -5,7 +5,6 @@
 export { AddUserButton } from "./AddUserButton";
 export { AddUserModal } from "./AddUserModal";
 export { BulkUploadButton } from "./BulkUploadButton";
-export { BulkVerificationModal } from "./BulkVerificationModal";
 export { CategoryTabs } from "./CategoryTabs";
 export { MultiServiceToggle } from "./MultiServiceToggle";
 export { RetryFormModal } from "./RetryFormModal";
