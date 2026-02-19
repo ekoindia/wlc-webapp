@@ -29,6 +29,7 @@ export type EsignStatus =
 	| "signing"
 	| "verifying"
 	| "success"
+	| "already_signed"
 	| "error";
 
 /**

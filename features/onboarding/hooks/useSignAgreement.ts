@@ -84,16 +84,9 @@ export const useSignAgreement = (): UseSignAgreementReturn => {
 
 			setSignData(urlData);
 
-			// 2. If document is already signed, shortcut to success
+			// 2. If document is already signed, set status directly
 			if (urlData.alreadySigned) {
-				setStatus("success");
-				toast({
-					title: "Document is already signed",
-					description:
-						"Your agreement has been signed previously. Proceeding automatically.",
-					status: "success",
-					duration: 4000,
-				});
+				setStatus("already_signed");
 				return;
 			}
 
