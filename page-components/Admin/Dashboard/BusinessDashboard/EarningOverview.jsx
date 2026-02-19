@@ -13,6 +13,7 @@ import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
 import { LuActivity } from "react-icons/lu";
+import { matchAndMapFilters } from ".";
 import { useDashboard } from "..";
 
 // Product Chart Colors
@@ -65,7 +66,7 @@ const calculateVariation = (current, lastMonth) => {
 const EarningOverview = ({
 	dateFrom,
 	dateTo,
-	productFilterList,
+	productFilterList: masterProductList,
 	setTotalBusiness,
 	isDraggable,
 }) => {
@@ -73,6 +74,9 @@ const EarningOverview = ({
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 	const [productWiseData, setProductWiseData] = useState([]);
+	const [filteredProductList, setFilteredProductList] = useState([
+		{ label: "All Products", value: "" },
+	]);
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
@@ -107,7 +111,7 @@ const EarningOverview = ({
 		}
 	);
 
-	// Calculate/parse Product-wise data...
+	// Calculate/parse Product-wise data and generate product filter list from typeBreakdown
 	useEffect(() => {
 		let typeBreakdown = earningOverviewData?.gtv?.typeBreakdown;
 
@@ -118,35 +122,40 @@ const EarningOverview = ({
 		} catch (error) {
 			console.error("Error parsing product-wise data:", error);
 			setProductWiseData([]);
+			setFilteredProductList([{ label: "All Products", value: "" }]);
 			return;
 		}
 
-		// if (!typeBreakdown) return;
+		if (typeBreakdown && Object.keys(typeBreakdown).length > 0) {
+			// 1. Map data for the Waffle Chart
+			const parsedData = Object.entries(typeBreakdown)
+				.map(([key, value]) => ({
+					id: key,
+					...value,
+					label: value.name,
+					value: value.amount,
+				}))
+				.sort((a, b) => b.value - a.value);
 
-		const parsedData = typeBreakdown
-			? Object.entries(typeBreakdown)
-					?.map(([key, value]) => ({
-						id: key,
-						...value,
-						label: value.name, // For Waffle Chart
-						value: value.amount, // For Waffle Chart
-					}))
-					.sort((a, b) => b.value - a.value)
-			: null;
+			setProductWiseData(parsedData);
 
-		// const parsedData = typeBreakdown.map((item) => ({
-		// 	...item,
-		// 	value: item.value || 0,
-		// 	label: item.label || "Unknown",
-		// }));
-		// console.log("Earning Overview Data - parsed data:", parsedData);
+			// 2. USE UTIL: Match master prop list against current breakdown
+			const matchedOptions = matchAndMapFilters(
+				masterProductList,
+				typeBreakdown
+			);
 
-		if (parsedData && Array.isArray(parsedData) && parsedData.length > 0) {
-			setProductWiseData(parsedData || []);
+			console.log("matchFilter:", matchedOptions);
+
+			setFilteredProductList([
+				{ label: "All Products", value: "" },
+				...matchedOptions,
+			]);
 		} else {
 			setProductWiseData([]);
+			setFilteredProductList([{ label: "All Products", value: "" }]);
 		}
-	}, [earningOverviewData]);
+	}, [earningOverviewData, masterProductList]);
 
 	// MARK: Fetch Data
 	useEffect(() => {
@@ -187,6 +196,7 @@ const EarningOverview = ({
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
 		setTotalBusiness,
+		fetchEarningOverviewData,
 	]);
 
 	const earningOverviewList = [
@@ -296,7 +306,7 @@ const EarningOverview = ({
 							size="xs"
 							w="auto"
 						>
-							{productFilterList.map(({ label, value }) => (
+							{filteredProductList.map(({ label, value }) => (
 								<option key={value} value={value}>
 									{label}
 								</option>
@@ -329,7 +339,7 @@ const EarningOverview = ({
 						size="xs"
 						w="100%"
 					>
-						{productFilterList.map(({ label, value }) => (
+						{filteredProductList.map(({ label, value }) => (
 							<option key={value} value={value}>
 								{label}
 							</option>
@@ -521,7 +531,8 @@ const EarningOverview = ({
 				</Grid>
 			</Flex>
 
-			{/*TODO: Need IcoButton -- Download Reports */}
+			{/* eslint-disable-next-line no-warning-comments */}
+			{/* TODO: Need IcoButton -- Download Reports */}
 		</Flex>
 	);
 };
