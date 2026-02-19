@@ -143,7 +143,7 @@ const EarningOverview = ({
 		} catch (error) {
 			console.error("Error parsing product-wise data:", error);
 			setProductWiseData([]);
-			// Don't reset filteredProductList here if we have cached data
+			// Keep the cached filter list if available, don't reset it
 			if (!cachedFullProductList) {
 				setFilteredProductList([{ label: "All Products", value: "" }]);
 			}
@@ -169,8 +169,8 @@ const EarningOverview = ({
 				typeBreakdown
 			);
 
-			// 3. Only update filter list if no filter is selected (showing "All Products")
-			// This ensures we capture the full list and cache it
+			// 3. Only update and cache filter list if no filter is selected AND we have matched options
+			// This ensures we capture the full list when showing "All Products"
 			if (!productFilter && matchedOptions.length > 0) {
 				const fullList = [
 					{ label: "All Products", value: "" },
@@ -179,14 +179,24 @@ const EarningOverview = ({
 				setFilteredProductList(fullList);
 				setCachedFullProductList(fullList);
 			} else if (cachedFullProductList) {
-				// Use cached full list when a specific product is selected
+				// Always use cached full list when available (regardless of current breakdown)
 				setFilteredProductList(cachedFullProductList);
+			} else if (matchedOptions.length > 0) {
+				// Fallback: create filter list from current options if no cache exists
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
 			}
 		} else {
 			setProductWiseData([]);
-			setFilteredProductList([{ label: "All Products", value: "" }]);
-			// Don't reset filteredProductList here if we have cached data
-			if (!cachedFullProductList) {
+			// Only reset filter list if we don't have cached data
+			if (cachedFullProductList) {
+				// Keep using cached full list
+				setFilteredProductList(cachedFullProductList);
+			} else {
+				// Only fall back to "All Products" if no cache exists
 				setFilteredProductList([{ label: "All Products", value: "" }]);
 			}
 		}
@@ -253,7 +263,6 @@ const EarningOverview = ({
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
 		setTotalBusiness,
-		fetchEarningOverviewData,
 		fetchEarningOverviewData,
 	]);
 
