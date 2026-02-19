@@ -4,6 +4,7 @@ import { useSession } from "contexts";
 import { useUserTypes } from "hooks";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
+import OnboardDemoViaForm from "./OnBoardDemoViaForm/OnBoardDemoViaForm";
 import { getOnboardingPermissions } from "./OnboardingPermissions";
 
 // API needs this mapping for applicant_type to work
@@ -68,6 +69,18 @@ const OnboardAgents = () => {
 				/>
 			),
 		}, // Multiple agent onboarding via file upload
+
+		{
+			label: "Add Demo Account",
+			comp: (
+				<OnboardDemoViaForm
+					permissions={permissions}
+					agentTypeList={agentTypeList}
+					agentTypeValueToApi={agentTypeValueToApi}
+				/>
+			),
+			// Individual Demo User onboarding via form
+		},
 	];
 	return (
 		<>

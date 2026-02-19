@@ -214,7 +214,11 @@ const BusinessDashboard = (): JSX.Element => {
 					),
 					success: (
 						// @ts-ignore - isDraggable injected by DraggableGrid via cloneElement
-						<SuccessRate dateFrom={prevDate} dateTo={currDate} />
+						<SuccessRate
+							productFilterList={widgetProps.productFilterList}
+							dateFrom={prevDate}
+							dateTo={currDate}
+						/>
 					),
 					// @ts-ignore - isDraggable injected by DraggableGrid via cloneElement
 					services: <MostUsedServices {...widgetProps} />,

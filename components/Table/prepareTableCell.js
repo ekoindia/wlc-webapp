@@ -60,7 +60,12 @@ export const prepareTableCell = (
 		case "Location":
 			return getLocationStyle(item[column.name]);
 		case "Avatar":
-			return getNameStyle(item[column.name]);
+			return getNameStyle(
+				item[column.name],
+				undefined,
+				undefined,
+				account_status_id
+			);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":

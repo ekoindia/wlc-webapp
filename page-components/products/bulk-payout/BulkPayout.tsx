@@ -11,7 +11,7 @@ import {
 import { EkoConnectWidget } from "components/EkoConnectWidget";
 import { useEffect, useState } from "react";
 import BatchHistory from "./components/BatchHistory";
-import UploadRecipients from "./components/UploadRecipients";
+import BulkUpload from "./components/BulkUpload";
 import { BulkPayoutProvider, useBulkPayout } from "./context/BulkPayoutContext";
 
 /**
@@ -81,7 +81,6 @@ const BulkPayoutContent = () => {
 					<Tab
 						_selected={{ bg: "primary.DEFAULT", color: "white" }}
 						borderRadius="full"
-						// px="6"
 						fontSize="sm"
 						fontWeight="medium"
 					>
@@ -90,7 +89,6 @@ const BulkPayoutContent = () => {
 					<Tab
 						_selected={{ bg: "primary.DEFAULT", color: "white" }}
 						borderRadius="full"
-						// px="6"
 						fontSize="sm"
 						fontWeight="medium"
 					>
@@ -107,7 +105,7 @@ const BulkPayoutContent = () => {
 						{/* Only show UploadRecipients  when response is 309 */}
 						{ekoResponseTypeId === 309 && (
 							<Box mt="6" mb={{ base: "30%", md: 0 }}>
-								<UploadRecipients />
+								<BulkUpload />
 							</Box>
 						)}
 					</TabPanel>
