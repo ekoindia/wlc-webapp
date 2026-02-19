@@ -75,7 +75,7 @@ export const getSignUrl = async (
 		return {
 			alreadySigned: true,
 			short_url: "",
-			document_id: response?.data?.user_code || "",
+			document_id: response?.data?.document_id || "",
 			pipe: 0,
 			...response?.data,
 		} as EsignUrlData;
