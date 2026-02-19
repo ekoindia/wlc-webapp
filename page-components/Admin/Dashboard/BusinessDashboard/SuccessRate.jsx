@@ -1,93 +1,79 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { DragHandle } from "components/DraggableGrid";
-import { Endpoints, ProductRoleConfiguration } from "constants";
-import { useApiFetch, useDailyCacheState, useFeatureFlag } from "hooks";
-import { useEffect, useMemo, useState } from "react";
+import { Endpoints } from "constants";
+import { useApiFetch, useFeatureFlag } from "hooks";
+import { useEffect, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 import { Cell, Label, Pie, PieChart } from "recharts";
-import { useDashboard } from "..";
 
-const successRateLocalCacheKey = "inf-dashboard-success-rate";
+// Helper function to generate cache key
+const getCacheKey = (productFilterList, dateFrom, dateTo) => {
+	const productIds = (productFilterList || [])
+		.map((p) => p.value)
+		.sort()
+		.join(",");
+	return `${productIds}-${dateFrom}-${dateTo}`;
+};
 
-// Generate cache key using only date range
-const getCacheKey = (dateFrom, dateTo) =>
-	`successRate-${dateFrom.substring(0, 10)}-${dateTo.substring(0, 10)}`;
-
-const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
+const SuccessRate = ({
+	dateFrom,
+	dateTo,
+	isDraggable,
+	productFilterList: masterProductList,
+	businessDashboardData,
+	setBusinessDashboardData,
+}) => {
 	const [successRateData, setSuccessRateData] = useState([]);
-	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
-	const [successRateCache, setSuccessRateCache, isCacheValid] =
-		useDailyCacheState(successRateLocalCacheKey, {});
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
-
-	const cacheKey = useMemo(
-		() => getCacheKey(dateFrom, dateTo),
-		[dateFrom, dateTo]
-	);
-	const cachedSuccessRate =
-		businessDashboardData?.successRateCache?.[cacheKey];
-
-	const updateSuccessRateCache = (_successRate) => {
-		// Always store something in the cache (even if empty)
-		const updatedCache = {
-			...(successRateCache || {}),
-			data: {
-				...(successRateCache?.data || {}),
-				[cacheKey]: _successRate.length ? _successRate : [], // Store empty array if no data
-			},
-		};
-
-		setSuccessRateCache(updatedCache);
-		setBusinessDashboardData((prev) => ({
-			...prev,
-			successRateCache: updatedCache.data,
-		}));
-	};
 
 	const [fetchSuccessRateData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
 			onSuccess: (res) => {
 				const _data = res?.data?.dashboard_object?.successRate || {};
-				const _product = ProductRoleConfiguration?.products ?? [];
 
-				// Check if _data has any success rate data
-				const _successRate = _product
-					.filter((p) => p.tx_typeid && _data[p.tx_typeid])
-					.map((p) => {
-						const productData = _data[p.tx_typeid];
+				const successRateKeys = Object.keys(_data);
+				const formattedData = successRateKeys.map((id) => {
+					const product = masterProductList?.find(
+						(p) => p.value == id
+					);
+					const successCount = _data[id]?.successCount;
+					const totalCount = _data[id]?.totalCount;
+					const percentage =
+						totalCount > 0
+							? Number(
+									((successCount / totalCount) * 100).toFixed(
+										2
+									)
+								)
+							: 0;
+					return {
+						id: id,
+						label: product?.label,
+						successCount,
+						totalCount,
+						value: percentage,
+					};
+				});
 
-						if (
-							!productData?.successCount ||
-							!productData?.totalCount
-						) {
-							return null;
-						}
+				// Cache data for future use
+				if (setBusinessDashboardData) {
+					const cacheKey = getCacheKey(
+						masterProductList,
+						dateFrom,
+						dateTo
+					);
+					setBusinessDashboardData((prev) => ({
+						...prev,
+						successRateCache: {
+							...(prev?.successRateCache || {}),
+							[cacheKey]: formattedData,
+						},
+					}));
+				}
 
-						const successPercent =
-							(productData.successCount /
-								productData.totalCount) *
-							100;
-
-						const successRate = successPercent.toFixed(
-							successPercent == 100 ? 0 : 1
-						);
-
-						return {
-							key: p.tx_typeid,
-							label: p.label,
-							value: successRate,
-							success: productData.successCount,
-							total: productData.totalCount,
-						};
-					})
-					.filter(Boolean); // Remove null values
-
-				// If _successRate is empty, store [] instead of undefined
-				updateSuccessRateCache(_successRate.length ? _successRate : []);
-
-				setSuccessRateData(_successRate);
+				setSuccessRateData(formattedData);
 			},
 		}
 	);
@@ -95,15 +81,10 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
-		if (cachedSuccessRate !== undefined) {
-			// Cache exists, even if empty
-			setSuccessRateData(cachedSuccessRate);
-			return;
-		}
-
-		if (isCacheValid && successRateCache?.data?.[cacheKey]?.length) {
-			updateSuccessRateCache(successRateCache.data[cacheKey]);
-			setSuccessRateData(successRateCache.data[cacheKey]);
+		const cacheKey = getCacheKey(masterProductList, dateFrom, dateTo);
+		const cachedData = businessDashboardData?.successRateCache?.[cacheKey];
+		if (cachedData) {
+			setSuccessRateData(cachedData);
 			return;
 		}
 
@@ -121,10 +102,8 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 	}, [
 		dateFrom,
 		dateTo,
-		cacheKey,
-		cachedSuccessRate,
-		isCacheValid,
-		successRateCache,
+		masterProductList,
+		businessDashboardData?.successRateCache,
 	]);
 
 	// MARK: jsx
@@ -152,8 +131,6 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 				</Flex>
 			</DragHandle>
 
-			{/* <Divider /> */}
-
 			<Flex
 				direction="column"
 				className="customScrollbars"
@@ -162,7 +139,6 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
 				maxH="180px"
-				// gap="10px"
 			>
 				{successRateData?.length ? (
 					successRateData.map((item, index) => {
@@ -180,7 +156,7 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 							>
 								<Text flex="1" fontSize="0.75rem">
 									<Skeleton isLoaded={!isLoading}>
-										{item.label}
+										{item?.label}
 									</Skeleton>
 								</Text>
 								<Text
@@ -193,8 +169,8 @@ const SuccessRate = ({ dateFrom, dateTo, isDraggable }) => {
 								</Text>
 								{showNewDashboard ? (
 									<Chart
-										successCount={item.success}
-										totalCount={item.total}
+										successCount={item.successCount}
+										totalCount={item.totalCount}
 										size={30}
 										innerRadius="60%"
 										hideLabel

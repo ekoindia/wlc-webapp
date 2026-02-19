@@ -42,7 +42,7 @@ process.env.NEXT_PUBLIC_API_BASE_URL =
 process.env.NEXT_PUBLIC_ENV = process.env.NEXT_PUBLIC_ENV || "development";
 
 // Under test
-import UploadRecipients from "page-components/products/bulk-payout/components/UploadRecipients";
+import UploadRecipients from "page-components/products/bulk-payout/components/BulkUpload";
 
 const setupFetchSuccess = () => {
 	// @ts-ignore
