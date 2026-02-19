@@ -32,7 +32,7 @@ const status = {
 const statusLabels = {
 	13: "Pending Approval",
 	16: "Active",
-	60: "Demo User Account",
+	60: "Demo User",
 	// 17: "Close",
 	18: "Inactive",
 };
@@ -266,7 +266,7 @@ const NetworkMenuWrapper = ({
 		},
 		{
 			label: "Delete Demo User",
-			visible: +account_status_id === status.ACTIVE_DEMO_USER_ACCOUNT,
+			visible: +account_status_id === status.DEMO_USER,
 			onClick: () => {
 				deleteDemoUser();
 			},

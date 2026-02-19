@@ -61,7 +61,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 			setApplicantType(defaultType);
 			reset({ ...watcher, applicant_type: defaultType });
 		}
-	}, [agentTypeList, applicantType, reset, watcher]);
+	}, [agentTypeList, applicantType, reset]);
 
 	const parameter_list = [
 		...(canOnboardMultipleTypes
