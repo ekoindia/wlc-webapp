@@ -18,6 +18,11 @@ import {
 	type IEsignProvider,
 } from "./types";
 
+export const ESIGN_RESPONSE_TYPES = {
+	SUCCESS_URL_GENERATED: 1613,
+	ALREADY_SIGNED: 1615,
+};
+
 /**
  * Get the appropriate provider implementation based on provider type
  * @param providerType - The provider type from API response
@@ -71,7 +76,7 @@ export const getSignUrl = async (
 	);
 
 	// Document is already signed (response_type_id 1615) — no signing needed
-	if (response?.response_type_id === 1615) {
+	if (response?.response_type_id === ESIGN_RESPONSE_TYPES.ALREADY_SIGNED) {
 		return {
 			alreadySigned: true,
 			short_url: "",
@@ -81,7 +86,11 @@ export const getSignUrl = async (
 		} as EsignUrlData;
 	}
 
-	if (response?.response_type_id != 1613 && !response?.data?.short_url) {
+	if (
+		response?.response_type_id !=
+			ESIGN_RESPONSE_TYPES.SUCCESS_URL_GENERATED &&
+		!response?.data?.short_url
+	) {
 		throw new Error(
 			response?.message ||
 				"E-sign initialization failed, please try again."
