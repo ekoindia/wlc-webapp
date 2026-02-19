@@ -70,6 +70,17 @@ export const getSignUrl = async (
 		generateNewToken
 	);
 
+	// Document is already signed (response_type_id 1615) — no signing needed
+	if (response?.response_type_id === 1615) {
+		return {
+			alreadySigned: true,
+			short_url: "",
+			document_id: response?.data?.user_code || "",
+			pipe: 0,
+			...response?.data,
+		} as EsignUrlData;
+	}
+
 	if (response?.response_type_id != 1613 && !response?.data?.short_url) {
 		throw new Error(
 			response?.message ||

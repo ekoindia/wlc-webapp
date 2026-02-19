@@ -48,6 +48,8 @@ export interface EsignUrlData {
 	short_url: string;
 	document_id: string;
 	pipe: EsignProviderTypeValue;
+	/** Set to true when the API indicates the document is already signed */
+	alreadySigned?: boolean;
 	[key: string]: unknown;
 }
 

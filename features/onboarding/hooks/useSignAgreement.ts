@@ -84,13 +84,26 @@ export const useSignAgreement = (): UseSignAgreementReturn => {
 
 			setSignData(urlData);
 
-			// 2. Get the appropriate provider and load script if needed
+			// 2. If document is already signed, shortcut to success
+			if (urlData.alreadySigned) {
+				setStatus("success");
+				toast({
+					title: "Document is already signed",
+					description:
+						"Your agreement has been signed previously. Proceeding automatically.",
+					status: "success",
+					duration: 4000,
+				});
+				return;
+			}
+
+			// 3. Get the appropriate provider and load script if needed
 			const provider = getProvider(urlData.pipe);
 			if (provider.requiresScript) {
 				await provider.loadScript();
 			}
 
-			// 3. Update status to ready
+			// 4. Update status to ready
 			setStatus("ready");
 
 			// Also update the legacy state for any external dependencies
