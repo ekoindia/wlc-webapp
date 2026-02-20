@@ -17,7 +17,7 @@ export const TransactionTypes = {
 	// Pricing Config
 	GET_PRICING_CONFIG: 837,
 	SET_PRICING: 838,
-
+	GET_CURRENT_PRICING: 1046,
 	// For "Raise Query"
 	GET_ALL_QUERIES_FOR_ORG: 692,
 	GET_QUERY_TYPES: 10022,
