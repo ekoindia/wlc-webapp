@@ -154,16 +154,17 @@ const OnboardingStepsContent = ({
 	}, [initialStepId, currentStepId]);
 
 	/**
-	 * Get the current step config from masterOnboardingSteps
-	 * Always returns the step config for the active step (ContentRenderer decides how to render)
-	 * Uses initialStepId as fallback when currentStepId hasn't been set yet
+	 * Get the current step config from state.stepperData (not master list).
+	 * This ensures we use the step config with runtime overrides applied
+	 * (e.g., isRequired=false for skippable steps from org metadata).
+	 * Uses initialStepId as fallback when currentStepId hasn't been set yet.
 	 */
 	const currentStepConfig = useMemo(() => {
 		// Use currentStepId if available, otherwise fall back to initialStepId
 		const activeStepId = currentStepId ?? initialStepId;
 		if (activeStepId === undefined) return undefined;
-		return stepLookupMap.get(String(activeStepId));
-	}, [currentStepId, initialStepId, stepLookupMap]);
+		return state.stepperData.find((step) => step.id === activeStepId);
+	}, [currentStepId, initialStepId, state.stepperData]);
 
 	// Moved stepConfiguration BEFORE updateStepStatus so it can be referenced
 	// Initialize step configuration hook

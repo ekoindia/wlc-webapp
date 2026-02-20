@@ -55,7 +55,7 @@ const LocationCapture = ({
 		requestAndroidPermission,
 	} = useGeolocation({ autoRequest: true });
 
-	console.log("[LocationCapture] permissionState", permissionState);
+	// console.log("[LocationCapture] permissionState", permissionState);
 
 	const { isAndroid } = useAppSource();
 
