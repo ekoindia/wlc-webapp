@@ -1,4 +1,4 @@
-import { Flex, Skeleton, Text, useToast } from "@chakra-ui/react";
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
 import { useSession } from "contexts";
@@ -249,20 +249,14 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					>
 						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
 						{pricingMessage && (
-							<Skeleton
-								isLoaded={isFetchingPricingMessage}
-								height="20px"
-								width="200px"
+							<Text
+								fontSize="sm"
+								color="primary.DEFAULT"
+								fontWeight="medium"
+								whiteSpace="nowrap"
 							>
-								<Text
-									fontSize="sm"
-									color="primary.DEFAULT"
-									fontWeight="medium"
-									whiteSpace="nowrap"
-								>
-									{`Current Pricing: ${pricingMessage}`}
-								</Text>
-							</Skeleton>
+								{`Current Pricing: ${pricingMessage}`}
+							</Text>
 						)}
 					</Flex>
 				),
@@ -414,7 +408,12 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		areAllFieldsFilledExceptPricing,
 		fetchCurrentPricing,
 		watcher?.select?.value,
-		state?.slabOptions,
+		state.slabOptions,
+		watcher?.payment_mode?.value,
+		watcher?.category?.value,
+		watcher?.operation_type,
+		watcher?.CspList,
+		watcher?.pricing_type,
 	]);
 
 	/**
