@@ -52,7 +52,10 @@ const LocationCapture = ({
 		permissionState,
 		isLoading,
 		requestLocation,
-	} = useGeolocation();
+		requestAndroidPermission,
+	} = useGeolocation({ autoRequest: true });
+
+	// console.log("[LocationCapture] permissionState", permissionState);
 
 	const { isAndroid } = useAppSource();
 
@@ -403,9 +406,12 @@ const LocationCapture = ({
 					(!hasCaptured || !isAccurateEnough) && (
 						<Button
 							size="md"
-							// colorScheme={hasCaptured ? "gray" : "blue"}
 							variant={hasCaptured ? "outline" : "primary"}
-							onClick={requestLocation}
+							onClick={
+								permissionState === "denied" && isAndroid
+									? requestAndroidPermission
+									: requestLocation
+							}
 							isLoading={isLoading}
 							loadingText="Listening…"
 							leftIcon={
@@ -419,7 +425,9 @@ const LocationCapture = ({
 						>
 							{hasCaptured
 								? "Refresh Location"
-								: "Capture Location"}
+								: permissionState === "denied" && isAndroid
+									? "Grant Permission"
+									: "Capture Location"}
 						</Button>
 					)}
 			</VStack>

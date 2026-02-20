@@ -5,6 +5,7 @@ import {
 	Heading,
 	Spinner,
 	Text,
+	useToast,
 	VStack,
 } from "@chakra-ui/react";
 import { Button, Icon } from "components";
@@ -179,6 +180,8 @@ const RoleSelection = ({
 		number | null
 	>(null);
 
+	const toast = useToast();
+
 	const mobile = isAssistedOnboarding
 		? assistedAgentDetails?.user_detail?.mobile
 		: userData?.userDetails?.signup_mobile;
@@ -239,6 +242,22 @@ const RoleSelection = ({
 							"[RoleSelection] Pipeline error:",
 							result
 						);
+						// show toast here
+						const failedStep = result?.list?.find(
+							(r: any) => r.status === "failed"
+						);
+						const errorMessage =
+							failedStep?.response?.message ||
+							"Something went wrong. Please try again.";
+
+						toast({
+							title: "Account creation failed",
+							description: errorMessage,
+							status: "error",
+							duration: 4000,
+							isClosable: true,
+						});
+
 						actions.setApiInProgress(false);
 					},
 				});
