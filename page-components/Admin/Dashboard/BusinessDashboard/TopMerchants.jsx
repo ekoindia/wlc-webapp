@@ -1,5 +1,6 @@
 import { Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
@@ -14,8 +15,9 @@ import { useDashboard } from "..";
  * MARK: Process
  * @param {Array} merchants - Array of merchant objects
  * @param {number} totalGtv - Total GTV for all merchants
- * @param totalCount
- * @param {0|1|2} decimalPrecision - Decimal precision for percentage calculations. 0 by default.
+ * @param {number} totalCount - Total count of merchants
+ * @param {0|1|2} [decimalPrecision] - Decimal precision for percentage calculations. 0 by default.
+ * @returns {Array} Processed array of merchant data
  */
 const processTopMerchantsData = (
 	merchants,
@@ -109,6 +111,8 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
  * @param {object} props.totalBusiness - Total business data (total GTV, Transaction count, etc).
+ * @param {boolean} [props.isDraggable] - Whether the component is draggable in the grid.
+ * @returns {JSX.Element} The rendered top merchants component
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -121,6 +125,7 @@ const TopMerchants = ({
 	dateTo,
 	productFilterList,
 	totalBusiness,
+	isDraggable,
 }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]); // Actual/cached list of top merchants
@@ -204,13 +209,20 @@ const TopMerchants = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, totalBusiness]);
+	}, [
+		dateFrom,
+		dateTo,
+		productFilter,
+		totalBusiness,
+		businessDashboardData.topMerchantsCache,
+	]);
 
 	const router = useRouter();
 
 	/**
 	 * Open a user's profile by using their registered mobile number
-	 * @param mobile
+	 * @param {string} mobile - The mobile number of the user
+	 * @returns {void}
 	 */
 	const onViewProfile = (mobile) => {
 		router.push(`/admin/my-network/profile?mobile=${mobile}`);
@@ -222,33 +234,70 @@ const TopMerchants = ({
 			direction="column"
 			p="20px"
 			w="100%"
+			h="100%"
 			bg="white"
 			borderRadius="10"
 			border="basic"
 			gap="4"
 		>
-			<Flex
-				direction={{ base: "column", md: "row" }}
-				justify="space-between"
-				gap={{ base: "2", md: "4" }}
-				w="100%"
-			>
+			<Flex direction="column" gap={{ base: "2", md: "0" }} w="100%">
+				{/* Desktop: All in one row */}
 				<Flex
-					fontSize="lg"
-					fontWeight="semibold"
+					display={{ base: "none", md: "flex" }}
+					justify="space-between"
 					align="center"
-					gap="0.4em"
+					gap="4"
 				>
-					<LuTrophy color="#e27c7c" />
-					GTV Leaderboard
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+							flex="1"
+						>
+							<LuTrophy color="#e27c7c" />
+							GTV Leaderboard
+						</Flex>
+						<Select
+							variant="filled"
+							value={productFilter}
+							onChange={(e) => setProductFilter(e.target.value)}
+							size="xs"
+							w="auto"
+						>
+							{productFilterList.map(({ label, value }) => (
+								<option key={value} value={value}>
+									{label}
+								</option>
+							))}
+						</Select>
+					</DragHandle>
 				</Flex>
 
-				<Flex w={{ base: "100%", md: "auto" }}>
+				{/* Mobile: Title + grip on first row, Select on second row */}
+				<Flex
+					display={{ base: "flex", md: "none" }}
+					direction="column"
+					gap="2"
+				>
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+						>
+							<LuTrophy color="#e27c7c" />
+							GTV Leaderboard
+						</Flex>
+					</DragHandle>
 					<Select
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
 						size="xs"
+						w="100%"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>

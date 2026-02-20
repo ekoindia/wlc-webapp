@@ -1,8 +1,9 @@
 import { Box, Divider, Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
-import { Endpoints, ParamType, TransactionIds } from "constants";
+import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useCountryStates } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -34,11 +35,10 @@ const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
  */
 const UpdateSellerAddress = () => {
 	const [agentData, setAgentData] = useState();
-	const [statesList, setStatesList] = useState([]);
 	// const [isPermanentAddress, setIsPermanentAddress] = useState(true);
 	const { accessToken } = useSession();
 	const toast = useToast();
-
+	const { states: statesList } = useCountryStates();
 	const {
 		handleSubmit,
 		register,
@@ -50,23 +50,6 @@ const UpdateSellerAddress = () => {
 	const watcher = useWatch({ control });
 
 	const router = useRouter();
-
-	const fetchStatesList = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: TransactionIds.STATE_TYPE,
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				if (res.status === 0) {
-					setStatesList(res?.param_attributes.list_elements);
-				}
-			})
-			.catch((err) => {
-				console.error("err", err);
-			});
-	};
 
 	const fetchAgentDataViaCellNumber = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -86,7 +69,6 @@ const UpdateSellerAddress = () => {
 	};
 
 	useEffect(() => {
-		fetchStatesList();
 		const storedData = JSON.parse(
 			localStorage.getItem("oth_last_selected_agent")
 		);
@@ -247,7 +229,6 @@ const UpdateSellerAddress = () => {
 			label: "Save",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

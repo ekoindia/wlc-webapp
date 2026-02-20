@@ -52,6 +52,7 @@ const LoginWidget = ({
 }: LoginWidgetProps) => {
 	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
+	const [cachedSocialResponse, setCachedSocialResponse] = useState(null); // Used to temporarily cache the social login (Google SSO) response until the mobile verification step of social login flow is done.
 	const [number, setNumber] = useState({
 		original: "",
 		formatted: "",
@@ -119,6 +120,7 @@ const LoginWidget = ({
 						setStep,
 						setEmail,
 						setLoginType,
+						setCachedSocialResponse,
 						lastUserName,
 						lastMobileFormatted,
 						previewMode,
@@ -128,14 +130,28 @@ const LoginWidget = ({
 			{step === "VERIFY_OTP" && (
 				<SlideFade offsetX={100} offsetY={0} in={true}>
 					<VerifyOtp
-						{...{ number, loginType, setStep, previewMode }}
+						{...{
+							email,
+							number,
+							cachedSocialResponse,
+							loginType,
+							setStep,
+							previewMode,
+						}}
 					/>
 				</SlideFade>
 			)}
 			{step === "SOCIAL_VERIFY" && (
 				<SlideFade offsetX={100} offsetY={0} in={true}>
 					<SocialVerify
-						{...{ email, number, setNumber, setStep, previewMode }}
+						{...{
+							email,
+							number,
+							setNumber,
+							setStep,
+							setLoginType,
+							previewMode,
+						}}
 					/>
 				</SlideFade>
 			)}

@@ -26,7 +26,10 @@ const TopPanel = ({ panelDataList }) => {
 	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
-	if (!isAiChatBotAllowed && !panelDataList?.length) return null;
+	const validPanelData =
+		panelDataList?.filter(
+			(item) => item && item.value !== null && item.value !== undefined
+		) || [];
 
 	return (
 		<XScrollArrow pos="center" mb="10px" ml="-30px" w="calc(100% + 60px)">
@@ -48,17 +51,11 @@ const TopPanel = ({ panelDataList }) => {
 				// }}
 			>
 				{/* AI Chat Bot Trigger – Ask AI */}
-				<AskAiCard />
+				{isAiChatBotAllowed ? <AskAiCard /> : null}
 
 				{/* Other Panel Data Items */}
-				{panelDataList
-					?.filter(
-						(item) =>
-							item &&
-							item.value !== null &&
-							item.value !== undefined
-					)
-					.map((item) => (
+				{validPanelData.length > 0 ? (
+					validPanelData.map((item) => (
 						<Flex
 							key={item.key}
 							bg="white"
@@ -219,7 +216,10 @@ const TopPanel = ({ panelDataList }) => {
 								)}
 							</Flex>
 						</Flex>
-					))}
+					))
+				) : (
+					<NoDataCard />
+				)}
 			</Grid>
 		</XScrollArrow>
 	);
@@ -269,6 +269,30 @@ const AskAiCard = () => {
 					BETA
 				</Text>
 			</Flex>
+		</Flex>
+	);
+};
+
+const NoDataCard = () => {
+	return (
+		<Flex
+			bg="white"
+			direction="column"
+			justify="center"
+			align="center"
+			p="12px 48px"
+			border="basic"
+			borderRadius="10px"
+			minW="250px"
+			minH="82px"
+			h="100%"
+		>
+			<Text fontSize="sm" fontWeight="bold" color="gray.600">
+				No data found for this time range
+			</Text>
+			<Text fontSize="sm" color="gray.500">
+				Try choosing a different date range
+			</Text>
 		</Flex>
 	);
 };

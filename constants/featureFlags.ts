@@ -64,6 +64,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// KYC Verification
+	KYC_VERIFICATION: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
@@ -265,6 +271,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Face detector for images, videos, and live streams.
 	FACE_DETECTOR: {
+		enabled: true,
+	},
+
+	// TSP Bank Account Support (Multi-wallet) – Show bank balance and statement for TSP Bank Accounts.
+	// This is used for making payments from bank accounts using UPI and other payment methods,
+	// directly from the user's own bank account instead of their e-wallet).
+	TSP_BANK: {
 		enabled: true,
 	},
 

@@ -1,9 +1,11 @@
+import { useSession } from "contexts/UserContext";
 import { useRouter } from "next/router";
 
 /**
  * Hook for handling internal links.
  */
 const useAppLink = () => {
+	const { isAdmin, isAdminAgentMode } = useSession();
 	const router = useRouter();
 	const regRemoveConnectUrl = new RegExp(
 		"^(" +
@@ -29,11 +31,22 @@ const useAppLink = () => {
 		}
 
 		if (false === /^(?:[-_a-z]+:|[a-z]+\.)/i.test(url)) {
+			// If the URL does NOT start with a scheme (eg: "http:") or a sub/domain (eg: "www.")
 			// Open Internal Page (eg:  "/transaction/64")
 
 			// Ensure '/' at beginning of URL
 			url = (url.startsWith("/") ? "" : "/") + url;
 			console.log("[useAppLink] Opening Internal Link:", url);
+
+			// Handle transaction & product links for Admins (when not in Agent-Mode)...
+			if (
+				isAdmin &&
+				!isAdminAgentMode &&
+				(url.startsWith("/transaction/") ||
+					url.startsWith("/products/"))
+			) {
+				url = "/admin" + url;
+			}
 
 			// Open URL internally (same browser tab/window)
 			router.push(url);

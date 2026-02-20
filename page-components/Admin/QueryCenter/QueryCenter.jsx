@@ -152,7 +152,11 @@ const QueryCenter = () => {
 				toolComponent={
 					isRaiseIssueAllowed ? (
 						<Button
-							size={{ base: "sm", md: "md" }}
+							size="sm"
+							icon="query"
+							iconStyle={{
+								size: "xs",
+							}}
 							onClick={() =>
 								showRaiseIssueDialog({
 									origin: "Global-Help",

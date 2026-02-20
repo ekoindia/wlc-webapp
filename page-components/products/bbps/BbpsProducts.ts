@@ -22,14 +22,26 @@ export const BbpsProducts: BbpsProduct[] = [
 				name: "sender_name",
 				label: "Customer Name",
 				parameter_type_id: ParamType.TEXT,
+				validations: {
+					pattern: {
+						value: /^(?!(?:(?:([a-z]) *\1(?: *\1)*)|(?:.*?(?:(?:(?:^|[^d])([a-z])\2\2)|(?:d([a-df-z])\3\3)).*)|(?:.*?([a-z]{3,})\4\4).*|(?:.*(?:^|[^a-z])[^aeiou \.]{4,}(?:$|[^a-z]).*))$)(?:[a-z]+\.? ){0,2}[a-z]+$/i,
+						message: "Please enter a valid name",
+					},
+				},
 			},
 			{
 				name: "confirmation_mobile_no",
 				label: "Customer's Mobile",
-				parameter_type_id: ParamType.NUMERIC,
+				parameter_type_id: ParamType.MOBILE,
 				validations: {
-					minLength: 10,
-					maxLength: 10,
+					minLength: {
+						value: 10,
+						message: "Mobile number must be 10 digits",
+					},
+					maxLength: {
+						value: 10,
+						message: "Mobile number must be 10 digits",
+					},
 					pattern: {
 						value: /^[6-9]\d{9}$/,
 						message: "Please enter a valid mobile number",
@@ -69,8 +81,14 @@ export const BbpsProducts: BbpsProduct[] = [
 				label: "Customer's Mobile",
 				parameter_type_id: ParamType.NUMERIC,
 				validations: {
-					minLength: 10,
-					maxLength: 10,
+					minLength: {
+						value: 10,
+						message: "Mobile number must be 10 digits",
+					},
+					maxLength: {
+						value: 10,
+						message: "Mobile number must be 10 digits",
+					},
 					pattern: {
 						value: /^[6-9]\d{9}$/,
 						message: "Please enter a valid mobile number",

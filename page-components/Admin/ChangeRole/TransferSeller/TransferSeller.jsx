@@ -1,11 +1,17 @@
-import { Flex, FormControl, useBreakpointValue } from "@chakra-ui/react";
+import {
+	Flex,
+	FormControl,
+	useBreakpointValue,
+	useToast,
+} from "@chakra-ui/react";
 import { ActionButtonGroup, Select } from "components";
 import { Endpoints } from "constants";
+import { UserType, UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { MoveAgents } from ".";
+import MoveAgents from "./MoveAgents";
 
 const renderer = {
 	label: "name",
@@ -14,7 +20,11 @@ const renderer = {
 
 const independent_retailer_select_option = {
 	user_code: "3",
-	name: "No Distributor – Transfer Independent Retailers (Retailers not mapped to any distributor)",
+	name: `No ${UserTypeLabel[UserType.DISTRIBUTOR]} – Transfer ${
+		UserTypeLabel[UserType.I_MERCHANT]
+	}s (${UserTypeLabel[UserType.MERCHANT]}s not mapped to any ${
+		UserTypeLabel[UserType.DISTRIBUTOR]
+	})`,
 	mobile: "",
 	customer_id: "",
 };
@@ -23,18 +33,20 @@ const independent_retailer_select_option = {
  * A TransferSeller Tab inside ChangeRole page-component
  * @param root0
  * @param root0.agentData
- * @param root0.setResponseDetails
  * @param root0.showOrgChangeRoleView
+ * @param root0.targetUserType
  * @example	`<TransferSeller></TransferSeller>`
  */
 const TransferSeller = ({
 	agentData,
-	setResponseDetails,
 	showOrgChangeRoleView,
+	targetUserType = 2, // Default to Merchant
 }) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
 	const [transferAgentsTo, setTransferAgentsTo] = useState(null);
+	const [isSuccess, setIsSuccess] = useState(false);
+	const toast = useToast();
 
 	const [distributors, setDistributors] = useState([]);
 	const [filteredDistributors, setFilteredDistributors] = useState([]);
@@ -53,6 +65,7 @@ const TransferSeller = ({
 
 	const handleSelectedAgents = (_agents) => {
 		setSelectedAgentsToTransfer(_agents);
+		if (isSuccess) setIsSuccess(false);
 	};
 
 	const fetchList = (headers, cb) => {
@@ -78,9 +91,34 @@ const TransferSeller = ({
 					default_agent_code ?? `${selectedAgentsToTransfer}`,
 			},
 			token: accessToken,
-		}).then((res) => {
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		})
+			.then((res) => {
+				if (res.response_type_id === 1872) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					setIsSuccess(true);
+					// Optional: Refresh data or redirect if needed
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const handleTransferAgentsSelectChange = (value, type) => {
@@ -89,6 +127,7 @@ const TransferSeller = ({
 		} else {
 			setTransferAgentsTo(value);
 		}
+		if (isSuccess) setIsSuccess(false);
 
 		if (!isSmallScreen) {
 			setShowSelectAgent(true);
@@ -120,7 +159,7 @@ const TransferSeller = ({
 			const isIndependentRetailer = transferAgentsFrom.user_code === "3";
 			const _uri = isIndependentRetailer
 				? "/network/agent-list?usertype=3"
-				: `/network/agent-list?usertype=2&user_id=${
+				: `/network/agent-list?usertype=${targetUserType}&user_id=${
 						transferAgentsFrom[renderer.value]
 					}`;
 
@@ -147,7 +186,7 @@ const TransferSeller = ({
 			fetchList(
 				{
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${
+					"tf-req-uri": `/network/agent-list?usertype=${targetUserType}&user_id=${
 						transferAgentsTo[renderer.value]
 					}`,
 					"tf-req-method": "GET",
@@ -167,7 +206,6 @@ const TransferSeller = ({
 			label: "Select Agents",
 			onClick: () => setShowSelectAgent(true),
 			disabled: !transferAgentsTo,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
@@ -189,10 +227,10 @@ const TransferSeller = ({
 			size: "lg",
 			label: "Move",
 			onClick: () => handleMoveAgent(),
-			disabled: showOrgChangeRoleView
-				? !selectedAgentsToTransfer?.length > 0
-				: default_agent_code && !transferAgentsTo,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			disabled:
+				(showOrgChangeRoleView
+					? !selectedAgentsToTransfer?.length > 0
+					: default_agent_code && !transferAgentsTo) || isSuccess,
 		},
 		{
 			variant: "link",
@@ -219,17 +257,23 @@ const TransferSeller = ({
 					<FormControl w={{ base: "100%", md: "500px" }}>
 						<Select
 							id="from-select"
-							label="Select distributor to transfer agents from"
+							label={`Select ${
+								UserTypeLabel[UserType.DISTRIBUTOR]
+							} to transfer ${UserTypeLabel[targetUserType]}s from`}
 							required={true}
 							value={transferAgentsFrom}
 							onChange={(value) =>
 								handleTransferAgentsSelectChange(value, "FROM")
 							}
 							renderer={renderer}
-							options={[
-								independent_retailer_select_option,
-								...distributors,
-							]}
+							options={
+								targetUserType === UserType.MERCHANT
+									? [
+											independent_retailer_select_option,
+											...distributors,
+										]
+									: [...distributors]
+							}
 							getOptionLabel={(option) =>
 								option.mobile
 									? `${option.name} ✆ ${option.mobile}`
@@ -244,10 +288,19 @@ const TransferSeller = ({
 						id="to-select"
 						label={
 							!showOrgChangeRoleView && default_agent_code
-								? default_agent_type == "Retailer" // check if we can avoid this hardcode value
-									? "Select New Distributor"
-									: "Select Distributor"
-								: "Select distributor to transfer agents to"
+								? default_agent_type ==
+									UserTypeLabel[UserType.MERCHANT] // check if we can avoid this hardcode value
+									? `Select New ${
+											UserTypeLabel[UserType.DISTRIBUTOR]
+										}`
+									: `Select ${
+											UserTypeLabel[UserType.DISTRIBUTOR]
+										}`
+								: `Select ${
+										UserTypeLabel[UserType.DISTRIBUTOR]
+									} to transfer ${
+										UserTypeLabel[targetUserType]
+									}s to`
 						}
 						required={true}
 						value={transferAgentsTo}
@@ -279,10 +332,10 @@ const TransferSeller = ({
 						transferAgentsTo,
 						transferAgentsFrom,
 						selectedAgentsToTransfer,
-						setResponseDetails,
 						onChange: handleSelectedAgents,
 						options: agentListToTransferAgentsFrom,
 						agentList: agentListToTransferAgentsTo,
+						targetUserType,
 					}}
 				/>
 			) : null}

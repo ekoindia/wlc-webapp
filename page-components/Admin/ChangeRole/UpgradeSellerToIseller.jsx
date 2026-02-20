@@ -1,6 +1,7 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints, ParamType } from "constants";
+import { UserType, UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -17,17 +18,14 @@ const renderer = {
  * UpgradeSellerToIseller page-component
  * @param root0
  * @param root0.agentData
- * @param root0.setResponseDetails
  * @param root0.showOrgChangeRoleView
  * @returns
  */
-const UpgradeSellerToIseller = ({
-	agentData,
-	setResponseDetails,
-	showOrgChangeRoleView,
-}) => {
+const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
+	const toast = useToast();
+	const [isSuccess, setIsSuccess] = useState(false);
 
 	const router = useRouter();
 
@@ -38,6 +36,7 @@ const UpgradeSellerToIseller = ({
 		formState: { errors, isSubmitting, isDirty, isValid },
 		control,
 		register,
+		reset,
 	} = useForm();
 
 	const watcher = useWatch({ control });
@@ -63,7 +62,7 @@ const UpgradeSellerToIseller = ({
 	const unassign_retailer_parameter_list = [
 		{
 			name: "retailer",
-			label: "Select Retailer",
+			label: `Select ${UserTypeLabel[UserType.MERCHANT]}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
 			renderer: renderer,
@@ -77,24 +76,54 @@ const UpgradeSellerToIseller = ({
 
 	const onSubmit = (data) => {
 		const { retailer } = data || {};
-		if (!retailer) {
+		if (!retailer && !default_agent_mobile) {
 			console.error("Retailer is required.");
 			return;
 		}
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri":
-					"/network/agents/profile/changeRole/upgrademerchant",
-				"tf-req-method": "PUT",
-			},
-			body: {
-				agent_mobile: default_agent_mobile ?? retailer[renderer.value],
-			},
-			token: accessToken,
-		}).then((res) => {
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		return fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri":
+						"/network/agents/profile/changeRole/upgrademerchant",
+					"tf-req-method": "PUT",
+				},
+				body: {
+					agent_mobile:
+						default_agent_mobile ?? retailer[renderer.value],
+				},
+				token: accessToken,
+			}
+		)
+			.then((res) => {
+				// Success Response Type ID for upgrade merchant is 1842
+				if (res.response_type_id === 1842) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					reset(data);
+					setIsSuccess(true);
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const buttonConfigList = [
@@ -103,8 +132,7 @@ const UpgradeSellerToIseller = ({
 			size: "lg",
 			label: "Unassign",
 			loading: isSubmitting,
-			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			disabled: showOrgChangeRoleView ? !isValid || !isDirty : isSuccess,
 		},
 		{
 			variant: "link",

@@ -59,6 +59,7 @@ const OnboardingDashboard = () => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [onboardingAgentsTopPanelData, setOnboardingAgentsTopPanelData] =
 		useState([]);
+	// console.log("onboardingDashboardData", onboardingAgentsTopPanelData);
 	const [dateRange, setDateRange] = useState("today");
 	const { onboardingDashboardData, setOnboardingDashboardData } =
 		useDashboard();
@@ -105,12 +106,7 @@ const OnboardingDashboard = () => {
 				},
 			},
 			onSuccess: (res) => {
-				const defaultData = {
-					1: { totalCount: 0, lastPeriod: 0 },
-					2: { totalCount: 0, lastPeriod: 0 },
-				};
-
-				const _data = res?.data?.onboarding_funnel?.[0] || defaultData;
+				const _data = res?.data?.onboarding_funnel?.[0];
 				const onboardedAgentsList = transformOnboardingAgentsData(
 					_data,
 					getUserTypeLabel
@@ -238,11 +234,15 @@ const OnboardingDashboard = () => {
 
 	return (
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
-			<DashboardDateFilter
-				{...{ prevDate, currDate, dateRange, setDateRange }}
-			/>
-
-			<TopPanel panelDataList={onboardingAgentsTopPanelData} />
+			<>
+				<DashboardDateFilter
+					dateRange={dateRange}
+					prevDate={prevDate}
+					currDate={currDate}
+					setDateRange={setDateRange}
+				/>
+				<TopPanel panelDataList={onboardingAgentsTopPanelData} />
+			</>
 
 			<Flex direction="column" gap="2">
 				<Flex

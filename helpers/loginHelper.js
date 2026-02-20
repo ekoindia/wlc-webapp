@@ -111,16 +111,8 @@ async function sendOtpRequest(
 }
 
 /**
- * Remove all non-numeric characters from the input string.
- * TODO: Use proper Input component that returns only unformatted input and make this redundent
- * @param number
- */
-function RemoveFormatted(number) {
-	return number.replace(/\D/g, "");
-}
-
-/**
  * Calculates the expiry time of the token which is 75% of the actual token lifetime.
+ * MARK: TokenExpiry Time
  * @param {object} data The response data from the login API
  * @param {number} data.token_timeout Already calculated expiry time of the token in milliseconds
  * @param {number} data.token_expiration The token lifetime in seconds
@@ -139,6 +131,7 @@ function getTokenExpiryTime(data) {
 
 /**
  * Create userState
+ * MARK: User State
  * @param data
  */
 function createUserState(data) {
@@ -152,6 +145,7 @@ function createUserState(data) {
 
 /**
  * Set user details in the session storage after a successful login.
+ * MARK: Set Usr Details
  * @param {object} data
  * @param {object} data.userDetails	User details
  * @param {object} data.personalDetails	Personal details
@@ -205,6 +199,7 @@ function setUserDetails(data) {
 /**
  * Set the auth tokens in the session storage.
  * If running under Android wrapper app, send details to the app for caching.
+ * MARK: Set Tokens
  * @param {object} data	The object with auth tokens
  * @param {string} data.access_token	The full access token used to get transactions for the user based on assigned roles
  * @param {string} data.refresh_token	The refresh token
@@ -237,6 +232,7 @@ function setandUpdateAuthTokens(data, isAndroid, isNewLogin = false) {
 
 /**
  * Get the auth tokens from the session storage.
+ * MARK: Get Tokens
  * @returns {object} The auth tokens
  */
 function getAuthTokens() {
@@ -251,26 +247,37 @@ function getAuthTokens() {
 }
 
 /**
- *
+ * Parse JSON string safely. The string "undefined" is also treated as undefined.
+ * MARK: Parse JSON
  * @param data
  */
-function ParseJson(data) {
-	return data !== "undefined" ? JSON.parse(data) : "";
+function parseJson(data) {
+	if (data === null || typeof data === "undefined" || data === "undefined")
+		return "";
+
+	try {
+		return JSON.parse(data);
+	} catch (err) {
+		console.warn("Parsing JSON failed: ", { data, err });
+	}
+
+	return "";
 }
 
 /**
  * Get stored session from sessionStorage
+ * MARK: Get Sessions
  * @returns {object} The stored session data (user details, auth tokens, etc.)
  */
 function getSessions() {
 	const userData = {
 		...getAuthTokens(),
 		token_timeout: sessionStorage.getItem("token_timeout"),
-		details: ParseJson(sessionStorage.getItem("user_details")),
-		account_details: ParseJson(sessionStorage.getItem("account_details")),
-		personal_details: ParseJson(sessionStorage.getItem("personal_details")),
-		shop_details: ParseJson(sessionStorage.getItem("shop_details")),
-		business_details: ParseJson(sessionStorage.getItem("business_details")),
+		details: parseJson(sessionStorage.getItem("user_details")),
+		account_details: parseJson(sessionStorage.getItem("account_details")),
+		personal_details: parseJson(sessionStorage.getItem("personal_details")),
+		shop_details: parseJson(sessionStorage.getItem("shop_details")),
+		business_details: parseJson(sessionStorage.getItem("business_details")),
 	};
 	return userData;
 }
@@ -338,6 +345,7 @@ function revokeSession(user_id) {
 
 /**
  * Generate a new access token using the refresh token.
+ * MARK: Generate Token
  * @param {string} refresh_token	The refresh token
  * @param {Function} updateUserInfo	Function to update the userState
  * @param {boolean} isTokenUpdating	Is the token already being updated?
@@ -392,7 +400,8 @@ function generateNewAccessToken(
 }
 
 /**
- *
+ * Login using refresh token on Android platform.
+ * MARK: Login Android
  * @param refresh_token
  * @param updateUserInfo
  * @param login
@@ -431,6 +440,13 @@ function loginUsingRefreshTokenAndroid(
 		});
 }
 
+/**
+ * Refresh user profile after login or token refresh.
+ * MARK: Refresh Profile
+ * @param {Function} login - Function to login the user
+ * @param {Function} updateUserInfo - Function to update the userState
+ * @param {boolean} isAndroid - Is the user using the Android wrapper app?
+ */
 const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
 	const refresh_token = sessionStorage.getItem("refresh_token");
 	const access_token = sessionStorage.getItem("access_token");
@@ -459,7 +475,6 @@ export {
 	getSessions,
 	getTokenExpiryTime,
 	loginUsingRefreshTokenAndroid,
-	RemoveFormatted,
 	revokeSession,
 	sendOtpRequest,
 	setandUpdateAuthTokens,
