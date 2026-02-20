@@ -1,6 +1,6 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Button, Icon, Menus, PageTitle } from "components";
-import { ChangeRoleMenuList, Endpoints } from "constants";
+import { AGENT_VIEW_TABS, Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -103,6 +103,8 @@ const ProfilePanel = () => {
 	const { accessToken, isAdmin } = useSession();
 	const { mobile } = router.query;
 
+	// console.log("[ProfilePanel] agentData:", agentData);
+
 	/**
 	 * Helper function to fetch agent details from server
 	 */
@@ -142,7 +144,6 @@ const ProfilePanel = () => {
 		})
 			.then((data) => {
 				setAgentDocuments(data?.data?.cspDetails);
-				// setAgentData(data?.data?.agent_details[0]);
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
@@ -157,8 +158,8 @@ const ProfilePanel = () => {
 	useEffect(() => {
 		let _changeRoleMenuList = [];
 		let tabIndex = 0;
-		ChangeRoleMenuList.map(({ label, path, visibleString }) => {
-			if (visibleString.includes(agentData?.agent_type)) {
+		AGENT_VIEW_TABS.forEach(({ label, path, allowedUserTypes }) => {
+			if (allowedUserTypes.includes(+agentData?.user_type_id)) {
 				let _listItem = {};
 				_listItem.label = label;
 				_listItem.onClick = (() => {
@@ -207,6 +208,8 @@ const ProfilePanel = () => {
 						agent_type: agentData?.agent_type,
 						user_id: agentData?.user_id,
 						user_type_id: agentData?.user_type_id,
+						account_status: agentData?.account_status,
+						docs: agentDocuments,
 					}}
 				/>
 			),
@@ -266,7 +269,7 @@ const ProfilePanel = () => {
 	return (
 		<>
 			<PageTitle
-				title={isMenuVisible ? "Change Role" : "Agent Details"}
+				title={isMenuVisible ? "Change Role" : "Details"}
 				toolComponent={
 					isAdmin && changeRoleMenuList.length > 0 ? (
 						<ChangeRoleDesktop

@@ -1,4 +1,4 @@
-import { Onboarding } from "page-components";
+import { Onboarding } from "features/onboarding";
 
 /**
  * An Signup page for agent onboarding

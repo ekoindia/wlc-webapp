@@ -2,6 +2,8 @@ import { Flex, Grid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import Link from "next/link";
 import {
+	AccountSummary,
+	AppDetails,
 	EarningSummary,
 	ManageMyAccountCard,
 	PersonalDetailCard,
@@ -16,11 +18,13 @@ import {
  */
 const Profile = () => {
 	const widgets = [
-		{ id: 1, component: ProfileWidget },
-		{ id: 2, component: ManageMyAccountCard },
-		{ id: 3, component: EarningSummary },
-		{ id: 4, component: ShopCard },
-		{ id: 5, component: PersonalDetailCard },
+		{ id: 10, component: ProfileWidget },
+		{ id: 20, component: AppDetails },
+		{ id: 30, component: ManageMyAccountCard },
+		{ id: 40, component: EarningSummary },
+		{ id: 50, component: ShopCard },
+		{ id: 60, component: PersonalDetailCard },
+		{ id: 70, component: AccountSummary },
 	];
 
 	return (

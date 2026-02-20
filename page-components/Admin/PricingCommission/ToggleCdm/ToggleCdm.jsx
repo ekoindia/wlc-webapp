@@ -95,7 +95,6 @@ const ToggleCdm = () => {
 				!isValid ||
 				!isDirty ||
 				(cashDeposit && cashDeposit == watcher.cdm_charges),
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
