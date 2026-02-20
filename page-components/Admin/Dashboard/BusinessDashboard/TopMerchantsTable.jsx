@@ -140,6 +140,7 @@ const MerchantRow = ({
 		name = "",
 		status = "inactive",
 		gtv = 0,
+		totalRevenue = 0,
 		totalTransactions: merchantTransactions = 0,
 		onboardingDate = "",
 		distributorMapped = "",
@@ -275,12 +276,23 @@ const MerchantRow = ({
 					</Flex>
 				</VStack>
 			</HStack>
-
 			{/* GTV Chart */}
+
 			<HorizontalBarChart
 				value={gtv}
 				total={totalGtv}
 				label="GTV"
+				isCurrency
+				color="#e27c7c"
+				flex="2"
+				minW={{ base: "45%", md: "auto" }}
+			/>
+
+			{/* Revenue Chart */}
+
+			<HorizontalBarChart
+				value={totalRevenue}
+				label="Revenue"
 				isCurrency
 				color="#e27c7c"
 				flex="2"
@@ -296,7 +308,6 @@ const MerchantRow = ({
 				flex="2"
 				minW={{ base: "45%", md: "auto" }}
 			/>
-
 			{/* Pending (Response Awaited) Transactions */}
 			<VStack spacing="2px" align="center" flex="1">
 				<Text fontSize="0.85rem" fontWeight="bold" color="orange.400">
@@ -304,7 +315,6 @@ const MerchantRow = ({
 				</Text>
 				<Label>Pending </Label>
 			</VStack>
-
 			{/* Average Ticket */}
 			<VStack spacing="2px" align="center" flex="1">
 				<Text fontSize="0.85rem" fontWeight="bold" color="gray.500">
@@ -312,7 +322,6 @@ const MerchantRow = ({
 				</Text>
 				<Label>Avg Ticket</Label>
 			</VStack>
-
 			{/* Cumulative Percentage */}
 			{totalTransactions ? (
 				<VStack spacing="2px" align="center" flex="1">

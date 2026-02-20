@@ -4,10 +4,31 @@ import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LuTrophy } from "react-icons/lu";
 import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
+
+/**
+ * Matches items from a Product master filter list against the keys present in an API productTypeBreakdown.
+ * @param {Array} productMasterList - The complete list of all products available in the system, retrieved from the products API.
+ * @param {object} productTypeBreakdown - The breakdown object from the GTV API where keys represent product IDs and values contain transaction details.
+ * @returns {Array} - A filtered array of product definitions that exist in the GTV breakdown.
+ */
+export const filterAvailableProducts = (
+	productMasterList,
+	productTypeBreakdown
+) => {
+	if (!productTypeBreakdown || !productMasterList) return [];
+
+	// Get the IDs (keys) available in the current API response
+	const availableIds = Object.keys(productTypeBreakdown);
+
+	// Filter the master list to only include what's in the breakdown
+	return productMasterList.filter((item) =>
+		availableIds.includes(String(item.value))
+	);
+};
 
 /**
  * Process top merchants data for the dashboard
@@ -123,16 +144,21 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
 const TopMerchants = ({
 	dateFrom,
 	dateTo,
-	productFilterList,
+	productFilterList: masterProductList,
 	totalBusiness,
 	isDraggable,
 }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]); // Actual/cached list of top merchants
 	const [processedMerchantData, setProcessedMerchantData] = useState([]); // Processed list of top-merchants with pre-calculated cumulative sum. percentage, etc
+	const [filteredProductList, setFilteredProductList] = useState([
+		{ label: "All Products", value: "" },
+	]);
+	const [cachedFullProductList, setCachedFullProductList] = useState(null);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	/**
 	 * Prepare the topMerchantData for dashboard...
@@ -152,32 +178,110 @@ const TopMerchants = ({
 		);
 	}, [topMerchantsData, totalBusiness]);
 
+	/**
+	 * Filter product list based on available products from earning overview cache
+	 */
+	useEffect(() => {
+		if (!dateFrom || !dateTo) return;
+
+		// Get the earning overview data from cache to extract product breakdown
+		const earningCacheKey = getCacheKey("", dateFrom, dateTo); // Always use "all products" cache
+		const earningOverviewData =
+			businessDashboardData?.earningOverviewCache?.[earningCacheKey];
+
+		let typeBreakdown = earningOverviewData?.gtv?.typeBreakdown;
+
+		try {
+			if (typeof typeBreakdown === "string") {
+				typeBreakdown = JSON.parse(typeBreakdown);
+			}
+		} catch (error) {
+			console.error("Error parsing product-wise data:", error);
+			// Keep the cached filter list if available, don't reset it
+			if (!cachedFullProductList) {
+				setFilteredProductList([{ label: "All Products", value: "" }]);
+			}
+			return;
+		}
+
+		if (typeBreakdown && Object.keys(typeBreakdown).length > 0) {
+			// USE UTIL: Match product master prop list against current breakdown
+			const matchedOptions = filterAvailableProducts(
+				masterProductList,
+				typeBreakdown
+			);
+
+			// Only update and cache filter list if no filter is selected AND we have matched options
+			// This ensures we capture the full list when showing "All Products"
+			if (!productFilter && matchedOptions.length > 0) {
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
+				if (!cachedFullProductList) {
+					setCachedFullProductList(fullList);
+				}
+			} else if (cachedFullProductList) {
+				// Always use cached full list when available (regardless of current breakdown)
+				setFilteredProductList(cachedFullProductList);
+			} else if (matchedOptions.length > 0) {
+				// Fallback: create filter list from current options if no cache exists
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
+			}
+		} else {
+			// Only reset filter list if we don't have cached data
+			if (cachedFullProductList) {
+				// Keep using cached full list
+				setFilteredProductList(cachedFullProductList);
+			} else {
+				// Only fall back to "All Products" if no cache exists
+				setFilteredProductList([{ label: "All Products", value: "" }]);
+			}
+		}
+	}, [
+		dateFrom,
+		dateTo,
+		masterProductList,
+		productFilter,
+		businessDashboardData?.earningOverviewCache,
+		// Note: cachedFullProductList intentionally excluded to prevent infinite loop
+	]);
+
 	// Fetching Top Merchants Data
+	const handleApiSuccess = useCallback(
+		(res) => {
+			const _data = res?.data?.dashboard_object?.gtv_top_merchants || [];
+
+			const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+			// Prevent unnecessary re-renders by checking existing data
+			setBusinessDashboardData((prev) => {
+				if (prev.topMerchantsCache?.[cacheKey]) {
+					return prev; // Skip update if already cached
+				}
+				return {
+					...prev,
+					topMerchantsCache: {
+						...(prev.topMerchantsCache || {}),
+						[cacheKey]: _data,
+					},
+				};
+			});
+
+			setTopMerchantsData(_data);
+		},
+		[productFilter, dateFrom, dateTo, setBusinessDashboardData]
+	);
+
 	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
-			onSuccess: (res) => {
-				const _data =
-					res?.data?.dashboard_object?.gtv_top_merchants || [];
-
-				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
-
-				// Prevent unnecessary re-renders by checking existing data
-				setBusinessDashboardData((prev) => {
-					if (prev.topMerchantsCache?.[cacheKey]) {
-						return prev; // Skip update if already cached
-					}
-					return {
-						...prev,
-						topMerchantsCache: {
-							...(prev.topMerchantsCache || {}),
-							[cacheKey]: _data,
-						},
-					};
-				});
-
-				setTopMerchantsData(_data);
-			},
+			onSuccess: handleApiSuccess,
 		}
 	);
 
@@ -204,6 +308,7 @@ const TopMerchants = ({
 					gtv_top_merchants: {
 						datefrom: dateFrom,
 						dateto: dateTo,
+						...(isEkoShieldEnabled && { is_aggregated: true }),
 						..._typeid,
 					},
 				},
@@ -213,8 +318,10 @@ const TopMerchants = ({
 		dateFrom,
 		dateTo,
 		productFilter,
-		totalBusiness,
+		isEkoShieldEnabled,
 		businessDashboardData.topMerchantsCache,
+		fetchTopMerchantsOverviewData,
+		// Note: totalBusiness intentionally excluded - only used for display, not for fetching
 	]);
 
 	const router = useRouter();
@@ -259,19 +366,24 @@ const TopMerchants = ({
 							<LuTrophy color="#e27c7c" />
 							GTV Leaderboard
 						</Flex>
-						<Select
-							variant="filled"
-							value={productFilter}
-							onChange={(e) => setProductFilter(e.target.value)}
-							size="xs"
-							w="auto"
-						>
-							{productFilterList.map(({ label, value }) => (
-								<option key={value} value={value}>
-									{label}
-								</option>
-							))}
-						</Select>
+						{/* Product Filter */}
+						{filteredProductList.length > 1 && (
+							<Select
+								variant="filled"
+								value={productFilter}
+								onChange={(e) =>
+									setProductFilter(e.target.value)
+								}
+								size="xs"
+								w="auto"
+							>
+								{filteredProductList.map(({ label, value }) => (
+									<option key={value} value={value}>
+										{label}
+									</option>
+								))}
+							</Select>
+						)}
 					</DragHandle>
 				</Flex>
 
@@ -292,19 +404,21 @@ const TopMerchants = ({
 							GTV Leaderboard
 						</Flex>
 					</DragHandle>
-					<Select
-						variant="filled"
-						value={productFilter}
-						onChange={(e) => setProductFilter(e.target.value)}
-						size="xs"
-						w="100%"
-					>
-						{productFilterList.map(({ label, value }) => (
-							<option key={value} value={value}>
-								{label}
-							</option>
-						))}
-					</Select>
+					{filteredProductList.length > 1 && (
+						<Select
+							variant="filled"
+							value={productFilter}
+							onChange={(e) => setProductFilter(e.target.value)}
+							size="xs"
+							w="100%"
+						>
+							{filteredProductList.map(({ label, value }) => (
+								<option key={value} value={value}>
+									{label}
+								</option>
+							))}
+						</Select>
+					)}
 				</Flex>
 			</Flex>
 			{/* <Divider /> */}
