@@ -15,7 +15,7 @@ const NetworkCard = ({ item }) => {
 		mobile_number,
 		eko_code,
 		account_status_id,
-		agent_type,
+		user_type_label,
 		user_type_id,
 		address_details,
 		agent_name,
@@ -31,7 +31,12 @@ const NetworkCard = ({ item }) => {
 		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
 				<Box color="primary.DEFAULT" fontSize={{ base: "md" }}>
-					{getNameStyle(agent_name)}
+					{getNameStyle(
+						agent_name,
+						undefined,
+						undefined,
+						account_status_id
+					)}
 				</Box>
 				<NetworkMenuWrapper
 					{...{
@@ -57,7 +62,7 @@ const NetworkCard = ({ item }) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{agent_type}
+						{user_type_label}
 					</Box>
 				</Flex>
 				<Flex gap="2">

@@ -1,4 +1,10 @@
-import { Flex, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+	Flex,
+	IconButton,
+	Text,
+	useDisclosure,
+	useToast,
+} from "@chakra-ui/react";
 import { Button, Menus, Modal } from "components";
 import {
 	AGENT_VIEW_TABS,
@@ -20,11 +26,13 @@ const status = {
 	ACTIVE: 16,
 	// CLOSE: 17,
 	INACTIVE: 18,
+	DEMO_USER: 60,
 };
 
 const statusLabels = {
 	13: "Pending Approval",
 	16: "Active",
+	60: "Demo User",
 	// 17: "Close",
 	18: "Inactive",
 };
@@ -44,9 +52,15 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 	for (const listItem of list) {
 		let _isArray = Array.isArray(listItem.id);
 		let _id = _isArray ? listItem.id : [listItem.id];
+
+		// 1. Convert statusId to a number once
+		const currentStatus = +statusId;
+
+		// We hide the item if the status is 60 OR if the status is already in the item's ID list
 		if (
-			Object.values(status).includes(+statusId) &&
-			!_id.includes(+statusId)
+			currentStatus !== status.DEMO_USER && // Hide EVERYTHING from 'list' if it's a demo user
+			Object.values(status).includes(currentStatus) &&
+			!_id.includes(currentStatus)
 		) {
 			_list.push(listItem);
 		}
@@ -74,11 +88,12 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 
 /**
  * NetworkMenuWrapper component that provides a menu for managing agent network status and actions.
- * Allows admins to mark agents as Active/Inactive, change roles, view details, and download agreements.
+ * Allows admins to mark agents as Active/Inactive, change roles, view details, download agreements, and delete demo users.
+ * For Demo User accounts (status_id: 60), only shows "View Details" and "Delete Demo User" options.
  * @param {object} props - Component properties
  * @param {string} props.mobile_number - Mobile number of the agent
  * @param {string} props.eko_code - Unique EKO code identifier for the agent
- * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive)
+ * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive, 60:	 Demo User)
  * @param {number} props.user_type_id - User type ID of the agent (e.g., 1: Distributor, 2: Retailer, 3: Independent Retailer)
  * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
  * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
@@ -88,6 +103,15 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  *   eko_code="EKO123"
  *   account_status_id={16}
  *   user_type_id={2}
+ *   onStatusUpdate={(code, status) => console.log(code, status)}
+ * />
+ * @example
+ * // For demo user account:
+ * <NetworkMenuWrapper
+ *   mobile_number="9311019478"
+ *   eko_code="10004011"
+ *   account_status_id={60}
+ *   agent_type="Enterprise"
  *   onStatusUpdate={(code, status) => console.log(code, status)}
  * />
  */
@@ -100,6 +124,7 @@ const NetworkMenuWrapper = ({
 }) => {
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 	const [accountStatusId, setAccountStatusId] = useState();
 	const { accessToken, isAdmin } = useSession();
 	const router = useRouter();
@@ -129,6 +154,66 @@ const NetworkMenuWrapper = ({
 			.catch((err) => {
 				console.error("Error: ", err);
 			});
+	};
+
+	const deleteDemoUser = () => {
+		setDeleteModalOpen(true);
+	};
+
+	const handleDeleteDemoUserConfirm = async () => {
+		setDeleteModalOpen(false);
+
+		try {
+			const response = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.TRANSACTION_JSON,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `/network/agent`,
+						"tf-req-method": "POST",
+					},
+					body: {
+						csp_code: eko_code,
+						source: "WLC",
+						version: "v1",
+					},
+					token: accessToken,
+				}
+			);
+
+			const isSuccess = response.status === 0;
+
+			if (isSuccess) {
+				toast({
+					title:
+						response.message || "Demo user deleted successfully!",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+
+				// Trigger table refresh after successful deletion
+				if (onStatusUpdate) {
+					onStatusUpdate(eko_code, null); // Signal deletion
+				}
+			} else if (response.status === 1) {
+				toast({
+					title: response.message || "Failed to delete demo user",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			}
+		} catch (error) {
+			console.error("Error deleting demo user:", error);
+			toast({
+				title: "Network error. Please try again.",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const menuList = [
@@ -177,6 +262,13 @@ const NetworkMenuWrapper = ({
 			visible: account_status_id == status.ACTIVE,
 			onClick: () => {
 				downloadAgreement();
+			},
+		},
+		{
+			label: "Delete Demo User",
+			visible: +account_status_id === status.DEMO_USER,
+			onClick: () => {
+				deleteDemoUser();
 			},
 		},
 	];
@@ -348,6 +440,38 @@ const NetworkMenuWrapper = ({
 						</Button>
 					</Flex>
 				</form>
+			</Modal>
+			<Modal
+				isOpen={isDeleteModalOpen}
+				onClose={() => setDeleteModalOpen(false)}
+				title="Delete Demo User"
+			>
+				<Flex direction="column" gap="8" pb="4">
+					<Text>
+						Are you sure you want to delete this demo user account?
+						This action cannot be undone.
+					</Text>
+					<Flex gap="4">
+						<Button
+							onClick={() => setDeleteModalOpen(false)}
+							variant="ghost"
+							size="lg"
+							width="100%"
+							fontSize="lg"
+						>
+							Cancel
+						</Button>
+						<Button
+							onClick={handleDeleteDemoUserConfirm}
+							size="lg"
+							width="100%"
+							fontSize="lg"
+							colorScheme="red"
+						>
+							Delete
+						</Button>
+					</Flex>
+				</Flex>
 			</Modal>
 		</div>
 	);
