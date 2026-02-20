@@ -234,17 +234,15 @@ const OnboardingDashboard = () => {
 
 	return (
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
-			{onboardingAgentsTopPanelData?.length > 0 ? (
-				<>
-					<DashboardDateFilter
-						dateRange={dateRange}
-						prevDate={prevDate}
-						currDate={currDate}
-						setDateRange={setDateRange}
-					/>
-					<TopPanel panelDataList={onboardingAgentsTopPanelData} />
-				</>
-			) : null}
+			<>
+				<DashboardDateFilter
+					dateRange={dateRange}
+					prevDate={prevDate}
+					currDate={currDate}
+					setDateRange={setDateRange}
+				/>
+				<TopPanel panelDataList={onboardingAgentsTopPanelData} />
+			</>
 
 			<Flex direction="column" gap="2">
 				<Flex
