@@ -331,7 +331,14 @@ const Network = () => {
 				return res.blob();
 			})
 			.then((blob) => {
-				const _filename = "agent_subnetwork_report.xlsx";
+				const prefix = (
+					orgDetail?.org_name ||
+					orgDetail?.app_name ||
+					"agent"
+				)
+					.replace(/\s+/g, "_")
+					.toLowerCase();
+				const _filename = `${prefix}_network.xlsx`;
 				const _type =
 					blob.type ||
 					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
