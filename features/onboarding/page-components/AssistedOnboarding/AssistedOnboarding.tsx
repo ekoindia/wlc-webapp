@@ -49,7 +49,6 @@ export const RESPONSE_TYPE_IDS = {
 	AGENT_NOT_EXISTS_NEED_OTP: 873,
 	OTP_VERIFICATION_SUCCESS: 876,
 	OTP_VERIFICATION_ERROR: 302,
-	ESIGN_ALREADY_COMPLETED: 1069,
 } as const;
 
 const AgentStatusCheck = dynamic(() => import("./AgentStatusCheck"), {
@@ -196,11 +195,6 @@ const AssistedOnboarding = (): JSX.Element => {
 						agentMobile={agentMobile}
 						agentDetails={agentDetails}
 						fetchAgentDetails={fetchAgentDetails}
-						onEsignAlreadyCompleted={() =>
-							setStep(
-								ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED
-							)
-						}
 					/>
 				);
 
