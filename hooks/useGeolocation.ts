@@ -79,6 +79,13 @@ const useGeolocation = (
 
 	// ---- 1. Upgraded Permission Tracking (Safari Safe + Cleanup) ----
 	useEffect(() => {
+		// On Android WebView, the browser Permissions API is unaware of native
+		// permissions and always reports "prompt". Skip it entirely — the
+		// Android response handler (section 3.5) manages permissionState.
+		if (isAndroidApp()) {
+			return;
+		}
+
 		// UPGRADE 2: Browser Compatibility
 		// Safari throws or returns undefined for navigator.permissions
 		if (!navigator.permissions) {
@@ -161,6 +168,38 @@ const useGeolocation = (
 			const unsubscribe = subscribe(
 				TOPICS.ANDROID_RESPONSE,
 				(data: any) => {
+					// Handle permission check response (after GRANT_PERMISSION)
+					if (
+						data?.action ===
+						ANDROID_ACTION.ANDROID_PERMISSION_CHECK_RESPONSE
+					) {
+						// data.data is "0" for granted, non-zero for denied
+						const granted =
+							String(data.data) === "0" ||
+							data.data === true ||
+							data.data === "true";
+						console.log(
+							"[useGeolocation] Permission check response:",
+							data.data,
+							"granted:",
+							granted
+						);
+						if (granted) {
+							setPermissionState("granted");
+							setError(null);
+							// Permission just granted — automatically request location
+							isRequestingRef.current = false; // Reset so requestLocation doesn't bail
+							doAndroidAction(ANDROID_ACTION.GET_GEOLOCATION);
+							setIsLoading(true);
+						} else {
+							setPermissionState("denied");
+							setError("Location permission denied");
+							setIsLoading(false);
+							isRequestingRef.current = false;
+						}
+						return;
+					}
+
 					if (
 						data?.action === ANDROID_ACTION.GEOLOCATION_RESPONSE ||
 						data?.action === ANDROID_ACTION.GPS_STATUS_RESPONSE
@@ -176,6 +215,23 @@ const useGeolocation = (
 							}
 
 							if (response) {
+								// Check for permission denied (code 1)
+								if (response.code === 1) {
+									console.log(
+										"[useGeolocation] Permission denied",
+										response
+									);
+									setPermissionState("denied");
+									setError(
+										response.message ||
+											response.error ||
+											"Location permission denied"
+									);
+									setIsLoading(false);
+									isRequestingRef.current = false;
+									return;
+								}
+
 								const lat =
 									response.latitude ||
 									response.lat ||
@@ -203,8 +259,10 @@ const useGeolocation = (
 									setPermissionState("granted");
 									setIsLoading(false);
 									isRequestingRef.current = false;
-								} else if (response.error) {
-									setError(response.error);
+								} else if (response.error || response.message) {
+									setError(
+										response.error || response.message
+									);
 									setIsLoading(false);
 									isRequestingRef.current = false;
 								}
@@ -309,6 +367,8 @@ const useGeolocation = (
 	 */
 	const requestAndroidPermission = useCallback(() => {
 		if (isAndroidApp()) {
+			setPermissionState("prompt");
+			setError(null);
 			doAndroidAction(
 				ANDROID_ACTION.GRANT_PERMISSION,
 				ANDROID_PERMISSION.LOCATION
