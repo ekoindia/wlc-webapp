@@ -25,7 +25,7 @@ const VideoKycStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
-	const { pipelineResults } = useOnboardingContext();
+	const { userName, mobile, pipelineResults } = useOnboardingContext();
 	const lastProcessedResultRef = useRef<any>(null);
 
 	// Shop Types
@@ -90,7 +90,15 @@ const VideoKycStep = ({
 				meta: {
 					accept: "image/jpeg,image/png",
 					cameraOnly: true,
-					watermark: true,
+					watermark:
+						userName || mobile
+							? {
+									name:
+										userName && mobile
+											? `${userName} (${mobile})`
+											: userName || mobile,
+								}
+							: true,
 					options: {
 						detectFace: true,
 						minFaceCount: 1,
