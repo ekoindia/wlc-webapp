@@ -23,7 +23,7 @@ import { MdCameraAlt, MdFolderOpen, MdPhotoLibrary } from "react-icons/md";
  * @param	{Function}	prop.setFile	Function to set the file object
  * @param	{string}	[prop.accept]	Accepted file types
  * @param	{boolean}	[prop.cameraOnly]	Only allow camera to capture image. No file upload or drag/drop.
- * @param	{boolean}	[prop.watermark]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
+ * @param	{boolean|Record<string, string>}	[prop.watermark]	Add watermark to the Camera image. Pass `true` to use defaults (timestamp, user name, usercode, org name, geolocation). Pass an object to override specific fields (keys: name, org, location, ip, timestamp) or add new ones.
  * @param	{object}	[prop.options]	Additional options for the dropzone
  * @param	{number}	[prop.options.maxLength]	Maximum length of the image
  * @param	{boolean}	[prop.options.detectFace]	Detect faces in the image?
@@ -107,17 +107,25 @@ const Dropzone = ({
 	const watermarkText = useMemo(() => {
 		if (!watermark) return "";
 
+		const overrides = typeof watermark === "object" ? watermark : {};
 		const timestamp = new Date().toLocaleString();
-		const _name = name || "";
-		const _code = code || "";
-		const _org = (app_name || "Org") + (org_id ? ` (${org_id})` : "");
-		const _location = locationError
-			? ""
-			: `${latitude}, ${longitude} (${accuracy}m)`;
 
-		return `${_name} (${_code})\n${_org}\n${_location} – ${
-			ip || ""
-		}\n${timestamp} @ ${window.location.host}`;
+		// Default watermark fields
+		const defaults = {
+			name: `${name || ""} (${code || ""})`,
+			org: (app_name || "Org") + (org_id ? ` (${org_id})` : ""),
+			location: locationError
+				? ip || ""
+				: `${latitude}, ${longitude} (${accuracy}m)` +
+					(ip ? ` – ${ip}` : ""),
+			timestamp: `${timestamp} @ ${window.location.host}`,
+		};
+
+		// Merge: overrides replace matching keys, new keys are appended
+		const merged = { ...defaults, ...overrides };
+
+		// Build multi-line watermark from merged values
+		return Object.values(merged).filter(Boolean).join("\n");
 	}, [
 		watermark,
 		name,

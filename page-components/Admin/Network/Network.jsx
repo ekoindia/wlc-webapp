@@ -1,7 +1,12 @@
-import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
-import { useAppSource, useNetworkUsers, useSession } from "contexts";
+import {
+	useAppSource,
+	useNetworkUsers,
+	useOrgDetailContext,
+	useSession,
+} from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag, useUserTypes } from "hooks";
 import { useColumnVisibility } from "hooks/useColumnVisibility";
@@ -31,17 +36,6 @@ const action = {
 	TOGGLE_COLUMNS: 2,
 };
 
-const export_type_options = [
-	{
-		value: "pdf",
-		label: "PDF",
-	},
-	{
-		value: "xlsx",
-		label: "Excel",
-	},
-];
-
 const status_list = [
 	{ label: "Active", value: "Active" },
 	{ label: "In Progress", value: "InProgress" },
@@ -68,9 +62,11 @@ const Network = () => {
 		onBoardingDateTo: "",
 	};
 	const router = useRouter();
-	const { accessToken, isAdmin, userType } = useSession();
+	const { accessToken, isAdmin, userType, userId } = useSession();
 	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
 	const { getUserTypeLabel } = useUserTypes();
+	const toast = useToast();
 
 	const { refreshUserList, userTypeIdList, fetchedAt, loading } =
 		useNetworkUsers();
@@ -306,35 +302,60 @@ const Network = () => {
 		);
 
 		const download_params = generateQueryParams({
-			filter: true,
+			initiator_id: userId,
+			org_id: orgDetail?.org_id,
 			...filteredData,
 		});
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-is-file-download": "1",
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=50000&page_number=1&${download_params}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
+		const reportUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/reports/agent-subnetwork?${download_params}`;
+
+		fetch(reportUrl, {
+			method: "POST",
 		})
-			.then((data) => {
-				const _blob = data?.file?.blob;
-				const _filename = data?.file?.name || "network-report";
-				const _type = data?.file?.["content-type"];
-				const _b64 = true;
+			.then((res) => {
+				if (!res.ok) {
+					throw new Error(
+						`Download failed with status ${res.status}`
+					);
+				}
+				return res.blob();
+			})
+			.then((blob) => {
+				const prefix = (
+					orgDetail?.org_name ||
+					orgDetail?.app_name ||
+					"agent"
+				)
+					.replace(/\s+/g, "_")
+					.toLowerCase();
+				const _filename = `${prefix}_network.xlsx`;
+				const _type =
+					blob.type ||
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
-						blob: _blob,
+						blob,
 						name: _filename,
 					});
 				} else {
-					saveDataToFile(_blob, _filename, _type, _b64);
+					saveDataToFile(blob, _filename, _type);
 				}
+				toast({
+					title: "Report downloaded successfully",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
 			})
 			.catch((err) => {
 				console.error("[Network] export error: ", err);
+				toast({
+					title: "Failed to download report",
+					description: "Please try again",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			});
 	};
 
@@ -470,15 +491,7 @@ const Network = () => {
 			id: action.EXPORT,
 			label: "Export",
 			icon: "file-download",
-			parameter_list: [
-				...network_filter_parameter_list,
-				{
-					name: "reporttype",
-					label: "Download Report as",
-					parameter_type_id: ParamType.LIST,
-					list_elements: export_type_options,
-				},
-			],
+			parameter_list: network_filter_parameter_list,
 			handleSubmit: handleSubmitExport,
 			register: registerExport,
 			control: controlExport,
@@ -505,6 +518,7 @@ const Network = () => {
 
 	// Fetch Network User List for the UserTypeList when the component mounts for the UserType Filter
 	useEffect(() => {
+		console.log("[Network] Refrsh Effect", fetchedAt, loading);
 		if (fetchedAt === null && !loading) {
 			refreshUserList();
 		}
