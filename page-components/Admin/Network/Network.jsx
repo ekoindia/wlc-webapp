@@ -1,4 +1,4 @@
-import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
 import {
@@ -77,6 +77,7 @@ const Network = () => {
 	const { isAndroid } = useAppSource();
 	const { orgDetail } = useOrgDetailContext();
 	const { getUserTypeLabel } = useUserTypes();
+	const toast = useToast();
 
 	const { refreshUserList, userTypeIdList, fetchedAt, loading } =
 		useNetworkUsers();
@@ -350,9 +351,22 @@ const Network = () => {
 				} else {
 					saveDataToFile(blob, _filename, _type);
 				}
+				toast({
+					title: "Report downloaded successfully",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
 			})
 			.catch((err) => {
 				console.error("[Network] export error: ", err);
+				toast({
+					title: "Failed to download report",
+					description: "Please try again",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			});
 	};
 
