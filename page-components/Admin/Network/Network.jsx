@@ -1,7 +1,12 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
-import { useAppSource, useNetworkUsers, useSession } from "contexts";
+import {
+	useAppSource,
+	useNetworkUsers,
+	useOrgDetailContext,
+	useSession,
+} from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag, useUserTypes } from "hooks";
 import { useColumnVisibility } from "hooks/useColumnVisibility";
@@ -68,8 +73,9 @@ const Network = () => {
 		onBoardingDateTo: "",
 	};
 	const router = useRouter();
-	const { accessToken, isAdmin, userType } = useSession();
+	const { accessToken, isAdmin, userType, userId } = useSession();
 	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
 	const { getUserTypeLabel } = useUserTypes();
 
 	const { refreshUserList, userTypeIdList, fetchedAt, loading } =
@@ -306,31 +312,36 @@ const Network = () => {
 		);
 
 		const download_params = generateQueryParams({
-			filter: true,
+			initiator_id: userId,
+			org_id: orgDetail?.org_id,
 			...filteredData,
 		});
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-is-file-download": "1",
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=50000&page_number=1&${download_params}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
+		const reportUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/reports/agent-subnetwork?${download_params}`;
+
+		fetch(reportUrl, {
+			method: "POST",
 		})
-			.then((data) => {
-				const _blob = data?.file?.blob;
-				const _filename = data?.file?.name || "network-report";
-				const _type = data?.file?.["content-type"];
-				const _b64 = true;
+			.then((res) => {
+				if (!res.ok) {
+					throw new Error(
+						`Download failed with status ${res.status}`
+					);
+				}
+				return res.blob();
+			})
+			.then((blob) => {
+				const _filename = "agent_subnetwork_report.xlsx";
+				const _type =
+					blob.type ||
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
-						blob: _blob,
+						blob,
 						name: _filename,
 					});
 				} else {
-					saveDataToFile(_blob, _filename, _type, _b64);
+					saveDataToFile(blob, _filename, _type);
 				}
 			})
 			.catch((err) => {
@@ -505,6 +516,7 @@ const Network = () => {
 
 	// Fetch Network User List for the UserTypeList when the component mounts for the UserType Filter
 	useEffect(() => {
+		console.log("[Network] Refrsh Effect", fetchedAt, loading);
 		if (fetchedAt === null && !loading) {
 			refreshUserList();
 		}
