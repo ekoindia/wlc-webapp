@@ -1,4 +1,4 @@
-import { Flex, Text, useToast } from "@chakra-ui/react";
+import { Flex, Skeleton, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
 import { useSession } from "contexts";
@@ -249,23 +249,20 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					>
 						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
 						{pricingMessage && (
-							<Text
-								fontSize="sm"
-								color="primary.DEFAULT"
-								fontWeight="medium"
-								whiteSpace="nowrap"
+							<Skeleton
+								isLoaded={isFetchingPricingMessage}
+								height="20px"
+								width="200px"
 							>
-								{`Current Pricing: ${pricingMessage}`}
-							</Text>
-						)}
-						{isFetchingPricingMessage && (
-							<Text
-								fontSize="xs"
-								color="gray.500"
-								fontWeight="medium"
-							>
-								Fetching...
-							</Text>
+								<Text
+									fontSize="sm"
+									color="primary.DEFAULT"
+									fontWeight="medium"
+									whiteSpace="nowrap"
+								>
+									{`Current Pricing: ${pricingMessage}`}
+								</Text>
+							</Skeleton>
 						)}
 					</Flex>
 				),
@@ -344,9 +341,6 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 			return false;
 		}
 
-		// Check pricing_type
-		if (!watcher.pricing_type) return false;
-
 		return true;
 	}, [
 		agentType,
@@ -355,10 +349,9 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		watcher.payment_mode,
 		watcher.category,
 		watcher.select,
-		watcher.pricing_type,
-		state.paymentModeOptions,
-		state.categoryListOptions,
-		state.slabOptions,
+		state?.paymentModeOptions,
+		state?.categoryListOptions,
+		state?.slabOptions,
 	]);
 
 	/**
