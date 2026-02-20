@@ -36,17 +36,6 @@ const action = {
 	TOGGLE_COLUMNS: 2,
 };
 
-// const export_type_options = [
-// 	{
-// 		value: "pdf",
-// 		label: "PDF",
-// 	},
-// 	{
-// 		value: "xlsx",
-// 		label: "Excel",
-// 	},
-// ];
-
 const status_list = [
 	{ label: "Active", value: "Active" },
 	{ label: "In Progress", value: "InProgress" },
@@ -502,15 +491,7 @@ const Network = () => {
 			id: action.EXPORT,
 			label: "Export",
 			icon: "file-download",
-			parameter_list: [
-				...network_filter_parameter_list,
-				// {
-				// 	name: "reporttype",
-				// 	label: "Download Report as",
-				// 	parameter_type_id: ParamType.LIST,
-				// 	list_elements: export_type_options,
-				// },
-			],
+			parameter_list: network_filter_parameter_list,
 			handleSubmit: handleSubmitExport,
 			register: registerExport,
 			control: controlExport,
