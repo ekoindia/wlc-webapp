@@ -1,12 +1,13 @@
-import { Flex, useToast } from "@chakra-ui/react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { Form } from "tf-components";
+import { Form } from "tf-components/Form";
 import { Endpoints, ParamType } from "../../../../constants";
+import OnboardAgentResponse from "../OnboardAgentResponse";
 
 export interface DemoOnboardFormValues {
 	applicant_type: string;
@@ -31,6 +32,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 	const [applicantType, setApplicantType] = useState<string>("");
 
 	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
+	const [response, setResponse] = useState(null);
 
 	const {
 		handleSubmit,
@@ -178,6 +180,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 						duration: 3000,
 						isClosable: true,
 					});
+					setResponse(res); // Store full response for display
 					reset(); // Clear form only on success
 				}
 			})
@@ -215,24 +218,75 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 
 	return (
 		<div>
-			{/* // Agent onboarding form - shown before submission */}
-			<form onSubmit={handleSubmit(handleFormSubmit)}>
-				<Flex direction="column" gap="8">
-					{/* Dynamic form generated based on parameter_list */}
-					<Form
-						{...{
-							parameter_list,
-							formValues: watcher,
-							control: control as any,
-							register: register as any,
-							errors: errors as any,
-						}}
-					/>
+			{response === null ? (
+				// Agent onboarding form - shown before submission
+				<form onSubmit={handleSubmit(handleFormSubmit)}>
+					<Flex direction="column" gap="8">
+						{/* Dynamic form generated based on parameter_list */}
+						<Form
+							{...{
+								parameter_list,
+								formValues: watcher,
+								control: control as any,
+								register: register as any,
+								errors: errors as any,
+							}}
+						/>
 
-					{/* Action buttons for form submission */}
-					<ActionButtonGroup {...{ buttonConfigList }} />
+						{/* Action buttons for form submission */}
+						<ActionButtonGroup {...{ buttonConfigList }} />
+					</Flex>
+				</form>
+			) : (
+				// Results display - shown after successful submission
+				<Flex direction="column" gap="2">
+					{/* Response message and statistics summary */}
+					<Flex fontSize="sm" direction="column" gap="1">
+						{/* API response message or fallback */}
+						<span>
+							{response?.message || "Something went wrong"}!!
+						</span>
+
+						{/* Show accepted records count if any */}
+						{response?.data?.processed_records > 0 && (
+							<Flex gap="1">
+								<Box as="span" fontWeight="semibold">
+									Accepted:
+								</Box>
+								<span>{response?.data?.processed_records}</span>
+								<span>
+									{response?.data?.processed_records === 1
+										? "record"
+										: "records"}
+								</span>
+							</Flex>
+						)}
+
+						{/* Show rejected records count if any */}
+						{response?.data?.failed_count > 0 && (
+							<Flex gap="1">
+								<Box as="span" fontWeight="semibold">
+									Rejected:
+								</Box>
+								<span>{response?.data?.failed_count}</span>
+								<span>
+									{response?.data?.failed_count === 1
+										? "record"
+										: "records"}
+								</span>
+							</Flex>
+						)}
+					</Flex>
+
+					{/* Display detailed results table if there are records to show */}
+					{response?.data?.csp_list?.length > 0 && (
+						<OnboardAgentResponse
+							responseList={response?.data?.csp_list}
+							applicantType={applicantType}
+						/>
+					)}
 				</Flex>
-			</form>
+			)}
 		</div>
 	);
 };
