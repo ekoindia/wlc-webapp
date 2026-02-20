@@ -241,16 +241,21 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 			{
 				name: "actual_pricing",
 				label: (
-					<Flex align="center" justify="space-between" w="100%">
+					<Flex
+						align="center"
+						justify="space-between"
+						gap={2}
+						w="100%"
+					>
 						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
 						{pricingMessage && (
 							<Text
-								fontSize="xs"
+								fontSize="sm"
 								color="primary.DEFAULT"
 								fontWeight="medium"
 								whiteSpace="nowrap"
 							>
-								{pricingMessage}
+								{`Current Pricing: ${pricingMessage}`}
 							</Text>
 						)}
 						{isFetchingPricingMessage && (
@@ -325,17 +330,17 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		}
 
 		// Check payment_mode if it exists
-		if (state.paymentModeOptions?.length > 0 && !watcher.payment_mode) {
+		if (state?.paymentModeOptions?.length > 0 && !watcher.payment_mode) {
 			return false;
 		}
 
 		// Check category if it exists
-		if (state.categoryListOptions?.length > 0 && !watcher.category) {
+		if (state?.categoryListOptions?.length > 0 && !watcher.category) {
 			return false;
 		}
 
 		// Check select (slab) if it exists
-		if (state.slabOptions?.length > 0 && !watcher.select) {
+		if (state?.slabOptions?.length > 0 && !watcher.select) {
 			return false;
 		}
 
@@ -361,8 +366,8 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	 * @returns {Promise<void>}
 	 */
 	const fetchCurrentPricing = useCallback(
-		async (slabData) => {
-			if (!slabData || !state.productId) return;
+		async (slabData = {}) => {
+			if (!state.productId) return;
 
 			setIsFetchingPricingMessage(true);
 			setPricingMessage("");
@@ -371,8 +376,8 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 				const requestBody = {
 					interaction_type_id: TransactionTypes.GET_CURRENT_PRICING,
 					operation_type: watcher.operation_type,
-					min_slab_amount: slabData.min_slab_amount,
-					max_slab_amount: slabData.max_slab_amount,
+					min_slab_amount: slabData?.min_slab_amount,
+					max_slab_amount: slabData?.max_slab_amount,
 					product_id: state.productId,
 				};
 
@@ -407,7 +412,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	// Effect to fetch pricing message when all fields are filled
 	useEffect(() => {
 		if (areAllFieldsFilledExceptPricing) {
-			const slabData = state.slabOptions?.[watcher?.select?.value];
+			const slabData = state?.slabOptions?.[watcher?.select?.value];
 			fetchCurrentPricing(slabData);
 		} else {
 			setPricingMessage("");
@@ -416,7 +421,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		areAllFieldsFilledExceptPricing,
 		fetchCurrentPricing,
 		watcher?.select?.value,
-		state.slabOptions,
+		state?.slabOptions,
 	]);
 
 	/**
