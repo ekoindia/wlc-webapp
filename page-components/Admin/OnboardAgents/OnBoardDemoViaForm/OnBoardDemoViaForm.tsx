@@ -9,6 +9,33 @@ import { Form } from "tf-components/Form";
 import { Endpoints, ParamType } from "../../../../constants";
 import OnboardAgentResponse from "../OnboardAgentResponse";
 
+export interface CspMember {
+	reason: string;
+	name: string;
+	mobile: string;
+	status: "Accepted" | "Rejected" | string;
+}
+
+export interface UserData {
+	client_ref_id: string;
+	csp_list: CspMember[];
+	totalRecords: number;
+	user_code: string;
+	initiator_id: string;
+	processed_records: number;
+	org_id: number;
+	failed_count: number;
+	tid: string;
+}
+
+export interface UserResponse {
+	response_status_id: number;
+	data: UserData;
+	response_type_id: number;
+	message: string;
+	status: number;
+}
+
 export interface DemoOnboardFormValues {
 	applicant_type: string;
 	agent_name: string;
@@ -19,7 +46,7 @@ export interface DemoOnboardFormValues {
 }
 
 interface OnboardDemoProps {
-	permissions: any; // Ideally use your Permission interface
+	permissions: any;
 	agentTypeList: { label: string; value: string }[];
 	agentTypeValueToApi: Record<string, string>;
 }
@@ -32,7 +59,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 	const [applicantType, setApplicantType] = useState<string>("");
 
 	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
-	const [response, setResponse] = useState(null);
+	const [response, setResponse] = useState<UserResponse | null>(null);
 
 	const {
 		handleSubmit,
@@ -76,7 +103,6 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 					},
 				]
 			: []),
-		// Agent name field - always included
 
 		{
 			name: "agent_name",
@@ -157,34 +183,12 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 				token: accessToken,
 			}
 		)
-			.then((res) => {
-				// 1. Extract the specific agent result
-				const agentResult = res?.data?.csp_list?.[0];
-
-				if (agentResult?.status === "Fail") {
-					// 2. Show Error Toast with Reason from API
-					toast({
-						title: "Onboarding Failed",
-						description:
-							agentResult?.reason || "Reason not provided",
-						status: "error",
-						duration: 5000,
-						isClosable: true,
-					});
-				} else if (res.status === 0) {
-					// 3. Success Case
-					toast({
-						title: "Success",
-						description: "Demo user created successfully",
-						status: "success",
-						duration: 3000,
-						isClosable: true,
-					});
-					setResponse(res); // Store full response for display
-					reset(); // Clear form only on success
+			.then((res: UserResponse) => {
+				if (res.status === 0) {
+					setResponse(res);
 				}
 			})
-			.catch((err) => {
+			.catch((err: Error) => {
 				console.error("Demo Onboard Error", err);
 				toast({
 					title: "Error",
