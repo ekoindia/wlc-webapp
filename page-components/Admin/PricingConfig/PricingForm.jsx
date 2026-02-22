@@ -96,7 +96,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
-	const { isFeatureEnabled } = useFeatureFlag("EKO_SHIELD");
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	// State for storing pricing message from API
 	const [pricingMessage, setPricingMessage] = useState("");
@@ -249,7 +249,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 						w="100%"
 					>
 						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
-						{isFeatureEnabled && pricingMessage && (
+						{isEkoShieldEnabled && pricingMessage && (
 							<Text
 								fontSize="sm"
 								color="primary.DEFAULT"
@@ -399,7 +399,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 				setIsFetchingPricingMessage(false);
 			}
 		},
-		[accessToken, generateNewToken, watcher]
+		[accessToken, generateNewToken, watcher, state?.productId]
 	);
 
 	// Effect to fetch pricing message when all fields are filled
@@ -419,6 +419,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		watcher?.category?.value,
 		watcher?.operation_type,
 		watcher?.CspList,
+		state?.productId,
 	]);
 
 	/**
