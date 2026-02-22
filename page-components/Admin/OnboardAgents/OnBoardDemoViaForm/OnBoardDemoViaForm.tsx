@@ -192,8 +192,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 					toast({
 						title: "Unable to create demo user",
 						description:
-							res?.message ??
-							"Your request was processed but not completed successfully. Please review the details and try again.",
+							res?.message ?? "An unknown error occurred.",
 						status: "error",
 						duration: 4000,
 						isClosable: true,
