@@ -355,6 +355,13 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	 */
 	const fetchCurrentPricing = useCallback(
 		async (slabData = {}) => {
+			if (!state.productId) {
+				console.warn(
+					"Product ID is missing. Cannot fetch current pricing."
+				);
+				return;
+			}
+
 			setIsFetchingPricingMessage(true);
 			setPricingMessage("");
 
