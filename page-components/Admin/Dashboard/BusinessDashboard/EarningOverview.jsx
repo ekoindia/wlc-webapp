@@ -106,6 +106,7 @@ const EarningOverview = ({
 	}, [setTotalBusiness]);
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
@@ -348,6 +349,7 @@ const EarningOverview = ({
 		{
 			key: "onboardedAgents",
 			label: "Onboarded Agents",
+			hidden: isEkoShieldEnabled,
 			value: earningOverviewData?.onboardedAgents?.onboarded || 0,
 			lastPeriod: earningOverviewData?.onboardedAgents?.lastMonth || 0,
 			type: "number",
@@ -491,56 +493,63 @@ const EarningOverview = ({
 					gap={{ base: "4", md: "8" }}
 					w="100%"
 				>
-					{earningOverviewList.map(
-						(item) =>
-							item.value != 0 && (
-								<Flex
-									key={item.key}
-									direction={{
-										base: "row",
-										md: "column",
-									}}
-									justify={{
-										base: "space-between",
-										md: "flex-start",
-									}}
-									w="100%"
-									gap="1"
-									paddingLeft="8px"
-									borderLeft="4px solid"
-									borderColor="divider"
-								>
-									<Flex direction="column" align="flex-start">
-										{/* Value */}
+					{earningOverviewList
+						.filter((item) => !item.hidden)
+						.map(
+							(item) =>
+								item.value != 0 && (
+									<Flex
+										key={item.key}
+										direction={{
+											base: "row",
+											md: "column",
+										}}
+										justify={{
+											base: "space-between",
+											md: "flex-start",
+										}}
+										w="100%"
+										gap="1"
+										paddingLeft="8px"
+										borderLeft="4px solid"
+										borderColor="divider"
+									>
 										<Flex
-											fontWeight="500"
-											fontSize="1.3em"
-											color="primary.DEFAULT"
+											direction="column"
+											align="flex-start"
 										>
-											<Skeleton isLoaded={!isLoading}>
-												{item.type === "amount" ? (
-													<Currency
-														amount={item.value}
-													/>
-												) : (
-													<span>{item.value}</span>
-												)}
-											</Skeleton>
+											{/* Value */}
+											<Flex
+												fontWeight="500"
+												fontSize="1.3em"
+												color="primary.DEFAULT"
+											>
+												<Skeleton isLoaded={!isLoading}>
+													{item.type === "amount" ? (
+														<Currency
+															amount={item.value}
+														/>
+													) : (
+														<span>
+															{item.value}
+														</span>
+													)}
+												</Skeleton>
+											</Flex>
+											{/* Label */}
+											<Text
+												fontSize="0.75em"
+												textAlign="center"
+												whiteSpace="nowrap"
+												opacity="0.7"
+											>
+												<Skeleton isLoaded={!isLoading}>
+													{item.label}
+												</Skeleton>
+											</Text>
 										</Flex>
-										{/* Label */}
-										<Text
-											fontSize="0.75em"
-											textAlign="center"
-											whiteSpace="nowrap"
-											opacity="0.7"
-										>
-											<Skeleton isLoaded={!isLoading}>
-												{item.label}
-											</Skeleton>
-										</Text>
-									</Flex>
-									{/* last Period */}
-									{/* {item.lastPeriod !== 0 && (
+										{/* last Period */}
+										{/* {item.lastPeriod !== 0 && (
 										<Flex
 											direction="column"
 											align={{
@@ -643,9 +652,9 @@ const EarningOverview = ({
 											)}
 										</Flex>
 									)} */}
-								</Flex>
-							)
-					)}
+									</Flex>
+								)
+						)}
 				</Grid>
 			</Flex>
 

@@ -8,27 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { LuTrophy } from "react-icons/lu";
 import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
-
-/**
- * Matches items from a Product master filter list against the keys present in an API productTypeBreakdown.
- * @param {Array} productMasterList - The complete list of all products available in the system, retrieved from the products API.
- * @param {object} productTypeBreakdown - The breakdown object from the GTV API where keys represent product IDs and values contain transaction details.
- * @returns {Array} - A filtered array of product definitions that exist in the GTV breakdown.
- */
-export const filterAvailableProducts = (
-	productMasterList,
-	productTypeBreakdown
-) => {
-	if (!productTypeBreakdown || !productMasterList) return [];
-
-	// Get the IDs (keys) available in the current API response
-	const availableIds = Object.keys(productTypeBreakdown);
-
-	// Filter the master list to only include what's in the breakdown
-	return productMasterList.filter((item) =>
-		availableIds.includes(String(item.value))
-	);
-};
+import { filterAvailableProducts } from "./EarningOverview";
 
 /**
  * Process top merchants data for the dashboard
@@ -249,7 +229,6 @@ const TopMerchants = ({
 		masterProductList,
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
-		// Note: cachedFullProductList intentionally excluded to prevent infinite loop
 	]);
 
 	// Fetching Top Merchants Data
@@ -321,7 +300,6 @@ const TopMerchants = ({
 		isEkoShieldEnabled,
 		businessDashboardData.topMerchantsCache,
 		fetchTopMerchantsOverviewData,
-		// Note: totalBusiness intentionally excluded - only used for display, not for fetching
 	]);
 
 	const router = useRouter();
@@ -364,7 +342,7 @@ const TopMerchants = ({
 							flex="1"
 						>
 							<LuTrophy color="#e27c7c" />
-							GTV Leaderboard
+							Network Leaderboard
 						</Flex>
 						{/* Product Filter */}
 						{filteredProductList.length > 1 && (

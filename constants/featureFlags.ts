@@ -66,7 +66,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development", "staging"],
 	},
 
-	// KYC Verification
+	//  Eko Shield
 	EKO_SHIELD: {
 		enabled: true,
 		forEnv: ["development", "staging"],
