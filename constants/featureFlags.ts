@@ -64,6 +64,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	KYC_VERIFICATION: {
 		enabled: true,
 		forEnv: ["development", "staging"],
+		// envConstraints: {
+		// 	development: {
+		// 		forOrgId: [3],
+		// 	},
+		// 	staging: {
+		// 		forOrgId: [3],
+		// 	},
+		// 	production: {
+		// 		forOrgId: [3],
+		// 	},
+		// },
 	},
 
 	// Inventory Management for (Super)Distributors

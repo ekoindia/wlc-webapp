@@ -3,7 +3,7 @@ import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useRefreshToken } from "hooks";
+import { useFeatureFlag, useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -96,6 +96,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
+	const { isFeatureEnabled } = useFeatureFlag("EKO_SHIELD");
 
 	// State for storing pricing message from API
 	const [pricingMessage, setPricingMessage] = useState("");
@@ -248,7 +249,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 						w="100%"
 					>
 						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
-						{pricingMessage && (
+						{isFeatureEnabled && pricingMessage && (
 							<Text
 								fontSize="sm"
 								color="primary.DEFAULT"
@@ -354,8 +355,6 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	 */
 	const fetchCurrentPricing = useCallback(
 		async (slabData = {}) => {
-			if (!state.productId) return;
-
 			setIsFetchingPricingMessage(true);
 			setPricingMessage("");
 
@@ -365,7 +364,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					operation_type: watcher.operation_type,
 					min_slab_amount: slabData?.min_slab_amount,
 					max_slab_amount: slabData?.max_slab_amount,
-					product_id: state.productId,
+					product_id: state?.productId,
 				};
 
 				const response = await fetcher(
@@ -393,7 +392,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 				setIsFetchingPricingMessage(false);
 			}
 		},
-		[state.productId, accessToken, generateNewToken, watcher]
+		[accessToken, generateNewToken, watcher]
 	);
 
 	// Effect to fetch pricing message when all fields are filled
@@ -408,12 +407,11 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		areAllFieldsFilledExceptPricing,
 		fetchCurrentPricing,
 		watcher?.select?.value,
-		state.slabOptions,
+		state?.slabOptions,
 		watcher?.payment_mode?.value,
 		watcher?.category?.value,
 		watcher?.operation_type,
 		watcher?.CspList,
-		watcher?.pricing_type,
 	]);
 
 	/**
