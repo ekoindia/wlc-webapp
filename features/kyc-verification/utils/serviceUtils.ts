@@ -70,12 +70,21 @@ export const normalizeServices = (
 		result = result.filter((service) => service.is_enabled);
 	}
 
-	return result.map((service) => ({
-		...service,
-		icon: getServiceIcon(service),
-		description: getServiceDescription(service),
-		category: service.category || UNCATEGORIZED_VALUE,
-	}));
+	return result.map((service) => {
+		const normalizedCategory = service.category || UNCATEGORIZED_VALUE;
+		const derivedCategoryIcon =
+			service.categoryIcon ||
+			DEFAULT_SERVICE_ICONS[normalizedCategory] ||
+			DEFAULT_ICON;
+
+		return {
+			...service,
+			icon: getServiceIcon(service),
+			description: getServiceDescription(service),
+			category: normalizedCategory,
+			categoryIcon: derivedCategoryIcon,
+		};
+	});
 };
 
 /**
@@ -87,11 +96,23 @@ export const normalizeServices = (
 export const extractCategories = (
 	services: VerificationService[]
 ): CategoryOption[] => {
-	const categoryMap = new Map<string, number>();
+	const categoryMap = new Map<
+		string,
+		{
+			count: number;
+			icon?: string;
+		}
+	>();
 
 	services.forEach((service) => {
 		const category = service.category || UNCATEGORIZED_VALUE;
-		categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+		const existing = categoryMap.get(category);
+		const nextCount = (existing?.count ?? 0) + 1;
+		const nextIcon = existing?.icon ?? service.categoryIcon;
+		categoryMap.set(category, {
+			count: nextCount,
+			icon: nextIcon,
+		});
 	});
 
 	const categories: CategoryOption[] = [
@@ -99,6 +120,7 @@ export const extractCategories = (
 			value: ALL_CATEGORIES_VALUE,
 			label: "All",
 			count: services.length,
+			icon: DEFAULT_ICON,
 		},
 	];
 
@@ -109,7 +131,7 @@ export const extractCategories = (
 		return a[0].localeCompare(b[0]);
 	});
 
-	sortedCategories.forEach(([category, count]) => {
+	sortedCategories.forEach(([category, { count, icon }]) => {
 		categories.push({
 			value: category,
 			label:
@@ -117,6 +139,7 @@ export const extractCategories = (
 					? UNCATEGORIZED_LABEL
 					: category,
 			count,
+			icon,
 		});
 	});
 

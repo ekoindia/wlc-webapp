@@ -1,11 +1,11 @@
-import { Flex, useToast } from "@chakra-ui/react";
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useRefreshToken } from "hooks";
+import { useFeatureFlag, useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 import { capitalize, formatCurrency } from "utils";
@@ -96,6 +96,14 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
+
+	// TODO
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
+
+	// State for storing pricing message from API
+	const [pricingMessage, setPricingMessage] = useState("");
+	const [isFetchingPricingMessage, setIsFetchingPricingMessage] =
+		useState(false);
 
 	const {
 		handleSubmit,
@@ -235,7 +243,26 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 			},
 			{
 				name: "actual_pricing",
-				label: `Define ${pricingTypeLabel} (GST Inclusive)`,
+				label: (
+					<Flex
+						align="center"
+						justify="space-between"
+						gap={2}
+						w="100%"
+					>
+						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
+						{isEkoShieldEnabled && pricingMessage && (
+							<Text
+								fontSize="sm"
+								color="primary.DEFAULT"
+								fontWeight="medium"
+								whiteSpace="nowrap"
+							>
+								{`Current Pricing: ${pricingMessage}`}
+							</Text>
+						)}
+					</Flex>
+				),
 				parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 				helperText: helperText,
 				validations: {
@@ -270,6 +297,131 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		state.pricingValidation,
 		watcher.pricing_type,
 		helperText,
+		pricingMessage,
+		isFetchingPricingMessage,
+		watcher,
+	]);
+
+	/**
+	 * Check if all form fields are filled except actual_pricing
+	 * @returns {boolean} - True if all required fields are filled
+	 */
+	const isDataAvailableToFetchCurrentPricing = useMemo(() => {
+		// Check operation_type for RETAILERS
+		if (agentType === AGENT_TYPES.RETAILERS) {
+			if (!watcher.operation_type) return false;
+			// Check CspList if operation_type is 1 or 2
+			if (
+				(watcher.operation_type === "1" ||
+					watcher.operation_type === "2") &&
+				(!watcher.CspList || watcher.CspList.length === 0)
+			) {
+				return false;
+			}
+		} else if (agentType === AGENT_TYPES.DISTRIBUTOR) {
+			// For DISTRIBUTOR, check CspList
+			if (!watcher.CspList || watcher.CspList.length === 0) return false;
+		}
+
+		// Check payment_mode if it exists
+		if (state?.paymentModeOptions?.length > 0 && !watcher.payment_mode) {
+			return false;
+		}
+
+		// Check category if it exists
+		if (state?.categoryListOptions?.length > 0 && !watcher.category) {
+			return false;
+		}
+
+		// Check select (slab) if it exists
+		if (state?.slabOptions?.length > 0 && !watcher.select) {
+			return false;
+		}
+
+		return true;
+	}, [
+		agentType,
+		watcher.operation_type,
+		watcher.CspList,
+		watcher.payment_mode,
+		watcher.category,
+		watcher.select,
+		state?.paymentModeOptions,
+		state?.categoryListOptions,
+		state?.slabOptions,
+	]);
+
+	/**
+	 * Fetch current pricing message from API
+	 * @returns {Promise<void>}
+	 */
+	const fetchCurrentPricing = useCallback(
+		async (slabData = {}) => {
+			if (!state.productId) {
+				console.warn(
+					"Product ID is missing. Cannot fetch current pricing."
+				);
+				return;
+			}
+
+			setIsFetchingPricingMessage(true);
+			setPricingMessage("");
+
+			try {
+				const requestBody = {
+					interaction_type_id: TransactionTypes.GET_CURRENT_PRICING,
+					operation_type: watcher.operation_type,
+					min_slab_amount: slabData?.min_slab_amount,
+					max_slab_amount: slabData?.max_slab_amount,
+					product_id: state?.productId,
+				};
+
+				const response = await fetcher(
+					process.env.NEXT_PUBLIC_API_BASE_URL +
+						Endpoints.TRANSACTION,
+					{
+						body: requestBody,
+						token: accessToken,
+						generateNewToken,
+					}
+				);
+
+				if (
+					response?.status === 0 &&
+					response?.param_attributes?.message
+				) {
+					setPricingMessage(response.param_attributes.message);
+				} else {
+					setPricingMessage("");
+				}
+			} catch (error) {
+				console.error("Error fetching current pricing:", error);
+				setPricingMessage("");
+			} finally {
+				setIsFetchingPricingMessage(false);
+			}
+		},
+		[accessToken, generateNewToken, watcher, state?.productId]
+	);
+
+	// Effect to fetch pricing message when all fields are filled
+	useEffect(() => {
+		if (isDataAvailableToFetchCurrentPricing) {
+			const slabData = state?.slabOptions?.[watcher?.select?.value];
+			fetchCurrentPricing(slabData);
+		} else {
+			setPricingMessage("");
+		}
+	}, [
+		isDataAvailableToFetchCurrentPricing,
+		fetchCurrentPricing,
+		watcher?.select?.value,
+		state?.slabOptions,
+		watcher?.payment_mode?.value,
+		watcher?.category?.value,
+		watcher?.operation_type,
+		watcher?.CspList,
+		state?.productId,
 	]);
 
 	/**
