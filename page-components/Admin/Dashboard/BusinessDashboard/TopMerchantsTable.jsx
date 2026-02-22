@@ -290,14 +290,15 @@ const MerchantRow = ({
 
 			{/* Revenue Chart */}
 
-			<HorizontalBarChart
+			{/* TODO: Conditionally show this column and GTV column only when data exists for any row (ideally only one at a time). Also, FIX: "value" & "total" */}
+			{/* <HorizontalBarChart
 				value={totalRevenue}
 				label="Revenue"
 				isCurrency
 				color="#e27c7c"
 				flex="2"
 				minW={{ base: "45%", md: "auto" }}
-			/>
+			/> */}
 
 			{/* Transaction Count Chart */}
 			<HorizontalBarChart
