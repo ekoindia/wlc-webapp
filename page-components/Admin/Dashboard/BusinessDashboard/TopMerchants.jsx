@@ -152,8 +152,6 @@ const TopMerchants = ({
 		);
 	}, [topMerchantsData, totalBusiness]);
 
-	// TODO: Improve/refactor this logic. This part seems duplicate which is being repeated in multiple components where we are showing product filter. Seems too much code to produce a cached list of products to filter from.
-
 	// Fetching Top Merchants Data
 	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
