@@ -11,7 +11,7 @@ import { Currency, WaffleChart } from "components";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
 // Product Chart Colors
@@ -98,12 +98,6 @@ const EarningOverview = ({
 	]);
 	const [cachedFullProductList, setCachedFullProductList] = useState(null);
 	const prevDateRef = useRef({ dateFrom, dateTo });
-	const setTotalBusinessRef = useRef(setTotalBusiness);
-
-	// Keep setTotalBusiness ref up to date
-	useEffect(() => {
-		setTotalBusinessRef.current = setTotalBusiness;
-	}, [setTotalBusiness]);
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
@@ -111,35 +105,31 @@ const EarningOverview = ({
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
 	// MARK: API Handler
-	const handleApiSuccess = useCallback(
-		(res) => {
-			const _data = res?.data?.dashboard_object?.products_overview || [];
-
-			const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
-
-			// Cache data for future use
-			setBusinessDashboardData((prev) => ({
-				...prev,
-				earningOverviewCache: {
-					...(prev.earningOverviewCache || {}),
-					[cacheKey]: _data,
-				},
-			}));
-
-			setEarningOverviewData(_data);
-
-			// Inform parent component
-			if (!productFilter) {
-				setTotalBusinessRef.current(_data);
-			}
-		},
-		[productFilter, dateFrom, dateTo, setBusinessDashboardData]
-	);
-
 	const [fetchEarningOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
-			onSuccess: handleApiSuccess,
+			onSuccess: (res) => {
+				const _data =
+					res?.data?.dashboard_object?.products_overview || [];
+
+				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+				// Cache data for future use
+				setBusinessDashboardData((prev) => ({
+					...prev,
+					earningOverviewCache: {
+						...(prev.earningOverviewCache || {}),
+						[cacheKey]: _data,
+					},
+				}));
+
+				setEarningOverviewData(_data);
+
+				// Inform parent component
+				if (!productFilter) {
+					setTotalBusiness(_data);
+				}
+			},
 		}
 	);
 
@@ -188,9 +178,7 @@ const EarningOverview = ({
 					...matchedOptions,
 				];
 				setFilteredProductList(fullList);
-				if (!cachedFullProductList) {
-					setCachedFullProductList(fullList);
-				}
+				setCachedFullProductList(fullList);
 			} else if (cachedFullProductList) {
 				// Always use cached full list when available (regardless of current breakdown)
 				setFilteredProductList(cachedFullProductList);
@@ -213,12 +201,7 @@ const EarningOverview = ({
 				setFilteredProductList([{ label: "All Products", value: "" }]);
 			}
 		}
-	}, [
-		earningOverviewData,
-		masterProductList,
-		productFilter,
-		// Note: cachedFullProductList intentionally excluded to prevent infinite loop
-	]);
+	}, [earningOverviewData, masterProductList, productFilter]);
 
 	// MARK: Fetch Data
 	useEffect(() => {
@@ -250,7 +233,7 @@ const EarningOverview = ({
 			setEarningOverviewData(cachedData);
 			// Inform parent component
 			if (!productFilter) {
-				setTotalBusinessRef.current(cachedData);
+				setTotalBusiness(cachedData);
 			}
 			return;
 		}

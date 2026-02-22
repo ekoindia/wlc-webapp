@@ -191,17 +191,14 @@ const TopMerchants = ({
 				typeBreakdown
 			);
 
-			// Only update and cache filter list if no filter is selected AND we have matched options
-			// This ensures we capture the full list when showing "All Products"
+			// Mirror EarningOverview: cache full list when showing "All Products"
 			if (!productFilter && matchedOptions.length > 0) {
 				const fullList = [
 					{ label: "All Products", value: "" },
 					...matchedOptions,
 				];
 				setFilteredProductList(fullList);
-				if (!cachedFullProductList) {
-					setCachedFullProductList(fullList);
-				}
+				setCachedFullProductList(fullList);
 			} else if (cachedFullProductList) {
 				// Always use cached full list when available (regardless of current breakdown)
 				setFilteredProductList(cachedFullProductList);
@@ -223,13 +220,7 @@ const TopMerchants = ({
 				setFilteredProductList([{ label: "All Products", value: "" }]);
 			}
 		}
-	}, [
-		dateFrom,
-		dateTo,
-		masterProductList,
-		productFilter,
-		businessDashboardData?.earningOverviewCache,
-	]);
+	}, [totalBusiness, masterProductList, productFilter]);
 
 	// Fetching Top Merchants Data
 	const handleApiSuccess = useCallback(
