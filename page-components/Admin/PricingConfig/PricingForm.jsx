@@ -96,6 +96,8 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
+
+	// TODO
 	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	// State for storing pricing message from API
@@ -304,7 +306,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	 * Check if all form fields are filled except actual_pricing
 	 * @returns {boolean} - True if all required fields are filled
 	 */
-	const areAllFieldsFilledExceptPricing = useMemo(() => {
+	const isDataAvailableToFetchCurrentPricing = useMemo(() => {
 		// Check operation_type for RETAILERS
 		if (agentType === AGENT_TYPES.RETAILERS) {
 			if (!watcher.operation_type) return false;
@@ -404,14 +406,14 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 	// Effect to fetch pricing message when all fields are filled
 	useEffect(() => {
-		if (areAllFieldsFilledExceptPricing) {
+		if (isDataAvailableToFetchCurrentPricing) {
 			const slabData = state?.slabOptions?.[watcher?.select?.value];
 			fetchCurrentPricing(slabData);
 		} else {
 			setPricingMessage("");
 		}
 	}, [
-		areAllFieldsFilledExceptPricing,
+		isDataAvailableToFetchCurrentPricing,
 		fetchCurrentPricing,
 		watcher?.select?.value,
 		state?.slabOptions,
