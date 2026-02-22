@@ -161,6 +161,7 @@ const TopMerchants = ({
 	/**
 	 * Filter product list based on available products from earning overview cache
 	 */
+	// TODO: Improve/refactor this logic. This part seems duplicate which is being repeated in multiple components where we are showing product filter. Seems too much code to produce a cached list of products to filter from.
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 

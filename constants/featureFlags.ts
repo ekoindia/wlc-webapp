@@ -67,6 +67,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	},
 
 	//  Eko Shield
+	// TODO: Deprecate the usage of this flag across the project.
 	EKO_SHIELD: {
 		enabled: true,
 		forEnv: ["development", "staging"],
