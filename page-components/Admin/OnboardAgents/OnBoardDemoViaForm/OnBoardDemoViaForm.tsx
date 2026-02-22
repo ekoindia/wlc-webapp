@@ -13,7 +13,7 @@ export interface CspMember {
 	reason: string;
 	name: string;
 	mobile: string;
-	status: "Accepted" | "Rejected" | string;
+	status: "Accepted" | "Rejected";
 }
 
 export interface UserData {
@@ -186,6 +186,18 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 			.then((res: UserResponse) => {
 				if (res.status === 0) {
 					setResponse(res);
+				} else {
+					// Handle non-zero status
+					setResponse(res);
+					toast({
+						title: "Unable to create demo user",
+						description:
+							res?.message ??
+							"Your request was processed but not completed successfully. Please review the details and try again.",
+						status: "error",
+						duration: 4000,
+						isClosable: true,
+					});
 				}
 			})
 			.catch((err: Error) => {
