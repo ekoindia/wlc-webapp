@@ -371,7 +371,7 @@ const TopMerchants = ({
 							gap="0.4em"
 						>
 							<LuTrophy color="#e27c7c" />
-							GTV Leaderboard
+							Network Leaderboard
 						</Flex>
 					</DragHandle>
 					{filteredProductList.length > 1 && (
