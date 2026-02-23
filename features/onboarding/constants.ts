@@ -260,51 +260,6 @@ export interface OnboardingStep {
 }
 
 /**
- * Filters step data based on onboarding step roles and sorts by API order.
- *
- * IMPORTANT: This function preserves the order from the API's onboarding_steps,
- * NOT the master list order. This ensures the UI step order matches the backend's
- * expected progression, preventing status synchronization bugs.
- * @param {OnboardingStep[]} stepData - Array of all possible onboarding steps
- * @param {Array<{ role: number; label?: string }>} onboardingSteps - Array of onboarding step configurations with roles from API
- * @returns {OnboardingStep[]} Filtered and sorted array of onboarding steps relevant to the user's roles
- */
-export const filterOnboardingStepsByRoles = (
-	stepData: OnboardingStep[],
-	onboardingSteps: Array<{ role: number; label?: string }>
-): OnboardingStep[] => {
-	// Extract role IDs from API response
-	const apiRoles = onboardingSteps?.map((step) => step.role) ?? [];
-
-	// Create a role-to-index map for sorting based on API order
-	const roleOrderMap = new Map<number, number>();
-	onboardingSteps?.forEach((step, index) => {
-		roleOrderMap.set(step.role, index);
-	});
-
-	// Filter steps based on applicableRoles array
-	const filteredSteps = stepData.filter((step) => {
-		return step.applicableRoles?.some((role) => apiRoles.includes(role));
-	});
-
-	// Sort by API order (using the first matching applicable role's position)
-	// Steps with the same role maintain their relative master list order (stable sort)
-	return filteredSteps.sort((a, b) => {
-		const aIndex = Math.min(
-			...(a.applicableRoles
-				?.map((role) => roleOrderMap.get(role) ?? Infinity)
-				.filter((idx) => idx !== Infinity) ?? [Infinity])
-		);
-		const bIndex = Math.min(
-			...(b.applicableRoles
-				?.map((role) => roleOrderMap.get(role) ?? Infinity)
-				.filter((idx) => idx !== Infinity) ?? [Infinity])
-		);
-		return aIndex - bIndex;
-	});
-};
-
-/**
  * Master list of all possible onboarding steps across all user types.
  * Steps are filtered at runtime based on the API response (onboarding_steps).
  * Each step can have multiple applicable roles via the applicableRoles array.

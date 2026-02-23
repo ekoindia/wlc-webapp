@@ -11,11 +11,7 @@
 export { OnboardingSteps, OnboardingWidget, RoleSelection } from "./components";
 
 // Hooks
-export {
-	useOnboardingState,
-	useStepConfiguration,
-	useStepExecutor,
-} from "./hooks";
+export { useOnboardingState, useStepExecutor } from "./hooks";
 
 // Context
 export {
@@ -32,13 +28,13 @@ export type {
 
 // Utils
 export * from "./utils";
+export { filterOnboardingStepsByRoles } from "./utils";
 
 // Constants
 export {
 	APPLICANT_TYPES,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
-	filterOnboardingStepsByRoles,
 	masterOnboardingSteps,
 } from "./constants";
 
