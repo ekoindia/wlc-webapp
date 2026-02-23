@@ -11,7 +11,6 @@ import React, { useCallback, useState } from "react";
 import {
 	AddAgentForm,
 	type AgentAlreadyExistsScreenProps,
-	type AgentOnboardingProps,
 	type OnboardingCompletedProps,
 	type OtpVerificationFormProps,
 } from ".";
@@ -72,9 +71,10 @@ const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
 	ssr: false,
 }) as React.ComponentType<OtpVerificationFormProps>;
 
-const AgentOnboarding = dynamic(() => import("./AgentOnboarding"), {
-	ssr: false,
-}) as React.ComponentType<AgentOnboardingProps>;
+const OnboardingWidget = dynamic(
+	() => import("../../components/OnboardingWidget"),
+	{ ssr: false }
+);
 
 const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
 	ssr: false,
@@ -229,14 +229,25 @@ const AssistedOnboarding = (): JSX.Element => {
 			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
 				return <OtpVerificationForm setStep={setStep} />;
 
-			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
+			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET: {
+				const enrichedAgentDetails = {
+					...agentDetails,
+					user_detail: {
+						...agentDetails?.user_detail,
+						mobile:
+							agentDetails?.user_detail?.mobile || agentMobile,
+					},
+				};
 				return (
-					<AgentOnboarding
-						agentMobile={agentMobile}
-						agentDetails={agentDetails}
+					<OnboardingWidget
+						userData={userData}
+						updateUserInfo={() => {}}
+						isAssistedOnboarding={true}
+						assistedAgentDetails={enrichedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}
 					/>
 				);
+			}
 
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED:
 				return (

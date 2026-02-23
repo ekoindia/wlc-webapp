@@ -20,9 +20,6 @@ export const ONBOARDING_STEPS = {
 } as const;
 
 interface OnboardingWidgetProps {
-	logo?: string;
-	appName?: string;
-	orgName?: string;
 	userData?: any;
 	updateUserInfo?: (_data: any) => void;
 	isAssistedOnboarding?: boolean;
@@ -38,9 +35,6 @@ interface OnboardingWidgetProps {
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
  * @param props.refreshAgentProfile
- * @param props.logo
- * @param props.appName
- * @param props.orgName
  * @param props.userData
  * @param props.updateUserInfo
  * @returns {JSX.Element} - The rendered OnboardingWidget component
@@ -50,9 +44,6 @@ interface OnboardingWidgetProps {
 const DEFAULT_LATLONG = "27.176670,78.008075,0";
 
 const OnboardingWidget = ({
-	logo,
-	appName,
-	orgName,
 	userData,
 	isAssistedOnboarding = false,
 	assistedAgentDetails,
@@ -167,9 +158,6 @@ const OnboardingWidget = ({
 				return (
 					<OnboardingSteps
 						isAssistedOnboarding={isAssistedOnboarding}
-						logo={logo}
-						appName={appName}
-						orgName={orgName}
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}

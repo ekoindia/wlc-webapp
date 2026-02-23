@@ -109,9 +109,6 @@ const OnboardingStepsContent = ({
  * Extracts user details and provides them to the context provider.
  * @param {object} props - Component props
  * @param {boolean} props.isAssistedOnboarding - whether assisted onboarding flow is active
- * @param {string} [props.logo] - organization logo URL (reserved for future use)
- * @param {string} [props.appName] - application display name (reserved for future use)
- * @param {string} [props.orgName] - organization name (reserved for future use)
  * @param {any} props.userData - user data object (server/context)
  * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
  * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
@@ -120,18 +117,12 @@ const OnboardingStepsContent = ({
  */
 const OnboardingSteps = ({
 	isAssistedOnboarding,
-	logo: _logo,
-	appName: _appName,
-	orgName: _orgName,
 	userData,
 	assistedAgentDetails,
 	refreshAgentProfile,
 	initialLatLong,
 }: {
 	isAssistedOnboarding: boolean;
-	logo?: string;
-	appName?: string;
-	orgName?: string;
 	userData: any;
 	assistedAgentDetails?: any;
 	refreshAgentProfile: () => Promise<void>;

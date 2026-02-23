@@ -33,9 +33,9 @@ export { filterOnboardingStepsByRoles } from "./utils";
 // Constants
 export {
 	APPLICANT_TYPES,
+	masterOnboardingSteps,
 	ONBOARDING_STEP_IDS,
 	ONBOARDING_STEP_STATUS,
-	masterOnboardingSteps,
 } from "./constants";
 
 // Types from constants
@@ -50,12 +50,11 @@ export type { Role, RoleConfig } from "./utils/roleSelection";
 
 // Page Components
 export {
-	ASSISTED_ONBOARDING_STEPS,
 	// Assisted Onboarding
 	AddAgentForm,
 	AgentAlreadyExistsScreen,
-	AgentOnboarding,
 	AgentStatusCheck,
+	ASSISTED_ONBOARDING_STEPS,
 	AssistedOnboarding,
 	// Self-Onboarding
 	Onboarding,
@@ -66,7 +65,6 @@ export {
 
 export type {
 	AgentAlreadyExistsScreenProps,
-	AgentOnboardingProps,
 	AgentStatusCheckProps,
 	OnboardingCompletedProps,
 	OtpVerificationFormProps,
