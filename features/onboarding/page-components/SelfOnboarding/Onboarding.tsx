@@ -5,7 +5,7 @@ import { useSession, useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import router from "next/router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { OnboardingWidget } from "../../components";
 
 /**
@@ -54,6 +54,11 @@ const Onboarding = () => {
 		} catch (err) {
 			console.log("[Onboarding] Error refreshing agent profile:", err);
 		}
+	}, []);
+
+	// Refresh user profile on mount to ensure fresh data (e.g., after page reload)
+	useEffect(() => {
+		refreshAgentProfile();
 	}, []);
 
 	// MARK: JSX
