@@ -12,8 +12,6 @@ export { OnboardingSteps, OnboardingWidget, RoleSelection } from "./components";
 
 // Hooks
 export {
-	createStepLookupMap,
-	extractStepConfiguration,
 	useOnboardingState,
 	useStepConfiguration,
 	useStepExecutor,

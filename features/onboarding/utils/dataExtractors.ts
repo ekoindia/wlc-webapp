@@ -59,6 +59,12 @@ export const getOnboardingStepsFromData = (
 	data: UnifiedUserData,
 	isAssistedOnboarding: boolean
 ): Array<{ role: number; label?: string }> | undefined => {
+	console.log(
+		"[getOnboardingStepsFromData] data, isAssistedOnboarding",
+		data,
+		isAssistedOnboarding
+	);
+
 	const _onboardingSteps = isAssistedOnboarding
 		? data?.user_detail?.onboarding_steps
 		: data?.onboarding_steps;
