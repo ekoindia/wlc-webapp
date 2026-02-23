@@ -147,7 +147,7 @@ const MerchantRow = ({
 		name = "",
 		status = "inactive",
 		gtv = 0,
-		revenue = 0,
+		revenue: merchantRevenue = 0,
 		totalTransactions: merchantTransactions = 0,
 		onboardingDate = "",
 		distributorMapped = "",
@@ -301,7 +301,7 @@ const MerchantRow = ({
 
 			{shouldShowRevenueChart && (
 				<HorizontalBarChart
-					value={revenue}
+					value={merchantRevenue}
 					total={totalRevenue}
 					label="Revenue"
 					isCurrency
@@ -367,17 +367,14 @@ const TopMerchantsTable = ({
 	isLoading = false,
 	onViewProfile,
 }) => {
-	const { shouldShowGtvChart, shouldShowRevenueChart } = useMemo(() => {
-		return data.reduce(
-			(acc, merchant) => ({
-				shouldShowGtvChart:
-					acc.shouldShowGtvChart || (merchant.gtv ?? 0) > 0,
-				shouldShowRevenueChart:
-					acc.shouldShowRevenueChart || (merchant.revenue ?? 0) > 0,
-			}),
-			{ shouldShowGtvChart: false, shouldShowRevenueChart: false }
-		);
-	}, [data]);
+	const shouldShowGtvChart = useMemo(
+		() => data.some((merchant) => (merchant.gtv ?? 0) > 0),
+		[data]
+	);
+	const shouldShowRevenueChart = useMemo(
+		() => data.some((merchant) => (merchant.revenue ?? 0) > 0),
+		[data]
+	);
 
 	if (isLoading) {
 		return (
