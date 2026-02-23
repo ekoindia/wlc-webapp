@@ -1,38 +1,29 @@
 import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useOnboardingContext } from "../../context";
 import { ASSISTED_ONBOARDING_STEPS } from "./AssistedOnboarding";
 
 export interface AgentStatusCheckProps {
-	agentMobile: string;
 	setStep: React.Dispatch<React.SetStateAction<string>>;
 	onAgentDetailsFetched: (_agentDetails: any) => void;
 	fetchAgentDetails: (_mobile: string) => Promise<any>;
 }
 
 /**
- * AgentStatusCheck component that fetches agent details and routes based on onboarding status
+ * AgentStatusCheck component that fetches agent details and routes based on onboarding status.
+ * Reads `mobile` from OnboardingContext instead of receiving it as a prop.
  * @param {AgentStatusCheckProps} props - Component props
- * @param {string} props.agentMobile - The agent's mobile number
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
  * @param {(agentDetails: any) => void} props.onAgentDetailsFetched - Callback to update parent state with agent details
  * @param {(mobile: string) => Promise<any>} props.fetchAgentDetails - Function to fetch agent details from API
  * @returns {JSX.Element} The rendered AgentStatusCheck component
- * @example
- * ```tsx
- * <AgentStatusCheck
- *   agentMobile="9002229988"
- *   setStep={setStep}
- *   onAgentDetailsFetched={(details) => setAgentDetails(details)}
- *   fetchAgentDetails={fetchAgentDetails}
- * />
- * ```
  */
 const AgentStatusCheck = ({
-	agentMobile,
 	setStep,
 	onAgentDetailsFetched,
 	fetchAgentDetails,
 }: AgentStatusCheckProps): JSX.Element => {
+	const { mobile } = useOnboardingContext();
 	const [hasError, setHasError] = useState(false);
 
 	/**
@@ -42,7 +33,7 @@ const AgentStatusCheck = ({
 		setHasError(false);
 
 		try {
-			const agentDetails = await fetchAgentDetails(agentMobile);
+			const agentDetails = await fetchAgentDetails(mobile);
 
 			if (!agentDetails) {
 				setHasError(true);
