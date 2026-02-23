@@ -84,6 +84,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development", "staging"],
 	},
 
+	DEMO_ACCOUNT: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+		forRoles: ["51900"],
+	},
+
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,

@@ -8,3 +8,5 @@ export {
 	getServiceIcon,
 	normalizeServices,
 } from "./serviceUtils";
+
+export { mergeServiceParams } from "./formHelper";
