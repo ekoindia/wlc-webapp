@@ -182,6 +182,20 @@ const OnboardingSteps = ({
 		[onboardingUserDetails, isAssistedOnboarding]
 	);
 
+	// For assisted onboarding, the OnboardingProvider already exists above
+	// in AssistedOnboarding.tsx — skip wrapping to avoid double nesting.
+	// For self-onboarding, wrap with OnboardingProvider as usual.
+	if (isAssistedOnboarding) {
+		return (
+			<OnboardingStepsContent
+				isAssistedOnboarding={isAssistedOnboarding}
+				userData={userData}
+				assistedAgentDetails={assistedAgentDetails}
+				initialLatLong={initialLatLong}
+			/>
+		);
+	}
+
 	return (
 		<OnboardingProvider
 			userName={String(userName || "")}
