@@ -229,25 +229,16 @@ const AssistedOnboarding = (): JSX.Element => {
 			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
 				return <OtpVerificationForm setStep={setStep} />;
 
-			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET: {
-				const enrichedAgentDetails = {
-					...agentDetails,
-					user_detail: {
-						...agentDetails?.user_detail,
-						mobile:
-							agentDetails?.user_detail?.mobile || agentMobile,
-					},
-				};
+			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
 				return (
 					<OnboardingWidget
 						userData={userData}
 						updateUserInfo={() => {}}
 						isAssistedOnboarding={true}
-						assistedAgentDetails={enrichedAgentDetails}
+						assistedAgentDetails={agentDetails}
 						refreshAgentProfile={refreshAgentProfile}
 					/>
 				);
-			}
 
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED:
 				return (
