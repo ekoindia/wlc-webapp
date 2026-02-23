@@ -373,6 +373,15 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					operation_type: watcher.operation_type,
 					min_slab_amount: slabData?.min_slab_amount,
 					max_slab_amount: slabData?.max_slab_amount,
+					...(watcher.operation_type === "1" ||
+					watcher.operation_type === "2"
+						? {
+								CspList: watcher?.CspList?.map(
+									(item) => item[_multiselectRenderer.value]
+								),
+							}
+						: {}),
+
 					product_id: state?.productId,
 				};
 

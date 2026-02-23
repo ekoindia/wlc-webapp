@@ -1,6 +1,7 @@
 import { Box, Flex, HStack, Tag, Text, VStack } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
 import { getDateDistance } from "libs";
+import { useMemo } from "react";
 import { LuCake } from "react-icons/lu";
 
 /**
@@ -123,16 +124,22 @@ const HorizontalBarChart = ({
  * @param {object} props.merchant - Merchant data
  * @param {number} props.rank - Merchant rank position
  * @param {number} props.totalGtv - Total GTV for percentage calculation
+ * @param {number} props.totalRevenue - Total Revenue for percentage calculation
  * @param {number} props.totalTransactions - Total transactions for percentage calculation
  * @param {Date} props.now - Current date/time
+ * @param {boolean} props.shouldShowGtvChart - Whether any merchant has gtv > 0
+ * @param {boolean} props.shouldShowRevenueChart - Whether any merchant has revenue > 0
  * @param props.onViewProfile
  */
 const MerchantRow = ({
 	merchant,
 	rank,
 	totalGtv,
+	totalRevenue,
 	totalTransactions,
 	now,
+	shouldShowGtvChart,
+	shouldShowRevenueChart,
 	onViewProfile,
 }) => {
 	// Extract `merchant` data...
@@ -140,7 +147,7 @@ const MerchantRow = ({
 		name = "",
 		status = "inactive",
 		gtv = 0,
-		totalRevenue = 0,
+		revenue = 0,
 		totalTransactions: merchantTransactions = 0,
 		onboardingDate = "",
 		distributorMapped = "",
@@ -276,29 +283,33 @@ const MerchantRow = ({
 					</Flex>
 				</VStack>
 			</HStack>
-			{/* GTV Chart */}
 
-			<HorizontalBarChart
-				value={gtv}
-				total={totalGtv}
-				label="GTV"
-				isCurrency
-				color="#e27c7c"
-				flex="2"
-				minW={{ base: "45%", md: "auto" }}
-			/>
+			{/* GTV Chart */}
+			{shouldShowGtvChart && (
+				<HorizontalBarChart
+					value={gtv}
+					total={totalGtv}
+					label="GTV"
+					isCurrency
+					color="#e27c7c"
+					flex="2"
+					minW={{ base: "45%", md: "auto" }}
+				/>
+			)}
 
 			{/* Revenue Chart */}
 
-			{/* TODO: Conditionally show this column and GTV column only when data exists for any row (ideally only one at a time). Also, FIX: "value" & "total" */}
-			{/* <HorizontalBarChart
-				value={totalRevenue}
-				label="Revenue"
-				isCurrency
-				color="#e27c7c"
-				flex="2"
-				minW={{ base: "45%", md: "auto" }}
-			/> */}
+			{shouldShowRevenueChart && (
+				<HorizontalBarChart
+					value={revenue}
+					total={totalRevenue}
+					label="Revenue"
+					isCurrency
+					color="#e27c7c"
+					flex="2"
+					minW={{ base: "45%", md: "auto" }}
+				/>
+			)}
 
 			{/* Transaction Count Chart */}
 			<HorizontalBarChart
@@ -344,16 +355,30 @@ const MerchantRow = ({
  * @param {Array} props.data - Array of merchant data
  * @param {boolean} props.isLoading - Loading state
  * @param props.totalGtv
+ * @param props.totalRevenue
  * @param props.totalTransactions
  * @param props.onViewProfile
  */
 const TopMerchantsTable = ({
 	data = [],
 	totalGtv,
+	totalRevenue,
 	totalTransactions,
 	isLoading = false,
 	onViewProfile,
 }) => {
+	const { shouldShowGtvChart, shouldShowRevenueChart } = useMemo(() => {
+		return data.reduce(
+			(acc, merchant) => ({
+				shouldShowGtvChart:
+					acc.shouldShowGtvChart || (merchant.gtv ?? 0) > 0,
+				shouldShowRevenueChart:
+					acc.shouldShowRevenueChart || (merchant.revenue ?? 0) > 0,
+			}),
+			{ shouldShowGtvChart: false, shouldShowRevenueChart: false }
+		);
+	}, [data]);
+
 	if (isLoading) {
 		return (
 			<VStack spacing="12px" w="100%">
@@ -388,6 +413,14 @@ const TopMerchantsTable = ({
 		);
 	}
 
+	// // Check if any merchant has GTV > 0
+	// const shouldShowGtvChart = data.some((merchant) => (merchant.gtv ?? 0) > 0);
+
+	// // Check if any merchant has revenue > 0
+	// const shouldShowRevenueChart = data.some(
+	// 	(merchant) => (merchant.revenue ?? 0) > 0
+	// );
+
 	const now = new Date();
 
 	return (
@@ -399,7 +432,10 @@ const TopMerchantsTable = ({
 					rank={index + 1}
 					totalGtv={totalGtv}
 					totalTransactions={totalTransactions}
+					totalRevenue={totalRevenue}
 					now={now}
+					shouldShowGtvChart={shouldShowGtvChart}
+					shouldShowRevenueChart={shouldShowRevenueChart}
 					onViewProfile={onViewProfile}
 				/>
 			))}

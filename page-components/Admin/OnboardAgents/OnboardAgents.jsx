@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
 import { useSession } from "contexts";
-import { useUserTypes } from "hooks";
+import { useFeatureFlag, useUserTypes } from "hooks";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
 import OnboardDemoViaForm from "./OnBoardDemoViaForm/OnBoardDemoViaForm";
@@ -26,6 +26,7 @@ const agentTypeValueToApi = {
 const OnboardAgents = () => {
 	const { isAdmin, userType } = useSession();
 	const { getUserTypeLabel } = useUserTypes();
+	const [isDemoOnBoardEnabled] = useFeatureFlag("DEMO_ACCOUNT");
 
 	// Get permissions based on user role - determines which agent types the user can onboard
 	const permissions = useMemo(() => {
@@ -69,8 +70,10 @@ const OnboardAgents = () => {
 				/>
 			),
 		}, // Multiple agent onboarding via file upload
+	];
 
-		{
+	if (isDemoOnBoardEnabled) {
+		tabList.push({
 			label: "Add Demo Account",
 			comp: (
 				<OnboardDemoViaForm
@@ -80,8 +83,8 @@ const OnboardAgents = () => {
 				/>
 			),
 			// Individual Demo User onboarding via form
-		},
-	];
+		});
+	}
 	return (
 		<>
 			<PageTitle title={onboardingTitle} hideBackIcon />

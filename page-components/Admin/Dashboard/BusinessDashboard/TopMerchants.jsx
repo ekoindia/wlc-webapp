@@ -407,6 +407,7 @@ const TopMerchants = ({
 							<TopMerchantsTable
 								data={processedMerchantData}
 								totalGtv={+totalBusiness?.gtv?.amount ?? 0}
+								totalRevenue={+totalBusiness?.gtv?.revenue ?? 0}
 								totalTransactions={
 									+totalBusiness?.transactions
 										?.transactions ?? 0

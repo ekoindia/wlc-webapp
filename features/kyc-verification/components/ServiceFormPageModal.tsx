@@ -116,6 +116,11 @@ const mergeServiceParams = (services: VerificationService[]): FormField[] => {
 						...(existing.requiredBy ?? []),
 						service.name,
 					];
+
+					// 2. Update helperText dynamically as we find more services
+					if (services.length > 1) {
+						existing.helperText = `Required by: ${existing.requiredBy.join(", ")}`;
+					}
 				}
 			} else {
 				// New param
@@ -125,12 +130,12 @@ const mergeServiceParams = (services: VerificationService[]): FormField[] => {
 					required: param.is_required === 1,
 					parameter_type_id: param.type,
 					validations: mapValidations(param),
+					placeholder: param.placeholder,
+					requiredBy: [service.name],
 					helperText:
 						services.length > 1
 							? `Required by: ${service.name}`
 							: undefined,
-					placeholder: param.placeholder,
-					requiredBy: [service.name],
 				});
 			}
 		});
