@@ -3,11 +3,12 @@ import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useNetworkUsers, useSession } from "contexts";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
 	AddAgentForm,
 	type AgentAlreadyExistsScreenProps,
@@ -15,6 +16,14 @@ import {
 	type OnboardingCompletedProps,
 	type OtpVerificationFormProps,
 } from ".";
+import { OnboardingProvider } from "../../context";
+import {
+	getAgreementIdFromData,
+	getOnboardingStepsFromData,
+	getRoleListFromData,
+	getUserNameFromData,
+	getUserTypeFromData,
+} from "../../utils";
 
 /**
  * Constants representing the different steps in the assisted onboarding flow
@@ -73,18 +82,19 @@ const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
 }) as React.ComponentType<OnboardingCompletedProps>;
 
 /**
- * AssistedOnboarding component that manages the multi-step agent onboarding flow
+ * AssistedOnboarding component that manages the multi-step agent onboarding flow.
+ *
+ * This component wraps the entire assisted flow in an OnboardingProvider so that
+ * every step (pre-KYC and KYC) has access to shared data (mobile, userName, etc.)
+ * via useOnboardingContext().
  * @returns {JSX.Element} The rendered AssistedOnboarding component
- * @example
- * ```tsx
- * <AssistedOnboarding />
- * ```
  */
 const AssistedOnboarding = (): JSX.Element => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const { accessToken } = useSession();
 	const { refreshUserList } = useNetworkUsers();
+	const { orgDetail } = useOrgDetailContext();
 
 	const [step, setStep] = useState<keyof typeof ASSISTED_ONBOARDING_STEPS>(
 		ASSISTED_ONBOARDING_STEPS.ADD_AGENT
@@ -93,6 +103,16 @@ const AssistedOnboarding = (): JSX.Element => {
 	const [agentDetails, setAgentDetails] = useState<any>(null);
 
 	const isAdmin = userData?.userType === "Admin";
+
+	/**
+	 * Resets agent-specific state when starting a new onboarding flow.
+	 * Called when "Onboard Another Agent" is clicked to prevent stale data
+	 * from the previous agent leaking into the next onboarding.
+	 */
+	const resetAgentState = useCallback(() => {
+		setAgentDetails(null);
+		setAgentMobile("");
+	}, []);
 
 	/**
 	 * Fetches agent details using interaction_type_id: 151
@@ -152,6 +172,38 @@ const AssistedOnboarding = (): JSX.Element => {
 		}
 	};
 
+	/**
+	 * Refresh agent profile by re-fetching agent details.
+	 * Used by OnboardingProvider and passed to child components.
+	 * Updates agentDetails state so the provider re-renders with fresh data.
+	 */
+	const refreshAgentProfile = useCallback(async () => {
+		if (agentMobile) {
+			try {
+				const details = await fetchAgentDetails(agentMobile);
+				if (details) {
+					setAgentDetails(details);
+				}
+			} catch (error) {
+				// Expected for new agents — profile doesn't exist until partial account is created
+				console.log(
+					"[AssistedOnboarding] Profile not found (expected for new agents)",
+					error
+				);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [agentMobile]);
+
+	// MARK: Compute provider props from agentDetails
+	// These will be empty/undefined until agentDetails is fetched, which is fine —
+	// the provider handles missing data gracefully (initializeSteps returns early).
+	const onboardingSteps = getOnboardingStepsFromData(agentDetails, true);
+	const roleList = getRoleListFromData(agentDetails, true);
+	const userType = getUserTypeFromData(agentDetails, true);
+	const userName = getUserNameFromData(agentDetails, true);
+	const agreementId = getAgreementIdFromData(agentDetails, true);
+
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {
 		switch (step) {
@@ -166,7 +218,6 @@ const AssistedOnboarding = (): JSX.Element => {
 			case ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK:
 				return (
 					<AgentStatusCheck
-						agentMobile={agentMobile}
 						setStep={setStep}
 						onAgentDetailsFetched={setAgentDetails}
 						fetchAgentDetails={fetchAgentDetails}
@@ -174,27 +225,17 @@ const AssistedOnboarding = (): JSX.Element => {
 				);
 
 			case ASSISTED_ONBOARDING_STEPS.AGENT_ALREADY_EXISTS:
-				return (
-					<AgentAlreadyExistsScreen
-						setStep={setStep}
-						agentMobile={agentMobile}
-					/>
-				);
+				return <AgentAlreadyExistsScreen setStep={setStep} />;
 
 			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
-				return (
-					<OtpVerificationForm
-						setStep={setStep}
-						agentMobile={agentMobile}
-					/>
-				);
+				return <OtpVerificationForm setStep={setStep} />;
 
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
 				return (
 					<AgentOnboarding
 						agentMobile={agentMobile}
 						agentDetails={agentDetails}
-						fetchAgentDetails={fetchAgentDetails}
+						refreshAgentProfile={refreshAgentProfile}
 					/>
 				);
 
@@ -202,7 +243,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				return (
 					<OnboardingCompleted
 						setStep={setStep}
-						agentMobile={agentMobile}
+						resetAgentState={resetAgentState}
 					/>
 				);
 
@@ -251,7 +292,22 @@ const AssistedOnboarding = (): JSX.Element => {
 				onBack={handleBackNavigation}
 			/>
 			<Flex direction="column" align="center" px={{ base: 4, md: 0 }}>
-				{renderCurrentStep()}
+				{/* OnboardingProvider wraps ALL assisted onboarding steps so
+				    every step can access shared data (mobile, userName, etc.)
+				    via useOnboardingContext(). */}
+				<OnboardingProvider
+					key={agentMobile || "no-agent"}
+					mobile={agentMobile}
+					userName={String(userName || "")}
+					agreementId={String(agreementId || "")}
+					onboardingSteps={onboardingSteps}
+					roleList={roleList}
+					userType={userType}
+					orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
+					refreshAgentProfile={refreshAgentProfile}
+				>
+					{renderCurrentStep()}
+				</OnboardingProvider>
 			</Flex>
 		</>
 	);

@@ -21,6 +21,7 @@ import {
 export const ESIGN_RESPONSE_TYPES = {
 	SUCCESS_URL_GENERATED: 1613,
 	ALREADY_SIGNED: 1615,
+	AGREEMENT_ALREADY_SIGNED: 1069,
 };
 
 /**
@@ -76,7 +77,11 @@ export const getSignUrl = async (
 	);
 
 	// Document is already signed (response_type_id 1615) — no signing needed
-	if (response?.response_type_id === ESIGN_RESPONSE_TYPES.ALREADY_SIGNED) {
+	if (
+		response?.response_type_id === ESIGN_RESPONSE_TYPES.ALREADY_SIGNED ||
+		response?.response_type_id ===
+			ESIGN_RESPONSE_TYPES.AGREEMENT_ALREADY_SIGNED
+	) {
 		return {
 			...response?.data,
 			alreadySigned: true,

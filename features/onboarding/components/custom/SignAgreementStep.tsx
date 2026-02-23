@@ -16,6 +16,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Button, Icon } from "components";
+import { useAppSource } from "contexts/AppSourceContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingContext } from "../../context";
 import { useSignAgreement } from "../../hooks/useSignAgreement";
@@ -51,6 +52,7 @@ const SignAgreementStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
+	const { isAndroid } = useAppSource();
 	const {
 		userName,
 		agreementId,
@@ -446,7 +448,7 @@ const SignAgreementStep = ({
 						</ListItem>
 						<ListItem>
 							Complete your e-signature in the new window using
-							Aadhaar or IRIS
+							Aadhaar {isAndroid ? "or IRIS" : null}
 						</ListItem>
 						<ListItem>
 							Return here and click &quot;Proceed&quot; once
