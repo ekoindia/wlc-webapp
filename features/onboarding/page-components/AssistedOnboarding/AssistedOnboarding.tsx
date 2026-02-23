@@ -212,6 +212,7 @@ const AssistedOnboarding = (): JSX.Element => {
 					<AddAgentForm
 						setStep={setStep}
 						setAgentMobile={setAgentMobile}
+						setAgentDetails={setAgentDetails}
 					/>
 				);
 
@@ -267,6 +268,7 @@ const AssistedOnboarding = (): JSX.Element => {
 
 			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
 				// From OTP, go back to add agent to re-enter mobile
+				resetAgentState();
 				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 				break;
 
@@ -274,11 +276,13 @@ const AssistedOnboarding = (): JSX.Element => {
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED:
 				// From any other step, go back to start (doesn't make sense to go to intermediate steps)
+				resetAgentState();
 				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 				break;
 
 			default:
 				// Fallback to ADD_AGENT
+				resetAgentState();
 				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 		}
 	};

@@ -46,10 +46,10 @@ const AgentStatusCheck = ({
 			// Check onboarding status
 
 			const { user_detail } = agentDetails;
-			const { onboarding, onboarding_steps } = user_detail;
+			const { onboarding } = user_detail;
 
-			// If onboarding is incomplete (1) and has onboarding steps, continue onboarding
-			if (onboarding === 1 && onboarding_steps?.length > 0) {
+			// If onboarding is incomplete (1), continue onboarding
+			if (onboarding === 1) {
 				console.log(
 					"[AgentStatusCheck] Agent has incomplete onboarding, routing to KYC steps"
 				);

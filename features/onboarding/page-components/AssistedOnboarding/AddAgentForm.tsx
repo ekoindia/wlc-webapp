@@ -45,6 +45,7 @@ const add_agent_parameter_list = [
 interface AddAgentFormProps {
 	setStep: React.Dispatch<React.SetStateAction<string>>;
 	setAgentMobile: React.Dispatch<React.SetStateAction<string>>;
+	setAgentDetails: React.Dispatch<React.SetStateAction<any>>;
 }
 
 /**
@@ -57,6 +58,7 @@ interface AddAgentFormProps {
 const AddAgentForm = ({
 	setStep,
 	setAgentMobile,
+	setAgentDetails,
 }: AddAgentFormProps): JSX.Element => {
 	const toast = useToast();
 
@@ -134,8 +136,9 @@ const AddAgentForm = ({
 					RESPONSE_TYPE_IDS.AGENT_OTP_VERIFIED_PENDING_ONBOARDING
 				) {
 					// Agent exists, OTP verified but onboarding not complete
+					// Route to status check to cleanly load their profile
 					setAgentMobile(_cspId);
-					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET);
+					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK);
 					return;
 				}
 
@@ -157,6 +160,7 @@ const AddAgentForm = ({
 					// Set mobile TOGETHER with step so React batches them
 					// (avoids Provider key change remounting this component mid-flow)
 					setAgentMobile(_cspId);
+					setAgentDetails(null); // Explicitly clear any stale details
 					setStep(ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION);
 					return;
 				}
