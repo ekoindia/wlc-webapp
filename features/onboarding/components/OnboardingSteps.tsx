@@ -170,12 +170,10 @@ const OnboardingStepsContent = ({
 	// Initialize step configuration hook
 	const stepConfiguration = useStepConfiguration({
 		actions,
-		userType,
 		onboardingSteps,
 		roleList,
 		disabledSteps,
 		skippableSteps,
-		userIdentifier: mobile, // Use mobile number for session storage validation
 	});
 
 	/**
@@ -253,12 +251,9 @@ const OnboardingStepsContent = ({
 	 * @param {object} user_data - object containing onboarding details ({ details: { ... } })
 	 * @returns {void}
 	 */
-	const initialStepSetter = useCallback(
-		(user_data) => {
-			stepConfiguration.initializeSteps(user_data);
-		},
-		[stepConfiguration]
-	);
+	const initialStepSetter = useCallback(() => {
+		stepConfiguration.initializeSteps();
+	}, [stepConfiguration]);
 
 	/**
 	 * Handle submission of step data from the external widget or local form.
@@ -471,9 +466,7 @@ const OnboardingStepsContent = ({
 			onboardingUserDetails &&
 			Object.keys(onboardingUserDetails).length > 0
 		) {
-			initialStepSetter({
-				details: onboardingUserDetails,
-			});
+			initialStepSetter();
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -5,114 +5,6 @@ import {
 	ONBOARDING_STEP_STATUS,
 	type OnboardingStep,
 } from "../constants";
-import { type UnifiedUserData } from "../utils";
-
-/**
- * Session storage key prefix for onboarding step states.
- * The full key includes the user identifier to prevent cache collisions
- * between different onboarding users (e.g., assisted onboarding).
- */
-const ONBOARDING_STEPS_STORAGE_KEY_PREFIX = "onboarding_steps_state";
-
-/**
- * Generates a per-user session storage key
- * @param {string} userIdentifier - Mobile number or user code
- * @returns {string} Unique storage key for this user
- */
-const getStorageKey = (userIdentifier: string): string =>
-	`${ONBOARDING_STEPS_STORAGE_KEY_PREFIX}_${userIdentifier}`;
-
-/**
- * Saves step states to session storage for persistence across page refreshes
- * @param {OnboardingStep[]} steps - Steps to save
- * @param {string} userIdentifier - User mobile or identifier for cache validation
- * @returns {void}
- */
-const saveStepsToSessionStorage = (
-	steps: OnboardingStep[],
-	userIdentifier: string
-): void => {
-	if (!userIdentifier) return;
-
-	try {
-		const stateToSave = {
-			steps: steps.map((s) => ({
-				id: s.id,
-				name: s.name,
-				stepStatus: s.stepStatus,
-			})),
-			lastUpdated: Date.now(),
-			userIdentifier,
-		};
-		sessionStorage.setItem(
-			getStorageKey(userIdentifier),
-			JSON.stringify(stateToSave)
-		);
-		console.log("[StepConfiguration] Saved step states to session storage");
-	} catch (error) {
-		console.error(
-			"[StepConfiguration] Failed to save to session storage:",
-			error
-		);
-	}
-};
-
-/**
- * Loads step states from session storage
- * @param {string} userIdentifier - User mobile or identifier for cache validation
- * @returns {Map<number, number>} Map of step ID to step status
- */
-const loadStepsFromSessionStorage = (
-	userIdentifier: string
-): Map<number, number> => {
-	const statusMap = new Map<number, number>();
-
-	if (!userIdentifier) return statusMap;
-
-	try {
-		const stored = sessionStorage.getItem(getStorageKey(userIdentifier));
-		if (!stored) return statusMap;
-
-		const parsed = JSON.parse(stored);
-
-		// Validate cache: check user identifier matches
-		if (parsed.userIdentifier !== userIdentifier) {
-			console.log(
-				"[StepConfiguration] Session storage cache invalid: different user"
-			);
-			sessionStorage.removeItem(getStorageKey(userIdentifier));
-			return statusMap;
-		}
-
-		// Validate cache age: only use if less than 24 hours old
-		const age = Date.now() - (parsed.lastUpdated || 0);
-		if (age > 24 * 60 * 60 * 1000) {
-			console.log("[StepConfiguration] Session storage cache expired");
-			sessionStorage.removeItem(getStorageKey(userIdentifier));
-			return statusMap;
-		}
-
-		// Build map of step ID -> status
-		if (Array.isArray(parsed.steps)) {
-			parsed.steps.forEach((step: { id: number; stepStatus: number }) => {
-				if (step.id && typeof step.stepStatus === "number") {
-					statusMap.set(step.id, step.stepStatus);
-				}
-			});
-			console.log(
-				"[StepConfiguration] Loaded step states from session storage"
-			);
-		}
-
-		return statusMap;
-	} catch (error) {
-		console.error(
-			"[StepConfiguration] Failed to load from session storage:",
-			error
-		);
-		return statusMap;
-	}
-};
 
 /**
  * Step configuration from metadata
@@ -220,22 +112,6 @@ export const extractStepConfiguration = (
 		disabledSteps: disabled.length > 0 ? disabled : undefined,
 		skippableSteps: skippable.length > 0 ? skippable : undefined,
 	};
-};
-
-/**
- * Gets the appropriate step data based on user type
- * Returns the master list of all steps - filtering happens via API roles
- * @param {number} userType - The user type identifier (validated but not used for step selection)
- * @returns {OnboardingStep[]} Master list of all onboarding steps
- */
-const getStepsForUserType = (userType: number): OnboardingStep[] => {
-	// Return master list for all user types
-	// API-driven filtering happens in filterOnboardingStepsByRoles
-	if (userType === undefined || userType === null) {
-		console.warn(`No user type provided`);
-		return [];
-	}
-	return masterOnboardingSteps;
 };
 
 /**
@@ -398,52 +274,6 @@ const applyResumeLogic = (
 };
 
 /**
- * Merges step states from session storage with API-derived states
- * Session storage takes precedence for completed/skipped steps to handle:
- * - Multiple steps sharing the same role
- * - Preserving skip states across refreshes
- * @param {OnboardingStep[]} apiSteps - Steps with status from API roleList
- * @param {Map<number, number>} cachedStates - Cached step states from session storage
- * @returns {OnboardingStep[]} Steps with merged status
- */
-const mergeWithCachedStates = (
-	apiSteps: OnboardingStep[],
-	cachedStates: Map<number, number>
-): OnboardingStep[] => {
-	if (cachedStates.size === 0) {
-		console.log(
-			"[mergeWithCachedStates] No cached states, using API states"
-		);
-		return apiSteps;
-	}
-
-	console.log(
-		"[mergeWithCachedStates] Merging session storage with API states"
-	);
-
-	return apiSteps.map((step) => {
-		const cachedStatus = cachedStates.get(step.id);
-
-		// This handles cases where multiple steps share the same role
-		if (
-			cachedStatus === ONBOARDING_STEP_STATUS.COMPLETED ||
-			cachedStatus === ONBOARDING_STEP_STATUS.SKIPPED
-		) {
-			console.log(
-				`[mergeWithCachedStates] Using cached status for ${step.name}: ${cachedStatus}`
-			);
-			return {
-				...step,
-				stepStatus: cachedStatus,
-			};
-		}
-
-		// Otherwise, use API-derived status
-		return step;
-	});
-};
-
-/**
  * Onboarding actions interface for step configuration
  */
 interface OnboardingActions {
@@ -455,19 +285,17 @@ interface OnboardingActions {
  */
 interface UseStepConfigurationProps {
 	actions: OnboardingActions;
-	userType: number;
 	onboardingSteps: Array<{ role: number; label?: string }>;
 	roleList?: Array<number> | string;
 	disabledSteps?: number[];
 	skippableSteps?: number[];
-	userIdentifier?: string; // Mobile number or user ID for session storage validation
 }
 
 /**
  * Return type for useStepConfiguration hook
  */
 interface UseStepConfigurationReturn {
-	initializeSteps: (_userData: UnifiedUserData) => void;
+	initializeSteps: () => void;
 	updateStepStates: (_steps: OnboardingStep[]) => void;
 }
 
@@ -480,119 +308,63 @@ interface UseStepConfigurationReturn {
  */
 export const useStepConfiguration = ({
 	actions,
-	userType,
 	onboardingSteps,
 	roleList,
 	disabledSteps,
 	skippableSteps,
-	userIdentifier,
 }: UseStepConfigurationProps): UseStepConfigurationReturn => {
 	/**
 	 * Initializes onboarding steps based on user data
-	 * Applies filter chain: 1) Role-based, 2) Disabled steps, 3) Skippable steps, 4) Resume logic, 5) Session storage merge
+	 * Applies filter chain: 1) Role-based, 2) Disabled steps, 3) Skippable steps, 4) Resume logic
 	 */
-	const initializeSteps = useCallback(
-		(userData) => {
-			console.log(
-				"[StepConfiguration] Initializing steps for userData:",
-				userData
-			);
+	const initializeSteps = useCallback(() => {
+		console.log("[StepConfiguration] Initializing steps");
 
-			// Validate user type
-			if (!userType) {
-				console.warn(
-					"[StepConfiguration] No user type found in userData"
-				);
-				return;
-			}
+		// Get base step data (master list)
+		const baseStepData = masterOnboardingSteps;
+		if (baseStepData.length === 0) {
+			console.warn("[StepConfiguration] No base step data found");
+			return;
+		}
 
-			// Get base step data (master list)
-			const baseStepData = getStepsForUserType(userType);
-			if (baseStepData.length === 0) {
-				console.warn(
-					"[StepConfiguration] No base step data found for user type:",
-					userType
-				);
-				return;
-			}
+		// Validate onboarding steps from API
+		if (!onboardingSteps || onboardingSteps.length === 0) {
+			console.warn("[StepConfiguration] No onboarding steps found");
+			return;
+		}
 
-			// Validate onboarding steps from API
-			if (!onboardingSteps || onboardingSteps.length === 0) {
-				console.warn("[StepConfiguration] No onboarding steps found");
-				return;
-			}
-
-			// Apply filter chain:
-			// 1. Role-based filtering (API-driven)
-			// 2. Disabled steps filtering (org metadata-driven)
-			// 3. Skippable steps marking (org metadata-driven)
-			let filteredSteps = applyStepFilters(
-				baseStepData,
-				onboardingSteps,
-				disabledSteps,
-				skippableSteps
-			);
-
-			// Apply resume logic: Set step completion status based on roleList from API
-			filteredSteps = applyResumeLogic(filteredSteps, roleList);
-
-			// Load cached step states from session storage
-			const cachedStates = loadStepsFromSessionStorage(
-				userIdentifier || ""
-			);
-
-			// Merge cached states with API states
-			// This handles multiple steps with same role and preserves skip states
-			filteredSteps = mergeWithCachedStates(filteredSteps, cachedStates);
-
-			console.log(
-				"[StepConfiguration] Final filtered steps after merge:",
-				filteredSteps.map((s) => ({
-					id: s.id,
-					name: s.name,
-					status: s.stepStatus,
-					isRequired: s.isRequired,
-				}))
-			);
-
-			// Set the stepper data with filtered steps
-			// Create a new array to prevent reference issues
-			actions.setStepperData([...filteredSteps]);
-
-			// Save to session storage for future refreshes
-			saveStepsToSessionStorage(filteredSteps, userIdentifier || "");
-		},
-		[
-			actions,
-			userType,
+		// Apply filter chain:
+		// 1. Role-based filtering (API-driven)
+		// 2. Disabled steps filtering (org metadata-driven)
+		// 3. Skippable steps marking (org metadata-driven)
+		let filteredSteps = applyStepFilters(
+			baseStepData,
 			onboardingSteps,
-			roleList,
 			disabledSteps,
-			skippableSteps,
-			userIdentifier,
-		]
-	);
+			skippableSteps
+		);
+
+		// Apply resume logic: Set step completion status based on roleList from API
+		filteredSteps = applyResumeLogic(filteredSteps, roleList);
+
+		// Set the stepper data with filtered steps
+		// Create a new array to prevent reference issues
+		actions.setStepperData([...filteredSteps]);
+	}, [actions, onboardingSteps, roleList, disabledSteps, skippableSteps]);
 
 	/**
-	 * Updates step status and persists to session storage
+	 * Updates step status
 	 * Call this after any step status change (complete, skip, etc.)
 	 * @param {OnboardingStep[]} steps - Updated steps array
 	 */
 	const updateStepStates = useCallback(
 		(steps: OnboardingStep[]) => {
-			console.log(
-				"[useStepConfiguration] updateStepState: ",
-				steps,
-				userIdentifier
-			);
+			console.log("[useStepConfiguration] updateStepState: ", steps);
 
 			actions.setStepperData([...steps]);
-			saveStepsToSessionStorage(steps, userIdentifier || "");
-			console.log(
-				"[StepConfiguration] Updated and saved step states to session storage"
-			);
+			console.log("[StepConfiguration] Updated step states");
 		},
-		[actions, userIdentifier]
+		[actions]
 	);
 
 	return {
