@@ -413,14 +413,6 @@ const TopMerchantsTable = ({
 		);
 	}
 
-	// // Check if any merchant has GTV > 0
-	// const shouldShowGtvChart = data.some((merchant) => (merchant.gtv ?? 0) > 0);
-
-	// // Check if any merchant has revenue > 0
-	// const shouldShowRevenueChart = data.some(
-	// 	(merchant) => (merchant.revenue ?? 0) > 0
-	// );
-
 	const now = new Date();
 
 	return (
