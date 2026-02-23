@@ -146,40 +146,35 @@ const OnboardingSteps = ({
 	);
 
 	const userName = useMemo(
-		() => getUserNameFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
+		() => getUserNameFromData(onboardingUserDetails),
+		[onboardingUserDetails]
 	);
 
 	const mobile = useMemo(
-		() => getMobileFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
+		() => getMobileFromData(onboardingUserDetails),
+		[onboardingUserDetails]
 	);
 
 	const agreementId = useMemo(
-		() =>
-			getAgreementIdFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
+		() => getAgreementIdFromData(onboardingUserDetails),
+		[onboardingUserDetails]
 	);
 
 	// Extract onboarding steps and role list using proper data extractors
 	// These handle both self and assisted onboarding data shapes
 	const onboardingSteps = useMemo(
-		() =>
-			getOnboardingStepsFromData(
-				onboardingUserDetails,
-				isAssistedOnboarding
-			),
-		[onboardingUserDetails, isAssistedOnboarding]
+		() => getOnboardingStepsFromData(onboardingUserDetails),
+		[onboardingUserDetails]
 	);
 
 	const roleList = useMemo(
-		() => getRoleListFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
+		() => getRoleListFromData(onboardingUserDetails),
+		[onboardingUserDetails]
 	);
 
 	const userType = useMemo(
-		() => getUserTypeFromData(onboardingUserDetails, isAssistedOnboarding),
-		[onboardingUserDetails, isAssistedOnboarding]
+		() => getUserTypeFromData(onboardingUserDetails),
+		[onboardingUserDetails]
 	);
 
 	// For assisted onboarding, the OnboardingProvider already exists above

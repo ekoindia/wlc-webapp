@@ -42,11 +42,12 @@ const AgentStatusCheck = ({
 
 			// Update parent state with fetched agent details
 			onAgentDetailsFetched(agentDetails);
+			console.log("[AssistedOnboarding] agentDetails", agentDetails);
 
 			// Check onboarding status
 
-			const { user_detail } = agentDetails;
-			const { onboarding } = user_detail;
+			const { details } = agentDetails;
+			const { onboarding } = details;
 
 			// If onboarding is incomplete (1), continue onboarding
 			if (onboarding === 1) {

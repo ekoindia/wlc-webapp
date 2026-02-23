@@ -1,7 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
-import { TransactionIds } from "constants/EpsTransactions";
 import { useNetworkUsers, useSession } from "contexts";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
@@ -115,49 +114,48 @@ const AssistedOnboarding = (): JSX.Element => {
 	}, []);
 
 	/**
-	 * Fetches agent details using interaction_type_id: 151
-	 * Centralized API call shared across multiple child components
+	 * Fetches agent details using the refresh-profile endpoint.
+	 * Passes `csp_id` so the backend returns the agent's profile, not the admin's.
+	 * NOTE: We intentionally do NOT call `updateUserInfo` here — the result is
+	 * stored locally in `agentDetails` to avoid overwriting the admin's global state.
 	 * @param {string} mobile - The agent's mobile number to fetch details for
 	 * @returns {Promise<any>} The agent details response
 	 */
 	const fetchAgentDetails = async (mobile: string): Promise<any> => {
 		try {
 			const response = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.REFRESH_PROFILE,
 				{
-					method: "POST",
 					body: {
-						interaction_type_id: TransactionIds.GET_USER_PROFILE,
 						csp_id: mobile,
-						user_identity_type: "mobile_number",
-						user_identity: userData?.userId,
-						mobile: userData?.userId,
-						id_type: "Mobile",
 					},
 					token: accessToken,
 				}
 			);
 
-			if (response?.data) {
-				let agentData = response.data;
+			if (response?.details) {
+				let agentData = response;
 				console.log(
 					"[AssistedOnboarding] Agent details fetched:",
 					agentData
 				);
-				// check if agentData.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
-				if (agentData?.user_detail?.onboarding === 0) {
+
+				// If onboarding is complete, move to the completed step
+				if (agentData?.details?.onboarding === 0) {
 					refreshUserList(true);
 					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
 					return;
 				}
 
-				// Transform agentData to match logged-in userData structure.
-				// This is to keep the onboarding logic consistent between assisted and self onboarding.
+				// Map `details` → `userDetails` to match the shape that SelfOnboarding
+				// produces via Redux. This allows data extractors to work without
+				// any isAssistedOnboarding branching.
 				agentData = {
 					...agentData,
-					userDetails: agentData.user_detail,
-					onboarding_steps: agentData.user_detail.onboarding_steps,
-					role_list: agentData.user_detail.role_list,
+					userDetails: agentData.details,
+					onboarding_steps: agentData.details.onboarding_steps,
+					role_list: agentData.details.role_list,
 				};
 
 				return agentData;
@@ -198,11 +196,11 @@ const AssistedOnboarding = (): JSX.Element => {
 	// MARK: Compute provider props from agentDetails
 	// These will be empty/undefined until agentDetails is fetched, which is fine —
 	// the provider handles missing data gracefully (initializeSteps returns early).
-	const onboardingSteps = getOnboardingStepsFromData(agentDetails, true);
-	const roleList = getRoleListFromData(agentDetails, true);
-	const userType = getUserTypeFromData(agentDetails, true);
-	const userName = getUserNameFromData(agentDetails, true);
-	const agreementId = getAgreementIdFromData(agentDetails, true);
+	const onboardingSteps = getOnboardingStepsFromData(agentDetails);
+	const roleList = getRoleListFromData(agentDetails);
+	const userType = getUserTypeFromData(agentDetails);
+	const userName = getUserNameFromData(agentDetails);
+	const agreementId = getAgreementIdFromData(agentDetails);
 
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {

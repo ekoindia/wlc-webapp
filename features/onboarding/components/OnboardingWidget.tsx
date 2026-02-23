@@ -95,14 +95,10 @@ const OnboardingWidget = ({
 	useEffect(() => {
 		// Get onboarding steps from user data
 		const onboardingSteps = getOnboardingStepsFromData(
-			onboardingUserDetails,
-			isAssistedOnboarding
+			onboardingUserDetails
 		);
 
-		const userType = getUserTypeFromData(
-			onboardingUserDetails,
-			isAssistedOnboarding
-		);
+		const userType = getUserTypeFromData(onboardingUserDetails);
 
 		console.log("[OnboardingWidget] Step determination:", {
 			onboardingSteps,
