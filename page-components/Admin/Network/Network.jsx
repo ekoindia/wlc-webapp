@@ -638,6 +638,23 @@ const Network = () => {
 		});
 	};
 
+	/**
+	 * Callback to handle demo user deletion (for optimistic UI updates)
+	 * @param {string} ekoCode - The eko_code of the demo user to delete
+	 */
+	const handleDeleteDemoUser = (ekoCode) => {
+		setNetworkData((prevData) => {
+			if (!prevData?.agent_details) return prevData;
+
+			return {
+				...prevData,
+				agent_details: prevData.agent_details.filter(
+					(agent) => agent.eko_code !== ekoCode
+				),
+			};
+		});
+	};
+
 	// MARK: JSX
 	return (
 		<>
@@ -694,6 +711,7 @@ const Network = () => {
 							setPageNumber,
 							visibleColumns,
 							onStatusUpdate: handleStatusUpdate,
+							onDeleteDemoUser: handleDeleteDemoUser,
 						}}
 					/>
 				) : null}

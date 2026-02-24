@@ -92,6 +92,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  * @param {number} props.account_status_id - Current account status ID (13: Pending Approval, 16: Active, 18: Inactive, 60:	 Demo User)
  * @param {number} props.user_type_id - User type ID of the agent (e.g., 1: Distributor, 2: Retailer, 3: Independent Retailer)
  * @param {Function} props.onStatusUpdate - Callback function invoked when status is updated. Receives (eko_code, new_status_id)
+ * @param {Function} props.onDeleteDemoUser - Callback function invoked when demo user is deleted. Receives (eko_code)
  * @returns {JSX.Element|undefined} Menu component or undefined if no menu items are available
  * @example
  * <NetworkMenuWrapper
@@ -109,6 +110,7 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
  *   account_status_id={60}
  *   agent_type="Enterprise"
  *   onStatusUpdate={(code, status) => console.log(code, status)}
+ *   onDeleteDemoUser={(code) => console.log('Deleted:', code)}
  * />
  */
 const NetworkMenuWrapper = ({
@@ -117,6 +119,7 @@ const NetworkMenuWrapper = ({
 	account_status_id,
 	user_type_id,
 	onStatusUpdate,
+	onDeleteDemoUser,
 }) => {
 	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
 	const { onOpen } = useDisclosure();
@@ -191,8 +194,8 @@ const NetworkMenuWrapper = ({
 				});
 
 				// Trigger table refresh after successful deletion
-				if (onStatusUpdate) {
-					onStatusUpdate(eko_code, null); // Signal deletion
+				if (onDeleteDemoUser) {
+					onDeleteDemoUser(eko_code);
 				}
 			} else if (response.status === 1) {
 				toast({

@@ -4,6 +4,7 @@ import { UserType } from "constants";
 import { useOrgDetailContext, useSession } from "contexts";
 import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { NetworkCard } from "..";
 
 const commission_types = {
@@ -150,6 +151,7 @@ export const useNetworkTableParameterList = () => {
  * @param {Function} props.setPageNumber - Callback to update current page number
  * @param {Array<object>} [props.visibleColumns] - Optional array of visible column configurations
  * @param {Function} [props.onStatusUpdate] - Optional callback triggered on agent status update
+ * @param {Function} [props.onDeleteDemoUser] - Optional callback triggered on demo user deletion
  * @returns {JSX.Element} - Rendered NetworkTable component or empty state
  */
 const NetworkTable = ({
@@ -160,23 +162,29 @@ const NetworkTable = ({
 	setPageNumber,
 	visibleColumns,
 	onStatusUpdate,
+	onDeleteDemoUser,
 }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
 	const { getUserTypeLabel } = useUserTypes();
 
-	//  TODO  memoize this agentDetails for the  performance improvement, currently it is modifying the original data which is not a good practice
-	agentDetails?.forEach((agent) => {
-		const commission_type = agent?.commission_duration;
-		const agent_balance = agent?.profile?.wallet_balance || 0;
-		const user_type_label = getUserTypeLabel(agent?.user_type_id);
-		agent.commission_type = getCommissionType(commission_type);
-		agent.agent_balance = agent_balance;
-		agent.user_type_label = user_type_label;
-		agent._onStatusUpdate = onStatusUpdate;
-	});
+	const memoizedAgentDetails = useMemo(() => {
+		return (agentDetails || []).map((agent) => {
+			const commission_type = agent?.commission_duration;
+			const agent_balance = agent?.profile?.wallet_balance || 0;
+			const user_type_label = getUserTypeLabel(agent?.user_type_id);
+			return {
+				...agent,
+				commission_type: getCommissionType(commission_type),
+				agent_balance,
+				user_type_label,
+				_onStatusUpdate: onStatusUpdate,
+				_onDeleteDemoUser: onDeleteDemoUser,
+			};
+		});
+	}, [agentDetails, getUserTypeLabel, onStatusUpdate, onDeleteDemoUser]);
 
-	const networkTableDataSize = agentDetails?.length ?? 0;
+	const networkTableDataSize = memoizedAgentDetails?.length ?? 0;
 
 	// Use visible columns if provided, otherwise use dynamically generated list
 	const defaultColumns = useNetworkTableParameterList();
@@ -221,7 +229,7 @@ const NetworkTable = ({
 				pageNumber,
 				totalRecords,
 				setPageNumber,
-				data: agentDetails,
+				data: memoizedAgentDetails,
 				ResponsiveCard: NetworkCard,
 				variant: "stripedActionRedirect",
 				renderer: columnsToRender,
