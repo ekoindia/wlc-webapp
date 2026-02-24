@@ -68,8 +68,13 @@ const Network = () => {
 	const { getUserTypeLabel } = useUserTypes();
 	const toast = useToast();
 
-	const { refreshUserList, userTypeIdList, fetchedAt, loading } =
-		useNetworkUsers();
+	const {
+		networkUsersList,
+		refreshUserList,
+		userTypeIdList,
+		fetchedAt,
+		loading,
+	} = useNetworkUsers();
 
 	const operation_type_list = useMemo(() => {
 		return userTypeIdList.map((typeId) => ({
@@ -698,6 +703,15 @@ const Network = () => {
 						setViewType,
 						hideFilter: viewType === "tree",
 						hideSearch: viewType === "tree",
+						networkUsersList,
+						onItemSelect: (item) => {
+							router.push({
+								pathname: isAdmin
+									? "/admin/my-network/profile"
+									: "/my-network/profile",
+								query: { mobile: item.mobile },
+							});
+						},
 					}}
 				/>
 
