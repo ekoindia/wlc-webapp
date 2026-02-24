@@ -44,6 +44,14 @@ export interface SearchBarProps {
 }
 
 /**
+ * Stable default for the `searchKeys` prop.
+ * Defined at module level to ensure a consistent reference across renders,
+ * preventing the filter `useEffect` from looping when no `searchKeys` is
+ * explicitly provided by the consumer.
+ */
+const DEFAULT_SEARCH_KEYS = ["name", "mobile"];
+
+/**
  * **SearchBar** — A versatile search input supporting two operating modes:
  *
  * 1. **Simple search** (no `dataList`): the user types and presses Enter or
@@ -91,7 +99,7 @@ const SearchBar = ({
 	dataList,
 	renderItem,
 	onItemSelect,
-	searchKeys = ["name", "mobile"],
+	searchKeys = DEFAULT_SEARCH_KEYS,
 	maxDropdownItems = 5,
 }: SearchBarProps) => {
 	const [value, setValue] = useState("");
@@ -251,7 +259,7 @@ const SearchBar = ({
 				/>
 
 				{/* Dropdown */}
-				{isDropdownOpen && dataList && (
+				{isDropdownOpen && dataList?.length > 0 && (
 					<Box
 						position="absolute"
 						top="calc(100% + 4px)"
