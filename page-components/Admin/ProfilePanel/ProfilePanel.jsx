@@ -291,7 +291,7 @@ const ProfilePanel = () => {
 						thickness="4px"
 					/>
 					<Text color="light" fontSize="md">
-						Fetching Agent Details...
+						Fetching Details...
 					</Text>
 				</Flex>
 			) : agentError ? (
