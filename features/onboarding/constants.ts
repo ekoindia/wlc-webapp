@@ -417,7 +417,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			formFields: [
 				{
 					name: "doc_id",
-					label: "PAN Number",
+					label: "PAN",
 					parameter_type_id: ParamType.TEXT,
 					required: true,
 					validations: {
