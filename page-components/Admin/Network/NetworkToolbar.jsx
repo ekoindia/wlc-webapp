@@ -176,7 +176,6 @@ const NetworkToolbar = ({
 						variant="link"
 						onClick={clearSearch}
 						_hover={{ textDecoration: "none" }}
-						ml={2}
 					>
 						Clear Search
 					</Button>
