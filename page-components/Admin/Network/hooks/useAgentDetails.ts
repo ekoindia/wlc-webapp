@@ -117,10 +117,6 @@ const useAgentDetails = (mobile: string | undefined): UseAgentDetailsReturn => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
 
-	console.log(
-		`[useAgentDetails] Initialized with mobile: ${mobile}, userId: ${userId}`
-	);
-
 	/**
 	 * Fetch agent details from API
 	 */
@@ -153,6 +149,7 @@ const useAgentDetails = (mobile: string | undefined): UseAgentDetailsReturn => {
 			// Fetch from API
 			setLoading(true);
 			setError(null);
+			setAgent(null); // Clear previous agent data to prevent showing stale data
 
 			try {
 				const response = await fetcher(
@@ -169,9 +166,13 @@ const useAgentDetails = (mobile: string | undefined): UseAgentDetailsReturn => {
 					}
 				);
 
-				const agentData = response?.data?.agent_details?.[0];
+				// Check for successful response (response_type_id: 1827)
+				if (
+					response?.response_type_id === 1827 &&
+					response?.data?.agent_details?.[0]
+				) {
+					const agentData = response.data.agent_details[0];
 
-				if (agentData) {
 					// Cache the fetched data
 					agentCache.set(cacheKey, {
 						data: agentData,
@@ -183,7 +184,7 @@ const useAgentDetails = (mobile: string | undefined): UseAgentDetailsReturn => {
 				} else {
 					// No agent found
 					setAgent(null);
-					setError(new Error("Agent not found"));
+					setError(new Error(response?.message || "Agent not found"));
 				}
 			} catch (err) {
 				console.error("[useAgentDetails] Fetch error:", err);
@@ -219,9 +220,6 @@ const useAgentDetails = (mobile: string | undefined): UseAgentDetailsReturn => {
 
 	// Fetch agent details on mount or when mobile/userId changes
 	useEffect(() => {
-		console.log(
-			`[useAgentDetails] useEffect triggered for mobile: ${mobile}, userId: ${userId}`
-		); // Debug log
 		fetchAgentDetails();
 	}, [fetchAgentDetails]);
 
