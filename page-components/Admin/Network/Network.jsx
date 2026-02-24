@@ -108,7 +108,13 @@ const Network = () => {
 		}));
 	}, [userTypeIdList, getUserTypeLabel, loading]);
 
-	const [pageNumber, setPageNumber] = useState(1);
+	const [pageNumber, setPageNumber] = useState(() => {
+		if (router.isReady && router.query.page) {
+			const page = parseInt(router.query.page, 10);
+			return !isNaN(page) && page > 0 ? page : 1;
+		}
+		return 1;
+	});
 	const [isLoading, setIsLoading] = useState(true);
 	const [networkData, setNetworkData] = useState([]);
 	const [isFiltered, setIsFiltered] = useState(false);
@@ -554,8 +560,10 @@ const Network = () => {
 	}, [finalFormState]);
 
 	useEffect(() => {
-		hitQuery();
-	}, [pageNumber, queryParam]);
+		if (router.isReady) {
+			hitQuery();
+		}
+	}, [router.isReady, pageNumber, queryParam]);
 
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];

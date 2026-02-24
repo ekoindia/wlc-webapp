@@ -198,6 +198,7 @@ const NetworkTable = ({
 	 */
 	const onRowClick = (rowData) => {
 		const mobile = rowData?.agent_mobile;
+		const currentPage = router.query.page;
 
 		let _pathname = isAdmin
 			? `/admin/my-network/profile`
@@ -205,7 +206,7 @@ const NetworkTable = ({
 
 		router.push({
 			pathname: _pathname,
-			query: { mobile },
+			query: { ...(currentPage && { page: currentPage }), mobile },
 		});
 	};
 
