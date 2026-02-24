@@ -6,8 +6,9 @@ import { Icon, Input } from "../";
 /**
  * Props for the SearchBar component.
  * @interface SearchBarProps
+ * @template T - The type of items in the data list
  */
-export interface SearchBarProps {
+export interface SearchBarProps<T extends { [key: string]: any } = any> {
 	/** Optional class name for the wrapper element */
 	className?: string;
 	/** HTML input type (e.g., "text", "number", "email") */
@@ -30,17 +31,19 @@ export interface SearchBarProps {
 	// --- Dropdown Feature Props ---
 
 	/** Array of objects to populate the dropdown suggestions list */
-	dataList?: any[];
+	dataList?: T[];
 	/** Custom render function for each dropdown item. Receives the row data as an argument. */
-	renderItem?: (_item: any) => React.ReactNode;
+	renderItem?: (_item: T) => React.ReactNode;
 	/** Callback function triggered when a dropdown suggestion is clicked */
-	onItemSelect?: (_item: any) => void;
+	onItemSelect?: (_item: T) => void;
 	/** Array of object keys in `dataList` to perform fuzzy search against (ignoring case and spaces) */
-	searchKeys?: string[];
+	searchKeys?: (keyof T)[];
 	/** Maximum number of suggested items to display in the dropdown (default: 5) */
 	maxDropdownItems?: number;
 	/** Approximate height of a single dropdown item, useful for virtualization */
 	dropdownItemHeight?: number;
+	/** Function to extract a unique key from each item for React list rendering. Defaults to checking common ID fields. */
+	getItemKey?: (_item: T, _index: number) => string | number;
 }
 
 /**
@@ -49,7 +52,7 @@ export interface SearchBarProps {
  * preventing the filter `useEffect` from looping when no `searchKeys` is
  * explicitly provided by the consumer.
  */
-const DEFAULT_SEARCH_KEYS = ["name", "mobile"];
+const DEFAULT_SEARCH_KEYS: string[] = ["name", "mobile"];
 
 /**
  * **SearchBar** — A versatile search input supporting two operating modes:
@@ -66,8 +69,9 @@ const DEFAULT_SEARCH_KEYS = ["name", "mobile"];
  *
  * The dropdown closes automatically on outside click (via a `mousedown`
  * listener on `document`) or after a hard search (Enter / icon click).
- * @param {SearchBarProps} props
- * @returns {JSX.Element}
+ * @template T - The type of items in the data list
+ * @param {SearchBarProps<T>} props - Component props
+ * @returns {JSX.Element} SearchBar component
  * @example
  * // Simple search — fires setSearch on Enter / button click
  * <SearchBar
@@ -86,9 +90,10 @@ const DEFAULT_SEARCH_KEYS = ["name", "mobile"];
  *   maxDropdownItems={5}
  *   renderItem={(item) => <Text>{item.name} — {item.mobile}</Text>}
  *   onItemSelect={(item) => router.push(`/profile?mobile=${item.mobile}`)}
+ *   getItemKey={(item) => item.id}
  * />
  */
-const SearchBar = ({
+const SearchBar = <T extends { [key: string]: any } = any>({
 	type = "text",
 	setSearch,
 	setIsSearching = () => {},
@@ -99,23 +104,24 @@ const SearchBar = ({
 	dataList,
 	renderItem,
 	onItemSelect,
-	searchKeys = DEFAULT_SEARCH_KEYS,
+	searchKeys = DEFAULT_SEARCH_KEYS as (keyof T)[],
 	maxDropdownItems = 5,
-}: SearchBarProps) => {
+	getItemKey,
+}: SearchBarProps<T>) => {
 	const [value, setValue] = useState("");
 	const [debouncedValue, setDebouncedValue] = useDebouncedState("", 300);
 	const [errorMsg, setErrorMsg] = useState("");
 	const [invalid, setInvalid] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-	const [filteredList, setFilteredList] = useState<any[]>([]);
+	const [filteredList, setFilteredList] = useState<T[]>([]);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 
 	// Ensure dropdown closes on outside click
 	useEffect(() => {
-		const handleClickOutside = (event) => {
+		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				wrapperRef.current &&
-				!wrapperRef.current.contains(event.target)
+				!wrapperRef.current.contains(event.target as Node)
 			) {
 				setIsDropdownOpen(false);
 			}
@@ -187,9 +193,9 @@ const SearchBar = ({
 	/**
 	 * Keyboard handler for the input element.
 	 * Submits the search on Enter; clears the error state on any other key press.
-	 * @param e
+	 * @param {object} e - Keyboard event from input
 	 */
-	const handleKeyDown = (e) => {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
 			triggerSearch(value);
 		}
@@ -207,9 +213,9 @@ const SearchBar = ({
 	 * Controlled input change handler.
 	 * Updates both the immediate `value` (for the input) and `debouncedValue`
 	 * (which drives the dropdown filter) while enforcing `maxSearchLimit`.
-	 * @param e
+	 * @param {object} e - Input change event
 	 */
-	const handleChange = (e) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const inputValue = e.target.value;
 		if (inputValue.length <= maxSearchLimit) {
 			setValue(inputValue);
@@ -274,10 +280,25 @@ const SearchBar = ({
 						border="1px solid"
 						borderColor="gray.100"
 						py={2}
+						role="listbox"
 					>
 						{filteredList.map((item, idx) => (
 							<Box
-								key={idx}
+								key={
+									getItemKey
+										? getItemKey(item, idx)
+										: (item.id ??
+												item._id ??
+												item.uid ??
+												item.key ??
+												searchKeys
+													.map((key) => item[key])
+													.filter(Boolean)
+													.join("-")) ||
+											`item-${idx}`
+								}
+								role="option"
+								aria-selected={false}
 								px={4}
 								py={3}
 								mx={2}
