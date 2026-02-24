@@ -7,6 +7,7 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
+import { useOnboardingContext } from "../../context";
 import {
 	ASSISTED_ONBOARDING_STEPS,
 	RESPONSE_TYPE_IDS,
@@ -16,33 +17,25 @@ export interface OtpVerificationFormProps {
 	setStep: React.Dispatch<
 		React.SetStateAction<keyof typeof ASSISTED_ONBOARDING_STEPS>
 	>;
-	agentMobile: string;
 }
 
 /**
- * OtpVerificationForm component for verifying OTP for agent onboarding
+ * OtpVerificationForm component for verifying OTP for agent onboarding.
+ * Reads `mobile` from OnboardingContext instead of receiving it as a prop.
  * @param {OtpVerificationFormProps} props - Component props
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
- * @param {string} props.agentMobile - The agent's mobile number
  * @returns {JSX.Element} The rendered OtpVerificationForm component
  */
 const OtpVerificationForm = ({
 	setStep,
-	agentMobile,
 }: OtpVerificationFormProps): JSX.Element => {
+	const { mobile } = useOnboardingContext();
+
 	const {
 		handleSubmit,
 		register,
 		control,
-		formState: {
-			errors,
-			isValid,
-			isDirty,
-			isSubmitting,
-			// isSubmitSuccessful,
-		},
-		// reset,
-		// trigger,
+		formState: { errors, isValid, isDirty, isSubmitting },
 	} = useForm({
 		mode: "onChange",
 	});
@@ -107,7 +100,7 @@ const OtpVerificationForm = ({
 					body: {
 						interaction_type_id:
 							TransactionIds.ASSISTED_ONBOARDING_VERIFY_AGENT_OTP,
-						csp_id: agentMobile,
+						csp_id: mobile,
 						otp: _otp,
 						merchant_type: "",
 					},
@@ -187,7 +180,7 @@ const OtpVerificationForm = ({
 			>
 				Enter the OTP sent to{" "}
 				<Text as="span" fontWeight="semibold" color="primary.DEFAULT">
-					{agentMobile}
+					{mobile}
 				</Text>
 			</Text>
 

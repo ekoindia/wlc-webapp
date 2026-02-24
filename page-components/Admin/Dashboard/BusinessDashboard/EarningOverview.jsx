@@ -100,6 +100,7 @@ const EarningOverview = ({
 	const prevDateRef = useRef({ dateFrom, dateTo });
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
@@ -143,7 +144,7 @@ const EarningOverview = ({
 		} catch (error) {
 			console.error("Error parsing product-wise data:", error);
 			setProductWiseData([]);
-			// Don't reset filteredProductList here if we have cached data
+			// Keep the cached filter list if available, don't reset it
 			if (!cachedFullProductList) {
 				setFilteredProductList([{ label: "All Products", value: "" }]);
 			}
@@ -169,8 +170,8 @@ const EarningOverview = ({
 				typeBreakdown
 			);
 
-			// 3. Only update filter list if no filter is selected (showing "All Products")
-			// This ensures we capture the full list and cache it
+			// 3. Only update and cache filter list if no filter is selected AND we have matched options
+			// This ensures we capture the full list when showing "All Products"
 			if (!productFilter && matchedOptions.length > 0) {
 				const fullList = [
 					{ label: "All Products", value: "" },
@@ -179,23 +180,28 @@ const EarningOverview = ({
 				setFilteredProductList(fullList);
 				setCachedFullProductList(fullList);
 			} else if (cachedFullProductList) {
-				// Use cached full list when a specific product is selected
+				// Always use cached full list when available (regardless of current breakdown)
 				setFilteredProductList(cachedFullProductList);
+			} else if (matchedOptions.length > 0) {
+				// Fallback: create filter list from current options if no cache exists
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
 			}
 		} else {
 			setProductWiseData([]);
-			setFilteredProductList([{ label: "All Products", value: "" }]);
-			// Don't reset filteredProductList here if we have cached data
-			if (!cachedFullProductList) {
+			// Only reset filter list if we don't have cached data
+			if (cachedFullProductList) {
+				// Keep using cached full list
+				setFilteredProductList(cachedFullProductList);
+			} else {
+				// Only fall back to "All Products" if no cache exists
 				setFilteredProductList([{ label: "All Products", value: "" }]);
 			}
 		}
-	}, [
-		earningOverviewData,
-		masterProductList,
-		productFilter,
-		cachedFullProductList,
-	]);
+	}, [earningOverviewData, masterProductList, productFilter]);
 
 	// MARK: Fetch Data
 	useEffect(() => {
@@ -252,8 +258,6 @@ const EarningOverview = ({
 		dateTo,
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
-		setTotalBusiness,
-		fetchEarningOverviewData,
 		fetchEarningOverviewData,
 	]);
 
@@ -328,6 +332,7 @@ const EarningOverview = ({
 		{
 			key: "onboardedAgents",
 			label: "Onboarded Agents",
+			hidden: isEkoShieldEnabled,
 			value: earningOverviewData?.onboardedAgents?.onboarded || 0,
 			lastPeriod: earningOverviewData?.onboardedAgents?.lastMonth || 0,
 			type: "number",
@@ -471,56 +476,63 @@ const EarningOverview = ({
 					gap={{ base: "4", md: "8" }}
 					w="100%"
 				>
-					{earningOverviewList.map(
-						(item) =>
-							item.value != 0 && (
-								<Flex
-									key={item.key}
-									direction={{
-										base: "row",
-										md: "column",
-									}}
-									justify={{
-										base: "space-between",
-										md: "flex-start",
-									}}
-									w="100%"
-									gap="1"
-									paddingLeft="8px"
-									borderLeft="4px solid"
-									borderColor="divider"
-								>
-									<Flex direction="column" align="flex-start">
-										{/* Value */}
+					{earningOverviewList
+						.filter((item) => !item.hidden)
+						.map(
+							(item) =>
+								item.value != 0 && (
+									<Flex
+										key={item.key}
+										direction={{
+											base: "row",
+											md: "column",
+										}}
+										justify={{
+											base: "space-between",
+											md: "flex-start",
+										}}
+										w="100%"
+										gap="1"
+										paddingLeft="8px"
+										borderLeft="4px solid"
+										borderColor="divider"
+									>
 										<Flex
-											fontWeight="500"
-											fontSize="1.3em"
-											color="primary.DEFAULT"
+											direction="column"
+											align="flex-start"
 										>
-											<Skeleton isLoaded={!isLoading}>
-												{item.type === "amount" ? (
-													<Currency
-														amount={item.value}
-													/>
-												) : (
-													<span>{item.value}</span>
-												)}
-											</Skeleton>
+											{/* Value */}
+											<Flex
+												fontWeight="500"
+												fontSize="1.3em"
+												color="primary.DEFAULT"
+											>
+												<Skeleton isLoaded={!isLoading}>
+													{item.type === "amount" ? (
+														<Currency
+															amount={item.value}
+														/>
+													) : (
+														<span>
+															{item.value}
+														</span>
+													)}
+												</Skeleton>
+											</Flex>
+											{/* Label */}
+											<Text
+												fontSize="0.75em"
+												textAlign="center"
+												whiteSpace="nowrap"
+												opacity="0.7"
+											>
+												<Skeleton isLoaded={!isLoading}>
+													{item.label}
+												</Skeleton>
+											</Text>
 										</Flex>
-										{/* Label */}
-										<Text
-											fontSize="0.75em"
-											textAlign="center"
-											whiteSpace="nowrap"
-											opacity="0.7"
-										>
-											<Skeleton isLoaded={!isLoading}>
-												{item.label}
-											</Skeleton>
-										</Text>
-									</Flex>
-									{/* last Period */}
-									{/* {item.lastPeriod !== 0 && (
+										{/* last Period */}
+										{/* {item.lastPeriod !== 0 && (
 										<Flex
 											direction="column"
 											align={{
@@ -623,9 +635,9 @@ const EarningOverview = ({
 											)}
 										</Flex>
 									)} */}
-								</Flex>
-							)
-					)}
+									</Flex>
+								)
+						)}
 				</Grid>
 			</Flex>
 

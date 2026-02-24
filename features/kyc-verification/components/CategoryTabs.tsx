@@ -4,7 +4,7 @@
  */
 
 import { Box } from "@chakra-ui/react";
-import { SegmentedControl } from "components";
+import { Icon, SegmentedControl } from "components";
 import type { CategoryOption } from "../types";
 
 interface CategoryTabsProps {
@@ -34,6 +34,7 @@ export const CategoryTabs = ({
 	const segments = categories.map((cat) => ({
 		value: cat.value,
 		label: cat.count ? `${cat.label} (${cat.count})` : cat.label,
+		icon: cat.icon ? <Icon name={cat.icon} size="xs" /> : undefined,
 	}));
 
 	return (

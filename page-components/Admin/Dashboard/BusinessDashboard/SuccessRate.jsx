@@ -112,7 +112,7 @@ const SuccessRate = ({
 			direction="column"
 			bg="white"
 			borderRadius="10px"
-			p="5"
+			p="6"
 			w="100%"
 			h="100%"
 			overflowY="auto"
@@ -138,7 +138,6 @@ const SuccessRate = ({
 				flex="1"
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
-				maxH="180px"
 			>
 				{successRateData?.length ? (
 					successRateData.map((item, index) => {

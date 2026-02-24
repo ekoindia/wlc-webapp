@@ -193,7 +193,7 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 				<Flex direction="column" gap="6">
 					{/* Optional Service Select */}
 					{showServiceSelect && (
-						<Box>
+						<Box maxW="500px">
 							<InputLabel required>
 								Select Verification Service
 							</InputLabel>
@@ -237,7 +237,7 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 						</Link>
 					</Flex>
 
-					<Flex direction="column" gap="2">
+					<Flex maxW="500px" direction="column" gap="2">
 						<InputLabel required>Upload File</InputLabel>
 						<Dropzone
 							file={file}

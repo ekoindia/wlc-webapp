@@ -33,6 +33,7 @@ const JSON_KEY_OVERRIDES = {
 	name_match: "Name Match",
 	aadhaar_seeding_status: "Aadhaar Seeding Status",
 	aadhaar_seeding_status_desc: "Aadhaar Seeding Status Description",
+	gstin: "GSTIN",
 } as const;
 
 /**

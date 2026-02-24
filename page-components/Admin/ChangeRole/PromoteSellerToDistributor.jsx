@@ -1,9 +1,10 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints, ParamType } from "constants";
-import { UserType, UserTypeLabel } from "constants/UserTypes";
+import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useUserTypes } from "hooks/useUserTypes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -19,21 +20,6 @@ const AGENT_TYPE = {
 	INDEPENDENT_RETAILER: "3",
 };
 
-const retailer_type_list = [
-	{
-		value: AGENT_TYPE.INDEPENDENT_RETAILER,
-		label: `${UserTypeLabel[UserType.MERCHANT]}s (${
-			UserTypeLabel[UserType.MERCHANT]
-		}s not mapped to any ${UserTypeLabel[UserType.DISTRIBUTOR]})`,
-	},
-	{
-		value: AGENT_TYPE.RETAILER,
-		label: `${UserTypeLabel[UserType.MERCHANT]}s already mapped to a ${
-			UserTypeLabel[UserType.DISTRIBUTOR]
-		}`,
-	},
-];
-
 /**
  * PromoteSellerToDistributor page-component
  * @param root0
@@ -42,6 +28,7 @@ const retailer_type_list = [
  * @returns
  */
 const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
 	const toast = useToast();
@@ -90,10 +77,25 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 			});
 	}, [default_agent_mobile, watcher.retailer_type]);
 
+	const retailer_type_list = [
+		{
+			value: AGENT_TYPE.INDEPENDENT_RETAILER,
+			label: `${getUserTypeLabel(UserType.MERCHANT)}s (${getUserTypeLabel(
+				UserType.MERCHANT
+			)}s not mapped to any ${getUserTypeLabel(UserType.DISTRIBUTOR)})`,
+		},
+		{
+			value: AGENT_TYPE.RETAILER,
+			label: `${getUserTypeLabel(
+				UserType.MERCHANT
+			)}s already mapped to a ${getUserTypeLabel(UserType.DISTRIBUTOR)}`,
+		},
+	];
+
 	const promote_retailer_parameter_list = [
 		{
 			name: "retailer_type",
-			label: `Select ${UserTypeLabel[UserType.MERCHANT]} Type to Search`,
+			label: `Select ${getUserTypeLabel(UserType.MERCHANT)} Type to Search`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: retailer_type_list,
 			is_inactive: !showOrgChangeRoleView && default_agent_mobile,
@@ -102,7 +104,7 @@ const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
 		},
 		{
 			name: "retailer",
-			label: `Select ${UserTypeLabel[watcher.retailer_type]}`, //TODO: add an/a
+			label: `Select ${getUserTypeLabel(watcher.retailer_type)}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
 			renderer: renderer,

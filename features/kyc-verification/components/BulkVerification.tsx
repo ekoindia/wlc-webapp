@@ -50,7 +50,7 @@ export interface VerificationService {
 
 /** Base URL for sample file downloads */
 const SAMPLE_FILE_BASE_URL =
-	"https://files.eko.co.in/docs/bulk-verification/samples";
+	"https://files.eko.co.in/docs/sample_files/bulk-upload";
 
 const SERVICES_INTERACTION_ID = 1041;
 
@@ -170,6 +170,9 @@ const BulkVerificationContent = () => {
 				? `${SAMPLE_FILE_BASE_URL}/${selectedService.serviceCode}.xlsx`
 				: null,
 			serviceCode: selectedService?.serviceCode || "",
+			sampleFileName: selectedService
+				? `${selectedService.label} Sample.xlsx`
+				: "Select a service to view sample",
 			showPinInput: false,
 			showServiceSelect: true,
 			serviceOptions: bulkEnabledOptions,

@@ -1,4 +1,3 @@
-export { AGENT_VIEW_TABS, ORG_VIEW_TABS } from "./AdminChangeRole";
 export { allowedCategories } from "./allowedCategories";
 export {
 	MyNetworkBreadcrumbs,
@@ -21,10 +20,10 @@ export {
 	product_pricing_categories,
 } from "./ProductBusinessConfigurations";
 export {
+	ProductRoleConfiguration,
 	agreementProvider,
 	productPricingTextConfig,
 	productPricingType,
-	ProductRoleConfiguration,
 	products,
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
@@ -33,8 +32,8 @@ export { roles } from "./role";
 export {
 	AdminBlacklistMenuItems,
 	AdminOtherMenuItems,
-	adminSidebarMenu,
 	OtherMenuItems,
+	adminSidebarMenu,
 	sidebarMenu,
 } from "./SidebarMenu";
 export { tableRowLimit } from "./tableConfig";
