@@ -6,15 +6,11 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { Button, Menus, Modal } from "components";
-import {
-	AGENT_VIEW_TABS,
-	Endpoints,
-	ParamType,
-	TransactionTypes,
-} from "constants";
+import { Endpoints, ParamType, TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
+import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
@@ -122,6 +118,7 @@ const NetworkMenuWrapper = ({
 	user_type_id,
 	onStatusUpdate,
 }) => {
+	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
