@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
-import { AGENT_VIEW_TABS, Endpoints, ORG_VIEW_TABS } from "constants";
+import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import PromoteSellerToDistributor from "./PromoteSellerToDistributor";
 import { TransferSeller } from "./TransferSeller";
 import UpgradeSellerToIseller from "./UpgradeSellerToIseller";
+import useChangeRoleOptions from "./useChangeRoleOptions";
 
 /**
  * Mapping of slugs to their corresponding role change components.
@@ -24,6 +25,7 @@ const CHANGE_ROLE_COMPONENTS = {
  * @example	`<ChangeRole></ChangeRole>`
  */
 const ChangeRole = () => {
+	const { ORG_VIEW_TABS, AGENT_VIEW_TABS } = useChangeRoleOptions();
 	const [agentData, setAgentData] = useState(null);
 	const { accessToken } = useSession();
 	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);

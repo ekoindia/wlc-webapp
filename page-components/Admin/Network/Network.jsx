@@ -720,63 +720,67 @@ const Network = () => {
 					<NetworkTreeView />
 				) : null}
 
-				<Flex
-					display={isFiltered || isSearched ? "flex" : "none"}
-					alignSelf="center"
-					align="center"
-					gap="2"
-					sx={{
-						"@media print": {
-							display: "none !important",
-						},
-					}}
-				>
-					<Flex color="light" fontSize="xs">
-						{isFiltered
-							? "Filtering by"
-							: isSearched
-								? "Searching by"
-								: null}
-						&nbsp;
-						{filteredItemLabels
-							?.slice(0, filterItemLimit)
-							.map((val, index) => (
-								<Text
-									key={index}
-									color="dark"
-									fontWeight="semibold"
-									whiteSpace="nowrap"
-								>
-									{`${val}${
-										index !== filteredItemLabels.length - 1
-											? ",\u{2009}"
-											: ""
-									}`}
-								</Text>
-							))}
-						{(filteredItemLabels?.length || 0) - filterItemLimit >
-							0 && (
-							<Text color="dark" fontWeight="semibold">
-								{`and ${
-									(filteredItemLabels?.length || 0) -
-									filterItemLimit
-								} more`}
-							</Text>
-						)}
-					</Flex>
-					<Button
-						size="xs"
-						onClick={() => {
-							isFiltered
-								? clearFilter()
-								: isSearched
-									? clearSearch()
-									: null;
+				{viewType === "list" ? (
+					<Flex
+						display={isFiltered || isSearched ? "flex" : "none"}
+						alignSelf="center"
+						align="center"
+						gap="2"
+						sx={{
+							"@media print": {
+								display: "none !important",
+							},
 						}}
 					>
-						Show All
-					</Button>
-				</Flex>
+						<Flex color="light" fontSize="xs">
+							{isFiltered
+								? "Filtering by"
+								: isSearched
+									? "Searching by"
+									: null}
+							&nbsp;
+							{filteredItemLabels
+								?.slice(0, filterItemLimit)
+								.map((val, index) => (
+									<Text
+										key={index}
+										color="dark"
+										fontWeight="semibold"
+										whiteSpace="nowrap"
+									>
+										{`${val}${
+											index !==
+											filteredItemLabels.length - 1
+												? ",\u{2009}"
+												: ""
+										}`}
+									</Text>
+								))}
+							{(filteredItemLabels?.length || 0) -
+								filterItemLimit >
+								0 && (
+								<Text color="dark" fontWeight="semibold">
+									{`and ${
+										(filteredItemLabels?.length || 0) -
+										filterItemLimit
+									} more`}
+								</Text>
+							)}
+						</Flex>
+						<Button
+							size="xs"
+							onClick={() => {
+								isFiltered
+									? clearFilter()
+									: isSearched
+										? clearSearch()
+										: null;
+							}}
+						>
+							Show All
+						</Button>
+					</Flex>
+				) : null}
 			</Flex>
 		</>
 	);

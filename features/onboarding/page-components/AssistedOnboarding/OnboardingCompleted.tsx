@@ -3,6 +3,7 @@ import { Button } from "components";
 import { useUser } from "contexts/UserContext";
 import { useRouter } from "next/router";
 import { FaCheckCircle } from "react-icons/fa";
+import { useOnboardingContext } from "../../context";
 import { ASSISTED_ONBOARDING_STEPS } from "./AssistedOnboarding";
 
 export interface OnboardingCompletedProps {
@@ -11,27 +12,26 @@ export interface OnboardingCompletedProps {
 	 */
 	setStep: (_step: keyof typeof ASSISTED_ONBOARDING_STEPS) => void;
 	/**
-	 * Optional mobile number of the onboarded agent
+	 * Resets agent-specific state (agentDetails, agentMobile) to prevent
+	 * stale data from the previous agent leaking into the next onboarding.
 	 */
-	agentMobile?: string;
+	resetAgentState: () => void;
 }
 
 /**
- * OnboardingCompleted component displays a success message when agent onboarding is complete
- * Provides CTAs to onboard another agent or navigate to home
+ * OnboardingCompleted component displays a success message when agent onboarding is complete.
+ * Reads `mobile` from OnboardingContext instead of receiving it as a prop.
+ * Provides CTAs to onboard another agent or navigate to home.
  * @param {OnboardingCompletedProps} props - Component props
  * @returns {JSX.Element} The rendered OnboardingCompleted component
- * @example
- * ```tsx
- * <OnboardingCompleted setStep={setStep} agentMobile="9876543210" />
- * ```
  */
 const OnboardingCompleted = ({
 	setStep,
-	agentMobile,
+	resetAgentState,
 }: OnboardingCompletedProps): JSX.Element => {
 	const router = useRouter();
 	const { userData } = useUser();
+	const { mobile, userName } = useOnboardingContext();
 	const isAdmin = userData?.isAdmin ?? false;
 
 	/**
@@ -48,6 +48,7 @@ const OnboardingCompleted = ({
 	 * Resets to ADD_AGENT step
 	 */
 	const handleOnboardAnother = (): void => {
+		resetAgentState();
 		setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 	};
 
@@ -78,14 +79,24 @@ const OnboardingCompleted = ({
 						>
 							Successfully verified and onboarded.
 						</Text>
-						{agentMobile ? (
+						{userName ? (
 							<Text
 								fontSize="sm"
 								color="primary.DEFAULT"
 								fontWeight="semibold"
 								mt={2}
 							>
-								Registered Mobile: {agentMobile}
+								Registered Name: {userName}
+							</Text>
+						) : null}
+						{mobile ? (
+							<Text
+								fontSize="sm"
+								color="primary.DEFAULT"
+								fontWeight="semibold"
+								mt={2}
+							>
+								Registered Mobile: {mobile}
 							</Text>
 						) : null}
 					</VStack>
