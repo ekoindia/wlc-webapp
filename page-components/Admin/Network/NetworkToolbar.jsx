@@ -131,7 +131,6 @@ const NetworkToolbar = ({
 							}
 						}}
 						placeholder="Search by Name or Mobile Number"
-						showButton={true}
 						dataList={networkUsersList}
 						onItemSelect={onItemSelect}
 						maxDropdownItems={5}
