@@ -29,15 +29,12 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		networkUsersList,
 		loading: loadingUsers,
 		refreshUserList,
-		fetchedAt,
 	} = useNetworkUsers();
 
 	// Fetch network users on mount if not already loaded
 	useEffect(() => {
-		if (fetchedAt === null && !loadingUsers) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, []);
 
 	// Modal state for batch operation confirmation
 	const { isOpen, onOpen, onClose } = useDisclosure();

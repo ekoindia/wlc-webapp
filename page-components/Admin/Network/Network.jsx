@@ -97,13 +97,8 @@ const Network = () => {
 	const { getUserTypeLabel } = useUserTypes();
 	const toast = useToast();
 
-	const {
-		networkUsersList,
-		refreshUserList,
-		userTypeIdList,
-		fetchedAt,
-		loading,
-	} = useNetworkUsers();
+	const { networkUsersList, refreshUserList, userTypeIdList, loading } =
+		useNetworkUsers();
 
 	const operation_type_list = useMemo(() => {
 		return userTypeIdList.map((typeId) => ({
@@ -552,11 +547,8 @@ const Network = () => {
 
 	// Fetch Network User List for the UserTypeList when the component mounts for the UserType Filter
 	useEffect(() => {
-		console.log("[Network] Refrsh Effect", fetchedAt, loading);
-		if (fetchedAt === null && !loading) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, []);
 
 	useEffect(() => {
 		if (openModalId == action.FILTER) {

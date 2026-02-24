@@ -42,10 +42,8 @@ const NetworkTreeView = () => {
 
 	// Fetch Network User List as a tree when tree-view is visible
 	useEffect(() => {
-		if (fetchedAt === null && !loading) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, []);
 
 	const [now, setNow] = useState(Date.now());
 
