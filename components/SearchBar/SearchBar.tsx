@@ -44,10 +44,41 @@ export interface SearchBarProps {
 }
 
 /**
- * A versatile SearchBar component supporting type-ahead debounced fuzzy searching,
- * dropdown suggestions, and customizable search key fields.
+ * **SearchBar** — A versatile search input supporting two operating modes:
+ *
+ * 1. **Simple search** (no `dataList`): the user types and presses Enter or
+ * clicks the search icon, which calls `setSearch` with the current value.
+ *
+ * 2. **Type-ahead dropdown** (`dataList` provided): as the user types, the
+ * value is debounced (300 ms) and matched against every `searchKeys` field
+ * using a case-insensitive, whitespace-collapsed substring comparison.
+ * Up to `maxDropdownItems` results are shown in a floating panel. Selecting
+ * an item calls `onItemSelect` and populates the input with the item's
+ * first `searchKeys` value.
+ *
+ * The dropdown closes automatically on outside click (via a `mousedown`
+ * listener on `document`) or after a hard search (Enter / icon click).
  * @param {SearchBarProps} props
  * @returns {JSX.Element}
+ * @example
+ * // Simple search — fires setSearch on Enter / button click
+ * <SearchBar
+ *   placeholder="Search by Mobile"
+ *   setSearch={(val) => fetchResults(val)}
+ *   minSearchLimit={10}
+ *   maxSearchLimit={10}
+ * />
+ * @example
+ * // Type-ahead dropdown with custom item renderer
+ * <SearchBar
+ *   placeholder="Search users"
+ *   setSearch={(val) => fetchResults(val)}
+ *   dataList={users}
+ *   searchKeys={["name", "mobile"]}
+ *   maxDropdownItems={5}
+ *   renderItem={(item) => <Text>{item.name} — {item.mobile}</Text>}
+ *   onItemSelect={(item) => router.push(`/profile?mobile=${item.mobile}`)}
+ * />
  */
 const SearchBar = ({
 	type = "text",
@@ -124,6 +155,12 @@ const SearchBar = ({
 		maxDropdownItems,
 	]);
 
+	/**
+	 * Validates the input length and fires `setSearch` if valid.
+	 * Sets an error state when the value is out of the allowed range.
+	 * Also closes the dropdown so type-ahead results don't linger.
+	 * @param {string} searchValue - The raw string to validate and submit.
+	 */
 	const triggerSearch = (searchValue: string) => {
 		if (
 			searchValue.length >= minSearchLimit &&
@@ -139,6 +176,11 @@ const SearchBar = ({
 		}
 	};
 
+	/**
+	 * Keyboard handler for the input element.
+	 * Submits the search on Enter; clears the error state on any other key press.
+	 * @param e
+	 */
 	const handleKeyDown = (e) => {
 		if (e.key === "Enter") {
 			triggerSearch(value);
@@ -148,10 +190,17 @@ const SearchBar = ({
 		}
 	};
 
+	/** Triggers a hard search when the user clicks the search icon. */
 	const handleBtnClick = () => {
 		triggerSearch(value);
 	};
 
+	/**
+	 * Controlled input change handler.
+	 * Updates both the immediate `value` (for the input) and `debouncedValue`
+	 * (which drives the dropdown filter) while enforcing `maxSearchLimit`.
+	 * @param e
+	 */
 	const handleChange = (e) => {
 		const inputValue = e.target.value;
 		if (inputValue.length <= maxSearchLimit) {
