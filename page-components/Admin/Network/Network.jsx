@@ -26,22 +26,34 @@ const NetworkTreeView = dynamic(
 	}
 );
 
+/** Earliest allowed calendar date for the onboarding range filters. */
 const calendar_min_date = "2023-01-01";
 
+/** Number of agent rows fetched per page. */
 const PAGE_LIMIT = 10;
 
+/**
+ * Numeric identifiers for each action modal shown in the toolbar.
+ * Used as a discriminated value for `openModalId`.
+ */
 const action = {
 	FILTER: 0,
 	EXPORT: 1,
 	TOGGLE_COLUMNS: 2,
 };
 
+/** Options for the "Account Status" filter dropdown. */
 const status_list = [
 	{ label: "Active", value: "Active" },
 	{ label: "In Progress", value: "InProgress" },
 	{ label: "Inactive", value: "InActive" },
 ];
 
+/**
+ * Serialises a plain key/value object into a URL query-string.
+ * @param {Record<string, string|number>} params - The parameters to encode.
+ * @returns {string} A URL-encoded query string (without the leading `?`).
+ */
 const generateQueryParams = (params) => {
 	return Object.keys(params)
 		.map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
@@ -49,10 +61,27 @@ const generateQueryParams = (params) => {
 };
 
 /**
- * A My Network page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Network></Network>`
+ * **Network** — Admin / Agent "My Network" page component.
+ *
+ * Manages the full lifecycle of the network agent list:
+ * - Fetches paginated agent data via the transaction proxy endpoint.
+ * - Supports **search** (by mobile number), **filter** (by user type,
+ * account status, onboarding date range), and **export** (XLSX download).
+ * - Provides an optional **Tree View** when the `NETWORK_TREE_VIEW` feature
+ * flag is enabled.
+ * - Manages **column visibility** persisted in `localStorage` via
+ * `useColumnVisibility`.
+ * - Performs **optimistic UI updates** for status changes and demo-user
+ * deletion so the table reflects changes immediately without a re-fetch.
+ *
+ * All toolbar state (`openModalId`, search/filter form instances, etc.) is
+ * owned here and passed down to `NetworkToolbar` and `NetworkTable`.
+ * @returns {JSX.Element}
+ * @example
+ * // pages/admin/my-network.jsx
+ * export default function MyNetworkPage() {
+ *   return <Network />;
+ * }
  */
 const Network = () => {
 	const formElements = {
