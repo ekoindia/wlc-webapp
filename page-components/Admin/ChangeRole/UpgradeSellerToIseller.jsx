@@ -1,9 +1,10 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints, ParamType } from "constants";
-import { UserType, UserTypeLabel } from "constants/UserTypes";
+import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useUserTypes } from "hooks/useUserTypes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -22,6 +23,7 @@ const renderer = {
  * @returns
  */
 const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
 	const toast = useToast();
@@ -62,7 +64,7 @@ const UpgradeSellerToIseller = ({ agentData, showOrgChangeRoleView }) => {
 	const unassign_retailer_parameter_list = [
 		{
 			name: "retailer",
-			label: `Select ${UserTypeLabel[UserType.MERCHANT]}`,
+			label: `Select ${getUserTypeLabel(UserType.MERCHANT)}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
 			renderer: renderer,
