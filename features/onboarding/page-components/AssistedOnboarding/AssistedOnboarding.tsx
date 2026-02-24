@@ -236,6 +236,7 @@ const AssistedOnboarding = (): JSX.Element => {
 						updateUserInfo={() => {}}
 						isAssistedOnboarding={true}
 						assistedAgentDetails={agentDetails}
+						agentMobile={agentMobile}
 						refreshAgentProfile={refreshAgentProfile}
 					/>
 				);
