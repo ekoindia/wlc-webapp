@@ -14,6 +14,11 @@ jest.mock("contexts/UserContext", () => ({
 	useUser: jest.fn(),
 }));
 
+// Mock OnboardingContext — OnboardingCompleted now reads mobile from context
+jest.mock("features/onboarding/context/OnboardingContext", () => ({
+	useOnboardingContext: jest.fn(),
+}));
+
 const mockPush = jest.fn();
 const mockRouter = {
 	push: mockPush,
@@ -28,6 +33,9 @@ describe("OnboardingCompleted component", () => {
 		jest.clearAllMocks();
 		const { useRouter } = require("next/router");
 		const { useUser } = require("contexts/UserContext");
+		const {
+			useOnboardingContext,
+		} = require("features/onboarding/context/OnboardingContext");
 
 		useRouter.mockReturnValue(mockRouter);
 		useUser.mockReturnValue({
@@ -35,71 +43,97 @@ describe("OnboardingCompleted component", () => {
 				isAdmin: false,
 			},
 		});
+		// Default: no mobile
+		useOnboardingContext.mockReturnValue({ mobile: "" });
 	});
 
 	it("renders successfully", () => {
 		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
 		const { container } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
 		);
 		expect(container).not.toBeEmptyDOMElement();
 	});
 
 	it("displays success message and completion text", () => {
 		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
 		const { getByText, container } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
-		);
-
-		// Success message is displayed
-		expect(
-			getByText(/The agent has been successfully onboarded/)
-		).toBeInTheDocument();
-		// Verify component rendered
-		expect(container).not.toBeEmptyDOMElement();
-	});
-
-	it("displays agent mobile number when provided", () => {
-		const mockSetStep = jest.fn();
-		const agentMobile = "9876543210";
-		const { getByText } = render(
 			<OnboardingCompleted
 				setStep={mockSetStep}
-				agentMobile={agentMobile}
+				resetAgentState={mockResetAgentState}
 			/>
 		);
 
-		expect(getByText(`Agent Mobile: ${agentMobile}`)).toBeInTheDocument();
+		expect(
+			getByText(/Successfully verified and onboarded/)
+		).toBeInTheDocument();
+		expect(container).not.toBeEmptyDOMElement();
 	});
 
-	it("does not display agent mobile when not provided", () => {
+	it("displays agent mobile number when provided via context", () => {
+		const {
+			useOnboardingContext,
+		} = require("features/onboarding/context/OnboardingContext");
+		useOnboardingContext.mockReturnValue({ mobile: "9876543210" });
+
 		const mockSetStep = jest.fn();
-		const { queryByText } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
+		const mockResetAgentState = jest.fn();
+		const { getByText } = render(
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
 		);
 
-		expect(queryByText(/Agent Mobile:/)).not.toBeInTheDocument();
+		expect(getByText("Registered Mobile: 9876543210")).toBeInTheDocument();
+	});
+
+	it("does not display agent mobile when context has empty mobile", () => {
+		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
+		const { queryByText } = render(
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
+		);
+
+		expect(queryByText(/Registered Mobile:/)).not.toBeInTheDocument();
 	});
 
 	it("renders both action buttons", () => {
 		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
 		const { getByText } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
 		);
 
 		expect(getByText("Onboard Another Agent")).toBeInTheDocument();
 		expect(getByText("Go to Home")).toBeInTheDocument();
 	});
 
-	it("calls setStep with ADD_AGENT when onboard another agent is clicked", () => {
+	it("calls resetAgentState and setStep with ADD_AGENT when onboard another agent is clicked", () => {
 		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
 		const { getByText } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
 		);
 
 		const onboardButton = getByText("Onboard Another Agent");
 		onboardButton.click();
 
+		expect(mockResetAgentState).toHaveBeenCalled();
 		expect(mockSetStep).toHaveBeenCalledWith(
 			ASSISTED_ONBOARDING_STEPS.ADD_AGENT
 		);
@@ -114,8 +148,12 @@ describe("OnboardingCompleted component", () => {
 		});
 
 		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
 		const { getByText } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
 		);
 
 		const homeButton = getByText("Go to Home");
@@ -126,8 +164,12 @@ describe("OnboardingCompleted component", () => {
 
 	it("navigates to /home for non-admin when Go to Home is clicked", () => {
 		const mockSetStep = jest.fn();
+		const mockResetAgentState = jest.fn();
 		const { getByText } = render(
-			<OnboardingCompleted setStep={mockSetStep} />
+			<OnboardingCompleted
+				setStep={mockSetStep}
+				resetAgentState={mockResetAgentState}
+			/>
 		);
 
 		const homeButton = getByText("Go to Home");

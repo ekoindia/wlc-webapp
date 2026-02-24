@@ -5,9 +5,5 @@ export type {
 	OnboardingStateHook,
 } from "./useOnboardingState";
 export { useSignAgreement } from "./useSignAgreement";
-export {
-	createStepLookupMap,
-	extractStepConfiguration,
-	useStepConfiguration,
-} from "./useStepConfiguration";
+
 export { useStepExecutor } from "./useStepExecutor";

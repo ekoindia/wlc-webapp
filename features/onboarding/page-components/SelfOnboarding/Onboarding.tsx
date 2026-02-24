@@ -1,11 +1,10 @@
 import { Flex } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useSession, useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import router from "next/router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { OnboardingWidget } from "../../components";
 
 /**
@@ -20,8 +19,6 @@ import { OnboardingWidget } from "../../components";
 const Onboarding = () => {
 	const { userData, updateUserInfo } = useUser();
 	console.log("[AgentOnboarding] userData", userData);
-	const { orgDetail } = useOrgDetailContext();
-	const { logo, app_name, org_name } = orgDetail ?? {};
 	const { generateNewToken } = useRefreshToken();
 	const { accessToken } = useSession();
 	// Method to refresh user profile and update states
@@ -56,13 +53,15 @@ const Onboarding = () => {
 		}
 	}, []);
 
+	// Refresh user profile on mount to ensure fresh data (e.g., after page reload)
+	useEffect(() => {
+		refreshAgentProfile();
+	}, []);
+
 	// MARK: JSX
 	return (
 		<Flex direction="column" minH="100vh" bg="bg">
 			<OnboardingWidget
-				logo={logo}
-				appName={app_name}
-				orgName={org_name}
 				userData={userData}
 				updateUserInfo={updateUserInfo}
 				isAssistedOnboarding={false}

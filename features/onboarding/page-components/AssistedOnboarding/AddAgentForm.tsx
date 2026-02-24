@@ -45,6 +45,7 @@ const add_agent_parameter_list = [
 interface AddAgentFormProps {
 	setStep: React.Dispatch<React.SetStateAction<string>>;
 	setAgentMobile: React.Dispatch<React.SetStateAction<string>>;
+	setAgentDetails: React.Dispatch<React.SetStateAction<any>>;
 }
 
 /**
@@ -57,6 +58,7 @@ interface AddAgentFormProps {
 const AddAgentForm = ({
 	setStep,
 	setAgentMobile,
+	setAgentDetails,
 }: AddAgentFormProps): JSX.Element => {
 	const toast = useToast();
 
@@ -95,9 +97,6 @@ const AddAgentForm = ({
 	const handleFormSubmit = async (data) => {
 		const _cspId = data.csp_id;
 
-		// Store the mobile number for use in other components
-		setAgentMobile(_cspId);
-
 		try {
 			const response = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -127,6 +126,7 @@ const AddAgentForm = ({
 					RESPONSE_TYPE_IDS.AGENT_COMPLETED_ONBOARDING
 				) {
 					// Agent already exists - check status to determine if onboarding is complete
+					setAgentMobile(_cspId);
 					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK);
 					return;
 				}
@@ -136,7 +136,9 @@ const AddAgentForm = ({
 					RESPONSE_TYPE_IDS.AGENT_OTP_VERIFIED_PENDING_ONBOARDING
 				) {
 					// Agent exists, OTP verified but onboarding not complete
-					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET);
+					// Route to status check to cleanly load their profile
+					setAgentMobile(_cspId);
+					setStep(ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK);
 					return;
 				}
 
@@ -155,6 +157,10 @@ const AddAgentForm = ({
 						});
 					}
 					// Agent doesn't exist, needs OTP verification
+					// Set mobile TOGETHER with step so React batches them
+					// (avoids Provider key change remounting this component mid-flow)
+					setAgentMobile(_cspId);
+					setAgentDetails(null); // Explicitly clear any stale details
 					setStep(ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION);
 					return;
 				}
