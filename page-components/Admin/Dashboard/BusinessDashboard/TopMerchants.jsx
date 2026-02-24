@@ -291,7 +291,6 @@ const TopMerchants = ({
 		productFilter,
 		isEkoShieldEnabled,
 		businessDashboardData.topMerchantsCache,
-		fetchTopMerchantsOverviewData,
 	]);
 
 	const router = useRouter();

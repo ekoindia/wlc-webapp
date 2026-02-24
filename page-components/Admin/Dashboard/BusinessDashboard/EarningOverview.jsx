@@ -258,7 +258,6 @@ const EarningOverview = ({
 		dateTo,
 		productFilter,
 		businessDashboardData?.earningOverviewCache,
-		fetchEarningOverviewData,
 	]);
 
 	const earningOverviewList = [
