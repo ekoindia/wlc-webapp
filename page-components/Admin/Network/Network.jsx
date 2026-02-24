@@ -1,5 +1,5 @@
 import { Flex, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
-import { Button, Icon, PageTitle } from "components";
+import { Button, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
 import {
 	useAppSource,
@@ -65,8 +65,9 @@ const generateQueryParams = (params) => {
  *
  * Manages the full lifecycle of the network agent list:
  * - Fetches paginated agent data via the transaction proxy endpoint.
- * - Supports **search** (by mobile number), **filter** (by user type,
- * account status, onboarding date range), and **export** (XLSX download).
+ * - Supports client-side **search** (type-ahead navigation to agent profiles)
+ * and API-based **filter** (by user type, account status, onboarding date range).
+ * - Supports **export** (XLSX download) of filtered/all network data.
  * - Provides an optional **Tree View** when the `NETWORK_TREE_VIEW` feature
  * flag is enabled.
  * - Manages **column visibility** persisted in `localStorage` via
@@ -74,7 +75,7 @@ const generateQueryParams = (params) => {
  * - Performs **optimistic UI updates** for status changes and demo-user
  * deletion so the table reflects changes immediately without a re-fetch.
  *
- * All toolbar state (`openModalId`, search/filter form instances, etc.) is
+ * All toolbar state (`openModalId`, filter/export form instances, etc.) is
  * owned here and passed down to `NetworkToolbar` and `NetworkTable`.
  * @returns {JSX.Element}
  * @example
@@ -111,9 +112,7 @@ const Network = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [networkData, setNetworkData] = useState([]);
 	const [isFiltered, setIsFiltered] = useState(false);
-	const [isSearched, setIsSearched] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
-	const [prevSearch, setPrevSearch] = useState("");
 	const [queryParam, setQueryParam] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
@@ -141,14 +140,6 @@ const Network = () => {
 	});
 
 	const {
-		handleSubmit: handleSubmitSearch,
-		register: registerSearch,
-		control: controlSearch,
-		formState: { errors: errorsSearch },
-		reset: resetSearch,
-	} = useForm({ mode: "onChange" });
-
-	const {
 		handleSubmit: handleSubmitFilter,
 		register: registerFilter,
 		control: controlFilter,
@@ -168,10 +159,6 @@ const Network = () => {
 			onBoardingDateFrom: firstDateOfMonth,
 			onBoardingDateTo: today,
 		},
-	});
-
-	const watcherSearch = useWatch({
-		control: controlSearch,
 	});
 
 	const watcherFilter = useWatch({
@@ -235,32 +222,6 @@ const Network = () => {
 		};
 	};
 
-	const onSearchSubmit = (data) => {
-		const { search_value } = data ?? {};
-
-		const _validSearch = search_value && search_value != prevSearch;
-		if (_validSearch) {
-			setPrevSearch(search_value);
-			setIsSearched(true);
-			setIsFiltered(false);
-			resetFilter({ ...formElements });
-			let search_params = generateQueryParams({
-				search_value,
-			});
-			setPageNumber(1);
-			setQueryParam(search_params);
-			setFinalFormState({ search_value });
-		}
-	};
-
-	const clearSearch = () => {
-		setIsSearched(false);
-		setPrevSearch("");
-		resetSearch({ search_value: "" });
-		setQueryParam(null);
-		setFinalFormState({});
-	};
-
 	const onFilterSubmit = (data) => {
 		const filteredData = Object.entries(data)?.reduce(
 			(acc, [key, value]) => {
@@ -285,9 +246,6 @@ const Network = () => {
 		setQueryParam(filter_params);
 		setOpenModalId(null);
 		setIsFiltered(true);
-		setIsSearched(false);
-		setPrevSearch("");
-		resetSearch({ search_value: "" });
 		setFinalFormState(filteredData);
 
 		resetExport({
@@ -465,25 +423,6 @@ const Network = () => {
 		},
 	];
 
-	const network_search_parameter_list = [
-		{
-			name: "search_value",
-			parameter_type_id: ParamType.NUMERIC,
-			placeholder: "Search by Mobile Number",
-			inputLeftElement: <Icon name="search" size="sm" color="light" />,
-			onEnter: handleSubmitSearch(onSearchSubmit),
-			required: false,
-		},
-	];
-
-	const searchBarConfig = {
-		register: registerSearch,
-		control: controlSearch,
-		errors: errorsSearch,
-		formValues: watcherSearch,
-		parameter_list: network_search_parameter_list,
-	};
-
 	const actionBtnConfig = [
 		{
 			id: action.FILTER,
@@ -596,29 +535,19 @@ const Network = () => {
 		const labelsToReplace = {
 			From: "Date",
 			To: "Date",
-			search_value: "Mobile Number",
 		};
 
-		const _parameterList = isFiltered
-			? network_filter_parameter_list
-			: isSearched
-				? network_search_parameter_list
-				: [];
+		if (!isFiltered) return _labels;
 
 		Object.keys(finalFormState).forEach((key) => {
-			const matchedItem = _parameterList.find(
+			const matchedItem = network_filter_parameter_list.find(
 				(item) => item.name === key
 			);
 
-			if (matchedItem && isFiltered) {
+			if (matchedItem) {
 				const labelToAdd =
 					labelsToReplace[matchedItem.label] || matchedItem.label;
 				_labels.push(labelToAdd);
-			}
-			if (matchedItem && isSearched) {
-				_labels.push(
-					labelsToReplace[matchedItem.name] || matchedItem.name
-				);
 			}
 		});
 		return [...new Set(_labels)];
@@ -712,13 +641,10 @@ const Network = () => {
 			>
 				<NetworkToolbar
 					{...{
-						isSearched,
-						clearSearch,
 						isFiltered,
 						clearFilter,
 						openModalId,
 						setOpenModalId,
-						searchBarConfig,
 						actionBtnConfig,
 						viewType,
 						setViewType,
@@ -757,7 +683,7 @@ const Network = () => {
 
 				{viewType === "list" ? (
 					<Flex
-						display={isFiltered || isSearched ? "flex" : "none"}
+						display={isFiltered ? "flex" : "none"}
 						alignSelf="center"
 						align="center"
 						gap="2"
@@ -768,12 +694,7 @@ const Network = () => {
 						}}
 					>
 						<Flex color="light" fontSize="xs">
-							{isFiltered
-								? "Filtering by"
-								: isSearched
-									? "Searching by"
-									: null}
-							&nbsp;
+							Filtering by &nbsp;
 							{filteredItemLabels
 								?.slice(0, filterItemLimit)
 								.map((val, index) => (
@@ -802,16 +723,7 @@ const Network = () => {
 								</Text>
 							)}
 						</Flex>
-						<Button
-							size="xs"
-							onClick={() => {
-								isFiltered
-									? clearFilter()
-									: isSearched
-										? clearSearch()
-										: null;
-							}}
-						>
+						<Button size="xs" onClick={clearFilter}>
 							Show All
 						</Button>
 					</Flex>
