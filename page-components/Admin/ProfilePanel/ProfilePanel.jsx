@@ -1,9 +1,10 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Button, Icon, Menus, PageTitle } from "components";
-import { AGENT_VIEW_TABS, Endpoints } from "constants";
+import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
+import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import { useEffect, useState } from "react";
 import {
 	AddressPane,
@@ -93,6 +94,7 @@ const ChangeRoleMobile = ({ changeRoleMenuList }) => {
  * @returns {JSX.Element} - The ProfilePanel component
  */
 const ProfilePanel = () => {
+	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
 	const router = useRouter();
 	const [agentData, setAgentData] = useState({});
 	const [agentDocuments, setAgentDocuments] = useState({});

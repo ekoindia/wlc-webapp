@@ -4,10 +4,6 @@ export {
 	type AgentAlreadyExistsScreenProps,
 } from "./AgentAlreadyExistsScreen";
 export {
-	default as AgentOnboarding,
-	type AgentOnboardingProps,
-} from "./AgentOnboarding";
-export {
 	default as AgentStatusCheck,
 	type AgentStatusCheckProps,
 } from "./AgentStatusCheck";

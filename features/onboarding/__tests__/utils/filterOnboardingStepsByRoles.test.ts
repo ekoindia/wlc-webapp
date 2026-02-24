@@ -1,7 +1,5 @@
-import {
-	filterOnboardingStepsByRoles,
-	masterOnboardingSteps,
-} from "features/onboarding";
+import { masterOnboardingSteps } from "../../constants";
+import { filterOnboardingStepsByRoles } from "../../utils/stepGenerator";
 
 describe("OnboardingSteps", () => {
 	describe("masterOnboardingSteps", () => {

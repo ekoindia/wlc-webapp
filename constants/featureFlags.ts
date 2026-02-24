@@ -68,6 +68,30 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	KYC_VERIFICATION: {
 		enabled: true,
 		forEnv: ["development", "staging"],
+		// envConstraints: {
+		// 	development: {
+		// 		forOrgId: [3],
+		// 	},
+		// 	staging: {
+		// 		forOrgId: [3],
+		// 	},
+		// 	production: {
+		// 		forOrgId: [3],
+		// 	},
+		// },
+	},
+
+	//  Eko Shield
+	// TODO: Deprecate the usage of this flag across the project.
+	EKO_SHIELD: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
+	DEMO_ACCOUNT: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+		forRoles: ["51900"],
 	},
 
 	// Inventory Management for (Super)Distributors
