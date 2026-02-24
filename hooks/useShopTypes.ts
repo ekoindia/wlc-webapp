@@ -13,12 +13,40 @@ interface ShopType {
 	[key: string]: any;
 }
 
+/**
+ * Cached shop types entry structure
+ */
+interface ShopTypesCacheEntry {
+	data: ShopType[];
+	fetchedAt: number;
+	userId: string;
+}
+
 interface UseShopTypesReturn {
 	shopTypes: ShopType[];
 	isLoading: boolean;
 	error: string | null;
 	refetch: () => Promise<void>;
+	clearCache: () => void;
 }
+
+/**
+ * Module-level cache map (shared across all hook instances)
+ * Key format: `shop-types-${userId}`
+ */
+const shopTypesCache = new Map<string, ShopTypesCacheEntry>();
+
+/**
+ * Cache expiry duration in milliseconds (5 minutes)
+ */
+const CACHE_TTL = 5 * 60 * 1000;
+
+/**
+ * Clear all cached shop types data
+ */
+export const clearAllShopTypesCache = () => {
+	shopTypesCache.clear();
+};
 
 /**
  * Custom hook for fetching shop types from the API
@@ -31,40 +59,97 @@ const useShopTypes = (): UseShopTypesReturn => {
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const { accessToken } = useSession();
+	const { accessToken, userId } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
 
 	/**
-	 * Fetch shop types from the API
+	 * Clear cache for shop types
 	 */
-	const fetchShopTypes = useCallback(async (): Promise<void> => {
-		if (!accessToken) {
-			setIsLoading(false);
-			return;
+	const clearCache = useCallback(() => {
+		if (userId) {
+			const cacheKey = `shop-types-${userId}`;
+			shopTypesCache.delete(cacheKey);
 		}
+	}, [userId]);
 
-		setIsLoading(true);
-		setError(null);
+	/**
+	 * Fetch shop types from the API with caching
+	 */
+	const fetchShopTypes = useCallback(
+		async (forceRefresh = false): Promise<void> => {
+			if (!accessToken || !userId) {
+				setIsLoading(false);
+				return;
+			}
 
-		try {
-			const response: any = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					token: accessToken,
-					body: {
-						interaction_type_id: TransactionIds.SHOP_TYPE,
+			const cacheKey = `shop-types-${userId}`;
+			const cached = shopTypesCache.get(cacheKey);
+
+			// Check cache validity
+			const isCacheValid =
+				!forceRefresh &&
+				cached &&
+				cached.userId === userId &&
+				Date.now() - cached.fetchedAt < CACHE_TTL;
+
+			if (isCacheValid && cached) {
+				// Use cached data
+				setShopTypes(cached.data);
+				setIsLoading(false);
+				setError(null);
+				return;
+			}
+
+			// Fetch from API
+			setIsLoading(true);
+			setError(null);
+
+			try {
+				const response: any = await fetcher(
+					process.env.NEXT_PUBLIC_API_BASE_URL +
+						Endpoints.TRANSACTION,
+					{
+						token: accessToken,
+						body: {
+							interaction_type_id: TransactionIds.SHOP_TYPE,
+						},
 					},
-				},
-				generateNewToken
-			);
+					generateNewToken
+				);
 
-			if (response.status === 0) {
-				setShopTypes(response?.param_attributes?.list_elements || []);
-			} else {
+				if (response.status === 0) {
+					const shopTypesData =
+						response?.param_attributes?.list_elements || [];
+
+					// Cache the fetched data
+					shopTypesCache.set(cacheKey, {
+						data: shopTypesData,
+						fetchedAt: Date.now(),
+						userId,
+					});
+
+					setShopTypes(shopTypesData);
+					setError(null);
+				} else {
+					const errorMessage: string =
+						response.message || "Failed to fetch shop types";
+					setError(errorMessage);
+					toast({
+						title: "Error fetching shop types",
+						description: errorMessage,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			} catch (err: any) {
 				const errorMessage: string =
-					response.message || "Failed to fetch shop types";
+					err.message ||
+					"Something went wrong while fetching shop types";
 				setError(errorMessage);
+				console.error("[useShopTypes] Error:", err);
+
 				toast({
 					title: "Error fetching shop types",
 					description: errorMessage,
@@ -72,24 +157,12 @@ const useShopTypes = (): UseShopTypesReturn => {
 					duration: 3000,
 					isClosable: true,
 				});
+			} finally {
+				setIsLoading(false);
 			}
-		} catch (err: any) {
-			const errorMessage: string =
-				err.message || "Something went wrong while fetching shop types";
-			setError(errorMessage);
-			console.error("[useShopTypes] Error:", err);
-
-			toast({
-				title: "Error fetching shop types",
-				description: errorMessage,
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-		} finally {
-			setIsLoading(false);
-		}
-	}, [accessToken, generateNewToken]);
+		},
+		[accessToken, userId, generateNewToken, toast]
+	);
 
 	// Auto-fetch on mount
 	useEffect(() => {
@@ -102,9 +175,10 @@ const useShopTypes = (): UseShopTypesReturn => {
 			shopTypes,
 			isLoading,
 			error,
-			refetch: fetchShopTypes,
+			refetch: async () => await fetchShopTypes(true),
+			clearCache,
 		}),
-		[shopTypes, isLoading, error, fetchShopTypes]
+		[shopTypes, isLoading, error, fetchShopTypes, clearCache]
 	);
 };
 
