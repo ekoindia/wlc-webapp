@@ -124,11 +124,11 @@ const VideoKycStep = ({
 		if (isShopNameVisible) {
 			params.push({
 				name: "shop_name",
-				label: "Agent/Business Name",
+				label: "Business/Shop Name",
 				parameter_type_id: ParamType.TEXT,
 				required: true,
 				meta: {
-					placeholder: "Enter Agent/Business Name",
+					placeholder: "Enter Business/Shop Name",
 				},
 			});
 		}
