@@ -198,10 +198,6 @@ const NetworkTable = ({
 	 */
 	const onRowClick = (rowData) => {
 		const mobile = rowData?.agent_mobile;
-		localStorage.setItem(
-			"oth_last_selected_agent",
-			JSON.stringify(rowData)
-		);
 
 		let _pathname = isAdmin
 			? `/admin/my-network/profile`
