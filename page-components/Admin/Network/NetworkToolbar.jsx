@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Button, Icon, Modal, SegmentedControl } from "components";
+import { Button, Icon, Modal, SearchBar, SegmentedControl } from "components";
 import { useFeatureFlag } from "hooks";
 import React from "react";
 import { MdAccountTree, MdOutlineTableRows } from "react-icons/md";
@@ -21,6 +21,8 @@ import { Form } from "tf-components";
  * @param {boolean} props.hideFilter Hide the filter button, if true.
  * @param {boolean} props.hideSearch Hide the search bar, if true.
  * @param {Function} props.setViewType
+ * @param props.networkUsersList
+ * @param props.onItemSelect
  * @example	`<NetworkToolbar></NetworkToolbar>` TODO: Fix example
  */
 const NetworkToolbar = ({
@@ -37,6 +39,8 @@ const NetworkToolbar = ({
 	hideFilter = false,
 	hideSearch = false,
 	setViewType,
+	networkUsersList,
+	onItemSelect,
 }) => {
 	const [isTreeViewEnabled] = useFeatureFlag("NETWORK_TREE_VIEW");
 
@@ -45,9 +49,7 @@ const NetworkToolbar = ({
 			gap={{ base: "2px", md: 2 }}
 			w="100%"
 			wrap={true}
-			// justify="space-between"
 			align="center"
-			mb="20px"
 			sx={{
 				"@media print": {
 					display: "none !important",
@@ -87,7 +89,52 @@ const NetworkToolbar = ({
 			{/* MARK: Search */}
 			{hideSearch ? null : (
 				<Flex>
-					<Form {...searchBarConfig} hideOptionalMark size={size} />
+					<SearchBar
+						{...searchBarConfig}
+						setSearch={(val) => {
+							if (searchBarConfig?.parameter_list?.[0]?.onEnter) {
+								searchBarConfig.parameter_list[0].onEnter({
+									search_value: val,
+								});
+							}
+						}}
+						placeholder="Search by Name or Mobile Number"
+						showButton={true}
+						dataList={networkUsersList}
+						onItemSelect={onItemSelect}
+						maxDropdownItems={5}
+						renderItem={(item) => (
+							<Flex
+								align="center"
+								justify="space-between"
+								w="100%"
+							>
+								<Flex direction="column" gap={0}>
+									<Text
+										fontSize="sm"
+										fontWeight="600"
+										color="gray.800"
+										textTransform="capitalize"
+									>
+										{item.name?.toLowerCase()}
+									</Text>
+									<Text
+										fontSize="xs"
+										color="gray.500"
+										fontWeight="500"
+									>
+										{item.mobile}
+									</Text>
+								</Flex>
+								<Icon
+									name="arrow-forward"
+									size="14px"
+									color="gray.400"
+								/>
+							</Flex>
+						)}
+						searchKeys={["name", "mobile"]}
+					/>
 					<Button
 						size="xs"
 						display={{
@@ -97,6 +144,7 @@ const NetworkToolbar = ({
 						variant="link"
 						onClick={clearSearch}
 						_hover={{ textDecoration: "none" }}
+						ml={2}
 					>
 						Clear Search
 					</Button>
