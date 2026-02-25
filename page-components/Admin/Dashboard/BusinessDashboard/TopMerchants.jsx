@@ -1,5 +1,4 @@
 import { Flex, Select, Text } from "@chakra-ui/react";
-import { Table } from "components";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
@@ -60,46 +59,6 @@ const processTopMerchantsData = (
 	return processedData;
 };
 
-// TODO: Redundant. used only for the old generic table
-const topMerchantsTableParameterList = [
-	{ label: "#", show: "#" },
-	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
-	{ name: "usercode", label: "Agent's\nCode", sorting: true },
-	{
-		name: "gtv",
-		label: "GTV",
-		sorting: true,
-		show: "Amount",
-	},
-	{
-		name: "totalTransactions",
-		label: "Transaction\nCount",
-		sorting: true,
-	},
-	{
-		name: "status",
-		label: "Status",
-		show: "Tag",
-		sorting: true,
-	},
-	{
-		name: "raCases",
-		label: "Pending\nTransactions",
-		sorting: true,
-	},
-	{
-		name: "onboardingDate",
-		label: "Onboarding\nDate",
-		sorting: true,
-		show: "Date",
-	},
-	{
-		name: "distributorMapped",
-		label: "Distributor\nMapped",
-		sorting: true,
-	},
-];
-
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
 	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
@@ -137,7 +96,6 @@ const TopMerchants = ({
 	const [cachedFullProductList, setCachedFullProductList] = useState(null);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
-	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	/**
@@ -396,35 +354,22 @@ const TopMerchants = ({
 
 			<Flex direction="column" align="center" gap="4">
 				{processedMerchantData?.length > 0 ? (
-					showNewDashboard ? (
-						// New table with graphs & enhanced UI
-						<>
-							<TopMerchantsChart
-								agentList={processedMerchantData}
-								onViewProfile={onViewProfile}
-							/>
-							<TopMerchantsTable
-								data={processedMerchantData}
-								totalGtv={+totalBusiness?.gtv?.amount ?? 0}
-								totalRevenue={+totalBusiness?.gtv?.revenue ?? 0}
-								totalTransactions={
-									+totalBusiness?.transactions
-										?.transactions ?? 0
-								}
-								isLoading={isLoading}
-								onViewProfile={onViewProfile}
-							/>
-						</>
-					) : (
-						// Old generic table
-						<Table
-							data={topMerchantsData}
-							renderer={topMerchantsTableParameterList}
-							isLoading={isLoading}
-							width="100%"
-							maxWidth="100%"
+					<>
+						<TopMerchantsChart
+							agentList={processedMerchantData}
+							onViewProfile={onViewProfile}
 						/>
-					)
+						<TopMerchantsTable
+							data={processedMerchantData}
+							totalGtv={+totalBusiness?.gtv?.amount ?? 0}
+							totalRevenue={+totalBusiness?.gtv?.revenue ?? 0}
+							totalTransactions={
+								+totalBusiness?.transactions?.transactions ?? 0
+							}
+							isLoading={isLoading}
+							onViewProfile={onViewProfile}
+						/>
+					</>
 				) : (
 					<Text
 						color="gray.500"
