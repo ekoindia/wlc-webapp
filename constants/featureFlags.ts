@@ -42,9 +42,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					3, // Satin Prod
 				],
 			},
-			development: {
-				forOrgId: [3],
-			},
 		},
 	},
 
@@ -137,9 +134,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 					...ORG_ID.DASHBOARD_V2,
 					3, // Satin Prod
 				],
-			},
-			development: {
-				forOrgId: [3],
 			},
 		},
 	},
