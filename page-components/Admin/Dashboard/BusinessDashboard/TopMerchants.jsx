@@ -3,7 +3,7 @@ import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { LuTrophy } from "react-icons/lu";
 import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
@@ -89,7 +89,6 @@ const TopMerchants = ({
 }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]); // Actual/cached list of top merchants
-	const [processedMerchantData, setProcessedMerchantData] = useState([]); // Processed list of top-merchants with pre-calculated cumulative sum. percentage, etc
 	const [filteredProductList, setFilteredProductList] = useState([
 		{ label: "All Products", value: "" },
 	]);
@@ -99,20 +98,17 @@ const TopMerchants = ({
 	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	/**
-	 * Prepare the topMerchantData for dashboard...
+	 * Process top merchants data with cumulative calculations
 	 */
-	useEffect(() => {
+	const processedMerchantData = useMemo(() => {
 		if (!topMerchantsData || topMerchantsData.length === 0) {
-			setProcessedMerchantData([]);
-			return;
+			return [];
 		}
 
-		setProcessedMerchantData(
-			processTopMerchantsData(
-				topMerchantsData,
-				totalBusiness?.gtv?.amount ?? 0,
-				totalBusiness?.transactions?.transactions ?? 0
-			)
+		return processTopMerchantsData(
+			topMerchantsData,
+			totalBusiness?.gtv?.amount ?? 0,
+			totalBusiness?.transactions?.transactions ?? 0
 		);
 	}, [topMerchantsData, totalBusiness]);
 
