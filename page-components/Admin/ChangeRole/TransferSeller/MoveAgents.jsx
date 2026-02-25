@@ -10,9 +10,9 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints } from "constants";
-import { UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useUserTypes } from "hooks/useUserTypes";
 import { useEffect, useState } from "react";
 
 const renderer = {
@@ -46,6 +46,7 @@ const MoveAgents = ({
 	onChange = () => {},
 	targetUserType = 2,
 }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	const isSmallScreen = useBreakpointValue(
 		{ base: true, md: false },
 		{ ssr: false }
@@ -206,7 +207,8 @@ const MoveAgents = ({
 						display={{ base: "none", md: "flex" }}
 					>
 						<Text color="light">
-							Move {UserTypeLabel[targetUserType]}s From: &thinsp;
+							Move {getUserTypeLabel(targetUserType)}s From:
+							&thinsp;
 							<Text as="span" color="dark">
 								{transferAgentsFrom[renderer.label]}
 							</Text>
@@ -325,6 +327,7 @@ const TransferAgentsToBox = ({
 	transferAgentsTo,
 	targetUserType,
 }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	return (
 		<Flex
 			display={{ base: "none", md: "flex" }}
@@ -334,7 +337,7 @@ const TransferAgentsToBox = ({
 		>
 			<Flex fontWeight="semibold" gap="1">
 				<Text color="light">
-					Move {UserTypeLabel[targetUserType]}s To: &thinsp;
+					Move {getUserTypeLabel(targetUserType)}s To: &thinsp;
 					<Text as="span" color="dark">
 						{transferAgentsTo[renderer.label]}
 					</Text>
