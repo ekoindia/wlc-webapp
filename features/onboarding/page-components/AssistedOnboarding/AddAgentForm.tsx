@@ -173,6 +173,7 @@ const AddAgentForm = ({
 			) {
 				const errorMessage =
 					response.invalid_params?.csp_id ??
+					response.invalid_params?.initiator_id ??
 					response.message ??
 					"An error occurred. Please try again.";
 				toast({
