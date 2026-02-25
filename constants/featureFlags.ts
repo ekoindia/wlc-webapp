@@ -90,7 +90,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
 		forUserType: [1], // 7 = SuperDistributor
-		forEnv: ["development", "staging"],
+		forEnv: ["development"],
 	},
 
 	// Custom theme support (paid tier)

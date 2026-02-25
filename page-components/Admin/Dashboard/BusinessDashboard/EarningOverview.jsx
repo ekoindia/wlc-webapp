@@ -307,8 +307,19 @@ const EarningOverview = ({
 			),
 		},
 		{
+			key: "successCases",
+			label: "Successful Transactions",
+			value: earningOverviewData?.successCases?.successCases || 0,
+			lastPeriod: earningOverviewData?.successCases?.lastPeriod || 0,
+			type: "number",
+			variation: calculateVariation(
+				earningOverviewData?.successCases?.successCases || 0,
+				earningOverviewData?.successCases?.lastPeriod || 0
+			),
+		},
+		{
 			key: "failedCases",
-			label: "Failed Transaction",
+			label: "Failed Transactions",
 			value: earningOverviewData?.failedCases?.failedCases || 0,
 			lastPeriod: earningOverviewData?.failedCases?.lastPeriod || 0,
 			type: "number",

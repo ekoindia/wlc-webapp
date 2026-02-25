@@ -19,6 +19,14 @@ import { useAgentServices } from "../hooks";
 type BatchOperation = "enable" | "disable";
 
 /**
+ * Account status IDs mapping
+ */
+const ACCOUNT_STATUS = {
+	ACTIVE: 16,
+	DEMO: 60,
+};
+
+/**
  * Admin page for managing agent verification services.
  * Shows agent selector, service grid with toggles.
  * @returns {JSX.Element} Rendered page component
@@ -29,16 +37,12 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		networkUsersList,
 		loading: loadingUsers,
 		refreshUserList,
-		fetchedAt,
-		userTypeIdList,
 	} = useNetworkUsers();
 
 	// Fetch network users on mount if not already loaded
 	useEffect(() => {
-		if (fetchedAt === null && !loadingUsers) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, []);
 
 	// Modal state for batch operation confirmation
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -69,21 +73,21 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		disableFilteredServices,
 	} = useAgentServices();
 
-	useEffect(() => {
-		console.log(
-			"Network Users:",
-			networkUsersList,
-			"user Type List",
-			userTypeIdList
-		);
-	}, [networkUsersList, userTypeIdList]);
-
 	// Transform network users to select options
 	const agentOptions = useMemo(() => {
-		return networkUsersList.map((user) => ({
-			label: `${user.name} (${user.user_code})`,
-			value: user.user_code,
-		}));
+		return networkUsersList
+			.filter(
+				(user) =>
+					user.account_status_id === ACCOUNT_STATUS.ACTIVE ||
+					user.account_status_id === ACCOUNT_STATUS.DEMO
+			)
+			.map((user) => {
+				const isDemo = user.account_status_id === ACCOUNT_STATUS.DEMO;
+				return {
+					label: `${user.name} (${user.user_code}) ${isDemo ? " - Demo" : ""}`,
+					value: user.user_code,
+				};
+			});
 	}, [networkUsersList]);
 
 	// Find selected agent for select component

@@ -37,7 +37,7 @@ export const KycVerificationPage = ({
 	basePath = "/products/kyc-verification",
 }: KycVerificationPageProps = {}): JSX.Element => {
 	const router = useRouter();
-	const { isAdmin } = useSession();
+	const { isAdmin, userType } = useSession();
 
 	// Services data and filtering
 	const {
@@ -161,17 +161,20 @@ export const KycVerificationPage = ({
 									: router.push("/products/bulk-verification")
 							}
 						/>
-						<Button
-							onClick={() => setIsManageMode(!isManageMode)}
-							size="sm"
-							icon="settings"
-							iconStyle={{ size: "xs" }}
-							variant={
-								isManageMode ? "primary" : "primary_outline"
-							}
-						>
-							Manage
-						</Button>
+
+						{(isAdmin || userType === 1) && (
+							<Button
+								onClick={() => setIsManageMode(!isManageMode)}
+								size="sm"
+								icon="settings"
+								iconStyle={{ size: "xs" }}
+								variant={
+									isManageMode ? "primary" : "primary_outline"
+								}
+							>
+								Manage
+							</Button>
+						)}
 					</Flex>
 				}
 			/>

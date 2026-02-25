@@ -1,9 +1,7 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
-import { Endpoints } from "constants";
-import { useSession } from "contexts";
-import { fetcher } from "helpers";
 import { useRouter } from "next/router";
+import { useAgentDetails } from "page-components/Admin/Network/hooks";
 import { useEffect, useState } from "react";
 import PromoteSellerToDistributor from "./PromoteSellerToDistributor";
 import { TransferSeller } from "./TransferSeller";
@@ -26,24 +24,16 @@ const CHANGE_ROLE_COMPONENTS = {
  */
 const ChangeRole = () => {
 	const { ORG_VIEW_TABS, AGENT_VIEW_TABS } = useChangeRoleOptions();
-	const [agentData, setAgentData] = useState(null);
-	const { accessToken } = useSession();
 	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);
 	const router = useRouter();
 	const { mobile, tab } = router.query;
 	const [tabList, setTabList] = useState([]);
 
+	// Use the agent details hook with session caching
+	const { agent: agentData } = useAgentDetails(mobile);
+
 	useEffect(() => {
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent")
-		);
-		if (mobile) {
-			if (storedData?.agent_mobile === mobile) {
-				setAgentData(storedData);
-			} else {
-				fetchAgentDataViaCellNumber(mobile);
-			}
-		} else {
+		if (!mobile) {
 			setShowOrgChangeRoleView(true);
 		}
 	}, [mobile]);
@@ -71,32 +61,6 @@ const ChangeRole = () => {
 
 		setTabList(tempTabList);
 	}, [mobile, showOrgChangeRoleView, agentData]);
-
-	const fetchAgentDataViaCellNumber = (mobile) => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				let _agentDetails = res?.data?.agent_details[0];
-				if (_agentDetails) {
-					setAgentData(_agentDetails);
-					localStorage.setItem(
-						"oth_last_selected_agent",
-						JSON.stringify(_agentDetails)
-					);
-				} else {
-					setShowOrgChangeRoleView(true);
-				}
-			})
-			.catch((error) => {
-				console.error("[ChangeRole] Get Agent Detail Error:", error);
-			});
-	};
 
 	return (
 		<>
