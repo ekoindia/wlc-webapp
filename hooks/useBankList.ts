@@ -13,12 +13,40 @@ interface Bank {
 	[key: string]: any;
 }
 
+/**
+ * Cached bank list entry structure
+ */
+interface BankListCacheEntry {
+	data: Bank[];
+	fetchedAt: number;
+	userId: string;
+}
+
 interface UseBankListReturn {
 	banks: Bank[];
 	isLoading: boolean;
 	error: string | null;
 	refetch: () => Promise<void>;
+	clearCache: () => void;
 }
+
+/**
+ * Module-level cache map (shared across all hook instances)
+ * Key format: `bank-list-${userId}`
+ */
+const bankListCache = new Map<string, BankListCacheEntry>();
+
+/**
+ * Cache expiry duration in milliseconds (5 minutes)
+ */
+const CACHE_TTL = 5 * 60 * 1000;
+
+/**
+ * Clear all cached bank list data
+ */
+export const clearAllBankListCache = () => {
+	bankListCache.clear();
+};
 
 /**
  * Custom hook for fetching bank list from the API
@@ -31,42 +59,99 @@ const useBankList = (): UseBankListReturn => {
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const { accessToken } = useSession();
+	const { accessToken, userId } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
 
 	/**
-	 * Fetch bank list from the API
+	 * Clear cache for bank list
 	 */
-	const fetchBankList = useCallback(async (): Promise<void> => {
-		if (!accessToken) {
-			setIsLoading(false);
-			return;
+	const clearCache = useCallback(() => {
+		if (userId) {
+			const cacheKey = `bank-list-${userId}`;
+			bankListCache.delete(cacheKey);
 		}
+	}, [userId]);
 
-		setIsLoading(true);
-		setError(null);
+	/**
+	 * Fetch bank list from the API with caching
+	 */
+	const fetchBankList = useCallback(
+		async (forceRefresh = false): Promise<void> => {
+			if (!accessToken || !userId) {
+				setIsLoading(false);
+				return;
+			}
 
-		try {
-			const response: any = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					token: accessToken,
-					body: {
-						interaction_type_id: TransactionIds.BANK_LIST,
-						bank_id: "",
-						locale: "en",
+			const cacheKey = `bank-list-${userId}`;
+			const cached = bankListCache.get(cacheKey);
+
+			// Check cache validity
+			const isCacheValid =
+				!forceRefresh &&
+				cached &&
+				cached.userId === userId &&
+				Date.now() - cached.fetchedAt < CACHE_TTL;
+
+			if (isCacheValid && cached) {
+				// Use cached data
+				setBanks(cached.data);
+				setIsLoading(false);
+				setError(null);
+				return;
+			}
+
+			// Fetch from API
+			setIsLoading(true);
+			setError(null);
+
+			try {
+				const response: any = await fetcher(
+					process.env.NEXT_PUBLIC_API_BASE_URL +
+						Endpoints.TRANSACTION,
+					{
+						token: accessToken,
+						body: {
+							interaction_type_id: TransactionIds.BANK_LIST,
+							bank_id: "",
+							locale: "en",
+						},
 					},
-				},
-				generateNewToken
-			);
+					generateNewToken
+				);
 
-			if (response.status === 0) {
-				setBanks(response?.param_attributes?.list_elements || []);
-			} else {
+				if (response.status === 0) {
+					const banksData =
+						response?.param_attributes?.list_elements || [];
+
+					// Cache the fetched data
+					bankListCache.set(cacheKey, {
+						data: banksData,
+						fetchedAt: Date.now(),
+						userId,
+					});
+
+					setBanks(banksData);
+					setError(null);
+				} else {
+					const errorMessage: string =
+						response.message || "Failed to fetch bank list";
+					setError(errorMessage);
+					toast({
+						title: "Error fetching bank list",
+						description: errorMessage,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			} catch (err: any) {
 				const errorMessage: string =
-					response.message || "Failed to fetch bank list";
+					err.message ||
+					"Something went wrong while fetching bank list";
 				setError(errorMessage);
+				console.error("[useBankList] Error:", err);
+
 				toast({
 					title: "Error fetching bank list",
 					description: errorMessage,
@@ -74,24 +159,12 @@ const useBankList = (): UseBankListReturn => {
 					duration: 3000,
 					isClosable: true,
 				});
+			} finally {
+				setIsLoading(false);
 			}
-		} catch (err: any) {
-			const errorMessage: string =
-				err.message || "Something went wrong while fetching bank list";
-			setError(errorMessage);
-			console.error("[useBankList] Error:", err);
-
-			toast({
-				title: "Error fetching bank list",
-				description: errorMessage,
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-		} finally {
-			setIsLoading(false);
-		}
-	}, [accessToken, generateNewToken]);
+		},
+		[accessToken, userId, generateNewToken, toast]
+	);
 
 	// Auto-fetch on mount
 	useEffect(() => {
@@ -104,9 +177,10 @@ const useBankList = (): UseBankListReturn => {
 			banks,
 			isLoading,
 			error,
-			refetch: fetchBankList,
+			refetch: async () => await fetchBankList(true),
+			clearCache,
 		}),
-		[banks, isLoading, error, fetchBankList]
+		[banks, isLoading, error, fetchBankList, clearCache]
 	);
 };
 

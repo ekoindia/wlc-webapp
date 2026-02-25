@@ -29,15 +29,12 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		networkUsersList,
 		loading: loadingUsers,
 		refreshUserList,
-		fetchedAt,
 	} = useNetworkUsers();
 
 	// Fetch network users on mount if not already loaded
 	useEffect(() => {
-		if (fetchedAt === null && !loadingUsers) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, []);
 
 	// Modal state for batch operation confirmation
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -259,7 +256,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 								}
 								// minW={{ sm: "120px" }}
 							>
-								Enable ({filteredDisabledCount})
+								Enable All ({filteredDisabledCount})
 							</Button>
 							<Button
 								variant="primary_outline"
@@ -271,7 +268,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 								}
 								// minW={{ sm: "120px" }}
 							>
-								Disable ({filteredEnabledCount})
+								Disable All ({filteredEnabledCount})
 							</Button>
 						</Flex>
 					</Flex>

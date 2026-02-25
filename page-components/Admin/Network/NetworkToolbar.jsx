@@ -10,22 +10,18 @@ import { Form } from "tf-components";
  * page containing search, filter, export, and column-toggle controls.
  *
  * - **Search**: renders a `SearchBar` fed with the full `networkUsersList` for
- * client-side fuzzy type-ahead (by name & mobile). On explicit submit,
- * delegates to `searchBarConfig.parameter_list[0].onEnter`.
+ * client-side fuzzy type-ahead (by name & mobile). Selecting an item navigates
+ * to the agent profile page via `onItemSelect` callback.
  * - **Filter / Export**: each entry in `actionBtnConfig` gets an icon-button
  * that opens a modal containing a `tf-components <Form>` or a custom
  * `Component` (e.g. `NetworkToggleColumns`).
  * - **View toggle**: shows a segmented "List / Tree" control when the
  * `NETWORK_TREE_VIEW` feature flag is enabled.
  * @param {object}   props
- * @param {boolean}  props.isSearched          - Whether a search is currently active.
- * @param {Function} props.clearSearch         - Clears the active search and resets the query.
  * @param {boolean}  props.isFiltered          - Whether a filter is currently active.
  * @param {Function} props.clearFilter         - Clears the active filter and resets the query.
  * @param {number|null} props.openModalId      - ID of the currently open action modal, or `null`.
  * @param {Function} props.setOpenModalId      - Setter for `openModalId`.
- * @param {object}   props.searchBarConfig     - react-hook-form bindings forwarded to `SearchBar`
- *   (`register`, `control`, `errors`, `formValues`, `parameter_list`).
  * @param {Array<object>} props.actionBtnConfig - Config array for Filter / Export / Columns buttons.
  *   Each entry may contain `id`, `label`, `icon`, `parameter_list`, `handleSubmit`,
  *   `handleFormSubmit`, `submitButtonText`, `secondaryButtonText`, `secondaryButtonAction`,
@@ -43,13 +39,10 @@ import { Form } from "tf-components";
  * @returns {JSX.Element}
  * @example
  * <NetworkToolbar
- *   isSearched={false}
- *   clearSearch={handleClearSearch}
  *   isFiltered={false}
  *   clearFilter={handleClearFilter}
  *   openModalId={null}
  *   setOpenModalId={setOpenModalId}
- *   searchBarConfig={searchBarConfig}
  *   actionBtnConfig={actionBtnConfig}
  *   viewType="list"
  *   setViewType={setViewType}
@@ -58,13 +51,10 @@ import { Form } from "tf-components";
  * />
  */
 const NetworkToolbar = ({
-	isSearched,
-	clearSearch,
 	isFiltered,
 	clearFilter,
 	openModalId,
 	setOpenModalId,
-	searchBarConfig,
 	actionBtnConfig,
 	size = "md",
 	viewType,
@@ -120,67 +110,40 @@ const NetworkToolbar = ({
 
 			{/* MARK: Search */}
 			{hideSearch ? null : (
-				<Flex>
-					<SearchBar
-						{...searchBarConfig}
-						setSearch={(val) => {
-							if (searchBarConfig?.parameter_list?.[0]?.onEnter) {
-								searchBarConfig.parameter_list[0].onEnter({
-									search_value: val,
-								});
-							}
-						}}
-						placeholder="Search by Name or Mobile Number"
-						showButton={true}
-						dataList={networkUsersList}
-						onItemSelect={onItemSelect}
-						maxDropdownItems={5}
-						renderItem={(item) => (
-							<Flex
-								align="center"
-								justify="space-between"
-								w="100%"
-							>
-								<Flex direction="column" gap={0}>
-									<Text
-										fontSize="sm"
-										fontWeight="600"
-										color="gray.800"
-										textTransform="capitalize"
-									>
-										{item.name?.toLowerCase()}
-									</Text>
-									<Text
-										fontSize="xs"
-										color="gray.500"
-										fontWeight="500"
-									>
-										{item.mobile}
-									</Text>
-								</Flex>
-								<Icon
-									name="arrow-forward"
-									size="14px"
-									color="gray.400"
-								/>
+				<SearchBar
+					setSearch={() => {}}
+					placeholder="Search by Name or Mobile Number"
+					dataList={networkUsersList}
+					onItemSelect={onItemSelect}
+					maxDropdownItems={5}
+					renderItem={(item) => (
+						<Flex align="center" justify="space-between" w="100%">
+							<Flex direction="column" gap={0}>
+								<Text
+									fontSize="sm"
+									fontWeight="600"
+									color="gray.800"
+									textTransform="capitalize"
+								>
+									{item.name?.toLowerCase()}
+								</Text>
+								<Text
+									fontSize="xs"
+									color="gray.500"
+									fontWeight="500"
+								>
+									{item.mobile}
+								</Text>
 							</Flex>
-						)}
-						searchKeys={["name", "mobile"]}
-					/>
-					<Button
-						size="xs"
-						display={{
-							base: "none",
-							md: isSearched ? "block" : "none",
-						}}
-						variant="link"
-						onClick={clearSearch}
-						_hover={{ textDecoration: "none" }}
-						ml={2}
-					>
-						Clear Search
-					</Button>
-				</Flex>
+							<Icon
+								name="arrow-forward"
+								size="14px"
+								color="gray.400"
+							/>
+						</Flex>
+					)}
+					searchKeys={["name", "mobile"]}
+				/>
 			)}
 
 			{/* MARK: Filter */}
