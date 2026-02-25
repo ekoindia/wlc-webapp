@@ -274,7 +274,7 @@ const EarningOverview = ({
 		},
 		{
 			key: "revenue",
-			label: "Revenue",
+			label: "Total Revenue/Charges",
 			value: earningOverviewData?.gtv?.revenue || 0,
 			lastPeriod: earningOverviewData?.gtv?.revenuelastPeriod || 0,
 			type: "amount",
@@ -297,7 +297,7 @@ const EarningOverview = ({
 		// TODO: Display Transaction and API Calls according to feature flag
 		{
 			key: "transactions",
-			label: "Transactions",
+			label: "Total Transactions",
 			value: earningOverviewData?.transactions?.transactions || 0,
 			lastPeriod: earningOverviewData?.transactions?.lastPeriod || 0,
 			type: "number",
@@ -308,7 +308,7 @@ const EarningOverview = ({
 		},
 		{
 			key: "failedCases",
-			label: "Failed Cases",
+			label: "Failed Transaction",
 			value: earningOverviewData?.failedCases?.failedCases || 0,
 			lastPeriod: earningOverviewData?.failedCases?.lastPeriod || 0,
 			type: "number",

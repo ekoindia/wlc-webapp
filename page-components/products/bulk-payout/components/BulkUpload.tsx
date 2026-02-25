@@ -1,4 +1,12 @@
-import { Box, Flex, Link, useToast } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Flex,
+	Link,
+	Text,
+	useToast,
+} from "@chakra-ui/react";
 import {
 	ActionButtonGroup,
 	Card,
@@ -244,6 +252,14 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 							setFile={setFile}
 							accept=".xlsx,.xls"
 						/>
+						<Alert status="warning" borderRadius="md" py={2}>
+							<AlertIcon />
+							<Text fontSize="sm">
+								The uploaded Excel/CSV file must not exceed{" "}
+								<strong>50 records</strong>. Please split larger
+								files into smaller batches for processing.
+							</Text>
+						</Alert>
 					</Flex>
 
 					{showPinInput && (

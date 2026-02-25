@@ -30,6 +30,7 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		loading: loadingUsers,
 		refreshUserList,
 		fetchedAt,
+		userTypeIdList,
 	} = useNetworkUsers();
 
 	// Fetch network users on mount if not already loaded
@@ -67,6 +68,15 @@ export const ManageAgentServicesPage = (): JSX.Element => {
 		enableFilteredServices,
 		disableFilteredServices,
 	} = useAgentServices();
+
+	useEffect(() => {
+		console.log(
+			"Network Users:",
+			networkUsersList,
+			"user Type List",
+			userTypeIdList
+		);
+	}, [networkUsersList, userTypeIdList]);
 
 	// Transform network users to select options
 	const agentOptions = useMemo(() => {

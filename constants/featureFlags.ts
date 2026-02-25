@@ -63,18 +63,14 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// KYC Verification
 	KYC_VERIFICATION: {
 		enabled: true,
-		forEnv: ["development", "staging"],
-		// envConstraints: {
-		// 	development: {
-		// 		forOrgId: [3],
-		// 	},
-		// 	staging: {
-		// 		forOrgId: [3],
-		// 	},
-		// 	production: {
-		// 		forOrgId: [3],
-		// 	},
-		// },
+		envConstraints: {
+			development: {
+				forOrgId: [26],
+			},
+			staging: {
+				forOrgId: [26],
+			},
+		},
 	},
 
 	//  Eko Shield
