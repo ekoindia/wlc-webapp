@@ -176,11 +176,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
+		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
 	},
 
 	// Show Admin Network pages to sub-network users
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
+		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
 	},
 
 	// Open ChatGPT Agent in new tab
