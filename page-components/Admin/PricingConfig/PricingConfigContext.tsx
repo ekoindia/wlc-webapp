@@ -57,8 +57,7 @@ interface PricingConfigProviderProps {
 const PricingConfigProvider = ({
 	children,
 }: PricingConfigProviderProps): JSX.Element => {
-	const { networkUsersList, refreshUserList, fetchedAt, loading } =
-		useNetworkUsers();
+	const { networkUsersList, refreshUserList } = useNetworkUsers();
 	const [pricingTree, setPricingTree] = useState<ProductNode[]>([]);
 	const [formDataMap, setFormDataMap] = useState<Record<string, any>>({});
 	const [productCategoryList, setProductCategoryList] = useState<
@@ -98,10 +97,8 @@ const PricingConfigProvider = ({
 
 	// Fetch Network User List as a tree when tree-view is visible
 	useEffect(() => {
-		if (fetchedAt === null && !loading) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, []);
 
 	useEffect(() => {
 		if (networkUsersList?.length > 0) {
