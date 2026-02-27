@@ -107,7 +107,12 @@ const UpdateSellerAddress = () => {
 					"tf-req-uri": "/network/agents/profile/address/update",
 					"tf-req-method": "POST",
 				},
-				body: { ...finalData, merchant_code: agentData?.eko_code },
+				body: {
+					...finalData,
+					merchant_code: agentData?.eko_code,
+					intent_id: 17,
+					address_type_id: 3,
+				},
 				token: accessToken,
 			}
 		)

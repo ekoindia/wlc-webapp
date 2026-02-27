@@ -1,7 +1,7 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
-import { useApiFetch, useFeatureFlag } from "hooks";
+import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 import { Cell, Label, Pie, PieChart } from "recharts";
@@ -24,8 +24,6 @@ const SuccessRate = ({
 	setBusinessDashboardData,
 }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
-
-	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
 	const [fetchSuccessRateData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
@@ -166,15 +164,14 @@ const SuccessRate = ({
 										{item.value}%
 									</Skeleton>
 								</Text>
-								{showNewDashboard ? (
-									<Chart
-										successCount={item.successCount}
-										totalCount={item.totalCount}
-										size={30}
-										innerRadius="60%"
-										hideLabel
-									/>
-								) : null}
+
+								<Chart
+									successCount={item.successCount}
+									totalCount={item.totalCount}
+									size={30}
+									innerRadius="60%"
+									hideLabel
+								/>
 							</Flex>
 						);
 					})
