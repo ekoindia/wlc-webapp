@@ -1,6 +1,6 @@
 import {
 	Box,
-	Button,
+	Button as ChakraButton,
 	Flex,
 	ListItem,
 	OrderedList,
@@ -8,7 +8,7 @@ import {
 	VStack,
 	useToast,
 } from "@chakra-ui/react";
-import { ActionButtonGroup } from "components";
+import { ActionButtonGroup, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useOnboardingContext } from "features/onboarding/context";
 import { useApiFetch } from "hooks";
@@ -46,6 +46,9 @@ const DigilockerRedirectionStep = ({
 	const [digilockerLink, setDigilockerLink] = useState<string | null>(null);
 	const [requestId, setRequestId] = useState<string | null>(null);
 	const [hasOpenedDigilocker, setHasOpenedDigilocker] = useState(false);
+	const [numberMismatchError, setNumberMismatchError] = useState<
+		string | null
+	>(null);
 	const hasFetchedRef = useRef(false);
 	const lastProcessedResultRef = useRef<any>(null);
 
@@ -147,10 +150,20 @@ const DigilockerRedirectionStep = ({
 	useEffect(() => {
 		const result = pipelineResults[stepConfig.id];
 
-		// Check if we have a failed verification (response_type_id 1709)
+		// Check if we have a failed verification
 		if (result?.status === "failed") {
 			const apiResponse = result.list?.[0]?.response;
-			if (apiResponse?.response_type_id === 1709) {
+
+			if (apiResponse?.response_type_id === 2443) {
+				// Number mismatch: onboarding number differs from Aadhaar-linked number
+				setNumberMismatchError(
+					apiResponse?.message ||
+						"The mobile number used for Aadhaar verification on Digilocker does not match your onboarding mobile number. Please retry using the correct number."
+				);
+
+				// Clear the pipeline result to prevent re-triggering
+				setPipelineResult(stepConfig.id, null as any);
+			} else if (apiResponse?.response_type_id === 1709) {
 				toast({
 					title:
 						apiResponse?.message ||
@@ -207,6 +220,19 @@ const DigilockerRedirectionStep = ({
 	};
 
 	/**
+	 * Retries Digilocker verification after a number mismatch error.
+	 * Resets all local state and fetches a fresh Digilocker URL.
+	 */
+	const handleRetryVerification = (): void => {
+		setNumberMismatchError(null);
+		setHasOpenedDigilocker(false);
+		setDigilockerLink(null);
+		setRequestId(null);
+		hasFetchedRef.current = false;
+		void fetchDigilockerUrl();
+	};
+
+	/**
 	 * Submits the step as completed
 	 */
 	const handleProceed = (): void => {
@@ -234,7 +260,7 @@ const DigilockerRedirectionStep = ({
 
 			<VStack gap={4} align="stretch">
 				{/* Open Digilocker Button */}
-				<Button
+				<ChakraButton
 					w="full"
 					colorScheme="blue"
 					onClick={handleOpenDigilocker}
@@ -267,7 +293,32 @@ const DigilockerRedirectionStep = ({
 					{hasOpenedDigilocker
 						? "Digilocker opened"
 						: "Open Digilocker"}
-				</Button>
+				</ChakraButton>
+
+				{/* Number Mismatch Error */}
+				{numberMismatchError && (
+					<Box
+						p={4}
+						bg="rgba(255, 64, 129, 0.15)"
+						borderWidth="1px"
+						borderColor="rgba(255, 64, 129, 0.4)"
+						borderRadius="md"
+					>
+						<Flex align="center" gap={2} mb={2}>
+							<Icon name="error" size="sm" color="error" />
+							<Text
+								fontWeight="semibold"
+								fontSize="sm"
+								color="error"
+							>
+								Mobile Number Mismatch
+							</Text>
+						</Flex>
+						<Text fontSize="sm" color="error">
+							{numberMismatchError}
+						</Text>
+					</Box>
+				)}
 
 				{/* Instructions Box */}
 				<Box
@@ -300,15 +351,24 @@ const DigilockerRedirectionStep = ({
 						isFixedOnMobile={false}
 						buttonConfigList={[
 							{
-								type: "submit",
-								label: isSubmitting
-									? "Loading..."
-									: stepConfig.primaryCTAText || "Proceed",
-								loading: isSubmitting,
-								disabled: isSubmitting || !hasOpenedDigilocker,
-								onClick: handleProceed,
+								// If error is present, become a Retry button
+								type: numberMismatchError ? "button" : "submit",
+								label: numberMismatchError
+									? "Retry Verification"
+									: isSubmitting
+										? "Loading..."
+										: stepConfig.primaryCTAText ||
+											"Proceed",
+								loading: isSubmitting || isDigilockerLoading,
+								disabled:
+									isSubmitting ||
+									(!hasOpenedDigilocker &&
+										!numberMismatchError),
+								onClick: numberMismatchError
+									? handleRetryVerification
+									: handleProceed,
 							},
-							...(canSkip
+							...(canSkip && !numberMismatchError
 								? [
 										{
 											type: "button",
