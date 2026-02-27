@@ -354,7 +354,7 @@ const DigilockerRedirectionStep = ({
 								// If error is present, become a Retry button
 								type: numberMismatchError ? "button" : "submit",
 								label: numberMismatchError
-									? "Retry Verification"
+									? "Retry"
 									: isSubmitting
 										? "Loading..."
 										: stepConfig.primaryCTAText ||
