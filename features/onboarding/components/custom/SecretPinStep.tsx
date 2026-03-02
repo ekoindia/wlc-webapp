@@ -11,7 +11,7 @@ import {
 import { ActionButtonGroup, Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
-import { useSession } from "contexts";
+import { usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -53,6 +53,7 @@ const SecretPinStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
+	const { publish, TOPICS } = usePubSub();
 	const { mobile, state, pipelineResults } = useOnboardingContext();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
@@ -170,6 +171,8 @@ const SecretPinStep = ({
 				duration: 4000,
 				isClosable: true,
 			});
+			// Signal all Pintwin components to refresh their keys
+			publish(TOPICS.REFRESH_PINTWIN);
 		}
 	}, [
 		pipelineResults,
@@ -177,6 +180,8 @@ const SecretPinStep = ({
 		stepConfig.success_message,
 		onAdvance,
 		toast,
+		publish,
+		TOPICS,
 	]);
 
 	/**
