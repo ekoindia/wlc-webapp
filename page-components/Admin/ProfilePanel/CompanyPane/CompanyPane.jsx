@@ -260,6 +260,7 @@ const CompanyPane = ({ data }) => {
 		plan_name,
 		wallet_balance,
 		account_status,
+		demo_account_expiry_date,
 		docs,
 	} = data ?? {};
 
@@ -307,6 +308,11 @@ const CompanyPane = ({ data }) => {
 	const companyDataList = [
 		{ id: 1, label: "Account Status", value: account_status },
 		{ id: 2, label: "Type", value: userTypeLabel },
+		{
+			id: 4,
+			label: "Demo Account Expiry Date",
+			value: demo_account_expiry_date,
+		},
 		{ id: 3, label: "Plan", value: plan_name },
 	];
 

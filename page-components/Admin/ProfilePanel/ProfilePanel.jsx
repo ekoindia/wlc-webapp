@@ -8,6 +8,27 @@ import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRole
 import { useAgentDetails } from "page-components/Admin/Network/hooks";
 import { lazy, Suspense, useEffect, useState } from "react";
 
+// Utility: Check if all values in an object are null/blank/empty
+const isAllFieldsEmpty = (obj, fields) => {
+	if (!obj) return true;
+	return fields.every((key) => {
+		const val = obj[key];
+		if (key === "ownership_type") {
+			return (
+				val === undefined ||
+				val === null ||
+				(typeof val === "string" &&
+					(val.trim() === "" || val.trim().toLowerCase() === "na"))
+			);
+		}
+		return (
+			val === undefined ||
+			val === null ||
+			(typeof val === "string" && val.trim() === "")
+		);
+	});
+};
+
 // Lazy load pane components for better initial bundle size
 const AddressPane = lazy(() =>
 	import(".").then((module) => ({ default: module.AddressPane }))
@@ -190,70 +211,87 @@ const ProfilePanel = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mobile]);
 
-	// MARK: Data Panes
-	const panes = [
-		{
-			id: 1,
-			comp: (
-				<CompanyPane
-					data={{
-						...agentData?.profile,
-						agent_name: agentData?.agent_name,
-						agent_type: agentData?.agent_type,
-						user_id: agentData?.user_id,
-						user_type_id: agentData?.user_type_id,
-						account_status: agentData?.account_status,
-						docs: agentDocuments,
-					}}
-				/>
-			),
-		},
-		{
-			id: 2,
-			comp: (
-				<AddressPane
-					data={{
-						...agentData?.address_details,
-						address: [
-							agentData?.line_1,
-							agentData?.line_2,
-							agentData?.location,
-							agentData?.status,
-							agentData?.zip,
-						]
-							.filter((value) => value)
-							.join(", "),
-					}}
-				/>
-			),
-		},
-		{
-			id: 3,
-			comp: <DocPane documentData={agentDocuments} />,
-		},
-		{
-			id: 4,
-			comp: (
-				<PersonalPane
-					data={{
-						...agentData?.profile,
-						...agentData?.personal_information,
-					}}
-				/>
-			),
-		},
-		{
-			id: 6,
-			comp: (
-				<ContactPane
-					data={{
-						...agentData?.contact_information,
-						agent_mobile: agentData?.agent_mobile,
-					}}
-				/>
-			),
-		},
+	// PersonalPane: fields to check
+	const personalFields = [
+		"date_of_birth",
+		"gender",
+		"marital_status",
+		"shop_name",
+		"shop_type",
 	];
+	// AddressPane: fields to check
+	const addressFields = [
+		"address",
+		"ownership_type",
+		"lattitude",
+		"longitude",
+	];
+
+	const personalData = {
+		...agentData?.profile,
+		...agentData?.personal_information,
+	};
+	const addressData = {
+		...agentData?.address_details,
+		address: [
+			agentData?.line_1,
+			agentData?.line_2,
+			agentData?.location,
+			agentData?.status,
+			agentData?.zip,
+		]
+			.filter((value) => value)
+			.join(", "),
+	};
+
+	const panes = [];
+	// CompanyPane always shown
+	panes.push({
+		id: 1,
+		comp: (
+			<CompanyPane
+				data={{
+					...agentData?.profile,
+					agent_name: agentData?.agent_name,
+					agent_type: agentData?.agent_type,
+					user_id: agentData?.user_id,
+					user_type_id: agentData?.user_type_id,
+					account_status: agentData?.account_status,
+					demo_account_expiry_date:
+						agentData?.demo_account_expiry_date,
+					docs: agentDocuments,
+				}}
+			/>
+		),
+	});
+	// AddressPane: only if any field present
+	if (!isAllFieldsEmpty(addressData, addressFields)) {
+		panes.push({
+			id: 2,
+			comp: <AddressPane data={addressData} />,
+		});
+	}
+	// DocPane
+	panes.push({ id: 3, comp: <DocPane documentData={agentDocuments} /> });
+	// PersonalPane: only if any field present
+	if (!isAllFieldsEmpty(personalData, personalFields)) {
+		panes.push({
+			id: 4,
+			comp: <PersonalPane data={personalData} />,
+		});
+	}
+	// ContactPane
+	panes.push({
+		id: 6,
+		comp: (
+			<ContactPane
+				data={{
+					...agentData?.contact_information,
+					agent_mobile: agentData?.agent_mobile,
+				}}
+			/>
+		),
+	});
 
 	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);

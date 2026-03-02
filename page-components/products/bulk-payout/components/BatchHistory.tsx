@@ -529,7 +529,10 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 												</Td>
 												{isVerification ? (
 													<Td>
-														<Text fontSize="sm">
+														<Text
+															textAlign="center"
+															fontSize="sm"
+														>
 															{batch.serviceName}
 														</Text>
 													</Td>
