@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useAppSource, useUser } from "contexts";
+import { useAppSource, useOrgDetailContext, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 import { parseEnvBoolean } from "utils/envUtils";
@@ -17,6 +17,15 @@ function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail || {};
+	const { disable_self_onboarding } = metadata || {};
+
+	const isSelfOnboardingDisabled =
+		disable_self_onboarding?.value ||
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
+		false;
 
 	/**
 	 * Login the user by fetching user profile & tokens.
@@ -135,9 +144,7 @@ function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 				if (
 					responseData?.details?.onboarding == 1 &&
 					!responseData?.details?.code &&
-					parseEnvBoolean(
-						process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING
-					)
+					isSelfOnboardingDisabled
 				) {
 					console.log(
 						"[useLogin] Self-Onboarding Disabled → User Not Found → Back to Login"
