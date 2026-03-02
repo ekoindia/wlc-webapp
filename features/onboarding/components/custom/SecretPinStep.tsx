@@ -1,13 +1,4 @@
-import {
-	Alert,
-	AlertIcon,
-	Box,
-	Flex,
-	Skeleton,
-	Text,
-	VStack,
-	useToast,
-} from "@chakra-ui/react";
+import { Box, Flex, Skeleton, Text, VStack, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
@@ -306,12 +297,24 @@ const SecretPinStep = ({
 
 						{/* PIN mismatch error */}
 						{pinsMismatch && (
-							<Alert status="error" borderRadius="md">
-								<AlertIcon />
-								<Text>
+							<Flex
+								align="center"
+								gap={3}
+								p={3}
+								bg="rgba(255, 64, 129, 0.15)"
+								border="1px solid"
+								borderColor="error"
+								borderRadius="md"
+							>
+								<Icon name="error" size="sm" color="error" />
+								<Text
+									fontSize="sm"
+									color="error"
+									fontWeight="medium"
+								>
 									PINs do not match. Please try again.
 								</Text>
-							</Alert>
+							</Flex>
 						)}
 
 						<ActionButtonGroup
