@@ -310,7 +310,7 @@ const CompanyPane = ({ data }) => {
 		{ id: 2, label: "Type", value: userTypeLabel },
 		{
 			id: 4,
-			label: "Demo Account Expiry Date",
+			label: "Valid Till",
 			value: demo_account_expiry_date,
 		},
 		{ id: 3, label: "Plan", value: plan_name },
