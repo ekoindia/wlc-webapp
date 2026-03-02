@@ -137,10 +137,6 @@ const OnboardingWidget = ({
 		userType === -1 && // Role not selected
 		isSelfOnboardingDisabled
 	) {
-		console.log(
-			"[OnboardingWidget] Self-onboarding is disabled for this app instance.",
-			userType === -1 || isSelfOnboardingDisabled
-		);
 		// Self-onboarding is disabled for this app instance.
 		return (
 			<Flex
