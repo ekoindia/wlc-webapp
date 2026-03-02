@@ -6,66 +6,10 @@ import { useAppSource, useOrgDetailContext } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher, sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ResendOtpSection } from "./ResendOtpSection";
 
 const RESEND_OTP_COUNTDOWN_SECONDS = 30;
-
-/**
- * A section to resend OTP after a countdown timer expires
- * @param {object} props - Properties passed to the component
- * @param {number} props.countdownSeconds - Initial time in seconds for the countdown
- * @param {Function} props.onResendOtp - Function to call when resend OTP clicked. Must return a promise resolving to boolean indicating success.
- * @returns {JSX.Element} The ResendOtpSection component
- */
-const ResendOtpSection = ({ countdownSeconds, onResendOtp }) => {
-	const [timer, setTimer] = useState(countdownSeconds);
-
-	useEffect(() => {
-		if (timer < 1) return undefined;
-
-		const timeoutId = setTimeout(() => {
-			setTimer((currTimer) => currTimer - 1);
-		}, 1000);
-
-		return () => clearTimeout(timeoutId);
-	}, [timer]);
-
-	return (
-		<Flex
-			justify="center"
-			mt={{ base: 6, "2xl": "2.5rem" }}
-			fontSize={{ base: "sm", "2xl": "lg" }}
-			gap="0px 10px"
-			userSelect="none"
-		>
-			{timer >= 1 ? (
-				<>
-					<Text as={"span"}>Resend OTP in </Text>
-					<Flex align="center" color="error" columnGap="4px">
-						<Icon name="timer" size="18px" />
-						00:{timer <= 9 ? `0${timer}` : timer}
-					</Flex>
-				</>
-			) : (
-				<>
-					<Text as={"span"}>Did not receive yet?</Text>
-					<Text
-						cursor="pointer"
-						as="span"
-						color="primary.DEFAULT"
-						onClick={async () => {
-							const didSend = await onResendOtp();
-							if (didSend) setTimer(countdownSeconds);
-						}}
-						fontWeight="medium"
-					>
-						Resend OTP
-					</Text>
-				</>
-			)}
-		</Flex>
-	);
-};
 
 /**
  * A <VerifyOtp> component
