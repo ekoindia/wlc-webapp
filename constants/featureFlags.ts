@@ -70,6 +70,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 			staging: {
 				forOrgId: [26],
 			},
+			production: {
+				forOrgId: [26],
+			},
 		},
 	},
 
@@ -77,12 +80,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Deprecate the usage of this flag across the project.
 	EKO_SHIELD: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		forEnv: ["development", "staging", "production"],
 	},
 
 	DEMO_ACCOUNT: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		forEnv: ["development", "staging", "production"],
 		forRoles: ["51900"],
 	},
 
