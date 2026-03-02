@@ -5,6 +5,7 @@
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
+import { UserType } from "constants/index";
 import { useSession } from "contexts";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
@@ -162,7 +163,7 @@ export const KycVerificationPage = ({
 							}
 						/>
 
-						{(isAdmin || userType === 1) && (
+						{(isAdmin || userType === UserType.DISTRIBUTOR) && (
 							<Button
 								onClick={() => setIsManageMode(!isManageMode)}
 								size="sm"

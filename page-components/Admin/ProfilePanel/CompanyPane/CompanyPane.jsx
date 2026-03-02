@@ -308,12 +308,12 @@ const CompanyPane = ({ data }) => {
 	const companyDataList = [
 		{ id: 1, label: "Account Status", value: account_status },
 		{ id: 2, label: "Type", value: userTypeLabel },
+		{ id: 3, label: "Plan", value: plan_name },
 		{
 			id: 4,
 			label: "Valid Till",
 			value: demo_account_expiry_date,
 		},
-		{ id: 3, label: "Plan", value: plan_name },
 	];
 
 	if (isMobileMappedUserId) {

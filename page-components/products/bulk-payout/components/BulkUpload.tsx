@@ -22,6 +22,8 @@ import { useForm } from "react-hook-form";
 import { Pintwin } from "tf-components/Pintwin";
 import { useBulkPayout } from "../context/BulkPayoutContext";
 
+const MAX_BULK_UPLOAD_RECORDS = 50;
+
 export interface ServiceOption {
 	label: string;
 	value: string;
@@ -256,8 +258,11 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 							<AlertIcon />
 							<Text fontSize="sm">
 								The uploaded Excel/CSV file must not exceed{" "}
-								<strong>50 records</strong>. Please split larger
-								files into smaller batches for processing.
+								<strong>
+									{MAX_BULK_UPLOAD_RECORDS} records
+								</strong>
+								. Please split larger files into smaller batches
+								for processing.
 							</Text>
 						</Alert>
 					</Flex>
