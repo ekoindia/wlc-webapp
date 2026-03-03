@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Flex } from "@chakra-ui/react";
 import { Button } from "components/Button";
+import { useOrgDetailContext } from "contexts";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
@@ -20,13 +21,11 @@ export const ONBOARDING_STEPS = {
 } as const;
 
 interface OnboardingWidgetProps {
-	logo?: string;
-	appName?: string;
-	orgName?: string;
 	userData?: any;
 	updateUserInfo?: (_data: any) => void;
 	isAssistedOnboarding?: boolean;
 	assistedAgentDetails?: any;
+	agentMobile?: string;
 	allowedMerchantTypes?: number[];
 	refreshAgentProfile: () => Promise<void>;
 }
@@ -36,11 +35,9 @@ interface OnboardingWidgetProps {
  * @param {object} props - Properties passed to the component
  * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
+ * @param {string} [props.agentMobile] - Mobile number of the assisted agent
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
  * @param props.refreshAgentProfile
- * @param props.logo
- * @param props.appName
- * @param props.orgName
  * @param props.userData
  * @param props.updateUserInfo
  * @returns {JSX.Element} - The rendered OnboardingWidget component
@@ -50,16 +47,23 @@ interface OnboardingWidgetProps {
 const DEFAULT_LATLONG = "27.176670,78.008075,0";
 
 const OnboardingWidget = ({
-	logo,
-	appName,
-	orgName,
 	userData,
 	isAssistedOnboarding = false,
 	assistedAgentDetails,
+	agentMobile,
 	allowedMerchantTypes,
 	refreshAgentProfile,
 }: OnboardingWidgetProps): JSX.Element => {
 	const [_selectedRole, setSelectedRole] = useState<string>("");
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail || {};
+	const { disable_self_onboarding } = metadata || {};
+
+	const isSelfOnboardingDisabled =
+		disable_self_onboarding?.value ||
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
+		false;
 
 	// Fetch geolocation early on widget mount
 	const { latitude, longitude, accuracy } = useGeolocation({
@@ -91,25 +95,25 @@ const OnboardingWidget = ({
 		? assistedAgentDetails
 		: userData;
 
+	// Get user type from user data
+	const userType = useMemo(
+		() => getUserTypeFromData(onboardingUserDetails),
+		[onboardingUserDetails]
+	);
+
 	// React to userData changes after refresh to determine correct step
 	useEffect(() => {
 		// Get onboarding steps from user data
 		const onboardingSteps = getOnboardingStepsFromData(
-			onboardingUserDetails,
-			isAssistedOnboarding
+			onboardingUserDetails
 		);
 
-		const userType = getUserTypeFromData(
-			onboardingUserDetails,
-			isAssistedOnboarding
-		);
-
-		console.log("[OnboardingWidget] Step determination:", {
-			onboardingSteps,
-			onboardingUserDetails,
-			isAssistedOnboarding,
-			userType,
-		});
+		// console.log("[OnboardingWidget] Step determination:", {
+		// 	onboardingSteps,
+		// 	onboardingUserDetails,
+		// 	isAssistedOnboarding,
+		// 	userType,
+		// });
 
 		// Determine which step to show based on data
 		if (onboardingSteps?.length > 0) {
@@ -130,7 +134,8 @@ const OnboardingWidget = ({
 
 	if (
 		isAssistedOnboarding !== true &&
-		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING)
+		userType === -1 && // Role not selected
+		isSelfOnboardingDisabled
 	) {
 		// Self-onboarding is disabled for this app instance.
 		return (
@@ -163,6 +168,7 @@ const OnboardingWidget = ({
 						isAssistedOnboarding={isAssistedOnboarding}
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
+						agentMobile={agentMobile}
 						allowedMerchantTypes={allowedMerchantTypes}
 						refreshAgentProfile={refreshAgentProfile}
 					/>
@@ -171,9 +177,6 @@ const OnboardingWidget = ({
 				return (
 					<OnboardingSteps
 						isAssistedOnboarding={isAssistedOnboarding}
-						logo={logo}
-						appName={appName}
-						orgName={orgName}
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}

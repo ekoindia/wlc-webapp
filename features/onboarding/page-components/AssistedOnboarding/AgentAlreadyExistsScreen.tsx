@@ -1,25 +1,26 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
+import { useOnboardingContext } from "../../context";
 import { ASSISTED_ONBOARDING_STEPS } from "./AssistedOnboarding";
 
 export interface AgentAlreadyExistsScreenProps {
 	setStep: React.Dispatch<
 		React.SetStateAction<keyof typeof ASSISTED_ONBOARDING_STEPS>
 	>;
-	agentMobile: string;
 }
 
 /**
- * AgentAlreadyExistsScreen component to inform that the agent already exists
+ * AgentAlreadyExistsScreen component to inform that the agent already exists.
+ * Reads `mobile` from OnboardingContext instead of receiving it as a prop.
  * @param {AgentAlreadyExistsScreenProps} props - Component props
  * @param {React.Dispatch<React.SetStateAction<string>>} props.setStep - Function to set the current step
- * @param {string} props.agentMobile - The agent's mobile number
  * @returns {JSX.Element} The rendered AgentAlreadyExistsScreen component
  */
 const AgentAlreadyExistsScreen = ({
 	setStep,
-	agentMobile,
 }: AgentAlreadyExistsScreenProps): JSX.Element => {
+	const { mobile } = useOnboardingContext();
+
 	const buttonConfigList = [
 		{
 			type: "button" as const,
@@ -61,7 +62,7 @@ const AgentAlreadyExistsScreen = ({
 			<Text fontSize={{ base: "md", md: "lg" }} color="light" mb="8">
 				The agent with mobile number{" "}
 				<Text as="span" fontWeight="semibold" color="primary.DEFAULT">
-					{agentMobile}
+					{mobile}
 				</Text>{" "}
 				has already completed onboarding and exists in the system.
 			</Text>

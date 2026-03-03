@@ -70,7 +70,15 @@ export const getAvatar = (name = "", icon, hue) => {
 	);
 };
 
-export const getNameStyle = (name = "", icon, hue) => {
+/**
+ * Get styled name component with avatar and optional demo user badge
+ * @param {string} [name] - The name to display
+ * @param {string} [icon] - Optional icon name to display instead of avatar initials
+ * @param {number} [hue] - Optional hue value for avatar background color
+ * @param {number} [accountStatusId] - Account status ID to check if user is demo user (60 = active demo user)
+ * @returns {JSX.Element} Styled name component with avatar and optional DEMO badge
+ */
+export const getNameStyle = (name = "", icon, hue, accountStatusId) => {
 	const _name = numberRemover(name);
 
 	const needDefaultIcon = _name?.length < 1;
@@ -78,6 +86,8 @@ export const getNameStyle = (name = "", icon, hue) => {
 	if (needDefaultIcon) {
 		icon = "person";
 	}
+
+	const isDemoUser = +accountStatusId === 60;
 
 	return (
 		<Flex align="center" gap="0.625rem">
@@ -94,9 +104,26 @@ export const getNameStyle = (name = "", icon, hue) => {
 					},
 				}}
 			/>
-			<Box as="span" fontWeight="500">
-				{capitalize(needDefaultIcon ? null : _name)}
-			</Box>
+			<Flex align="center" gap="0.5rem">
+				<Box as="span" fontWeight="500">
+					{capitalize(needDefaultIcon ? null : _name)}
+				</Box>
+				{isDemoUser && (
+					<Box
+						as="span"
+						px="0.3rem"
+						py={{ base: "0.20rem", md: "0" }}
+						bg="purple.100"
+						color="purple.700"
+						borderRadius="4px"
+						fontSize={{ base: "10px", md: "8px" }}
+						fontWeight="700"
+						letterSpacing="0.5px"
+					>
+						DEMO
+					</Box>
+				)}
+			</Flex>
 		</Flex>
 	);
 };
@@ -303,7 +330,8 @@ export const getModalStyle = (
 	eko_code,
 	account_status_id,
 	agent_type,
-	onStatusUpdate
+	onStatusUpdate,
+	onDeleteDemoUser
 ) => {
 	return (
 		<NetworkMenuWrapper
@@ -313,6 +341,7 @@ export const getModalStyle = (
 				account_status_id,
 				agent_type,
 				onStatusUpdate,
+				onDeleteDemoUser,
 			}}
 		/>
 	);

@@ -1,20 +1,27 @@
 import { Flex } from "@chakra-ui/react";
 import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
-import { TransactionIds } from "constants/EpsTransactions";
 import { useNetworkUsers, useSession } from "contexts";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
 	AddAgentForm,
 	type AgentAlreadyExistsScreenProps,
-	type AgentOnboardingProps,
 	type OnboardingCompletedProps,
 	type OtpVerificationFormProps,
 } from ".";
+import { OnboardingProvider } from "../../context";
+import {
+	getAgreementIdFromData,
+	getOnboardingStepsFromData,
+	getRoleListFromData,
+	getUserNameFromData,
+	getUserTypeFromData,
+} from "../../utils";
 
 /**
  * Constants representing the different steps in the assisted onboarding flow
@@ -64,27 +71,29 @@ const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
 	ssr: false,
 }) as React.ComponentType<OtpVerificationFormProps>;
 
-const AgentOnboarding = dynamic(() => import("./AgentOnboarding"), {
-	ssr: false,
-}) as React.ComponentType<AgentOnboardingProps>;
+const OnboardingWidget = dynamic(
+	() => import("../../components/OnboardingWidget"),
+	{ ssr: false }
+);
 
 const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
 	ssr: false,
 }) as React.ComponentType<OnboardingCompletedProps>;
 
 /**
- * AssistedOnboarding component that manages the multi-step agent onboarding flow
+ * AssistedOnboarding component that manages the multi-step agent onboarding flow.
+ *
+ * This component wraps the entire assisted flow in an OnboardingProvider so that
+ * every step (pre-KYC and KYC) has access to shared data (mobile, userName, etc.)
+ * via useOnboardingContext().
  * @returns {JSX.Element} The rendered AssistedOnboarding component
- * @example
- * ```tsx
- * <AssistedOnboarding />
- * ```
  */
 const AssistedOnboarding = (): JSX.Element => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const { accessToken } = useSession();
 	const { refreshUserList } = useNetworkUsers();
+	const { orgDetail } = useOrgDetailContext();
 
 	const [step, setStep] = useState<keyof typeof ASSISTED_ONBOARDING_STEPS>(
 		ASSISTED_ONBOARDING_STEPS.ADD_AGENT
@@ -95,49 +104,58 @@ const AssistedOnboarding = (): JSX.Element => {
 	const isAdmin = userData?.userType === "Admin";
 
 	/**
-	 * Fetches agent details using interaction_type_id: 151
-	 * Centralized API call shared across multiple child components
+	 * Resets agent-specific state when starting a new onboarding flow.
+	 * Called when "Onboard Another Agent" is clicked to prevent stale data
+	 * from the previous agent leaking into the next onboarding.
+	 */
+	const resetAgentState = useCallback(() => {
+		setAgentDetails(null);
+		setAgentMobile("");
+	}, []);
+
+	/**
+	 * Fetches agent details using the refresh-profile endpoint.
+	 * Passes `csp_id` so the backend returns the agent's profile, not the admin's.
+	 * NOTE: We intentionally do NOT call `updateUserInfo` here — the result is
+	 * stored locally in `agentDetails` to avoid overwriting the admin's global state.
 	 * @param {string} mobile - The agent's mobile number to fetch details for
 	 * @returns {Promise<any>} The agent details response
 	 */
 	const fetchAgentDetails = async (mobile: string): Promise<any> => {
 		try {
 			const response = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.REFRESH_PROFILE,
 				{
-					method: "POST",
 					body: {
-						interaction_type_id: TransactionIds.GET_USER_PROFILE,
 						csp_id: mobile,
-						user_identity_type: "mobile_number",
-						user_identity: userData?.userId,
-						mobile: userData?.userId,
-						id_type: "Mobile",
 					},
 					token: accessToken,
 				}
 			);
 
-			if (response?.data) {
-				let agentData = response.data;
+			if (response?.details) {
+				let agentData = response;
 				console.log(
 					"[AssistedOnboarding] Agent details fetched:",
 					agentData
 				);
-				// check if agentData.user_details.onboarding = 0, then setStep to ONBOARDING_COMPLETED
-				if (agentData?.user_detail?.onboarding === 0) {
+
+				// If onboarding is complete, move to the completed step
+				if (agentData?.details?.onboarding === 0) {
 					refreshUserList(true);
 					setStep(ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED);
 					return;
 				}
 
-				// Transform agentData to match logged-in userData structure.
-				// This is to keep the onboarding logic consistent between assisted and self onboarding.
+				// Map `details` → `userDetails` to match the shape that SelfOnboarding
+				// produces via Redux. This allows data extractors to work without
+				// any isAssistedOnboarding branching.
 				agentData = {
 					...agentData,
-					userDetails: agentData.user_detail,
-					onboarding_steps: agentData.user_detail.onboarding_steps,
-					role_list: agentData.user_detail.role_list,
+					userDetails: agentData.details,
+					onboarding_steps: agentData.details.onboarding_steps,
+					role_list: agentData.details.role_list,
 				};
 
 				return agentData;
@@ -152,6 +170,38 @@ const AssistedOnboarding = (): JSX.Element => {
 		}
 	};
 
+	/**
+	 * Refresh agent profile by re-fetching agent details.
+	 * Used by OnboardingProvider and passed to child components.
+	 * Updates agentDetails state so the provider re-renders with fresh data.
+	 */
+	const refreshAgentProfile = useCallback(async () => {
+		if (agentMobile) {
+			try {
+				const details = await fetchAgentDetails(agentMobile);
+				if (details) {
+					setAgentDetails(details);
+				}
+			} catch (error) {
+				// Expected for new agents — profile doesn't exist until partial account is created
+				console.log(
+					"[AssistedOnboarding] Profile not found (expected for new agents)",
+					error
+				);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [agentMobile]);
+
+	// MARK: Compute provider props from agentDetails
+	// These will be empty/undefined until agentDetails is fetched, which is fine —
+	// the provider handles missing data gracefully (initializeSteps returns early).
+	const onboardingSteps = getOnboardingStepsFromData(agentDetails);
+	const roleList = getRoleListFromData(agentDetails);
+	const userType = getUserTypeFromData(agentDetails);
+	const userName = getUserNameFromData(agentDetails);
+	const agreementId = getAgreementIdFromData(agentDetails);
+
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {
 		switch (step) {
@@ -160,13 +210,13 @@ const AssistedOnboarding = (): JSX.Element => {
 					<AddAgentForm
 						setStep={setStep}
 						setAgentMobile={setAgentMobile}
+						setAgentDetails={setAgentDetails}
 					/>
 				);
 
 			case ASSISTED_ONBOARDING_STEPS.AGENT_STATUS_CHECK:
 				return (
 					<AgentStatusCheck
-						agentMobile={agentMobile}
 						setStep={setStep}
 						onAgentDetailsFetched={setAgentDetails}
 						fetchAgentDetails={fetchAgentDetails}
@@ -174,27 +224,20 @@ const AssistedOnboarding = (): JSX.Element => {
 				);
 
 			case ASSISTED_ONBOARDING_STEPS.AGENT_ALREADY_EXISTS:
-				return (
-					<AgentAlreadyExistsScreen
-						setStep={setStep}
-						agentMobile={agentMobile}
-					/>
-				);
+				return <AgentAlreadyExistsScreen setStep={setStep} />;
 
 			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
-				return (
-					<OtpVerificationForm
-						setStep={setStep}
-						agentMobile={agentMobile}
-					/>
-				);
+				return <OtpVerificationForm setStep={setStep} />;
 
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
 				return (
-					<AgentOnboarding
+					<OnboardingWidget
+						userData={userData}
+						updateUserInfo={() => {}}
+						isAssistedOnboarding={true}
+						assistedAgentDetails={agentDetails}
 						agentMobile={agentMobile}
-						agentDetails={agentDetails}
-						fetchAgentDetails={fetchAgentDetails}
+						refreshAgentProfile={refreshAgentProfile}
 					/>
 				);
 
@@ -202,7 +245,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				return (
 					<OnboardingCompleted
 						setStep={setStep}
-						agentMobile={agentMobile}
+						resetAgentState={resetAgentState}
 					/>
 				);
 
@@ -226,6 +269,7 @@ const AssistedOnboarding = (): JSX.Element => {
 
 			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
 				// From OTP, go back to add agent to re-enter mobile
+				resetAgentState();
 				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 				break;
 
@@ -233,11 +277,13 @@ const AssistedOnboarding = (): JSX.Element => {
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
 			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_COMPLETED:
 				// From any other step, go back to start (doesn't make sense to go to intermediate steps)
+				resetAgentState();
 				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 				break;
 
 			default:
 				// Fallback to ADD_AGENT
+				resetAgentState();
 				setStep(ASSISTED_ONBOARDING_STEPS.ADD_AGENT);
 		}
 	};
@@ -251,7 +297,22 @@ const AssistedOnboarding = (): JSX.Element => {
 				onBack={handleBackNavigation}
 			/>
 			<Flex direction="column" align="center" px={{ base: 4, md: 0 }}>
-				{renderCurrentStep()}
+				{/* OnboardingProvider wraps ALL assisted onboarding steps so
+				    every step can access shared data (mobile, userName, etc.)
+				    via useOnboardingContext(). */}
+				<OnboardingProvider
+					key={agentMobile || "no-agent"}
+					mobile={agentMobile}
+					userName={String(userName || "")}
+					agreementId={String(agreementId || "")}
+					onboardingSteps={onboardingSteps}
+					roleList={roleList}
+					userType={userType}
+					orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
+					refreshAgentProfile={refreshAgentProfile}
+				>
+					{renderCurrentStep()}
+				</OnboardingProvider>
 			</Flex>
 		</>
 	);

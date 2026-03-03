@@ -5,6 +5,7 @@ import {
 	Heading,
 	Spinner,
 	Text,
+	useToast,
 	VStack,
 } from "@chakra-ui/react";
 import { Button, Icon } from "components";
@@ -162,6 +163,7 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
  * @param {boolean} props.isAssistedOnboarding - Flag indicating if it's assisted onboarding
  * @param {Function} props.setSelectedRole - Function to set the selected role
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
+ * @param {string} [props.agentMobile] - Mobile number of the assisted agent
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
  * @param {Function} props.refreshAgentProfile - Function to refresh the agent profile data
  * @returns {JSX.Element} The rendered RoleSelection component
@@ -172,6 +174,7 @@ const RoleSelection = ({
 	isAssistedOnboarding,
 	setSelectedRole,
 	assistedAgentDetails,
+	agentMobile,
 	allowedMerchantTypes,
 	refreshAgentProfile,
 }) => {
@@ -179,8 +182,10 @@ const RoleSelection = ({
 		number | null
 	>(null);
 
+	const toast = useToast();
+
 	const mobile = isAssistedOnboarding
-		? assistedAgentDetails?.user_detail?.mobile
+		? agentMobile || assistedAgentDetails?.userDetails?.mobile
 		: userData?.userDetails?.signup_mobile;
 
 	const { state, actions } = useOnboardingState();
@@ -239,6 +244,22 @@ const RoleSelection = ({
 							"[RoleSelection] Pipeline error:",
 							result
 						);
+						// show toast here
+						const failedStep = result?.list?.find(
+							(r: any) => r.status === "failed"
+						);
+						const errorMessage =
+							failedStep?.response?.message ||
+							"Something went wrong. Please try again.";
+
+						toast({
+							title: "Account creation failed",
+							description: errorMessage,
+							status: "error",
+							duration: 4000,
+							isClosable: true,
+						});
+
 						actions.setApiInProgress(false);
 					},
 				});

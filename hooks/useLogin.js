@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useAppSource, useUser } from "contexts";
+import { useAppSource, useOrgDetailContext, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 import { parseEnvBoolean } from "utils/envUtils";
@@ -10,12 +10,23 @@ import { parseEnvBoolean } from "utils/envUtils";
  * @param {Function} login - The login function to call
  * @param {Function} setStep - Function to set the current step in the login process
  * @param {Function} setEmail - Function to set the email address for social login
+ * @param {Function} setCachedSocialResponse - Function to set the cached social login response (used for mobile verification in social login)
+ * @returns {[boolean, Function]} - Array containing busy state and submitLogin function
  */
-function useLogin(login, setStep, setEmail) {
+function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail || {};
+	const { disable_self_onboarding } = metadata || {};
+
+	const isSelfOnboardingDisabled =
+		disable_self_onboarding?.value ||
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
+		false;
 
 	/**
 	 * Login the user by fetching user profile & tokens.
@@ -126,6 +137,7 @@ function useLogin(login, setStep, setEmail) {
 					);
 					setStep("SOCIAL_VERIFY");
 					setEmail(responseData.details.email);
+					setCachedSocialResponse(responseData);
 					return;
 				}
 
@@ -133,9 +145,7 @@ function useLogin(login, setStep, setEmail) {
 				if (
 					responseData?.details?.onboarding == 1 &&
 					!responseData?.details?.code &&
-					parseEnvBoolean(
-						process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING
-					)
+					isSelfOnboardingDisabled
 				) {
 					console.log(
 						"[useLogin] Self-Onboarding Disabled → User Not Found → Back to Login"
@@ -153,6 +163,7 @@ function useLogin(login, setStep, setEmail) {
 				}
 
 				// Social Signup → Verify mobile number before starting signup process
+				// MARK: New Gmail
 				if (
 					responseData?.details?.user_type === -1 &&
 					data?.id_type === "Google" &&
@@ -163,10 +174,12 @@ function useLogin(login, setStep, setEmail) {
 					);
 					setStep("SOCIAL_VERIFY");
 					setEmail(responseData.details.email);
+					setCachedSocialResponse(responseData);
 					return;
 				}
 
 				// Login Success (or, signup of new user)
+				// MARK: Success
 				console.log(
 					"[useLogin] Login Successful → Processing Login Response (dispatch `LOGIN` to UserReducer)"
 				);

@@ -5,12 +5,13 @@
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
+import { UserType } from "constants/index";
+import { useSession } from "contexts";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { toKebabCase } from "utils";
 import {
 	BulkUploadButton,
-	BulkVerificationModal,
 	CategoryTabs,
 	MultiServiceToggle,
 	SelectedServicesPill,
@@ -37,10 +38,10 @@ export const KycVerificationPage = ({
 	basePath = "/products/kyc-verification",
 }: KycVerificationPageProps = {}): JSX.Element => {
 	const router = useRouter();
+	const { isAdmin, userType } = useSession();
 
 	// Services data and filtering
 	const {
-		services,
 		filteredServices,
 		categories,
 		selectedCategory,
@@ -51,9 +52,6 @@ export const KycVerificationPage = ({
 		error,
 		getServicesByCodes,
 	} = useKycServices();
-
-	// Bulk verification modal state
-	const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
 	// Add user modal state
 	// const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
@@ -156,34 +154,32 @@ export const KycVerificationPage = ({
 				toolComponent={
 					<Flex gap="2">
 						<BulkUploadButton
-							onClick={() => setIsBulkModalOpen(true)}
-						/>
-						{/* <AddUserButton
-							onClick={() => setIsAddUserModalOpen(true)}
-						/> */}
-						<Button
-							onClick={() => setIsManageMode(!isManageMode)}
-							size="sm"
-							icon="settings"
-							iconStyle={{ size: "xs" }}
-							variant={
-								isManageMode ? "primary" : "primary_outline"
+							onClick={() =>
+								isAdmin
+									? router.push(
+											"/admin/products/bulk-verification"
+										)
+									: router.push("/products/bulk-verification")
 							}
-						>
-							Manage
-						</Button>
+						/>
+
+						{(isAdmin || userType === UserType.DISTRIBUTOR) && (
+							<Button
+								onClick={() => setIsManageMode(!isManageMode)}
+								size="sm"
+								icon="settings"
+								iconStyle={{ size: "xs" }}
+								variant={
+									isManageMode ? "primary" : "primary_outline"
+								}
+							>
+								Manage
+							</Button>
+						)}
 					</Flex>
 				}
 			/>
-			<BulkVerificationModal
-				isOpen={isBulkModalOpen}
-				onClose={() => setIsBulkModalOpen(false)}
-				services={services}
-			/>
-			{/* <AddUserModal
-				isOpen={isAddUserModalOpen}
-				onClose={() => setIsAddUserModalOpen(false)}
-			/> */}
+
 			{/* Conditional content based on manage mode */}
 			{isManageMode ? (
 				<ManageAgentServicesPage />

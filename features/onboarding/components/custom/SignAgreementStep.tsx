@@ -16,6 +16,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Button, Icon } from "components";
+import { useAppSource } from "contexts/AppSourceContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingContext } from "../../context";
 import { useSignAgreement } from "../../hooks/useSignAgreement";
@@ -51,6 +52,7 @@ const SignAgreementStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
+	const { isAndroid } = useAppSource();
 	const {
 		userName,
 		agreementId,
@@ -89,7 +91,9 @@ const SignAgreementStep = ({
 	const isAgreementLoadingStatus = status === "loading";
 	// const isAgreementReadyToSign = status === "ready";
 	const isAgreementVerifyingStatus = status === "verifying";
-	const isSignAgreementSuccessfullySigned = status === "success";
+	const isAlreadySigned = status === "already_signed";
+	const isSignAgreementSuccessfullySigned =
+		status === "success" || isAlreadySigned;
 	const isAgreementError = status === "error";
 
 	// Combined states for logic
@@ -304,6 +308,8 @@ const SignAgreementStep = ({
 									"Preparing your document"
 								) : agreementLoadError ? (
 									"Failed to prepare document"
+								) : isAlreadySigned ? (
+									"Document is already signed"
 								) : (
 									<>
 										Document is generated for{" "}
@@ -389,26 +395,30 @@ const SignAgreementStep = ({
 				</VStack>
 
 				{/* Sign Agreement Button (HIDDEN ON ERROR) */}
-				{!isAgreementLoading && !agreementLoadError && (
-					<ChakraButton
-						w="full"
-						colorScheme="blue"
-						onClick={handleSignClick}
-						isDisabled={isSignDisabled}
-						leftIcon={<Icon name="mode-edit" size="sm" />}
-					>
-						{hasOpenedSigning
-							? "Agreement signing opened"
-							: stepConfig.primaryCTAText || "Sign Agreement"}
-					</ChakraButton>
-				)}
+				{!isAgreementLoading &&
+					!agreementLoadError &&
+					!isAlreadySigned && (
+						<ChakraButton
+							w="full"
+							colorScheme="blue"
+							onClick={handleSignClick}
+							isDisabled={isSignDisabled}
+							leftIcon={<Icon name="mode-edit" size="sm" />}
+						>
+							{hasOpenedSigning
+								? "Agreement signing opened"
+								: stepConfig.primaryCTAText || "Sign Agreement"}
+						</ChakraButton>
+					)}
 
 				{/* Success Banner */}
 				{isSignAgreementSuccessfullySigned && (
 					<Alert status="success" borderRadius="md">
 						<AlertIcon />
 						<AlertDescription>
-							Agreement signed successfully!
+							{isAlreadySigned
+								? "Agreement has been signed previously."
+								: "Agreement signed successfully!"}
 							{countdown !== null && countdown > 0 && (
 								<Text as="span" fontWeight="semibold">
 									{" "}
@@ -438,7 +448,7 @@ const SignAgreementStep = ({
 						</ListItem>
 						<ListItem>
 							Complete your e-signature in the new window using
-							Aadhaar or IRIS
+							Aadhaar {isAndroid ? "or IRIS" : null}
 						</ListItem>
 						<ListItem>
 							Return here and click &quot;Proceed&quot; once

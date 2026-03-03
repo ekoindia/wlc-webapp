@@ -7,7 +7,6 @@ const ORG_ID = {
 	EKOTESTS: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_EKOTESTS),
 	SBIKIOSK: Number(process.env.NEXT_PUBLIC_ORG_IDS_SBIKIOSK),
 	AI_TEST: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_AI_TEST),
-	DASHBOARD_V2: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_DASHBOARD_V2),
 };
 
 /**
@@ -28,22 +27,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩Dev Flags
 	// Put all in-development flags in this section.
 
-	// Show Admin Network pages to (Super)Distributors
-	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
-		enabled: true,
-		forUserType: [1, 4, 7], // 4 = (FOS), 7 = (SuperDistributor)
-		// forEnv: ["development", "staging"],
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					...ORG_ID.EKOTESTS,
-					...ORG_ID.DASHBOARD_V2,
-				],
-			},
-		},
-	},
-
 	// Assisted Full Onboarding
 	ASSISTED_FULL_ONBOARDING: {
 		enabled: true,
@@ -63,14 +46,47 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// KYC Verification
 	KYC_VERIFICATION: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		envConstraints: {
+			development: {
+				forOrgId: [26],
+			},
+			staging: {
+				forOrgId: [26],
+			},
+			production: {
+				forOrgId: [420],
+			},
+		},
+	},
+
+	//  Eko Shield
+	// TODO: Deprecate the usage of this flag across the project.
+	EKO_SHIELD: {
+		enabled: true,
+	},
+
+	// TODO: Update this feature flag on role basis instead of org-id basis after the role-based access control (RBAC) is implemented.
+	DEMO_ACCOUNT: {
+		enabled: true,
+		forUserType: [1],
+		envConstraints: {
+			development: {
+				forOrgId: [26],
+			},
+			staging: {
+				forOrgId: [26],
+			},
+			production: {
+				forOrgId: [420],
+			},
+		},
 	},
 
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
 		forUserType: [1], // 7 = SuperDistributor
-		forEnv: ["development", "staging"],
+		forEnv: ["development"],
 	},
 
 	// Custom theme support (paid tier)
@@ -95,22 +111,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
-
-	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
-	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
-	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
-		enabled: true,
-		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					...ORG_ID.EKOTESTS,
-					...ORG_ID.DASHBOARD_V2,
-				],
-			},
-		},
-	},
 
 	// Feature to Raise Generic Issues (from Top-Right  Menu)...
 	RAISE_ISSUE_GENERIC: {
@@ -182,10 +182,16 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
 
-	// New Dashboard Features (Graphs & updated UI)
-	// TODO: Remove this flag after the new dashboard is fully rolled out to all users.
-	DASHBOARD_V2: {
+	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
+	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
+		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+	},
+
+	// Show Admin Network pages to sub-network users
+	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1, 4, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
 	},
 
 	// Open ChatGPT Agent in new tab

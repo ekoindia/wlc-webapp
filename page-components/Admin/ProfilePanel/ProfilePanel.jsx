@@ -1,17 +1,60 @@
-import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Spinner, Text } from "@chakra-ui/react";
 import { Button, Icon, Menus, PageTitle } from "components";
-import { AGENT_VIEW_TABS, Endpoints } from "constants";
+import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import {
-	AddressPane,
-	CompanyPane,
-	ContactPane,
-	DocPane,
-	PersonalPane,
-} from ".";
+import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
+import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { lazy, Suspense, useEffect, useState } from "react";
+
+// Utility: Check if all values in an object are null/blank/empty
+const isAllFieldsEmpty = (obj, fields) => {
+	if (!obj) return true;
+	return fields.every((key) => {
+		const val = obj[key];
+		if (key === "ownership_type") {
+			return (
+				val === undefined ||
+				val === null ||
+				(typeof val === "string" &&
+					(val.trim() === "" || val.trim().toLowerCase() === "na"))
+			);
+		}
+		return (
+			val === undefined ||
+			val === null ||
+			(typeof val === "string" && val.trim() === "")
+		);
+	});
+};
+
+// Lazy load pane components for better initial bundle size
+const AddressPane = lazy(() =>
+	import(".").then((module) => ({ default: module.AddressPane }))
+);
+const CompanyPane = lazy(() =>
+	import(".").then((module) => ({ default: module.CompanyPane }))
+);
+const ContactPane = lazy(() =>
+	import(".").then((module) => ({ default: module.ContactPane }))
+);
+const DocPane = lazy(() =>
+	import(".").then((module) => ({ default: module.DocPane }))
+);
+const PersonalPane = lazy(() =>
+	import(".").then((module) => ({ default: module.PersonalPane }))
+);
+
+/**
+ * Loading fallback component for lazy-loaded panes
+ * @returns {JSX.Element} Loading spinner
+ */
+const PaneLoadingFallback = () => (
+	<Flex justify="center" align="center" p="8">
+		<Spinner size="sm" color="primary.DEFAULT" />
+	</Flex>
+);
 
 /**
  * Change Role Menu for Desktop View
@@ -93,42 +136,23 @@ const ChangeRoleMobile = ({ changeRoleMenuList }) => {
  * @returns {JSX.Element} - The ProfilePanel component
  */
 const ProfilePanel = () => {
+	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
 	const router = useRouter();
-	const [agentData, setAgentData] = useState({});
 	const [agentDocuments, setAgentDocuments] = useState({});
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
-	const [fetchingData, setFetchingData] = useState(false); // Busy fetching data from server
 
 	const { accessToken, isAdmin } = useSession();
 	const { mobile } = router.query;
 
-	// console.log("[ProfilePanel] agentData:", agentData);
+	// Use the agent details hook with session caching
+	const {
+		agent: agentData,
+		loading: fetchingData,
+		error: agentError,
+	} = useAgentDetails(mobile);
 
-	/**
-	 * Helper function to fetch agent details from server
-	 */
-	const fetchAgentDetails = () => {
-		setFetchingData(true);
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((data) => {
-				setAgentData(data?.data?.agent_details[0]);
-			})
-			.catch((error) => {
-				// Handle any errors that occurred during the fetch
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
-			})
-			.finally(() => {
-				setFetchingData(false);
-			});
-	};
+	// console.log("[ProfilePanel] agentData:", agentData);
 
 	/**
 	 * Helper function to fetch agent documents from server
@@ -173,93 +197,101 @@ const ProfilePanel = () => {
 			}
 		});
 		setChangeRoleMenuList(_changeRoleMenuList);
-	}, [agentData?.agent_type, mobile]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [agentData?.agent_type, agentData?.user_type_id, mobile]);
 
 	/**
-	 * Fetch agent details (agentData & agentDocuments) on component mount or when agent's mobile changes.
-	 * If the details are cached in localStorage, use them instead of fetching from server.
-	 * TODO: Instead of localStorage, use a Context to pass cached agent data from table to this page.
+	 * Fetch agent documents when mobile changes or when agentDocuments is empty
 	 * MARK: Fetch Data
 	 */
 	useEffect(() => {
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent")
-		);
-		if (storedData?.agent_mobile === mobile) {
-			setAgentData(storedData);
-		} else {
-			fetchAgentDetails();
-		}
-
-		if (agentDocuments && Object.keys(agentDocuments).length === 0) {
+		if (mobile && Object.keys(agentDocuments).length === 0) {
 			fetchAgentDocuments();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mobile]);
 
-	// MARK: Data Panes
-	const panes = [
-		{
-			id: 1,
-			comp: (
-				<CompanyPane
-					data={{
-						...agentData?.profile,
-						agent_name: agentData?.agent_name,
-						agent_type: agentData?.agent_type,
-						user_id: agentData?.user_id,
-						user_type_id: agentData?.user_type_id,
-						account_status: agentData?.account_status,
-						docs: agentDocuments,
-					}}
-				/>
-			),
-		},
-		{
-			id: 2,
-			comp: (
-				<AddressPane
-					data={{
-						...agentData?.address_details,
-						address: [
-							agentData?.line_1,
-							agentData?.line_2,
-							agentData?.location,
-							agentData?.status,
-							agentData?.zip,
-						]
-							.filter((value) => value)
-							.join(", "),
-					}}
-				/>
-			),
-		},
-		{
-			id: 3,
-			comp: <DocPane documentData={agentDocuments} />,
-		},
-		{
-			id: 4,
-			comp: (
-				<PersonalPane
-					data={{
-						...agentData?.profile,
-						...agentData?.personal_information,
-					}}
-				/>
-			),
-		},
-		{
-			id: 6,
-			comp: (
-				<ContactPane
-					data={{
-						...agentData?.contact_information,
-						agent_mobile: agentData?.agent_mobile,
-					}}
-				/>
-			),
-		},
+	// PersonalPane: fields to check
+	const personalFields = [
+		"date_of_birth",
+		"gender",
+		"marital_status",
+		"shop_name",
+		"shop_type",
 	];
+	// AddressPane: fields to check
+	const addressFields = [
+		"address",
+		"ownership_type",
+		"lattitude",
+		"longitude",
+	];
+
+	const personalData = {
+		...agentData?.profile,
+		...agentData?.personal_information,
+	};
+	const addressData = {
+		...agentData?.address_details,
+		address: [
+			agentData?.line_1,
+			agentData?.line_2,
+			agentData?.location,
+			agentData?.status,
+			agentData?.zip,
+		]
+			.filter((value) => value)
+			.join(", "),
+	};
+
+	const panes = [];
+	// CompanyPane always shown
+	panes.push({
+		id: 1,
+		comp: (
+			<CompanyPane
+				data={{
+					...agentData?.profile,
+					agent_name: agentData?.agent_name,
+					agent_type: agentData?.agent_type,
+					user_id: agentData?.user_id,
+					user_type_id: agentData?.user_type_id,
+					account_status: agentData?.account_status,
+					demo_account_expiry_date:
+						agentData?.demo_account_expiry_date,
+					docs: agentDocuments,
+				}}
+			/>
+		),
+	});
+	// AddressPane: only if any field present
+	if (!isAllFieldsEmpty(addressData, addressFields)) {
+		panes.push({
+			id: 2,
+			comp: <AddressPane data={addressData} />,
+		});
+	}
+	// DocPane
+	panes.push({ id: 3, comp: <DocPane documentData={agentDocuments} /> });
+	// PersonalPane: only if any field present
+	if (!isAllFieldsEmpty(personalData, personalFields)) {
+		panes.push({
+			id: 4,
+			comp: <PersonalPane data={personalData} />,
+		});
+	}
+	// ContactPane
+	panes.push({
+		id: 6,
+		comp: (
+			<ContactPane
+				data={{
+					...agentData?.contact_information,
+					agent_mobile: agentData?.agent_mobile,
+				}}
+			/>
+		),
+	});
 
 	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);
@@ -283,33 +315,65 @@ const ProfilePanel = () => {
 			/>
 
 			{fetchingData ? (
-				<Flex direction="column" align="center" gap="2" mt="10">
-					<Text color="light">Fetching Details...</Text>
-				</Flex>
-			) : null}
-
-			{isAdmin && isMenuVisible ? (
-				<ChangeRoleMobile changeRoleMenuList={changeRoleMenuList} />
-			) : (
-				<Grid
-					templateColumns={{
-						base: "repeat(auto-fit,minmax(300px,0.90fr))",
-						// sm: "repeat(auto-fit,minmax(380px,0.90fr))",
-						md: "repeat(auto-fit,minmax(360px,1fr))",
-						"2xl": "repeat(auto-fit,minmax(450px,1fr))",
-					}}
-					justifyContent="center"
-					py={{ base: "4", md: "0px" }}
-					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
+				<Flex
+					direction="column"
+					align="center"
+					justify="center"
+					gap="4"
+					mt="20"
+					minH="400px"
 				>
-					{agentData
-						? panes.map(({ id, comp }) => {
-								const GridComponent = () => comp;
-								return <GridComponent key={id} />;
-							})
-						: null}
-				</Grid>
-			)}
+					<Spinner
+						size="xl"
+						color="primary.DEFAULT"
+						thickness="4px"
+					/>
+					<Text color="light" fontSize="md">
+						Fetching Details...
+					</Text>
+				</Flex>
+			) : agentError ? (
+				<Flex
+					direction="column"
+					align="center"
+					justify="center"
+					gap="4"
+					mt="20"
+					minH="400px"
+				>
+					<Icon name="error" size="xl" color="light" />
+					<Text color="dark" fontSize="lg" fontWeight="semibold">
+						Agent Not Found
+					</Text>
+					<Text color="light" fontSize="sm">
+						The requested agent could not be found.
+					</Text>
+					<Button size="sm" onClick={() => router.back()}>
+						Go Back
+					</Button>
+				</Flex>
+			) : isAdmin && isMenuVisible ? (
+				<ChangeRoleMobile changeRoleMenuList={changeRoleMenuList} />
+			) : agentData ? (
+				<Suspense fallback={<PaneLoadingFallback />}>
+					<Grid
+						templateColumns={{
+							base: "repeat(auto-fit,minmax(300px,0.90fr))",
+							// sm: "repeat(auto-fit,minmax(380px,0.90fr))",
+							md: "repeat(auto-fit,minmax(360px,1fr))",
+							"2xl": "repeat(auto-fit,minmax(450px,1fr))",
+						}}
+						justifyContent="center"
+						py={{ base: "4", md: "0px" }}
+						gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
+					>
+						{panes.map(({ id, comp }) => {
+							const GridComponent = () => comp;
+							return <GridComponent key={id} />;
+						})}
+					</Grid>
+				</Suspense>
+			) : null}
 		</>
 	);
 };

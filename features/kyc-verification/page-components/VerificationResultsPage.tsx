@@ -2,6 +2,7 @@
  * VerificationResultsPage - Page component showing verification progress and results.
  * Loads data from sessionStorage and displays progressive results.
  * Includes conditional action buttons based on verification outcome.
+ * Supports retry via modal - preserving success results and merging retry results.
  */
 
 import {
@@ -11,6 +12,7 @@ import {
 	Flex,
 	Spinner,
 	Text,
+	useDisclosure,
 	useToast,
 	VStack,
 } from "@chakra-ui/react";
@@ -22,16 +24,15 @@ import { fetcher } from "helpers";
 import { formatDateTime } from "libs";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-	ANDROID_ACTION,
-	doAndroidAction,
-	saveDataToFile,
-	toKebabCase,
-} from "utils";
-import { VerificationResultList } from "../components";
+import { ANDROID_ACTION, doAndroidAction, saveDataToFile } from "utils";
+import { RetryFormModal, VerificationResultList } from "../components";
 import { KYC_REPORT_DOWNLOAD_INTERACTION_ID } from "../constants";
-import { useKycServices, useKycVerification } from "../hooks";
-import type { RetryData, VerificationService } from "../types";
+import {
+	mergeVerificationResults,
+	useKycServices,
+	useKycVerification,
+} from "../hooks";
+import type { VerificationResult, VerificationService } from "../types";
 
 interface StoredVerificationData {
 	formData: Record<string, unknown>;
@@ -48,6 +49,7 @@ interface VerificationResultsPageProps {
  * Verification results page component.
  * Loads verification data from sessionStorage and displays progressive results.
  * Includes conditional action buttons based on verification outcome.
+ * Supports retry via modal - preserving success results and merging retry results.
  * @param {VerificationResultsPageProps} [props] - Component props
  * @param {string} [props.basePath] - Base path for navigation (defaults to /products/kyc-verification)
  * @returns {JSX.Element} Rendered results page with progress and result cards
@@ -67,6 +69,28 @@ export const VerificationResultsPage = ({
 		undefined
 	);
 
+	// Retry modal state
+	const {
+		isOpen: isRetryModalOpen,
+		onOpen: openRetryModal,
+		onClose: closeRetryModal,
+	} = useDisclosure();
+
+	// Preserved success results for merging after retry
+	const [preservedSuccessResults, setPreservedSuccessResults] = useState<
+		VerificationResult[]
+	>([]);
+
+	// Merged results state - holds final combined results after retry
+	const [mergedResults, setMergedResults] = useState<VerificationResult[]>(
+		[]
+	);
+
+	// Track edited form data to preserve user changes across retry modal opens/closes
+	const [lastEditedFormData, setLastEditedFormData] = useState<
+		Record<string, unknown>
+	>({});
+
 	const { accessToken } = useSession();
 	const { isAndroid } = useAppSource();
 
@@ -76,8 +100,8 @@ export const VerificationResultsPage = ({
 		state,
 		startVerification,
 		progressText,
-		failedCount,
-		successCount,
+		failedCount: _failedCount,
+		successCount: _successCount,
 	} = useKycVerification();
 
 	// Load verification data from sessionStorage on mount
@@ -127,28 +151,64 @@ export const VerificationResultsPage = ({
 		}
 	}, [state.status, completedAt]);
 
-	/**
-	 * Get comma-separated tids from all verification results (success and failed).
-	 * The PDF report will contain information about all processed verifications.
-	 * @returns {string} Comma-separated transaction IDs
-	 */
-	const getAllTids = useCallback((): string => {
-		return state.results
-			.filter((r) => r.tid)
-			.map((r) => r.tid)
-			.join(",");
-	}, [state.results]);
+	// Computed display values - use merged results if available, otherwise use state results
+	const displayResults = useMemo(
+		() => (mergedResults.length > 0 ? mergedResults : state.results),
+		[mergedResults, state.results]
+	);
+
+	const displaySuccessCount = useMemo(
+		() => displayResults.filter((r) => r.status === "success").length,
+		[displayResults]
+	);
+
+	const displayFailedCount = useMemo(
+		() => displayResults.filter((r) => r.status === "failed").length,
+		[displayResults]
+	);
+
+	// Get failed services for retry modal
+	const failedServicesForRetry = useMemo(() => {
+		const currentResults =
+			mergedResults.length > 0 ? mergedResults : state.results;
+		const failedServiceCodes = currentResults
+			.filter((r) => r.status === "failed")
+			.map((r) => r.serviceCode);
+		return getServicesByCodes(failedServiceCodes);
+	}, [mergedResults, state.results, getServicesByCodes]);
+
+	// Get form data for retry - use last edited data if available, fallback to state.formData
+	const formDataForRetry = useMemo(() => {
+		if (Object.keys(lastEditedFormData).length > 0) {
+			return lastEditedFormData;
+		}
+		return state.formData ?? {};
+	}, [lastEditedFormData, state.formData]);
 
 	/**
-	 * Handle download PDF - calls API with tids to download verification report.
+	 * Get comma-separated client_ref_ids from all display results (success and failed).
+	 * client_ref_id is extracted from the result object itself (stored during API call).
+	 * Uses merged results if available for accurate report generation.
+	 * @returns {string} Comma-separated client reference IDs
+	 */
+	const getAllClientRefIds = useCallback((): string => {
+		return displayResults
+			.map((r) => r.clientRefId)
+			.filter(Boolean)
+			.join(",");
+	}, [displayResults]);
+
+	/**
+	 * Handle download PDF - calls API with client_ref_ids to download verification report.
 	 */
 	const handleDownloadPdf = useCallback(async (): Promise<void> => {
-		const tids = getAllTids();
+		const clientRefIds = getAllClientRefIds();
 
-		if (!tids) {
+		if (!clientRefIds) {
 			toast({
 				title: "No results to download",
-				description: "There are no verification results to download.",
+				description:
+					"There are no verification results with responses to download.",
 				status: "warning",
 				duration: 3000,
 				isClosable: true,
@@ -167,7 +227,7 @@ export const VerificationResultsPage = ({
 					},
 					body: {
 						interaction_type_id: KYC_REPORT_DOWNLOAD_INTERACTION_ID,
-						tids,
+						tids: clientRefIds,
 					},
 					token: accessToken,
 				}
@@ -212,7 +272,7 @@ export const VerificationResultsPage = ({
 		} finally {
 			setIsDownloading(false);
 		}
-	}, [getAllTids, accessToken, isAndroid, toast]);
+	}, [getAllClientRefIds, accessToken, isAndroid, toast]);
 
 	// Handle "Back to Services" button
 	const handleBackToServices = useCallback(() => {
@@ -224,58 +284,104 @@ export const VerificationResultsPage = ({
 		router.push("/");
 	}, [router]);
 
-	// Handle "Retry Failed Services" button - navigate to form with failed services
+	/**
+	 * Handle "Retry Failed Services" button - opens modal instead of navigating.
+	 * Preserves successful results (response_status_id === 0) for merging after retry.
+	 */
 	const handleRetryFailed = useCallback(() => {
-		// Get failed services and their form data
-		const failedServiceCodes =
-			state.results
-				?.filter((r) => r.status === "failed")
-				.map((r) => r.serviceCode) || [];
+		// Get current display results (either merged or state results)
+		const currentResults =
+			mergedResults.length > 0 ? mergedResults : state.results;
 
-		if (failedServiceCodes.length === 0 || !state.formData) return;
+		// Preserve successful results (those with status === "success")
+		// Success is determined by response_status_id === 0 in API response
+		const successResults = currentResults.filter(
+			(r) => r.status === "success"
+		);
+		setPreservedSuccessResults(successResults);
 
-		// Store retry data in sessionStorage for form page to pick up
-		const retryData: RetryData = {
-			formData: state.formData,
-			failedServiceCodes,
-			isRetryMode: true,
-			timestamp: Date.now(),
-		};
-		sessionStorage.setItem("kyc_retry_data", JSON.stringify(retryData));
+		// Open the retry modal
+		openRetryModal();
+	}, [state.results, mergedResults, openRetryModal]);
 
-		// Get service objects to convert codes to slugs for SEO-friendly URLs
-		const failedServices = getServicesByCodes(failedServiceCodes);
-		const failedSlugs = failedServices.map((s) => toKebabCase(s.name));
+	/**
+	 * Handle retry completion from modal.
+	 * Merges new retry results with preserved success results.
+	 * @param {VerificationResult[]} retryResults - Results from retry verification
+	 */
+	const handleRetryComplete = useCallback(
+		(retryResults: VerificationResult[]) => {
+			// Merge preserved success results with new retry results
+			const merged = mergeVerificationResults(
+				preservedSuccessResults,
+				retryResults
+			);
+			setMergedResults(merged);
 
-		// Navigate to form page with slugified service names
-		const path =
-			failedSlugs.length === 1
-				? `${basePath}/${failedSlugs[0]}`
-				: `${basePath}/${failedSlugs.join("/")}`;
-		router.push(path);
-	}, [state.results, state.formData, basePath, router, getServicesByCodes]);
+			// Update completion timestamp
+			setCompletedAt(formatDateTime(new Date().toISOString()));
 
-	// Determine button text for retry
+			// Close the modal
+			closeRetryModal();
+
+			// Show success toast
+			const newSuccessCount = retryResults.filter(
+				(r) => r.status === "success"
+			).length;
+			const newFailedCount = retryResults.filter(
+				(r) => r.status === "failed"
+			).length;
+
+			if (newFailedCount === 0) {
+				toast({
+					title: "Retry successful",
+					description: `All ${newSuccessCount} service(s) verified successfully.`,
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+			} else {
+				toast({
+					title: "Retry completed",
+					description: `${newSuccessCount} succeeded, ${newFailedCount} still failed.`,
+					status: newSuccessCount > 0 ? "warning" : "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
+		},
+		[preservedSuccessResults, closeRetryModal, toast]
+	);
+
+	// Determine button text for retry - use display counts for accurate label
 	const retryButtonText = useMemo(() => {
-		if (failedCount === 1) {
+		if (displayFailedCount === 1) {
 			return "Retry Failed Service";
 		}
-		return `Retry Failed Services (${failedCount})`;
-	}, [failedCount]);
+		return `Retry Failed Services (${displayFailedCount})`;
+	}, [displayFailedCount]);
 
-	// Check if all verifications were successful
+	// Check if all verifications were successful (use display counts after retry)
 	const allSuccessful = useMemo(() => {
+		// After retry, check merged results; otherwise check state
+		const isComplete =
+			mergedResults.length > 0 || state.status === "completed";
 		return (
-			state.status === "completed" &&
-			failedCount === 0 &&
-			successCount > 0
+			isComplete && displayFailedCount === 0 && displaySuccessCount > 0
 		);
-	}, [state.status, failedCount, successCount]);
+	}, [
+		state.status,
+		mergedResults.length,
+		displayFailedCount,
+		displaySuccessCount,
+	]);
 
-	// Check if there are any failures
+	// Check if there are any failures (use display counts after retry)
 	const hasFailures = useMemo(() => {
-		return state.status === "completed" && failedCount > 0;
-	}, [state.status, failedCount]);
+		const isComplete =
+			mergedResults.length > 0 || state.status === "completed";
+		return isComplete && displayFailedCount > 0;
+	}, [state.status, mergedResults.length, displayFailedCount]);
 
 	// Loading state
 	if (isLoading) {
@@ -320,9 +426,13 @@ export const VerificationResultsPage = ({
 	const isVerifying = state.status === "in_progress";
 	const pageTitle = isVerifying
 		? `Verifying ${progressText}`
-		: state.status === "completed"
+		: state.status === "completed" || mergedResults.length > 0
 			? "Verification Complete"
 			: "Verification Results";
+
+	// Determine if we should show completed state (either from state or after retry merge)
+	const isCompleted =
+		state.status === "completed" || mergedResults.length > 0;
 
 	return (
 		<>
@@ -335,15 +445,19 @@ export const VerificationResultsPage = ({
 					maxW="900px"
 					w="100%"
 				>
-					{/* Results List */}
-					{state.results.length > 0 ? (
+					{/* Results List - use displayResults for merged view after retry */}
+					{displayResults.length > 0 ? (
 						<VerificationResultList
-							results={state.results}
-							currentIndex={state.currentIndex}
-							totalCount={state.totalCount}
-							isComplete={state.status === "completed"}
-							successCount={successCount}
-							failedCount={failedCount}
+							results={displayResults}
+							currentIndex={
+								mergedResults.length > 0
+									? displayResults.length
+									: state.currentIndex
+							}
+							totalCount={displayResults.length}
+							isComplete={isCompleted}
+							successCount={displaySuccessCount}
+							failedCount={displayFailedCount}
 							completedAt={completedAt}
 							retryingIndices={state.retryingIndices}
 							onDownloadPdf={handleDownloadPdf}
@@ -364,7 +478,7 @@ export const VerificationResultsPage = ({
 					)}
 
 					{/* Action Buttons */}
-					{state.status === "completed" && (
+					{isCompleted && (
 						<>
 							{/* Download warning for retry */}
 							{hasFailures && (
@@ -451,7 +565,12 @@ export const VerificationResultsPage = ({
 														label: "Back to Services",
 														onClick:
 															handleBackToServices,
+
 														styles: {
+															bg: {
+																base: "white",
+																md: "primary.DEFAULT",
+															},
 															w: {
 																base: "100%",
 																md: "200px",
@@ -466,6 +585,17 @@ export const VerificationResultsPage = ({
 					)}
 				</VStack>
 			</Flex>
+
+			{/* Retry Form Modal */}
+			<RetryFormModal
+				isOpen={isRetryModalOpen}
+				onClose={closeRetryModal}
+				failedServices={failedServicesForRetry}
+				formData={formDataForRetry}
+				onRetryComplete={handleRetryComplete}
+				onFormDataChange={setLastEditedFormData}
+				basePath={basePath}
+			/>
 		</>
 	);
 };

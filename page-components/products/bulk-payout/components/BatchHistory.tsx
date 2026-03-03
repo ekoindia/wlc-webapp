@@ -56,6 +56,7 @@ export interface ApiBatch {
 	failureCount: number;
 	pendingCount: number;
 	totalRecordsApproved: number;
+	serviceName?: string; // Only for verification
 }
 
 export type BatchStatus = "PROCESSING" | "PROCESSED";
@@ -106,7 +107,18 @@ const getStatusBadgeProps = (
  * Shows real data fetched from API with upload date and download functionality
  * @returns {JSX.Element} Batch history table
  */
-const BatchHistory: React.FC = (): JSX.Element => {
+
+interface BatchHistoryProps {
+	isVerification?: boolean;
+	setBatchCount?: (_count: number) => void;
+	activeTab?: string;
+}
+
+const BatchHistory: React.FC<BatchHistoryProps> = ({
+	isVerification = false,
+	setBatchCount,
+	activeTab: externalActiveTab,
+}): JSX.Element => {
 	const pageSize = 8;
 	const [batches, setBatches] = useState<ApiBatch[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -115,13 +127,26 @@ const BatchHistory: React.FC = (): JSX.Element => {
 		new Set()
 	);
 	const { accessToken } = useSession();
-	const {
-		state: { activeTab },
-	} = useBulkPayoutContext();
+	const { state: contextState } = useBulkPayoutContext();
+	const { setProcessingBatchCount } = useBulkPayout();
+
+	// 2. Adaptive setter for counts
+	const updateCounts = useCallback(
+		(_count: number) => {
+			if (isVerification) {
+				setBatchCount?.(_count);
+			} else {
+				setProcessingBatchCount(_count);
+			}
+		},
+		[isVerification, setBatchCount, setProcessingBatchCount]
+	);
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
-	const { setProcessingBatchCount } = useBulkPayout();
+	const effectiveActiveTab = isVerification
+		? externalActiveTab
+		: contextState.activeTab;
 
 	/**
 	 * Sort batches: Processing first, then by upload date (newest first)
@@ -193,19 +218,15 @@ const BatchHistory: React.FC = (): JSX.Element => {
 				const processingCount = sortedList.filter(
 					(batch) => deriveBatchStatus(batch) === "PROCESSING"
 				).length;
-				setProcessingBatchCount(processingCount);
-
+				updateCounts(processingCount);
 				return sortedList;
 			});
 		},
-		[setProcessingBatchCount]
+		[updateCounts]
 	);
 
 	// fetch batches from API
 	const fetchBatches = useCallback(async () => {
-		// const userCode = userData.userDetails.code;
-		// const orgId = userData.userDetails.org_id;
-
 		setIsLoading(true);
 
 		try {
@@ -216,7 +237,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 			const response = await fetcher(url, {
 				headers: {
 					"tf-req-uri-root-path": TF_ROOT_PATH,
-					"tf-req-uri": `${BULK_PAYOUT_TF_URIS.BATCH_LIST}?service_code=45`,
+					"tf-req-uri": `${BULK_PAYOUT_TF_URIS.BATCH_LIST}?service_code=${!isVerification ? "45" : ""}`,
 					"tf-req-method": "GET",
 				},
 				body: {},
@@ -244,41 +265,42 @@ const BatchHistory: React.FC = (): JSX.Element => {
 				setPollingBatchNumbers(processingBatchNumbers);
 
 				// Update context with processing batch count
-				setProcessingBatchCount(processingBatches.length);
+				updateCounts(processingBatches.length);
 			} else {
 				console.warn(
 					" Unexpected response format (no batchList or status != 1)",
 					response
 				);
 				setBatches([]);
-				setProcessingBatchCount(0);
+				updateCounts(0);
 			}
 		} catch (error) {
 			console.error("Fetch failed:", error);
 		} finally {
 			setIsLoading(false);
 		}
-	}, [accessToken]);
+	}, [accessToken, updateCounts, isVerification]);
 
 	/**
 	 * Initial data fetcher for the Batch History.
 	 * Triggered specifically when the user navigates to the 'history' tab.
 	 */
 	useEffect(() => {
-		if (activeTab === "history") {
+		if (effectiveActiveTab === "history") {
 			fetchBatches();
 		}
-	}, [fetchBatches, activeTab]);
+	}, [fetchBatches, effectiveActiveTab]);
 
 	/**
 	 * Polling effect to monitor batches currently in 'PROCESSING' status.
 	 * Runs every 5 seconds for each batch in the polling set.
-	 * @listens activeTab - Only executes when on the "history" tab.
+	 * @listens effectiveActiveTab - Only executes when on the "history" tab.
 	 * @listens pollingBatchNumbers - Manages individual intervals for each batch ID.
 	 */
 	useEffect(() => {
 		// Only poll if on history tab and have batches to poll
-		if (activeTab !== "history" || pollingBatchNumbers.size === 0) return;
+		if (effectiveActiveTab !== "history" || pollingBatchNumbers.size === 0)
+			return;
 
 		const intervals: Record<string, NodeJS.Timeout> = {};
 
@@ -309,7 +331,12 @@ const BatchHistory: React.FC = (): JSX.Element => {
 				clearInterval(interval)
 			);
 		};
-	}, [activeTab, pollingBatchNumbers, fetchSingleBatch, updateBatchInList]);
+	}, [
+		effectiveActiveTab,
+		pollingBatchNumbers,
+		fetchSingleBatch,
+		updateBatchInList,
+	]);
 
 	/**
 	 * Resets the pagination to the first page and re-fetches the batch data.
@@ -329,7 +356,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 					{
 						headers: {
 							"tf-req-uri-root-path": TF_ROOT_PATH,
-							"tf-req-uri": `${BULK_PAYOUT_TF_URIS.DOWNLOAD_REPORT}?batchNumber=${batchNumber}`,
+							"tf-req-uri": `${BULK_PAYOUT_TF_URIS.DOWNLOAD_REPORT}?batchNumber=${batchNumber}${isVerification ? "&reporttype=pdf" : ""}`,
 							"tf-req-method": "GET",
 						},
 						body: {},
@@ -385,7 +412,14 @@ const BatchHistory: React.FC = (): JSX.Element => {
 
 	return (
 		<Flex direction="column">
-			<PageTitle title="Bulk Payment History" hideBackIcon />
+			<PageTitle
+				title={
+					isVerification
+						? "Verification History"
+						: "Bulk Payment History"
+				}
+				hideBackIcon
+			/>
 
 			<Box>
 				{isLoading ? (
@@ -412,6 +446,7 @@ const BatchHistory: React.FC = (): JSX.Element => {
 
 							return (
 								<HistoryCard
+									isVerification={isVerification}
 									key={batch.batchNumber}
 									batch={batch}
 									statusProps={statusProps}
@@ -431,7 +466,14 @@ const BatchHistory: React.FC = (): JSX.Element => {
 								<Thead bg="shade">
 									<Tr>
 										<Th textAlign="center">Upload Date</Th>
-										<Th textAlign="center">Vendor</Th>
+										{isVerification ? (
+											<Th textAlign="center">
+												Service Name
+											</Th>
+										) : null}
+										{!isVerification ? (
+											<Th textAlign="center">Vendor</Th>
+										) : null}
 										<Th textAlign="center" isNumeric>
 											Records
 										</Th>
@@ -485,26 +527,43 @@ const BatchHistory: React.FC = (): JSX.Element => {
 														)}
 													</Text>
 												</Td>
-												<Td>
-													<HStack gap="3" spacing={0}>
-														<Avatar
-															name={
-																batch.customerName
-															}
-															size="sm"
-															bg="primary.light"
-															color="white"
-															fontSize="xs"
-														/>
+												{isVerification ? (
+													<Td>
 														<Text
+															textAlign="center"
 															fontSize="sm"
-															fontWeight="medium"
-															color="dark"
 														>
-															{batch.customerName}
+															{batch.serviceName}
 														</Text>
-													</HStack>
-												</Td>
+													</Td>
+												) : null}
+												{!isVerification ? (
+													<Td>
+														<HStack
+															gap="3"
+															spacing={0}
+														>
+															<Avatar
+																name={
+																	batch.customerName
+																}
+																size="sm"
+																bg="primary.light"
+																color="white"
+																fontSize="xs"
+															/>
+															<Text
+																fontSize="sm"
+																fontWeight="medium"
+																color="dark"
+															>
+																{
+																	batch.customerName
+																}
+															</Text>
+														</HStack>
+													</Td>
+												) : null}
 												<Td isNumeric>
 													<Text fontSize="sm">
 														{batch.totalRecords}

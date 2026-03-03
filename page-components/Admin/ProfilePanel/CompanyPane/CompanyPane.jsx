@@ -22,6 +22,7 @@ import {
 	useUser,
 } from "contexts";
 import { useUserTypes } from "hooks";
+import useFileView from "hooks/useFileView";
 import { useRouter } from "next/router";
 import { blobToImageSrc } from "utils/fileUtils";
 import { capitalize } from "utils/textFormat";
@@ -259,6 +260,7 @@ const CompanyPane = ({ data }) => {
 		plan_name,
 		wallet_balance,
 		account_status,
+		demo_account_expiry_date,
 		docs,
 	} = data ?? {};
 
@@ -275,6 +277,7 @@ const CompanyPane = ({ data }) => {
 
 	const { getUserCodeLabel, getUserTypeLabel } = useUserTypes();
 	const { getParents } = useNetworkUsers();
+	const { showImage } = useFileView();
 	const { userData } = useUser();
 	const loggedInUserCode = userData?.userDetails?.code;
 
@@ -306,6 +309,11 @@ const CompanyPane = ({ data }) => {
 		{ id: 1, label: "Account Status", value: account_status },
 		{ id: 2, label: "Type", value: userTypeLabel },
 		{ id: 3, label: "Plan", value: plan_name },
+		{
+			id: 4,
+			label: "Valid Till",
+			value: demo_account_expiry_date,
+		},
 	];
 
 	if (isMobileMappedUserId) {
@@ -327,6 +335,12 @@ const CompanyPane = ({ data }) => {
 						icon={avatarSrc ? undefined : <Icon name="person" />}
 						showBorder={true}
 						borderColor="divider"
+						onClick={
+							avatarSrc
+								? () => showImage(avatarSrc, "Profile Photo")
+								: undefined
+						}
+						cursor={avatarSrc ? "pointer" : "default"}
 					/>
 					<div>
 						<Text as="b" fontSize="xl">

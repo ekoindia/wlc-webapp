@@ -62,6 +62,7 @@ export interface RequestParam {
  * @property {string} [category] - Category for filtering (e.g., "Identity", "Financial")
  * @property {string} [description] - Short description of the service
  * @property {string} [icon] - Icon name from the icon library
+ * @property {string} [categoryIcon] - Icon name for the category (used in category tabs)
  * @property {string} endpointPath - API endpoint path for verification
  * @property {RequestParam[]} requestParams - List of request parameters for the form
  * @property {boolean} [supports_bulk_verification] - Whether this service supports bulk file uploads
@@ -79,6 +80,8 @@ export interface VerificationService {
 	description?: string;
 	/** Icon name from the icon library */
 	icon?: string;
+	/** Icon name for the category (used in category tabs) */
+	categoryIcon?: string;
 	/** API endpoint path for verification (e.g., "/tools/kyc/pan-lite") */
 	endpointPath: string;
 	/** List of request parameters for the form */
@@ -201,6 +204,7 @@ export interface FormField {
  * @property {string} value - Category ID/value used for filtering
  * @property {string} label - Display label shown in the tab
  * @property {number} [count] - Number of services in this category
+ * @property {string} [icon] - Icon name for the category (for use in tabs)
  */
 export interface CategoryOption {
 	/** Category ID/value */
@@ -209,6 +213,8 @@ export interface CategoryOption {
 	label: string;
 	/** Number of services in this category */
 	count?: number;
+	/** Icon name for the category (for use in tabs) */
+	icon?: string;
 }
 
 // ============================================
@@ -262,6 +268,8 @@ export interface VerificationResult {
 	timestamp?: string;
 	/** Transaction ID from API response (used for downloading reports) */
 	tid?: string;
+	/** Client reference ID from API response (used for downloading reports) */
+	clientRefId?: string;
 }
 
 /**

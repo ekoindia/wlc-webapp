@@ -6,9 +6,10 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Select } from "components";
 import { Endpoints } from "constants";
-import { UserType, UserTypeLabel } from "constants/UserTypes";
+import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useUserTypes } from "hooks/useUserTypes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import MoveAgents from "./MoveAgents";
@@ -16,17 +17,6 @@ import MoveAgents from "./MoveAgents";
 const renderer = {
 	label: "name",
 	value: "user_code",
-};
-
-const independent_retailer_select_option = {
-	user_code: "3",
-	name: `No ${UserTypeLabel[UserType.DISTRIBUTOR]} – Transfer ${
-		UserTypeLabel[UserType.I_MERCHANT]
-	}s (${UserTypeLabel[UserType.MERCHANT]}s not mapped to any ${
-		UserTypeLabel[UserType.DISTRIBUTOR]
-	})`,
-	mobile: "",
-	customer_id: "",
 };
 
 /**
@@ -42,6 +32,7 @@ const TransferSeller = ({
 	showOrgChangeRoleView,
 	targetUserType = 2, // Default to Merchant
 }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
 	const [transferAgentsTo, setTransferAgentsTo] = useState(null);
@@ -62,6 +53,19 @@ const TransferSeller = ({
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 	const default_agent_code = agentData?.eko_code;
 	const default_agent_type = agentData?.agent_type;
+
+	const independent_retailer_select_option = {
+		user_code: "3",
+		name: `No ${getUserTypeLabel(
+			UserType.DISTRIBUTOR
+		)} – Transfer ${getUserTypeLabel(
+			UserType.I_MERCHANT
+		)}s (${getUserTypeLabel(
+			UserType.MERCHANT
+		)}s not mapped to any ${getUserTypeLabel(UserType.DISTRIBUTOR)})`,
+		mobile: "",
+		customer_id: "",
+	};
 
 	const handleSelectedAgents = (_agents) => {
 		setSelectedAgentsToTransfer(_agents);
@@ -257,9 +261,11 @@ const TransferSeller = ({
 					<FormControl w={{ base: "100%", md: "500px" }}>
 						<Select
 							id="from-select"
-							label={`Select ${
-								UserTypeLabel[UserType.DISTRIBUTOR]
-							} to transfer ${UserTypeLabel[targetUserType]}s from`}
+							label={`Select ${getUserTypeLabel(
+								UserType.DISTRIBUTOR
+							)} to transfer ${getUserTypeLabel(
+								targetUserType
+							)}s from`}
 							required={true}
 							value={transferAgentsFrom}
 							onChange={(value) =>
@@ -289,18 +295,18 @@ const TransferSeller = ({
 						label={
 							!showOrgChangeRoleView && default_agent_code
 								? default_agent_type ==
-									UserTypeLabel[UserType.MERCHANT] // check if we can avoid this hardcode value
-									? `Select New ${
-											UserTypeLabel[UserType.DISTRIBUTOR]
-										}`
-									: `Select ${
-											UserTypeLabel[UserType.DISTRIBUTOR]
-										}`
-								: `Select ${
-										UserTypeLabel[UserType.DISTRIBUTOR]
-									} to transfer ${
-										UserTypeLabel[targetUserType]
-									}s to`
+									getUserTypeLabel(UserType.MERCHANT)
+									? `Select New ${getUserTypeLabel(
+											UserType.DISTRIBUTOR
+										)}`
+									: `Select ${getUserTypeLabel(
+											UserType.DISTRIBUTOR
+										)}`
+								: `Select ${getUserTypeLabel(
+										UserType.DISTRIBUTOR
+									)} to transfer ${getUserTypeLabel(
+										targetUserType
+									)}s to`
 						}
 						required={true}
 						value={transferAgentsTo}

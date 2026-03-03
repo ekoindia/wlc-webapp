@@ -14,12 +14,14 @@ import { useRef, useState } from "react";
  * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
  * @param {Function} prop.setNumber - Function to set the number
  * @param {Function} prop.setStep - Function to set the step
+ * @param {Function} prop.setLoginType - Function to set the login type (Google, Mobile, etc)
  */
 const SocialVerify = ({
 	/* email, */ number,
 	previewMode,
 	setNumber,
 	setStep,
+	setLoginType,
 }) => {
 	const EnterRef = useRef();
 	const toast = useToast();

@@ -5,7 +5,8 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useCountryStates } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -34,8 +35,6 @@ const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
  * @example	`<UpdateSellerAddress></UpdateSellerAddress>`
  */
 const UpdateSellerAddress = () => {
-	const [agentData, setAgentData] = useState();
-	// const [isPermanentAddress, setIsPermanentAddress] = useState(true);
 	const { accessToken } = useSession();
 	const toast = useToast();
 	const { states: statesList } = useCountryStates();
@@ -50,34 +49,10 @@ const UpdateSellerAddress = () => {
 	const watcher = useWatch({ control });
 
 	const router = useRouter();
+	const { mobile } = router.query;
 
-	const fetchAgentDataViaCellNumber = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				setAgentData(res?.data?.agent_details[0]);
-			})
-			.catch((error) => {
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
-			});
-	};
-
-	useEffect(() => {
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent")
-		);
-		if (storedData !== undefined) {
-			setAgentData(storedData);
-		} else {
-			fetchAgentDataViaCellNumber();
-		}
-	}, []);
+	// Use the agent details hook with session caching
+	const { agent: agentData } = useAgentDetails(mobile);
 
 	useEffect(() => {
 		let defaultValues = {};
@@ -132,7 +107,12 @@ const UpdateSellerAddress = () => {
 					"tf-req-uri": "/network/agents/profile/address/update",
 					"tf-req-method": "POST",
 				},
-				body: { ...finalData, merchant_code: agentData?.eko_code },
+				body: {
+					...finalData,
+					merchant_code: agentData?.eko_code,
+					intent_id: 17,
+					address_type_id: 3,
+				},
 				token: accessToken,
 			}
 		)

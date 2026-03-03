@@ -27,6 +27,7 @@ const DynamicGoogleButton = dynamic(
  * @param {boolean} props.previewMode - Flag to check if the component is in preview mode
  * @param {Function} props.setEmail - Function to set the users email
  * @param {Function} props.setLoginType - Function to set the login type
+ * @param {Function} props.setCachedSocialResponse - Function to set the cached social login response (used for mobile verification in social login)
  */
 const Login = ({
 	hideLogo = false,
@@ -38,6 +39,7 @@ const Login = ({
 	previewMode,
 	setEmail,
 	setLoginType,
+	setCachedSocialResponse,
 }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
@@ -291,6 +293,7 @@ const Login = ({
 							setLoginType={setLoginType}
 							setNumber={setNumber}
 							setEmail={setEmail}
+							setCachedSocialResponse={setCachedSocialResponse}
 							transform="scale(120%)"
 						/>
 					</Flex>

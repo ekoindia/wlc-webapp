@@ -106,11 +106,23 @@ const UserProvider = ({ userMockData, children }) => {
 	/**
 	 * Mark the user as logged in in the userState.
 	 * @param {object} sessionData - User data to be updated.
+	 * @param {string} signup_mobile - Override `signup_mobile` number in the user profile, for social onboarding case (when sessionData.details.mobile is "1")
 	 */
-	const login = (sessionData) => {
+	const login = (sessionData, signup_mobile) => {
+		let updatedSessionData = { ...sessionData };
+		if (
+			signup_mobile &&
+			sessionData?.details?.onboarding === 1 &&
+			sessionData?.details?.mobile === "1"
+		) {
+			updatedSessionData.details.signup_mobile = signup_mobile;
+		}
+
+		console.log("DISPATCHING LOGIN: ", updatedSessionData);
+
 		dispatch({
 			type: "LOGIN",
-			payload: { ...sessionData },
+			payload: { ...updatedSessionData },
 			meta: { isAndroid: isAndroid },
 		});
 	};

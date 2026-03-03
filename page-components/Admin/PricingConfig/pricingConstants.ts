@@ -1,3 +1,5 @@
+import { UserType } from "constants/UserTypes";
+
 /**
  * Agent types used in the pricing configuration.
  * @constant
@@ -67,3 +69,61 @@ export const OPERATION = {
 	SUBMIT: 1,
 	FETCH: 0,
 } as const;
+
+/**
+ * Filters and transforms operation type options based on org metadata.
+ * - If user type 2 or 3 has disable_partial_account_creation=true, removes "Individual Distributor/Retailer" option
+ * - If user type 1 has disable_partial_account_creation=true, removes "Distributor's Network" option
+ * - Replaces "Distributor's Network" label with "{UserType1Label} Network"
+ * @param {object} [userTypeMetadata] - User type metadata from org context, keyed by user type ID
+ * @param {object} [userTypeLabels] - User type labels from org context, keyed by user type ID
+ * @returns {Array<{value: string, label: string}>} - Filtered operation type options
+ *
+ 
+ * const filtered = getFilteredOperationTypeOptions(metadata, userTypeLabels);
+ */
+export const getFilteredOperationTypeOptions = (
+	userTypeMetadata: Record<string, any> = {},
+	userTypeLabels: Record<number, string> = {}
+): Array<{ value: string; label: string }> => {
+	// Start with the base operation type options
+	let filteredOptions = [...OPERATION_TYPE_OPTIONS];
+
+	// Check if user types 2 or 3 have disable_partial_account_creation set to true
+	const hasDisablePartialCreation = ["2", "3"].some((typeId) => {
+		const typeMetadata = userTypeMetadata[typeId];
+		return typeMetadata?.disable_partial_account_creation === true;
+	});
+
+	// Remove "Individual Distributor/Retailer" (value "1") if partial account creation is disabled
+	if (hasDisablePartialCreation) {
+		filteredOptions = filteredOptions.filter(
+			(option) => option.value !== "1"
+		);
+	}
+
+	// Check if user type 1 has disable_partial_account_creation set to true
+	const userType1HasDisablePartialCreation =
+		userTypeMetadata["1"]?.disable_partial_account_creation === true;
+
+	// Remove "Distributor's Network" (value "2") if user type 1 has disable_partial_account_creation
+	if (userType1HasDisablePartialCreation) {
+		filteredOptions = filteredOptions.filter(
+			(option) => option.value !== "2"
+		);
+	}
+
+	// Update the label for "Distributor's Network" to use user type 1 label if available
+	const userType1Label = userTypeLabels[UserType.DISTRIBUTOR];
+	filteredOptions = filteredOptions.map((option) => {
+		if (option.value === "2" && userType1Label) {
+			return {
+				...option,
+				label: `${userType1Label} Network`,
+			};
+		}
+		return option;
+	});
+
+	return filteredOptions;
+};

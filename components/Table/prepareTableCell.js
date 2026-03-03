@@ -39,6 +39,7 @@ export const prepareTableCell = (
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
 	const onStatusUpdate = item?._onStatusUpdate;
+	const onDeleteDemoUser = item?._onDeleteDemoUser;
 
 	switch (column?.show) {
 		case "#":
@@ -51,7 +52,8 @@ export const prepareTableCell = (
 				eko_code,
 				account_status_id,
 				agent_type,
-				onStatusUpdate
+				onStatusUpdate,
+				onDeleteDemoUser
 			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
@@ -60,7 +62,12 @@ export const prepareTableCell = (
 		case "Location":
 			return getLocationStyle(item[column.name]);
 		case "Avatar":
-			return getNameStyle(item[column.name]);
+			return getNameStyle(
+				item[column.name],
+				undefined,
+				undefined,
+				account_status_id
+			);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":

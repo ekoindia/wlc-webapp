@@ -273,36 +273,38 @@ const StepperItem = ({
 				)}
 
 				{/* Label and description */}
-				<Flex
-					direction="column"
-					gap="1"
-					pt={isHorizontal ? 2 : 0}
-					align={isHorizontal ? "center" : "flex-start"}
-					w={isHorizontal ? "100%" : "auto"}
-					px={isHorizontal ? 1 : 0}
-				>
-					<Text
-						fontSize={{ base: "xs", "2xl": "sm" }}
-						fontWeight={isInProgress ? "semibold" : "medium"}
-						color="dark"
-						lineHeight="short"
-						textAlign={isHorizontal ? "center" : "left"}
-						noOfLines={isHorizontal ? 2 : undefined}
-						wordBreak="break-word"
+				{!isHorizontal && (
+					<Flex
+						direction="column"
+						gap="1"
+						pt={isHorizontal ? 2 : 0}
+						align={isHorizontal ? "center" : "flex-start"}
+						w={isHorizontal ? "100%" : "auto"}
+						px={isHorizontal ? 1 : 0}
 					>
-						{label}
-					</Text>
-
-					{description && !isHorizontal && (
 						<Text
 							fontSize={{ base: "xs", "2xl": "sm" }}
-							color="light"
+							fontWeight={isInProgress ? "semibold" : "medium"}
+							color="dark"
 							lineHeight="short"
+							textAlign={isHorizontal ? "center" : "left"}
+							noOfLines={isHorizontal ? 2 : undefined}
+							wordBreak="break-word"
 						>
-							{description}
+							{label}
 						</Text>
-					)}
-				</Flex>
+
+						{description && (
+							<Text
+								fontSize={{ base: "xs", "2xl": "sm" }}
+								color="light"
+								lineHeight="short"
+							>
+								{description}
+							</Text>
+						)}
+					</Flex>
+				)}
 			</Flex>
 		</Flex>
 	);
