@@ -145,7 +145,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 				required: "Credit limit is required",
 				max: {
 					value: 500,
-					message: "Max limit is 500 rs",
+					message: "Max limit is 500 ₹",
 				},
 			},
 		},

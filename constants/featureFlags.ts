@@ -80,7 +80,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Deprecate the usage of this flag across the project.
 	EKO_SHIELD: {
 		enabled: true,
-		forEnv: ["development", "staging", "production"],
 	},
 
 	// TODO: Update this feature flag on role basis instead of org-id basis after the role-based access control (RBAC) is implemented.
