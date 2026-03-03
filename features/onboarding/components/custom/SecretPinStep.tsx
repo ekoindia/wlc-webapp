@@ -1,17 +1,8 @@
-import {
-	Alert,
-	AlertIcon,
-	Box,
-	Flex,
-	Skeleton,
-	Text,
-	VStack,
-	useToast,
-} from "@chakra-ui/react";
+import { Box, Flex, Skeleton, Text, VStack, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
-import { useSession } from "contexts";
+import { usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -53,6 +44,7 @@ const SecretPinStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
+	const { publish, TOPICS } = usePubSub();
 	const { mobile, state, pipelineResults } = useOnboardingContext();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
@@ -170,6 +162,8 @@ const SecretPinStep = ({
 				duration: 4000,
 				isClosable: true,
 			});
+			// Signal all Pintwin components to refresh their keys
+			publish(TOPICS.REFRESH_PINTWIN);
 		}
 	}, [
 		pipelineResults,
@@ -177,6 +171,8 @@ const SecretPinStep = ({
 		stepConfig.success_message,
 		onAdvance,
 		toast,
+		publish,
+		TOPICS,
 	]);
 
 	/**
@@ -301,12 +297,24 @@ const SecretPinStep = ({
 
 						{/* PIN mismatch error */}
 						{pinsMismatch && (
-							<Alert status="error" borderRadius="md">
-								<AlertIcon />
-								<Text>
+							<Flex
+								align="center"
+								gap={3}
+								p={3}
+								bg="rgba(255, 64, 129, 0.15)"
+								border="1px solid"
+								borderColor="error"
+								borderRadius="md"
+							>
+								<Icon name="error" size="sm" color="error" />
+								<Text
+									fontSize="sm"
+									color="error"
+									fontWeight="medium"
+								>
 									PINs do not match. Please try again.
 								</Text>
-							</Alert>
+							</Flex>
 						)}
 
 						<ActionButtonGroup

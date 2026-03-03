@@ -2,9 +2,10 @@ import { Flex, Text, Tooltip } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
 import { OtpInput } from "components/OtpInput";
+import { usePubSub } from "contexts";
 import { usePinTwin } from "hooks/usePinTwin";
 import { rotateAntiClockwise } from "libs/chakraKeyframes";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 
 /**
  * Props for the Pintwin component
@@ -52,11 +53,24 @@ const Pintwin: React.FC<PintwinProps> = ({
 	const {
 		pin,
 		setPin,
+		clearPin,
 		refreshPinTwinKey,
 		encodePinTwin,
 		validatePin,
 		pinTwinKeyLoadStatus,
 	} = usePinTwin();
+
+	const { subscribe, TOPICS } = usePubSub();
+
+	// Auto-refresh key when REFRESH_PINTWIN signal is published
+	// This makes Pintwin self-healing: the developer only needs to publish the signal on transaction failure
+	useEffect(() => {
+		const unsubscribe = subscribe(TOPICS.REFRESH_PINTWIN, () => {
+			clearPin();
+			refreshPinTwinKey();
+		});
+		return unsubscribe;
+	}, [subscribe, TOPICS, clearPin, refreshPinTwinKey]);
 
 	// Derive individual status flags from consolidated state for component logic
 	// This maintains component readability while using the cleaner hook interface

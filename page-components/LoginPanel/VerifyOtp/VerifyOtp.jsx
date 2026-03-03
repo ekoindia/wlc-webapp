@@ -6,17 +6,21 @@ import { useAppSource, useOrgDetailContext } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { fetcher, sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
+import { ResendOtpSection } from "./ResendOtpSection";
+
+const RESEND_OTP_COUNTDOWN_SECONDS = 30;
 
 /**
  * A <VerifyOtp> component
- * @param {object} prop - Properties passed to the component
- * @param {string} [prop.loginType] - Login type, eg: Mobile
- * @param {string} [prop.email] - Email of the user (used for social login OTP verification)
- * @param {object} prop.number - Object containing the original and formatted mobile number
- * @param {object} prop.cachedSocialResponse - Cached social login response. When OTP verification is successful, the cached response can be used to partially login the user (prep for onboarding)
- * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
- * @param {Function} prop.setStep - Function to set the step
+ * @param {object} props - Properties passed to the component
+ * @param {string} [props.loginType] - Login type, eg: Mobile
+ * @param {string} [props.email] - Email of the user (used for social login OTP verification)
+ * @param {object} props.number - Object containing the original and formatted mobile number
+ * @param {object} props.cachedSocialResponse - Cached social login response. When OTP verification is successful, the cached response can be used to partially login the user (prep for onboarding)
+ * @param {boolean} props.previewMode - Flag to check if the component is in preview mode
+ * @param {Function} props.setStep - Function to set the step
+ * @returns {JSX.Element} The VerifyOtp component
  */
 const VerifyOtp = ({
 	loginType,
@@ -36,31 +40,9 @@ const VerifyOtp = ({
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
 
 	const [Otp, setOtp] = useState("");
-	const [timer, setTimer] = useState(30);
-
-	const timeOutCallback = useCallback(
-		() => setTimer((currTimer) => currTimer - 1),
-		[]
-	);
-
-	useEffect(() => {
-		timer > 0 && setTimeout(timeOutCallback, 1000);
-	}, [timer, timeOutCallback]);
-
-	// console.log(timer);
-
-	/**
-	 * Helper function to reset the OTP resend timer
-	 */
-	const resetTimer = function () {
-		if (!timer || timer <= 0) {
-			setTimer(30);
-		}
-	};
 
 	const resendOtpHandler = async () => {
-		if (previewMode === true) return;
-		resetTimer();
+		if (previewMode === true) return false;
 		const { otp_sent } = await sendOtpRequest(
 			orgDetail.org_id,
 			number.original,
@@ -73,7 +55,10 @@ const VerifyOtp = ({
 		if (!otp_sent) {
 			// OTP failed..back to previous screen
 			setStep(loginType === "Mobile" ? "LOGIN" : "SOCIAL_VERIFY");
+			return false;
 		}
+
+		return true;
 	};
 
 	// For social login flow, we reach this screen only for new users (email not mapped).
@@ -268,36 +253,10 @@ const VerifyOtp = ({
 				/>
 			</Flex>
 
-			<Flex
-				justify="center"
-				mt={{ base: 6, "2xl": "2.5rem" }}
-				fontSize={{ base: "sm", "2xl": "lg" }}
-				gap="0px 10px"
-				userSelect="none"
-			>
-				{timer >= 1 ? (
-					<>
-						<Text as={"span"}>Resend OTP in </Text>
-						<Flex align="center" color="error" columnGap="4px">
-							<Icon name="timer" size="18px" />
-							00:{timer <= 9 ? "0" + timer : timer}
-						</Flex>
-					</>
-				) : (
-					<>
-						<Text as={"span"}>Did not receive yet?</Text>
-						<Text
-							cursor="pointer"
-							as="span"
-							color="primary.DEFAULT"
-							onClick={resendOtpHandler}
-							fontWeight="medium"
-						>
-							Resend OTP
-						</Text>
-					</>
-				)}
-			</Flex>
+			<ResendOtpSection
+				countdownSeconds={RESEND_OTP_COUNTDOWN_SECONDS}
+				onResendOtp={resendOtpHandler}
+			/>
 
 			<Button
 				mt={{ base: "3.25rem", "2xl": "6.25rem" }}
