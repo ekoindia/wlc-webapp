@@ -267,6 +267,7 @@ const SearchBar = <T extends { [key: string]: any } = any>({
 				{/* Dropdown */}
 				{isDropdownOpen && dataList?.length > 0 && (
 					<Box
+						className="customScrollbars"
 						position="absolute"
 						top="calc(100% + 4px)"
 						left={0}

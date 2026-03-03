@@ -99,7 +99,6 @@ const EarningOverview = ({
 	const [cachedFullProductList, setCachedFullProductList] = useState(null);
 	const prevDateRef = useRef({ dateFrom, dateTo });
 
-	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
@@ -468,18 +467,16 @@ const EarningOverview = ({
 				align={isSmallScreen ? "center" : "flex-start"}
 				gap="8"
 			>
-				{showNewDashboard ? (
-					<WaffleChart
-						data={productWiseData}
-						colors={COLORS}
-						rows={isSmallScreen ? 3 : 10}
-						cols={isSmallScreen ? 15 : 3}
-						size="10px"
-						gap="4px"
-						animationDuration="0.2s"
-						animationDelay="0.02s"
-					/>
-				) : null}
+				<WaffleChart
+					data={productWiseData}
+					colors={COLORS}
+					rows={isSmallScreen ? 3 : 10}
+					cols={isSmallScreen ? 15 : 3}
+					size="10px"
+					gap="4px"
+					animationDuration="0.2s"
+					animationDelay="0.02s"
+				/>
 
 				<Grid
 					templateColumns="repeat(auto-fit, minmax(130px, 1fr))"
