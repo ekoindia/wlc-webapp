@@ -48,10 +48,10 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		envConstraints: {
 			development: {
-				forOrgId: [420],
+				forOrgId: [26],
 			},
 			staging: {
-				forOrgId: [420],
+				forOrgId: [26],
 			},
 			production: {
 				forOrgId: [420],
@@ -71,10 +71,10 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forUserType: [1],
 		envConstraints: {
 			development: {
-				forOrgId: [420],
+				forOrgId: [26],
 			},
 			staging: {
-				forOrgId: [420],
+				forOrgId: [26],
 			},
 			production: {
 				forOrgId: [420],
