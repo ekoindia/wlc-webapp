@@ -1,3 +1,5 @@
+import { UserType } from "constants/UserTypes";
+
 /**
  * Agent types used in the pricing configuration.
  * @constant
@@ -112,7 +114,7 @@ export const getFilteredOperationTypeOptions = (
 	}
 
 	// Update the label for "Distributor's Network" to use user type 1 label if available
-	const userType1Label = userTypeLabels[1];
+	const userType1Label = userTypeLabels[UserType.DISTRIBUTOR];
 	filteredOptions = filteredOptions.map((option) => {
 		if (option.value === "2" && userType1Label) {
 			return {
