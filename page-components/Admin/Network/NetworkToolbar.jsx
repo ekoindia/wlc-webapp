@@ -112,29 +112,44 @@ const NetworkToolbar = ({
 			{hideSearch ? null : (
 				<SearchBar
 					setSearch={() => {}}
-					placeholder="Search by Name or Mobile Number"
+					placeholder="Search by Name, Mobile Number or User Code"
 					dataList={networkUsersList}
 					onItemSelect={onItemSelect}
 					maxDropdownItems={5}
 					renderItem={(item) => (
 						<Flex align="center" justify="space-between" w="100%">
-							<Flex direction="column" gap={0}>
-								<Text
-									fontSize="sm"
-									fontWeight="600"
-									color="gray.800"
-									textTransform="capitalize"
-								>
-									{item.name?.toLowerCase()}
-								</Text>
-								<Text
-									fontSize="xs"
-									color="gray.500"
-									fontWeight="500"
-								>
-									{item.mobile}
-								</Text>
+							<Flex direction="column" gap="2px">
+								<Flex align="baseline" gap="6px">
+									<Text
+										fontSize="sm"
+										fontWeight="600"
+										color="gray.800"
+										textTransform="capitalize"
+									>
+										{item.name?.toLowerCase()}
+									</Text>
+
+									<Text
+										fontSize="xs"
+										color="gray.400"
+										fontWeight="500"
+									>
+										({item.user_code})
+									</Text>
+								</Flex>
+
+								<Flex align="center" gap="1">
+									<Icon name="mobile" size="xs" />
+									<Text
+										fontSize="xs"
+										color="gray.500"
+										fontWeight="500"
+									>
+										{item.mobile}
+									</Text>
+								</Flex>
 							</Flex>
+
 							<Icon
 								name="arrow-forward"
 								size="14px"
@@ -142,7 +157,7 @@ const NetworkToolbar = ({
 							/>
 						</Flex>
 					)}
-					searchKeys={["name", "mobile"]}
+					searchKeys={["name", "mobile", "user_code"]}
 				/>
 			)}
 
