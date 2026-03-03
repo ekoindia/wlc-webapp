@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
+import { formatCurrency } from "utils/numberFormat";
 import { Endpoints, ParamType } from "../../../../constants";
 import OnboardAgentResponse from "../OnboardAgentResponse";
 
@@ -145,7 +146,12 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 				required: "Credit limit is required",
 				max: {
 					value: 500,
-					message: "Max limit is 500 ₹",
+					message: `Max limit is ${formatCurrency(
+						500,
+						"INR",
+						false,
+						true
+					)}`,
 				},
 			},
 		},
