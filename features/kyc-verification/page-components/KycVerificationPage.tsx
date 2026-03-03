@@ -5,6 +5,7 @@
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
+import { UserType } from "constants/index";
 import { useSession } from "contexts";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
@@ -37,7 +38,7 @@ export const KycVerificationPage = ({
 	basePath = "/products/kyc-verification",
 }: KycVerificationPageProps = {}): JSX.Element => {
 	const router = useRouter();
-	const { isAdmin } = useSession();
+	const { isAdmin, userType } = useSession();
 
 	// Services data and filtering
 	const {
@@ -161,17 +162,20 @@ export const KycVerificationPage = ({
 									: router.push("/products/bulk-verification")
 							}
 						/>
-						<Button
-							onClick={() => setIsManageMode(!isManageMode)}
-							size="sm"
-							icon="settings"
-							iconStyle={{ size: "xs" }}
-							variant={
-								isManageMode ? "primary" : "primary_outline"
-							}
-						>
-							Manage
-						</Button>
+
+						{(isAdmin || userType === UserType.DISTRIBUTOR) && (
+							<Button
+								onClick={() => setIsManageMode(!isManageMode)}
+								size="sm"
+								icon="settings"
+								iconStyle={{ size: "xs" }}
+								variant={
+									isManageMode ? "primary" : "primary_outline"
+								}
+							>
+								Manage
+							</Button>
+						)}
 					</Flex>
 				}
 			/>

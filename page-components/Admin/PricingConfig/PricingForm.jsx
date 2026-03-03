@@ -1,9 +1,9 @@
 import { Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
-import { useSession } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useFeatureFlag, useRefreshToken } from "hooks";
+import { useFeatureFlag, useRefreshToken, useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -12,6 +12,7 @@ import { capitalize, formatCurrency } from "utils";
 import {
 	AGENT_TYPES,
 	formatSlabs,
+	getFilteredOperationTypeOptions,
 	getPricingTypeString,
 	getStatus,
 	OPERATION,
@@ -134,6 +135,17 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const { allAgentList, distributorList } = usePricingConfig();
+	const { orgDetail } = useOrgDetailContext();
+	const { userTypeLabels } = useUserTypes();
+
+	// Get filtered operation type options based on org metadata
+	const filteredOperationTypeOptions = useMemo(() => {
+		const userTypeMetadata = orgDetail?.metadata?.user_type || {};
+		return getFilteredOperationTypeOptions(
+			userTypeMetadata,
+			userTypeLabels
+		);
+	}, [orgDetail?.metadata?.user_type, userTypeLabels]);
 
 	const min = state.pricingValidation?.min;
 	const max = state.pricingValidation?.max;
@@ -172,7 +184,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					name: "operation_type",
 					label: `Set ${pricingTypeLabel} for`,
 					parameter_type_id: ParamType.LIST,
-					list_elements: OPERATION_TYPE_OPTIONS,
+					list_elements: filteredOperationTypeOptions,
 				},
 				{
 					name: "CspList",
@@ -288,6 +300,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	}, [
 		agentType,
 		pricingType,
+		filteredOperationTypeOptions,
 		state.multiSelectLabel,
 		state.multiSelectOptions,
 		state.paymentModeOptions,

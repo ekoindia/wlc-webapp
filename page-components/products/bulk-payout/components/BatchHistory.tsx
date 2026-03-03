@@ -56,6 +56,7 @@ export interface ApiBatch {
 	failureCount: number;
 	pendingCount: number;
 	totalRecordsApproved: number;
+	serviceName?: string; // Only for verification
 }
 
 export type BatchStatus = "PROCESSING" | "PROCESSED";
@@ -465,6 +466,11 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 								<Thead bg="shade">
 									<Tr>
 										<Th textAlign="center">Upload Date</Th>
+										{isVerification ? (
+											<Th textAlign="center">
+												Service Name
+											</Th>
+										) : null}
 										{!isVerification ? (
 											<Th textAlign="center">Vendor</Th>
 										) : null}
@@ -521,6 +527,16 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 														)}
 													</Text>
 												</Td>
+												{isVerification ? (
+													<Td>
+														<Text
+															textAlign="center"
+															fontSize="sm"
+														>
+															{batch.serviceName}
+														</Text>
+													</Td>
+												) : null}
 												{!isVerification ? (
 													<Td>
 														<HStack

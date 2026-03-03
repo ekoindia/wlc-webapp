@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
+import { formatCurrency } from "utils/numberFormat";
 import { Endpoints, ParamType } from "../../../../constants";
 import OnboardAgentResponse from "../OnboardAgentResponse";
 
@@ -118,7 +119,7 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 		{
 			name: "agent_mobile",
 			label: "Mobile Number",
-			parameter_type_id: ParamType.TEXT, // Using type 15 from your list
+			parameter_type_id: ParamType.MOBILE,
 			validations: {
 				pattern: {
 					value: /^[6-9]{1}[0-9]{9}$/,
@@ -140,8 +141,19 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 		{
 			name: "demo_credit_limit",
 			label: "Demo Credit Limit(₹)",
-			parameter_type_id: ParamType.MONEY,
-			validations: { required: "Credit limit is required" },
+			parameter_type_id: ParamType.NUMERIC,
+			validations: {
+				required: "Credit limit is required",
+				max: {
+					value: 500,
+					message: `Max limit is ${formatCurrency(
+						500,
+						"INR",
+						false,
+						true
+					)}`,
+				},
+			},
 		},
 		{
 			name: "demo_account_validity",
@@ -149,6 +161,12 @@ const OnboardDemoViaForm: React.FC<OnboardDemoProps> = ({
 			parameter_type_id: ParamType.NUMERIC,
 			required: false,
 			defaultValue: 7,
+			validations: {
+				max: {
+					value: 10,
+					message: "Validity cannot exceed 10 days",
+				},
+			},
 		},
 	];
 
