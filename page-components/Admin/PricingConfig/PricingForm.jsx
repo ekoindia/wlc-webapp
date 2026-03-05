@@ -423,7 +423,13 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 				setIsFetchingPricingMessage(false);
 			}
 		},
-		[accessToken, generateNewToken, watcher, state?.productId]
+		[
+			accessToken,
+			generateNewToken,
+			watcher.operation_type,
+			watcher.CspList,
+			state?.productId,
+		]
 	);
 
 	// Effect to fetch pricing message when all fields are filled
@@ -436,13 +442,11 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		}
 	}, [
 		isDataAvailableToFetchCurrentPricing,
-		fetchCurrentPricing,
 		watcher?.select?.value,
 		state?.slabOptions,
 		watcher?.payment_mode?.value,
 		watcher?.category?.value,
 		watcher?.operation_type,
-		watcher?.CspList,
 		state?.productId,
 	]);
 
