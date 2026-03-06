@@ -89,8 +89,8 @@ export const getFilteredOperationTypeOptions = (
 	// Start with the base operation type options
 	let filteredOptions = [...OPERATION_TYPE_OPTIONS];
 
-	// Check if merchant-related user types have partial creation disabled
-	const isChildUserPartialCreationDisabled = [
+	// Check if user types have MERCHANT and I_MERCHANT partial creation disabled
+	const isPartialAccountCreationDisabled = [
 		UserType.MERCHANT,
 		UserType.I_MERCHANT,
 	].some((typeId) => {
@@ -99,7 +99,7 @@ export const getFilteredOperationTypeOptions = (
 	});
 
 	// Remove "Individual Distributor/Retailer" (value "1") if partial account creation is disabled
-	if (isChildUserPartialCreationDisabled) {
+	if (isPartialAccountCreationDisabled) {
 		filteredOptions = filteredOptions.filter(
 			(option) => option.value !== "1"
 		);
