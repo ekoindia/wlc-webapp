@@ -890,6 +890,11 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					duration: 6000,
 					isClosable: true,
 				});
+
+				// after saving, refresh the pricing message so the UI shows the updated value
+				const slabData = state.slabOptions?.[watcher?.select?.value];
+				fetchCurrentPricing(slabData);
+
 				// handleReset();
 			})
 			.catch((error) => {
