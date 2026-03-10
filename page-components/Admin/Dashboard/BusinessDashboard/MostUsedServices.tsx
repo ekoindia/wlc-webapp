@@ -113,7 +113,7 @@ const CustomTooltip = ({
 					</Text>
 				</Text>
 				<Text fontSize="xs" color="gray.600">
-					Revenue (₹):{" "}
+					Revenue/Charges (₹):{" "}
 					<Text as="span" fontWeight="600" color="primary.DEFAULT">
 						{totalRevenue?.toLocaleString()}
 					</Text>

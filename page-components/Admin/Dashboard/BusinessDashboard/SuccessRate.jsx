@@ -24,6 +24,7 @@ const SuccessRate = ({
 	setBusinessDashboardData,
 }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
+	const isProductListReady = masterProductList?.some((p) => p.value !== "");
 
 	const [fetchSuccessRateData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
@@ -78,6 +79,9 @@ const SuccessRate = ({
 
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
+
+		// wait for real product list
+		if (!isProductListReady) return;
 
 		const cacheKey = getCacheKey(masterProductList, dateFrom, dateTo);
 		const cachedData = businessDashboardData?.successRateCache?.[cacheKey];
