@@ -58,6 +58,8 @@ export type WorkflowEdge = Edge;
  * Serialized workflow state for persistence (localStorage / API).
  */
 export interface SerializedWorkflow {
+	/** Unique identifier for the workflow */
+	id: string;
 	/** Workflow display name */
 	name: string;
 	/** Serialized nodes */

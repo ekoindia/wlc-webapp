@@ -13,7 +13,7 @@
  * ```
  */
 
-import { Box, Flex, Input, Text } from "@chakra-ui/react";
+import { Box, Flex, Input, Text, Select } from "@chakra-ui/react";
 import {
 	Background,
 	BackgroundVariant,
@@ -58,6 +58,11 @@ const InnerBuilder = ({ items }: InnerBuilderProps): JSX.Element => {
 		workflowName,
 		setWorkflowName,
 		selectedNodeId,
+		savedWorkflows,
+		currentWorkflowId,
+		createNewWorkflow,
+		loadWorkflow,
+		deleteWorkflow,
 	} = useWorkflowBuilder();
 
 	const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -128,20 +133,72 @@ const InnerBuilder = ({ items }: InnerBuilderProps): JSX.Element => {
 				flexWrap="wrap"
 				gap="2"
 			>
-				<Flex align="center" gap="2">
-					<Input
-						size="sm"
-						value={workflowName}
-						onChange={(e) => setWorkflowName(e.target.value)}
-						fontWeight="600"
-						maxW="240px"
-						variant="flushed"
-						borderColor="gray.300"
-						_focus={{ borderColor: "primary.DEFAULT" }}
-					/>
-					<Text fontSize="xs" color="gray.400">
-						{nodes.length} node{nodes.length !== 1 ? "s" : ""}
-					</Text>
+				<Flex align="center" gap="4">
+					<Flex direction="column" gap="1">
+						<Flex align="center" gap="2">
+							<Select
+								size="sm"
+								value={currentWorkflowId}
+								onChange={(e) => {
+									if (e.target.value === "CREATE_NEW") {
+										createNewWorkflow();
+									} else {
+										loadWorkflow(e.target.value);
+									}
+								}}
+								maxW="200px"
+								fontWeight="600"
+								variant="filled"
+								bg="white"
+							>
+								{savedWorkflows.map((wf) => (
+									<option key={wf.id} value={wf.id}>
+										{wf.name || "Untitled Workflow"}
+									</option>
+								))}
+								<option
+									value="CREATE_NEW"
+									style={{ fontWeight: "bold" }}
+								>
+									+ Create New Workflow
+								</option>
+							</Select>
+							<Button
+								size="xs"
+								variant="ghost"
+								onClick={() => {
+									if (
+										window.confirm(
+											"Are you sure you want to delete this workflow?"
+										)
+									) {
+										deleteWorkflow(currentWorkflowId);
+									}
+								}}
+							>
+								Delete
+							</Button>
+						</Flex>
+						<Flex align="center" gap="2">
+							<Input
+								size="xs"
+								value={workflowName}
+								onChange={(e) =>
+									setWorkflowName(e.target.value)
+								}
+								fontWeight="500"
+								maxW="200px"
+								variant="flushed"
+								borderColor="gray.300"
+								_focus={{ borderColor: "primary.DEFAULT" }}
+								placeholder="Workflow Name"
+							/>
+							<Text fontSize="10px" color="gray.400">
+								{nodes.length} node
+								{nodes.length !== 1 ? "s" : ""}
+							</Text>
+						</Flex>
+					</Flex>
 				</Flex>
 
 				<Flex gap="2">

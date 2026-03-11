@@ -39,6 +39,13 @@ const DEFAULT_NODE_CONFIG: WorkflowNodeConfig = {
 	terminateOnFailure: true,
 };
 
+// ─── Types ───────────────────────────────────────────────────────────
+
+interface StorageData {
+	workflows: Record<string, SerializedWorkflow>;
+	currentId: string;
+}
+
 // ─── Context Shape ───────────────────────────────────────────────────
 
 interface WorkflowBuilderContextState {
@@ -54,6 +61,10 @@ interface WorkflowBuilderContextState {
 	workflowName: string;
 	/** Set workflow name */
 	setWorkflowName: (_name: string) => void;
+	/** List of all saved workflows */
+	savedWorkflows: SerializedWorkflow[];
+	/** Currently active workflow ID */
+	currentWorkflowId: string;
 	/** React Flow onNodesChange handler */
 	onNodesChange: (_changes: NodeChange<WorkflowNode>[]) => void;
 	/** React Flow onEdgesChange handler */
@@ -74,10 +85,16 @@ interface WorkflowBuilderContextState {
 	) => void;
 	/** Select a node */
 	selectNode: (_nodeId: string | null) => void;
-	/** Save the workflow (calls onSave + persists to localStorage) */
+	/** Save the workflow manually (calls onSave) */
 	saveWorkflow: () => void;
 	/** Clear the entire canvas */
 	clearCanvas: () => void;
+	/** Create a new blank workflow */
+	createNewWorkflow: () => void;
+	/** Load an existing workflow */
+	loadWorkflow: (_id: string) => void;
+	/** Delete a workflow */
+	deleteWorkflow: (_id: string) => void;
 }
 
 const WorkflowBuilderContext =
@@ -92,23 +109,48 @@ interface WorkflowBuilderProviderProps {
 	onSave?: (_workflow: SerializedWorkflow) => void;
 }
 
-// ─── Helper: Load from localStorage ──────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────
 
-const loadFromStorage = (key: string): SerializedWorkflow | null => {
+const generateId = () =>
+	`wf_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+const loadFromStorage = (key: string): StorageData | null => {
 	try {
 		const raw = localStorage.getItem(key);
 		if (!raw) return null;
-		return JSON.parse(raw) as SerializedWorkflow;
+		const parsed = JSON.parse(raw);
+		if (
+			parsed &&
+			typeof parsed === "object" &&
+			parsed.workflows &&
+			parsed.currentId
+		) {
+			return parsed as StorageData;
+		}
+		// Backwards compatibility for single workflow format
+		if (
+			parsed &&
+			typeof parsed === "object" &&
+			parsed.nodes &&
+			parsed.edges
+		) {
+			const id = parsed.id || generateId();
+			return {
+				workflows: {
+					[id]: { ...parsed, id },
+				},
+				currentId: id,
+			};
+		}
+		return null;
 	} catch {
 		return null;
 	}
 };
 
-// ─── Helper: Save to localStorage ────────────────────────────────────
-
-const persistToStorage = (key: string, workflow: SerializedWorkflow): void => {
+const persistToStorage = (key: string, data: StorageData): void => {
 	try {
-		localStorage.setItem(key, JSON.stringify(workflow));
+		localStorage.setItem(key, JSON.stringify(data));
 	} catch (err) {
 		console.error(
 			"[WorkflowBuilder] Failed to persist to localStorage:",
@@ -125,24 +167,169 @@ export const WorkflowBuilderProvider = ({
 	initialWorkflow,
 	onSave,
 }: WorkflowBuilderProviderProps): JSX.Element => {
-	// Resolve initial state: prop > localStorage > empty
-	const resolved = useMemo(() => {
-		if (initialWorkflow) return initialWorkflow;
-		return loadFromStorage(storageKey);
-	}, [initialWorkflow, storageKey]);
-
-	const [nodes, setNodes] = useState<WorkflowNode[]>(resolved?.nodes ?? []);
-	console.log("[WorkflowBuilder] Nodes:", nodes);
-	const [edges, setEdges] = useState<WorkflowEdge[]>(resolved?.edges ?? []);
-	console.log("[WorkflowBuilder] Edges:", edges);
-	const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-	const [workflowName, setWorkflowName] = useState<string>(
-		resolved?.name ?? "Untitled Workflow"
-	);
-
-	// Keep a ref of the save callback so it doesn't cause re-renders
 	const onSaveRef = useRef(onSave);
 	onSaveRef.current = onSave;
+
+	const [workflows, setWorkflows] = useState<
+		Record<string, SerializedWorkflow>
+	>({});
+	const [currentId, setCurrentId] = useState<string>("");
+
+	const [nodes, setNodes] = useState<WorkflowNode[]>([]);
+	const [edges, setEdges] = useState<WorkflowEdge[]>([]);
+	const [workflowName, setWorkflowName] =
+		useState<string>("Untitled Workflow");
+	const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
+	// Initialize state
+	useEffect(() => {
+		const data = loadFromStorage(storageKey);
+		let initialWorkflows = data?.workflows ?? {};
+		let initialId = data?.currentId;
+
+		if (initialWorkflow) {
+			const id = initialWorkflow.id || generateId();
+			initialWorkflows = {
+				...initialWorkflows,
+				[id]: { ...initialWorkflow, id },
+			};
+			initialId = id;
+		}
+
+		if (Object.keys(initialWorkflows).length === 0) {
+			const newId = generateId();
+			initialId = newId;
+			initialWorkflows = {
+				[newId]: {
+					id: newId,
+					name: "Untitled Workflow",
+					nodes: [],
+					edges: [],
+					updatedAt: Date.now(),
+				},
+			};
+		} else if (!initialId || !initialWorkflows[initialId]) {
+			initialId = Object.keys(initialWorkflows)[0];
+		}
+
+		setWorkflows(initialWorkflows);
+		setCurrentId(initialId);
+
+		const current = initialWorkflows[initialId];
+		if (current) {
+			setNodes(current.nodes);
+			setEdges(current.edges);
+			setWorkflowName(current.name);
+		}
+	}, [storageKey, initialWorkflow]);
+
+	// Auto-persist debounced
+	useEffect(() => {
+		if (!currentId) return;
+
+		const timer = setTimeout(() => {
+			const updatedWorkflow: SerializedWorkflow = {
+				id: currentId,
+				name: workflowName,
+				nodes,
+				edges,
+				updatedAt: Date.now(),
+			};
+
+			setWorkflows((prev) => {
+				const next = { ...prev, [currentId]: updatedWorkflow };
+				persistToStorage(storageKey, { workflows: next, currentId });
+				return next;
+			});
+		}, 500);
+
+		return () => clearTimeout(timer);
+	}, [nodes, edges, workflowName, currentId, storageKey]);
+
+	const loadWorkflow = useCallback(
+		(id: string) => {
+			if (!workflows[id]) return;
+			setCurrentId(id);
+			setNodes(workflows[id].nodes);
+			setEdges(workflows[id].edges);
+			setWorkflowName(workflows[id].name);
+			setSelectedNodeId(null);
+			// Update currentId in storage
+			persistToStorage(storageKey, { workflows, currentId: id });
+		},
+		[workflows, storageKey]
+	);
+
+	const createNewWorkflow = useCallback(() => {
+		const newId = generateId();
+		const newWorkflow: SerializedWorkflow = {
+			id: newId,
+			name: "Untitled Workflow",
+			nodes: [],
+			edges: [],
+			updatedAt: Date.now(),
+		};
+		setWorkflows((prev) => {
+			const next = { ...prev, [newId]: newWorkflow };
+			persistToStorage(storageKey, { workflows: next, currentId: newId });
+			return next;
+		});
+		setCurrentId(newId);
+		setNodes([]);
+		setEdges([]);
+		setWorkflowName("Untitled Workflow");
+		setSelectedNodeId(null);
+	}, [storageKey]);
+
+	const deleteWorkflow = useCallback(
+		(id: string) => {
+			setWorkflows((prev) => {
+				const next = { ...prev };
+				delete next[id];
+
+				if (Object.keys(next).length === 0) {
+					const newId = generateId();
+					const fallback: SerializedWorkflow = {
+						id: newId,
+						name: "Untitled Workflow",
+						nodes: [],
+						edges: [],
+						updatedAt: Date.now(),
+					};
+					next[newId] = fallback;
+					setCurrentId(newId);
+					setNodes([]);
+					setEdges([]);
+					setWorkflowName("Untitled Workflow");
+					setSelectedNodeId(null);
+					persistToStorage(storageKey, {
+						workflows: next,
+						currentId: newId,
+					});
+				} else if (id === currentId) {
+					const fallbackId = Object.keys(next)[0];
+					const fallback = next[fallbackId];
+					setCurrentId(fallbackId);
+					setNodes(fallback.nodes);
+					setEdges(fallback.edges);
+					setWorkflowName(fallback.name);
+					setSelectedNodeId(null);
+					persistToStorage(storageKey, {
+						workflows: next,
+						currentId: fallbackId,
+					});
+				} else {
+					persistToStorage(storageKey, {
+						workflows: next,
+						currentId,
+					});
+				}
+
+				return next;
+			});
+		},
+		[currentId, storageKey]
+	);
 
 	// ── React Flow change handlers ──────────────────────────────────
 
@@ -155,7 +342,6 @@ export const WorkflowBuilderProvider = ({
 	}, []);
 
 	const onConnect = useCallback((connection: Connection) => {
-		console.log("[WorkflowBuilder] onConnect", connection);
 		const newConnection = {
 			...connection,
 			sourceHandle: connection.sourceHandle || "source",
@@ -223,34 +409,23 @@ export const WorkflowBuilderProvider = ({
 		return node?.data ?? null;
 	}, [nodes, selectedNodeId]);
 
-	// ── Persistence ─────────────────────────────────────────────────
+	// ── Save & Clear ────────────────────────────────────────────────
 
 	const saveWorkflow = useCallback(() => {
 		const workflow: SerializedWorkflow = {
+			id: currentId,
 			name: workflowName,
 			nodes,
 			edges,
 			updatedAt: Date.now(),
 		};
-		persistToStorage(storageKey, workflow);
+		setWorkflows((prev) => {
+			const next = { ...prev, [currentId]: workflow };
+			persistToStorage(storageKey, { workflows: next, currentId });
+			return next;
+		});
 		onSaveRef.current?.(workflow);
-	}, [workflowName, nodes, edges, storageKey]);
-
-	// Auto-persist on changes (debounced via effect)
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			const workflow: SerializedWorkflow = {
-				name: workflowName,
-				nodes,
-				edges,
-				updatedAt: Date.now(),
-			};
-			persistToStorage(storageKey, workflow);
-		}, 500);
-		return () => clearTimeout(timer);
-	}, [nodes, edges, workflowName, storageKey]);
-
-	// ── Clear canvas ────────────────────────────────────────────────
+	}, [currentId, workflowName, nodes, edges, storageKey]);
 
 	const clearCanvas = useCallback(() => {
 		setNodes([]);
@@ -260,6 +435,13 @@ export const WorkflowBuilderProvider = ({
 
 	// ── Context value ───────────────────────────────────────────────
 
+	const ObjectValues = useMemo(() => Object.values(workflows), [workflows]);
+
+	const savedWorkflows = useMemo(
+		() => ObjectValues.sort((a, b) => b.updatedAt - a.updatedAt),
+		[ObjectValues]
+	);
+
 	const contextValue: WorkflowBuilderContextState = useMemo(
 		() => ({
 			nodes,
@@ -268,6 +450,11 @@ export const WorkflowBuilderProvider = ({
 			selectedNodeData,
 			workflowName,
 			setWorkflowName,
+			savedWorkflows,
+			currentWorkflowId: currentId,
+			createNewWorkflow,
+			loadWorkflow,
+			deleteWorkflow,
 			onNodesChange,
 			onEdgesChange,
 			onConnect,
@@ -284,6 +471,11 @@ export const WorkflowBuilderProvider = ({
 			selectedNodeId,
 			selectedNodeData,
 			workflowName,
+			savedWorkflows,
+			currentId,
+			createNewWorkflow,
+			loadWorkflow,
+			deleteWorkflow,
 			onNodesChange,
 			onEdgesChange,
 			onConnect,
@@ -303,10 +495,6 @@ export const WorkflowBuilderProvider = ({
 	);
 };
 
-/**
- * Hook to consume the WorkflowBuilder context.
- * Must be called within a <WorkflowBuilderProvider>.
- */
 export const useWorkflowBuilder = (): WorkflowBuilderContextState => {
 	const ctx = useContext(WorkflowBuilderContext);
 	if (!ctx) {
