@@ -354,7 +354,15 @@ export const WorkflowBuilderProvider = ({
 
 	const addNode = useCallback(
 		(item: WorkflowItem, position?: { x: number; y: number }) => {
-			const id = `${item.id}_${Date.now()}`;
+			// Use the raw item ID (e.g., serviceCode) directly so it can be easily looked up
+			const id = item.id;
+
+			// Prevent adding duplicate services since workflow path is linear and ID must be unique
+			if (nodes.some((n) => n.id === id)) {
+				console.warn(`Node with id ${id} already exists in workflow.`);
+				return;
+			}
+
 			const newNode: WorkflowNode = {
 				id,
 				type: "workflowNode",

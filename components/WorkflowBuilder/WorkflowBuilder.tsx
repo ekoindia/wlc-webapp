@@ -13,7 +13,7 @@
  * ```
  */
 
-import { Box, Flex, Input, Text, Select } from "@chakra-ui/react";
+import { Box, Flex, Input, Select, Text } from "@chakra-ui/react";
 import {
 	Background,
 	BackgroundVariant,
@@ -38,13 +38,14 @@ import {
 
 interface InnerBuilderProps {
 	items: WorkflowItem[];
+	onRun?: (_workflowId: string) => void;
 }
 
 const nodeTypes = {
 	workflowNode: WorkflowNodeComponent as any,
 };
 
-const InnerBuilder = ({ items }: InnerBuilderProps): JSX.Element => {
+const InnerBuilder = ({ items, onRun }: InnerBuilderProps): JSX.Element => {
 	const {
 		nodes,
 		edges,
@@ -210,6 +211,20 @@ const InnerBuilder = ({ items }: InnerBuilderProps): JSX.Element => {
 					>
 						Clear
 					</Button>
+					{onRun ? (
+						<Button
+							variant="primary_outline"
+							size="sm"
+							icon="play-arrow"
+							iconStyle={{ size: "xs" }}
+							onClick={() => {
+								saveWorkflow();
+								onRun(currentWorkflowId);
+							}}
+						>
+							Run
+						</Button>
+					) : null}
 					<Button
 						variant="primary"
 						size="sm"
@@ -293,6 +308,7 @@ const WorkflowBuilder = ({
 	items,
 	renderNode,
 	onSave,
+	onRun,
 	storageKey,
 	initialWorkflow,
 }: WorkflowBuilderProps): JSX.Element => {
@@ -306,7 +322,7 @@ const WorkflowBuilder = ({
 				initialWorkflow={initialWorkflow}
 				onSave={onSave}
 			>
-				<InnerBuilder items={items} />
+				<InnerBuilder items={items} onRun={onRun} />
 			</WorkflowBuilderProvider>
 		</ReactFlowProvider>
 	);

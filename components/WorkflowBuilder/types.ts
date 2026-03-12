@@ -83,6 +83,8 @@ export interface WorkflowBuilderProps {
 	) => React.ReactNode;
 	/** Callback when the workflow is saved */
 	onSave?: (_workflow: SerializedWorkflow) => void;
+	/** Callback when the Run button is clicked (if provided, Run button will be visible) */
+	onRun?: (_workflowId: string) => void;
 	/** Storage key for localStorage persistence (defaults to 'workflow-builder') */
 	storageKey?: string;
 	/** Initial workflow to load (overrides localStorage) */

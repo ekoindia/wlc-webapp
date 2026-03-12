@@ -241,6 +241,12 @@ export const KycVerificationPage = ({
 								workflow
 							)
 						}
+						onRun={(workflowId) => {
+							const path = isAdmin
+								? `/admin/products/kyc-verification/workflows/${workflowId}`
+								: `/products/kyc-verification/workflows/${workflowId}`;
+							router.push(path);
+						}}
 					/>
 				</Flex>
 			) : (
