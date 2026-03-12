@@ -155,11 +155,11 @@ export const KycWorkflowExecutor = ({
 						JSON.stringify(verificationData)
 					);
 
-					toast({
-						title: "Workflow completed",
-						status: "success",
-						duration: 2000,
-					});
+					// toast({
+					// 	title: "Workflow completed",
+					// 	status: "success",
+					// 	duration: 2000,
+					// });
 
 					setIsWorkflowComplete(true);
 				} catch (err) {
