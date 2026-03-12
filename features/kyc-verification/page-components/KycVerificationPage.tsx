@@ -198,7 +198,7 @@ export const KycVerificationPage = ({
 									setIsBuilderMode((prev) => !prev)
 								}
 								size="sm"
-								icon="more-horiz"
+								icon="settings"
 								iconStyle={{ size: "xs" }}
 								variant={
 									isBuilderMode
