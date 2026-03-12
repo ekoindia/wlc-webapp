@@ -1,3 +1,9 @@
+import { Box } from "@chakra-ui/react";
+import {
+	BreadcrumbWrapper,
+	generateBreadcrumbs,
+} from "components/BreadcrumbWrapper";
+import { useRouter } from "next/router";
 import { BulkPayout } from "page-components/products/bulk-payout";
 
 /**
@@ -5,7 +11,34 @@ import { BulkPayout } from "page-components/products/bulk-payout";
  * @returns {JSX.Element} Bulk Payout page
  */
 export default function BulkPayoutPage() {
-	return <BulkPayout />;
+	const router = useRouter();
+
+	const labelOverrides = {
+		"bulk-payment": "Bulk Payment",
+	};
+
+	const omitPaths = ["/admin", "/admin/products"];
+
+	const crumbs = generateBreadcrumbs(
+		router.asPath,
+		labelOverrides,
+		omitPaths
+	);
+
+	return (
+		<>
+			<Box
+				p={{
+					base: "0px",
+					md: "30px",
+				}}
+				pb={{ base: "20px", md: "5px" }}
+			>
+				<BreadcrumbWrapper crumbs={crumbs} />
+			</Box>
+			<BulkPayout />
+		</>
+	);
 }
 
 BulkPayoutPage.pageMeta = {
