@@ -240,7 +240,10 @@ const NetworkTreeView = () => {
 														selectedItem?.meta
 															?.user_code
 													}
-													// account_status_id
+													account_status_id={
+														selectedItem?.meta
+															?.account_status_id
+													}
 													user_type_id={
 														selectedItem?.meta
 															?.user_type_id

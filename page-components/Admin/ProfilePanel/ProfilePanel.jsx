@@ -6,6 +6,7 @@ import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { NetworkMenuWrapper } from "page-components/Admin/Network/NetworkMenuWrapper";
 import { lazy, Suspense, useEffect, useState } from "react";
 
 // Utility: Check if all values in an object are null/blank/empty
@@ -150,6 +151,7 @@ const ProfilePanel = () => {
 		agent: agentData,
 		loading: fetchingData,
 		error: agentError,
+		refetch: refetchAgentData,
 	} = useAgentDetails(mobile);
 
 	// console.log("[ProfilePanel] agentData:", agentData);
@@ -303,12 +305,27 @@ const ProfilePanel = () => {
 			<PageTitle
 				title={isMenuVisible ? "Change Role" : "Details"}
 				toolComponent={
-					isAdmin && changeRoleMenuList.length > 0 ? (
-						<ChangeRoleDesktop
-							changeRoleMenuList={changeRoleMenuList}
-							menuHandler={menuHandler}
-						/>
-					) : null
+					<Flex gap="2" align="center">
+						{isAdmin && changeRoleMenuList.length > 0 ? (
+							<ChangeRoleDesktop
+								changeRoleMenuList={changeRoleMenuList}
+								menuHandler={menuHandler}
+							/>
+						) : null}
+						{agentData ? (
+							<NetworkMenuWrapper
+								mobile_number={mobile}
+								eko_code={
+									agentData?.profile?.eko_code?.[0] ??
+									agentData?.profile?.eko_code ??
+									agentData?.eko_code
+								}
+								account_status_id={agentData?.account_status_id}
+								user_type_id={agentData?.user_type_id}
+								onStatusUpdate={refetchAgentData}
+							/>
+						) : null}
+					</Flex>
 				}
 				onBack={isMenuVisible ? menuHandler : null}
 				hideToolComponent={isMenuVisible}
