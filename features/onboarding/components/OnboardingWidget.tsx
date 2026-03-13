@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Flex } from "@chakra-ui/react";
 import { Button } from "components/Button";
+import { useOrgDetailContext } from "contexts";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
@@ -55,6 +56,15 @@ const OnboardingWidget = ({
 }: OnboardingWidgetProps): JSX.Element => {
 	const [_selectedRole, setSelectedRole] = useState<string>("");
 
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail || {};
+	const { disable_self_onboarding } = metadata || {};
+
+	const isSelfOnboardingDisabled =
+		disable_self_onboarding?.value ||
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
+		false;
+
 	// Fetch geolocation early on widget mount
 	const { latitude, longitude, accuracy } = useGeolocation({
 		highAccuracy: false,
@@ -85,6 +95,12 @@ const OnboardingWidget = ({
 		? assistedAgentDetails
 		: userData;
 
+	// Get user type from user data
+	const userType = useMemo(
+		() => getUserTypeFromData(onboardingUserDetails),
+		[onboardingUserDetails]
+	);
+
 	// React to userData changes after refresh to determine correct step
 	useEffect(() => {
 		// Get onboarding steps from user data
@@ -92,14 +108,12 @@ const OnboardingWidget = ({
 			onboardingUserDetails
 		);
 
-		const userType = getUserTypeFromData(onboardingUserDetails);
-
-		console.log("[OnboardingWidget] Step determination:", {
-			onboardingSteps,
-			onboardingUserDetails,
-			isAssistedOnboarding,
-			userType,
-		});
+		// console.log("[OnboardingWidget] Step determination:", {
+		// 	onboardingSteps,
+		// 	onboardingUserDetails,
+		// 	isAssistedOnboarding,
+		// 	userType,
+		// });
 
 		// Determine which step to show based on data
 		if (onboardingSteps?.length > 0) {
@@ -120,7 +134,8 @@ const OnboardingWidget = ({
 
 	if (
 		isAssistedOnboarding !== true &&
-		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING)
+		userType === -1 && // Role not selected
+		isSelfOnboardingDisabled
 	) {
 		// Self-onboarding is disabled for this app instance.
 		return (
