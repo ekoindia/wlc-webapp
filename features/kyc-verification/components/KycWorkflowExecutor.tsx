@@ -242,7 +242,7 @@ export const KycWorkflowExecutor = ({
 			direction="column"
 			w="100%"
 			gap={{ base: 4, md: 8 }}
-			pb={{ base: "100px", md: "0" }}
+			mb={{ base: "128px", md: "64px" }}
 		>
 			<PageTitle title={`${workflow.name}`} />
 
@@ -252,22 +252,24 @@ export const KycWorkflowExecutor = ({
 				gap={8}
 				align="flex-start"
 			>
-				{/* Stepper Side */}
+				{/* Stepper: horizontal + scrollable on mobile, vertical + sticky on desktop */}
 				<Box
 					w={{ base: "100%", md: "300px" }}
+					flexShrink={0}
 					position={{ base: "static", md: "sticky" }}
 					top={{ base: "auto", md: "100px" }}
+					px={{ base: "4", md: "0" }}
 				>
 					<Stepper
 						steps={steps}
 						currentStepId={currentServiceCode}
-						orientation="vertical"
-						allowNavigation={false} // Disable back navigation since data is tied linearly for now
+						orientation="responsive"
+						allowNavigation={false}
 					/>
 				</Box>
 
 				{/* Form Side */}
-				<Box flex="1" maxW="600px" w="100%">
+				<Box flex="1" maxW="600px" w="100%" px={{ base: "4", md: "0" }}>
 					<VStack gap={6} align="stretch" w="100%">
 						<ExecutorStepForm
 							service={currentService}
@@ -275,7 +277,7 @@ export const KycWorkflowExecutor = ({
 							onSubmit={handleStepSubmit}
 							isLastStep={isLastStep}
 							isLoading={isSubmitting}
-							initialData={collectedData} // Prefill data if keys overlap (e.g. they already typed 'pan_number')
+							initialData={collectedData}
 						/>
 					</VStack>
 				</Box>
