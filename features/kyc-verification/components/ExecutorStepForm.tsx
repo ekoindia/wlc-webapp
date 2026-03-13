@@ -113,7 +113,7 @@ export const ExecutorStepForm = ({
 										? "check-circle"
 										: "arrow-forward",
 									iconStyle: { size: "sm" },
-									width: "100%",
+									// width: "100%",
 								},
 							]}
 						/>
