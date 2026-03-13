@@ -155,11 +155,11 @@ export const KycWorkflowExecutor = ({
 						JSON.stringify(verificationData)
 					);
 
-					// toast({
-					// 	title: "Workflow completed",
-					// 	status: "success",
-					// 	duration: 2000,
-					// });
+					toast({
+						title: "Workflow completed",
+						status: "success",
+						duration: 2000,
+					});
 
 					setIsWorkflowComplete(true);
 				} catch (err) {
@@ -190,7 +190,7 @@ export const KycWorkflowExecutor = ({
 	if (isServicesLoading) {
 		return (
 			<PaddingBox>
-				<PageTitle title={`Workflow: ${workflow.name}`} />
+				<PageTitle title={`${workflow.name}`} />
 				<Flex justify="center" align="center" minH="200px">
 					<Spinner size="lg" color="primary.DEFAULT" />
 				</Flex>
@@ -201,7 +201,7 @@ export const KycWorkflowExecutor = ({
 	if (error) {
 		return (
 			<PaddingBox>
-				<PageTitle title={`Workflow: ${workflow.name}`} />
+				<PageTitle title={`${workflow.name}`} />
 				<Box p="6" bg="red.50" color="red.800" borderRadius="md">
 					<Text>{error}</Text>
 				</Box>
@@ -212,7 +212,7 @@ export const KycWorkflowExecutor = ({
 	if (orderedNodes.length === 0) {
 		return (
 			<PaddingBox>
-				<PageTitle title={`Workflow: ${workflow.name}`} />
+				<PageTitle title={`${workflow.name}`} />
 				<Box p="6" bg="orange.50" color="orange.800" borderRadius="md">
 					<Text>
 						This workflow has no steps. Add services in the builder
@@ -226,7 +226,7 @@ export const KycWorkflowExecutor = ({
 	if (!currentService) {
 		return (
 			<PaddingBox>
-				<PageTitle title={`Workflow: ${workflow.name}`} />
+				<PageTitle title={`${workflow.name}`} />
 				<Box p="6" bg="red.50" color="red.800" borderRadius="md">
 					<Text>
 						Service &ldquo;{currentServiceCode}&rdquo; is no longer
@@ -244,7 +244,7 @@ export const KycWorkflowExecutor = ({
 			gap={{ base: 4, md: 8 }}
 			pb={{ base: "100px", md: "0" }}
 		>
-			<PageTitle title={`Workflow: ${workflow.name}`} />
+			<PageTitle title={`${workflow.name}`} />
 
 			<Flex
 				direction={{ base: "column", md: "row" }}
