@@ -41,6 +41,11 @@ export const prepareTableCell = (
 	const onStatusUpdate = item?._onStatusUpdate;
 	const onDeleteDemoUser = item?._onDeleteDemoUser;
 
+	// Delegate custom rendering directly to the column definition
+	if (typeof column?.render === "function") {
+		return column.render(item, column, index, serialNo, expandedRow);
+	}
+
 	switch (column?.show) {
 		case "#":
 			return serialNo;

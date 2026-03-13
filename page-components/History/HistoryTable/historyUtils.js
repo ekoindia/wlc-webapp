@@ -71,6 +71,19 @@ export const prepareTableCell = (
 		value = item[column.name] || "";
 	}
 
+	// Delegate custom rendering directly to the column definition
+	if (typeof column?.render === "function") {
+		return column.render(
+			item,
+			column,
+			index,
+			serialNo,
+			expandedRow,
+			icon,
+			hue
+		);
+	}
+
 	// If a component to render the value is not provided, use the component based on the parameter type
 	let viewType = column.show;
 	if (!viewType && column.parameter_type_id) {

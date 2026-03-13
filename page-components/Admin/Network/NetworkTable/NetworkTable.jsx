@@ -6,6 +6,7 @@ import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { NetworkCard } from "..";
+import NetworkMenuWrapper from "../NetworkMenuWrapper/NetworkMenuWrapper";
 
 const commission_types = {
 	1: "Monthly",
@@ -25,9 +26,12 @@ const getCommissionType = (commission_type) => {
 /**
  * Custom hook to generate column configuration for the Network Table with dynamic labels and conditional columns.
  * Includes user-specific labels and conditional Employee ID column based on org settings.
+ * @param {object} handlers - Event handlers to inject into Custom Component columns
+ * @param {Function} handlers.onStatusUpdate - Status update callback
+ * @param {Function} handlers.onDeleteDemoUser - Demo user delete callback
  * @returns {Array<object>} - Array of column configuration objects with name, label, sorting, and visibility properties
  */
-export const useNetworkTableParameterList = () => {
+export const useNetworkTableParameterList = (handlers = {}) => {
 	const { getUserCodeLabel } = useUserTypes();
 	const { userType } = useSession();
 	const userCodeLabel = getUserCodeLabel(
@@ -122,7 +126,27 @@ export const useNetworkTableParameterList = () => {
 			visible_in_table: true,
 			hide_by_default: true,
 		},
-		{ name: "", label: "", show: "Modal", visible_in_table: true },
+		{
+			name: "actions",
+			label: "",
+			visible_in_table: true,
+			render: (item) => (
+				<NetworkMenuWrapper
+					mobile_number={item?.agent_mobile}
+					eko_code={
+						item?.profile?.eko_code?.[0] || item?.profile?.eko_code
+					}
+					account_status_id={item?.account_status_id}
+					user_type_id={item?.user_type_id}
+					onStatusUpdate={
+						handlers?.onStatusUpdate || item?._onStatusUpdate
+					}
+					onDeleteDemoUser={
+						handlers?.onDeleteDemoUser || item?._onDeleteDemoUser
+					}
+				/>
+			),
+		},
 		{ name: "", label: "", show: "Arrow", visible_in_table: true },
 	];
 
@@ -178,16 +202,17 @@ const NetworkTable = ({
 				commission_type: getCommissionType(commission_type),
 				agent_balance,
 				user_type_label,
-				_onStatusUpdate: onStatusUpdate,
-				_onDeleteDemoUser: onDeleteDemoUser,
 			};
 		});
-	}, [agentDetails, getUserTypeLabel, onStatusUpdate, onDeleteDemoUser]);
+	}, [agentDetails, getUserTypeLabel]);
 
 	const networkTableDataSize = memoizedAgentDetails?.length ?? 0;
 
 	// Use visible columns if provided, otherwise use dynamically generated list
-	const defaultColumns = useNetworkTableParameterList();
+	const defaultColumns = useNetworkTableParameterList({
+		onStatusUpdate,
+		onDeleteDemoUser,
+	});
 	const columnsToRender = visibleColumns || defaultColumns;
 
 	/**
