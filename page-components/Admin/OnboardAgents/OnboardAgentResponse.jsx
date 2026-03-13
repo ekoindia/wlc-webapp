@@ -1,4 +1,4 @@
-import { Table } from "components";
+import { Share, Table } from "components";
 import { UserType } from "constants/UserTypes";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 
@@ -60,11 +60,14 @@ const OnboardAgentResponse = ({ applicantType, responseList }) => {
 			{
 				name: "mobile",
 				label: "Share Login Link",
-				show: "ShareMobile",
-				meta: {
-					text: `Welcome to ${orgDetail?.org_name}!\n\nClick on the link to login to the ${orgDetail?.app_name} app:`,
-					url: window.location.origin || "",
-				},
+				render: (row) => (
+					<Share
+						mobile={row.mobile}
+						url={window.location.origin || ""}
+						text={`Welcome to ${orgDetail?.org_name}!\n\nClick on the link to login to the ${orgDetail?.app_name} app:`}
+						size="xs"
+					/>
+				),
 			},
 		],
 	];

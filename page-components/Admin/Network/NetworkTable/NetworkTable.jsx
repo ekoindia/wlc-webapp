@@ -2,6 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
 import { UserType } from "constants";
 import { useOrgDetailContext, useSession } from "contexts";
+import { getNameStyle } from "helpers";
 import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
@@ -49,9 +50,15 @@ export const useNetworkTableParameterList = (handlers = {}) => {
 		{
 			name: "agent_name",
 			label: "Name",
-			show: "Avatar",
 			sorting: true,
 			visible_in_table: true,
+			render: (row) =>
+				getNameStyle(
+					row.agent_name,
+					undefined,
+					undefined,
+					row.account_status_id
+				),
 		},
 		{
 			name: "user_type_label",
