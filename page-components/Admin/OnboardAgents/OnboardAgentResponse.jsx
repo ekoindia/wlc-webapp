@@ -1,10 +1,16 @@
 import { Share, Table } from "components";
 import { UserType } from "constants/UserTypes";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { getNameStyle } from "helpers";
 
 const onboardRetailerRenderer = [
 	{ label: "Sr. No.", show: "#" },
-	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
+	{
+		name: "name",
+		label: "Name",
+		sorting: true,
+		render: (row) => getNameStyle(row.name),
+	},
 	{ name: "mobile", label: "Mobile", sorting: true },
 	// { name: "dist_mobile", label: "Distributor Mobile Number", sorting: true },
 	{
@@ -22,7 +28,12 @@ const onboardRetailerRenderer = [
 
 const onboardDistributorRenderer = [
 	{ label: "Sr. No.", show: "#" },
-	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
+	{
+		name: "name",
+		label: "Name",
+		sorting: true,
+		render: (row) => getNameStyle(row.name),
+	},
 	{ name: "mobile", label: "Mobile", sorting: true },
 	{
 		name: "status",

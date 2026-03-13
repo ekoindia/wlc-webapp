@@ -9,8 +9,6 @@ import {
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
-	getNameStyle,
-	getPaymentStyle,
 	getStatusStyle,
 	getTrxnSummaryStyle,
 } from "helpers";
@@ -59,7 +57,6 @@ export const prepareTableCell = (
 ) => {
 	const account_status = item?.account_status;
 	const eko_code = item?.profile?.eko_code ?? [];
-	const trx_type = item?.debit_credit || item?.trx_type;
 
 	let value = "";
 
@@ -107,15 +104,10 @@ export const prepareTableCell = (
 				item?.address_details?.lattitude,
 				item?.address_details?.longitude
 			);
-		case "Avatar":
-			// Name with avatar
-			return getNameStyle(value, icon, hue);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
 			return getAmountStyle(value);
-		case "Payment":
-			return getPaymentStyle(value, trx_type);
 		case "Description":
 			return getDescriptionStyle(value);
 		case "Date":

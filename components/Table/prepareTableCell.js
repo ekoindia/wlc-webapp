@@ -8,8 +8,6 @@ import {
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
-	getNameStyle,
-	getPaymentStyle,
 	getShareMobileButton,
 	getStatusStyle,
 } from "helpers";
@@ -37,7 +35,6 @@ export const prepareTableCell = (
 	const account_status_id = item?.account_status_id;
 	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
-	const trx_type = item?.debit_credit || item?.trx_type;
 	const onStatusUpdate = item?._onStatusUpdate;
 	const onDeleteDemoUser = item?._onDeleteDemoUser;
 
@@ -66,19 +63,10 @@ export const prepareTableCell = (
 			return getAddressWithTooltip(item[column.name]);
 		case "Location":
 			return getLocationStyle(item[column.name]);
-		case "Avatar":
-			return getNameStyle(
-				item[column.name],
-				undefined,
-				undefined,
-				account_status_id
-			);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
 			return getAmountStyle(item[column.name]);
-		case "Payment":
-			return getPaymentStyle(item[column.name], trx_type);
 		case "Mobile":
 			return formatMobile(item[column.name]);
 		case "Description":
