@@ -8,6 +8,7 @@ import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
 import type { WorkflowItem } from "components/WorkflowBuilder/types";
 import { UserType } from "constants/index";
 import { useSession } from "contexts";
+import useFeatureFlag from "hooks/useFeatureFlag";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
@@ -60,6 +61,10 @@ export const KycVerificationPage = ({
 		error,
 		getServicesByCodes,
 	} = useKycServices();
+
+	const [isWorkflowBuilderEnabled] = useFeatureFlag(
+		"VERIFICATION_WORKFLOW_BUILDER"
+	);
 
 	// Add user modal state
 	// const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
@@ -192,7 +197,7 @@ export const KycVerificationPage = ({
 						/>
 
 						{/* Builder mode button */}
-						{(isAdmin || userType === UserType.DISTRIBUTOR) && (
+						{isWorkflowBuilderEnabled && isAdmin && (
 							<Button
 								onClick={() =>
 									setIsBuilderMode((prev) => !prev)
