@@ -1,5 +1,17 @@
-import { Box, Flex, Grid, Spinner, Text } from "@chakra-ui/react";
-import { Button, Icon, Menus, PageTitle } from "components";
+import {
+	Box,
+	Flex,
+	Grid,
+	Menu,
+	MenuButton,
+	MenuDivider,
+	MenuItem,
+	MenuList,
+	Portal,
+	Spinner,
+	Text,
+} from "@chakra-ui/react";
+import { Button, Icon, PageTitle } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -7,7 +19,7 @@ import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import { useAgentDetails } from "page-components/Admin/Network/hooks";
 import { NetworkMenuWrapper } from "page-components/Admin/Network/NetworkMenuWrapper";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Fragment, lazy, Suspense, useEffect, useState } from "react";
 
 // Utility: Check if all values in an object are null/blank/empty
 const isAllFieldsEmpty = (obj, fields) => {
@@ -68,26 +80,41 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 	return (
 		<Box>
 			<Box display={{ base: "none", md: "block" }}>
-				<Menus
-					as={Button}
-					type="everted"
-					title="Change Role"
-					menulist={changeRoleMenuList}
-					iconPos="right"
-					iconName="caret-down"
-					iconStyles={{ size: "xs" }}
-					rounded="10px"
-					buttonStyle={{
-						height: { base: "48px", lg: "52px" },
-						minW: { base: "150px", lg: "220px" },
-						// border: "1px solid #FE9F00",
-						// boxShadow: "0px 3px 10px #FE9F0040",
-						textAlign: "left",
-					}}
-					listStyles={{
-						width: "250px",
-					}}
-				/>
+				<Menu autoSelect={false} isLazy>
+					<MenuButton
+						cursor="pointer"
+						as={Button}
+						variant="accent_outline"
+						rightIcon={<Icon name="caret-down" size="xs" />}
+						rounded="8px"
+						size="md"
+					>
+						Change Role
+					</MenuButton>
+					<Portal>
+						<MenuList py="0px" minW="fit-content" width="200px">
+							{changeRoleMenuList.map((item, index) => (
+								<Fragment
+									key={item.id ?? `${index}-${item.label}`}
+								>
+									<MenuItem
+										color="dark"
+										onClick={() => item.onClick(item.value)}
+										minHeight="44px"
+										fontSize="sm"
+										_hover={{ bg: "divider" }}
+									>
+										{item.label}
+									</MenuItem>
+									{index !==
+										changeRoleMenuList.length - 1 && (
+										<MenuDivider margin="auto" w="90%" />
+									)}
+								</Fragment>
+							))}
+						</MenuList>
+					</Portal>
+				</Menu>
 			</Box>
 			<Button
 				display={{ base: "block", md: "none" }}

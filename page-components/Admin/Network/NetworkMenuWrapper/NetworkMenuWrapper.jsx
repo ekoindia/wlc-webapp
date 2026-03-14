@@ -1,17 +1,23 @@
 import {
+	Box,
 	Flex,
 	IconButton,
+	Menu,
+	MenuButton,
+	MenuDivider,
+	MenuItem,
+	MenuList,
+	Portal,
 	Text,
-	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, Menus, Modal } from "components";
+import { Button, Icon, Modal } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -122,7 +128,6 @@ const NetworkMenuWrapper = ({
 	onDeleteDemoUser,
 }) => {
 	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
-	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 	const [accountStatusId, setAccountStatusId] = useState();
@@ -400,21 +405,48 @@ const NetworkMenuWrapper = ({
 	if (_finalMenuList?.length < 1) return;
 
 	return (
-		<div>
-			<Menus
-				onOpen={onOpen}
-				menulist={_finalMenuList}
-				type="everted"
-				as={IconButton}
-				iconName="more-vert"
-				minH={{ base: "25px", "2xl": "30px" }}
-				minW={{ base: "25px", "2xl": "30px" }}
-				width={{ base: "25px", "2xl": "30px" }}
-				height={{ base: "25px", "2xl": "30px" }}
-				onClick={(e) => {
-					e.stopPropagation();
-				}}
-			/>
+		<>
+			<Box onClick={(e) => e.stopPropagation()}>
+				<Menu autoSelect={false} isLazy>
+					<MenuButton
+						cursor="pointer"
+						as={IconButton}
+						rounded="4px"
+						minH={{ base: "25px", "2xl": "30px" }}
+						minW={{ base: "25px", "2xl": "30px" }}
+						width={{ base: "25px", "2xl": "30px" }}
+						height={{ base: "25px", "2xl": "30px" }}
+						icon={<Icon name="more-vert" />}
+						color="white"
+						bg="accent.DEFAULT"
+						_hover={{ color: "white", bg: "accent.dark" }}
+						_active={{ color: "white", bg: "accent.dark" }}
+					/>
+					<Portal>
+						<MenuList py="0px" minW="fit-content">
+							{_finalMenuList.map((item, index) => (
+								<Fragment
+									key={item.id ?? `${index}-${item.label}`}
+								>
+									<MenuItem
+										value={item.value}
+										color="dark"
+										onClick={() => item.onClick(item.value)}
+										minHeight="48px"
+										fontSize="sm"
+										_hover={{ bg: "divider" }}
+									>
+										{item.label}
+									</MenuItem>
+									{index !== _finalMenuList.length - 1 && (
+										<MenuDivider margin="auto" w="90%" />
+									)}
+								</Fragment>
+							))}
+						</MenuList>
+					</Portal>
+				</Menu>
+			</Box>
 			<Modal
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
@@ -473,7 +505,7 @@ const NetworkMenuWrapper = ({
 					</Flex>
 				</Flex>
 			</Modal>
-		</div>
+		</>
 	);
 };
 
