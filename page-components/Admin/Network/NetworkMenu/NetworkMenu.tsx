@@ -15,8 +15,18 @@ import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import React, { Fragment, useState } from "react";
-import { DeleteDemoUserModal } from "./DeleteDemoUserModal";
-import { StatusUpdateModal } from "./StatusUpdateModal";
+import dynamic from "next/dynamic";
+
+const DeleteDemoUserModal = dynamic(
+	() =>
+		import("./DeleteDemoUserModal").then((mod) => mod.DeleteDemoUserModal),
+	{ ssr: false }
+);
+
+const StatusUpdateModal = dynamic(
+	() => import("./StatusUpdateModal").then((mod) => mod.StatusUpdateModal),
+	{ ssr: false }
+);
 
 const status = {
 	PENDING_APPROVAL: 13,
@@ -32,6 +42,15 @@ const statusLabels: Record<number, string> = {
 	18: "Inactive",
 };
 
+/**
+ * Generates the final menu list based on agent status and permissions.
+ * @param {Array<any>} list - The base list of menu items.
+ * @param {number} statusId - The current status ID of the agent.
+ * @param {any} extra - The extra menu item to include (like Change Role).
+ * @param {boolean} includeExtra - Whether to include the extra menu item.
+ * @param {Array<any>} other - Other additional menu items.
+ * @returns {Array<any>} The generated menu list.
+ */
 const generateMenuList = (
 	list: any[],
 	statusId: number,
@@ -83,6 +102,18 @@ interface NetworkMenuProps {
 	onDeleteDemoUser?: (_eko_code: string) => void;
 }
 
+/**
+ * NetworkMenu component provides a dropdown menu of actions for a user in the network list.
+ * @param {NetworkMenuProps} props - The properties for the NetworkMenu component.
+ * @param {string} props.mobile_number - The mobile number of the user.
+ * @param {string} props.eko_code - The Eko code of the user.
+ * @param {number} props.account_status_id - The current account status ID of the user.
+ * @param {number} props.user_type_id - The type ID of the user.
+ * @param {"primary" | "accent" | "primary_outline" | "accent_outline" | "ghost" | "link"} [props.variant] - The visual variant of the menu button.
+ * @param {Function} [props.onStatusUpdate] - Callback function triggered upon a successful status update.
+ * @param {Function} [props.onDeleteDemoUser] - Callback function triggered upon a successful demo user deletion.
+ * @returns {JSX.Element | null} The rendered NetworkMenu component, or null if no menu items are available.
+ */
 export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 	mobile_number,
 	eko_code,
