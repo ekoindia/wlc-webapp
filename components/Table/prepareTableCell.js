@@ -7,21 +7,20 @@ import {
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
-	getModalStyle,
 	getShareMobileButton,
 	getStatusStyle,
 } from "helpers";
 import { formatMobile } from "utils";
 
 /**
- *
- * @param {*} item
- * @param {*} column
+ * Prepares the content for a table cell based on the column configuration.
+ * @param {object} item - The data item for the current row
+ * @param {object} column - The column configuration object
  * @param {number} index - Table row index
- * @param {number} serialNo
- * @param {string} tableName
- * @param expandedRow
- * @returns
+ * @param {number} serialNo - The serial number for the row
+ * @param {string} tableName - The name of the table
+ * @param {number} expandedRow - The index of the currently expanded row
+ * @returns {React.ReactNode} The formatted React node for the cell
  */
 export const prepareTableCell = (
 	item,
@@ -31,13 +30,6 @@ export const prepareTableCell = (
 	tableName,
 	expandedRow
 ) => {
-	const agent_type = item?.agent_type;
-	const account_status_id = item?.account_status_id;
-	const mobile_number = item?.agent_mobile;
-	const eko_code = item?.profile?.eko_code ?? [];
-	const onStatusUpdate = item?._onStatusUpdate;
-	const onDeleteDemoUser = item?._onDeleteDemoUser;
-
 	// Delegate custom rendering directly to the column definition
 	if (typeof column?.render === "function") {
 		return column.render(item, column, index, serialNo, expandedRow);
@@ -48,15 +40,6 @@ export const prepareTableCell = (
 			return serialNo;
 		case "Tag":
 			return getStatusStyle(item[column.name], tableName);
-		case "Modal":
-			return getModalStyle(
-				mobile_number,
-				eko_code,
-				account_status_id,
-				agent_type,
-				onStatusUpdate,
-				onDeleteDemoUser
-			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
 		case "Address":
