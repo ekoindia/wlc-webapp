@@ -16,13 +16,14 @@ import { MdFolderShared } from "react-icons/md";
 import { RiEBike2Fill } from "react-icons/ri";
 import { formatMobile } from "utils";
 import { getInitials } from "utils/textFormat";
-import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
+import { NetworkMenu } from "./NetworkMenu/NetworkMenu";
 
 // Refresh throttling constants
 const REFRESH_THROTTLE = 2 * 60 * 1000; // 2 minutes
 
 /**
  * Show network users in an expandable tree view.
+ * @returns {JSX.Element} The tree view component
  * TODO: Add caching mechanism for the network users data in the NetworkUserContext.
  * TODO: Move logic for list to tree conversion from NetworkUsersContext to here so that data filtering can be done effectively, and the tree can be updated on the fly.
  */
@@ -43,7 +44,7 @@ const NetworkTreeView = () => {
 	// Fetch Network User List as a tree when tree-view is visible
 	useEffect(() => {
 		refreshUserList();
-	}, []);
+	}, [refreshUserList]);
 
 	const [now, setNow] = useState(Date.now());
 
@@ -231,7 +232,7 @@ const NetworkTreeView = () => {
 											</Text>
 											{selectedItem?.meta?.mobile &&
 											selectedItem?.meta?.user_code ? (
-												<NetworkMenuWrapper
+												<NetworkMenu
 													mobile_number={
 														selectedItem?.meta
 															?.mobile
@@ -318,12 +319,12 @@ const NetworkTreeView = () => {
  * Network Tree Item (Title) component
  * MARK: Tree Item
  * @param {object} props
- * @param {object} props.user User object (tree item)
- * @param props.data
- * @param props.count
- * @param props.isFolder
- * @param props.rootCategory
- * @param props.meta
+ * @param {*} props.data
+ * @param {number} props.count
+ * @param {boolean} props.isFolder
+ * @param {boolean} props.rootCategory
+ * @param {object} props.meta
+ * @returns {JSX.Element | null}
  */
 const NetworkTreeItem = ({
 	data,
@@ -361,7 +362,8 @@ const NetworkTreeItem = ({
 /**
  * Tag component to show user-type, user count, etc
  * @param {object} props - Props for the Tag component
- * @param {ReactNode} props.children - Child elements to be displayed inside the tag
+ * @param {React.ReactNode} props.children - Child elements to be displayed inside the tag
+ * @returns {JSX.Element}
  */
 const Tag = ({ children, ...rest }) => {
 	return (
@@ -385,10 +387,11 @@ const Tag = ({ children, ...rest }) => {
 /**
  * Tree item logo: show a folder icon for root folders or an avatar based on the user-type
  * MARK: Type Icon
- * @param {object} props
+ * @param {object} props - Properties
  * @param {boolean} props.rootCategory - Whether the item is a root category folder
  * @param {string} props.user_type - Type of the user
  * @param {number} props.user_type_id - ID of the user type
+ * @returns {JSX.Element}
  */
 function UserTypeIcon({ rootCategory, user_type, user_type_id }) {
 	const { h } = useHslColor(user_type);

@@ -7,7 +7,7 @@ import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { NetworkCard } from "..";
-import NetworkMenuWrapper from "../NetworkMenuWrapper/NetworkMenuWrapper";
+import { NetworkMenu } from "../NetworkMenu/NetworkMenu";
 
 const commission_types = {
 	1: "Monthly",
@@ -138,7 +138,7 @@ export const useNetworkTableParameterList = (handlers = {}) => {
 			label: "",
 			visible_in_table: true,
 			render: (item) => (
-				<NetworkMenuWrapper
+				<NetworkMenu
 					mobile_number={item?.agent_mobile}
 					eko_code={
 						item?.profile?.eko_code?.[0] || item?.profile?.eko_code
