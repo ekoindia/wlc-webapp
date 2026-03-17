@@ -53,7 +53,7 @@ const statusLabels: Record<number, string> = {
  */
 const generateMenuList = (
 	list: any[],
-	statusId: number,
+	statusId: number | string,
 	extra: any,
 	includeExtra: boolean,
 	other: any[]
@@ -89,8 +89,8 @@ const generateMenuList = (
 interface NetworkMenuProps {
 	mobile_number: string;
 	eko_code: string;
-	account_status_id: number;
-	user_type_id: number;
+	account_status_id: number | string;
+	user_type_id: number | string;
 	label?: string;
 	variant?:
 		| "primary"
@@ -275,7 +275,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
 				accountStatusId={accountStatusId}
-				currentStatusId={account_status_id}
+				currentStatusId={Number(account_status_id)}
 				eko_code={eko_code}
 				accessToken={accessToken}
 				statusLabels={statusLabels}
