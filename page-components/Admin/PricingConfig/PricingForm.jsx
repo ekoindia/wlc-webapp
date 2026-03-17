@@ -410,9 +410,15 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 				if (
 					response?.status === 0 &&
-					response?.param_attributes?.message
+					response?.param_attributes !== null
 				) {
-					setPricingMessage(response.param_attributes.message);
+					const { type, value } = response.param_attributes;
+					const formattedValue =
+						type === PRICING_TYPES.FIXED
+							? formatCurrency(value)
+							: `${value}%`;
+
+					setPricingMessage(formattedValue);
 				} else {
 					setPricingMessage("");
 				}
@@ -891,9 +897,13 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					isClosable: true,
 				});
 
-				// after saving, refresh the pricing message so the UI shows the updated value
-				const slabData = state.slabOptions?.[watcher?.select?.value];
-				fetchCurrentPricing(slabData);
+				// update pricing message after setting new pricing, to reflect the change immediately in the UI
+				const PriceType = data.pricing_type;
+				const _PricingMessage =
+					PriceType === PRICING_TYPES.FIXED
+						? formatCurrency(data.actual_pricing)
+						: `${data.actual_pricing}%`;
+				setPricingMessage(_PricingMessage);
 
 				// handleReset();
 			})
