@@ -12,10 +12,10 @@ import { Icon } from "components";
 import { Endpoints, TransactionTypes } from "constants/index";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import React, { Fragment, useState } from "react";
-import dynamic from "next/dynamic";
 
 const DeleteDemoUserModal = dynamic(
 	() =>
@@ -190,7 +190,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 		},
 		{
 			label: "Download Agreement",
-			visible: account_status_id === status.ACTIVE,
+			visible: +account_status_id === status.ACTIVE,
 			onClick: () => {
 				downloadAgreement();
 			},
