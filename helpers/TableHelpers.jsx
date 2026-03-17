@@ -7,7 +7,6 @@ import {
 	Tooltip,
 } from "@chakra-ui/react";
 import { Currency, DateView, IcoButton, Icon, Share } from "components";
-import { NetworkMenuWrapper } from "page-components/Admin/Network";
 import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 
 // convert status text to color
@@ -320,28 +319,6 @@ export const getArrowStyle = () => {
 				"@media print": {
 					display: "none !important",
 				},
-			}}
-		/>
-	);
-};
-
-export const getModalStyle = (
-	mobile_number,
-	eko_code,
-	account_status_id,
-	agent_type,
-	onStatusUpdate,
-	onDeleteDemoUser
-) => {
-	return (
-		<NetworkMenuWrapper
-			{...{
-				mobile_number,
-				eko_code,
-				account_status_id,
-				agent_type,
-				onStatusUpdate,
-				onDeleteDemoUser,
 			}}
 		/>
 	);

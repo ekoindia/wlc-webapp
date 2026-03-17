@@ -1,6 +1,6 @@
-import { useOrgDetailContext } from "contexts";
 import { useEffect, useMemo } from "react";
 import { OnboardingProvider, useOnboardingContext } from "../context";
+import type { OnboardingServices } from "../contracts";
 import {
 	getAgreementIdFromData,
 	getMobileFromData,
@@ -113,6 +113,8 @@ const OnboardingStepsContent = ({
  * @param {any} props.assistedAgentDetails - assisted onboarding user details (when assisted)
  * @param {() => Promise<void>} props.refreshAgentProfile - refresh callback to sync profile after step changes
  * @param {string} [props.initialLatLong] - pre-fetched geolocation string (lat,long,accuracy) to populate state early
+ * @param props.services
+ * @param props.orgMetadataOnboarding
  * @returns {JSX.Element} OnboardingStepsContent wrapped with OnboardingProvider
  */
 const OnboardingSteps = ({
@@ -121,15 +123,17 @@ const OnboardingSteps = ({
 	assistedAgentDetails,
 	refreshAgentProfile,
 	initialLatLong,
+	services,
+	orgMetadataOnboarding,
 }: {
 	isAssistedOnboarding: boolean;
 	userData: any;
 	assistedAgentDetails?: any;
 	refreshAgentProfile: () => Promise<void>;
 	initialLatLong?: string;
+	services: OnboardingServices;
+	orgMetadataOnboarding?: any;
 }) => {
-	const { orgDetail } = useOrgDetailContext();
-
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = useMemo(
 		() => (isAssistedOnboarding ? assistedAgentDetails : userData),
@@ -184,13 +188,14 @@ const OnboardingSteps = ({
 
 	return (
 		<OnboardingProvider
+			services={services}
 			userName={String(userName || "")}
 			mobile={String(mobile || "")}
 			agreementId={String(agreementId || "")}
 			onboardingSteps={onboardingSteps}
 			roleList={roleList}
 			userType={userType}
-			orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
+			orgMetadataOnboarding={orgMetadataOnboarding}
 			refreshAgentProfile={refreshAgentProfile}
 		>
 			<OnboardingStepsContent

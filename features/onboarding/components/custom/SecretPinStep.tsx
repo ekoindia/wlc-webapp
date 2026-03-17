@@ -2,9 +2,7 @@ import { Box, Flex, Skeleton, Text, VStack, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
-import { usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useRefreshToken } from "hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
 import { useOnboardingContext } from "../../context";
@@ -44,10 +42,11 @@ const SecretPinStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
-	const { publish, TOPICS } = usePubSub();
-	const { mobile, state, pipelineResults } = useOnboardingContext();
-	const { accessToken } = useSession();
-	const { generateNewToken } = useRefreshToken();
+	const { mobile, state, pipelineResults, services } = useOnboardingContext();
+	const { accessToken, generateNewToken } = services;
+	const pubsub = services.pubsub;
+	const publish = pubsub?.publish ?? (() => {});
+	const TOPICS = pubsub?.TOPICS ?? ({} as Record<string, string>);
 	const lastProcessedResultRef = useRef<any>(null);
 
 	// Booklet data state
