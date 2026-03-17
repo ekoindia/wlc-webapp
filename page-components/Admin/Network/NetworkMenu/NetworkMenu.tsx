@@ -110,6 +110,7 @@ interface NetworkMenuProps {
  * @param {string} props.eko_code - The Eko code of the user.
  * @param {number} props.account_status_id - The current account status ID of the user.
  * @param {number} props.user_type_id - The type ID of the user.
+ * @param {string} [props.label] - The label for the menu button.
  * @param {"primary" | "accent" | "primary_outline" | "accent_outline" | "ghost" | "link"} [props.variant] - The visual variant of the menu button.
  * @param {Function} [props.onStatusUpdate] - Callback function triggered upon a successful status update.
  * @param {Function} [props.onDeleteDemoUser] - Callback function triggered upon a successful demo user deletion.
