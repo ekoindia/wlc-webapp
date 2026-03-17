@@ -1,5 +1,6 @@
 import {
 	Box,
+	Button,
 	IconButton,
 	Menu,
 	MenuButton,
@@ -91,6 +92,7 @@ interface NetworkMenuProps {
 	eko_code: string;
 	account_status_id: number;
 	user_type_id: number;
+	label?: string;
 	variant?:
 		| "primary"
 		| "accent"
@@ -119,6 +121,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 	eko_code,
 	account_status_id,
 	user_type_id,
+	label,
 	variant = "primary",
 	onStatusUpdate,
 	onDeleteDemoUser,
@@ -226,15 +229,30 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 		<>
 			<Box onClick={(e: any) => e.stopPropagation()}>
 				<Menu autoSelect={false} isLazy variant={variant}>
-					<MenuButton
-						cursor="pointer"
-						as={IconButton}
-						rounded="8px"
-						size="sm"
-						variant={variant}
-						colorScheme="gray"
-						icon={<Icon name="more-vert" />}
-					/>
+					{label ? (
+						<MenuButton
+							cursor="pointer"
+							as={Button}
+							rounded="8px"
+							size="sm"
+							variant={variant}
+							colorScheme="gray"
+							rightIcon={<Icon name="more-vert" />}
+						>
+							{label}
+						</MenuButton>
+					) : (
+						<MenuButton
+							cursor="pointer"
+							as={IconButton}
+							rounded="8px"
+							size="sm"
+							variant={variant}
+							colorScheme="gray"
+							icon={<Icon name="more-vert" />}
+							aria-label="Options"
+						/>
+					)}
 					<Portal>
 						<MenuList>
 							{_finalMenuList.map((item, index) => (

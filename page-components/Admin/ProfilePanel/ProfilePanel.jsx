@@ -214,6 +214,7 @@ const ProfilePanel = () => {
 					<Flex gap="2" align="center">
 						{agentData ? (
 							<NetworkMenu
+								label="Options"
 								variant={menuVariant}
 								mobile_number={mobile}
 								eko_code={
