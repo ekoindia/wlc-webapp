@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	IconButton,
 	Menu,
 	MenuButton,
@@ -9,7 +8,7 @@ import {
 	MenuList,
 	Portal,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Button, Icon } from "components";
 import { Endpoints, TransactionTypes } from "constants/index";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -231,13 +230,10 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 				<Menu autoSelect={false} isLazy variant={variant}>
 					{label ? (
 						<MenuButton
-							cursor="pointer"
 							as={Button}
-							rounded="8px"
 							size="sm"
 							variant={variant}
-							colorScheme="gray"
-							rightIcon={<Icon name="more-vert" />}
+							rightIcon={<Icon name="caret-down" size="xs" />}
 						>
 							{label}
 						</MenuButton>
