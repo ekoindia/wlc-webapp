@@ -18,7 +18,14 @@ import {
 	Tr,
 	useBreakpointValue,
 } from "@chakra-ui/react";
-import { Button, Card, Icon, PageTitle, Pagination } from "components";
+import {
+	Button,
+	Card,
+	Currency,
+	Icon,
+	PageTitle,
+	Pagination,
+} from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -570,14 +577,14 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 													</Text>
 												</Td>
 												<Td isNumeric>
-													<Text
-														fontSize="sm"
-														fontWeight="medium"
-													>
-														₹
-														{batch.totalAmount.toLocaleString(
-															"en-IN"
-														)}
+													<Text fontSize="sm">
+														{
+															<Currency
+																amount={
+																	batch.totalAmount
+																}
+															/>
+														}
 													</Text>
 												</Td>
 												<Td>
