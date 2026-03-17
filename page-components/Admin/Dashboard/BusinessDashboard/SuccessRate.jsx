@@ -24,7 +24,7 @@ const SuccessRate = ({
 	setBusinessDashboardData,
 }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
-	const isProductListReady = masterProductList?.some((p) => p.value !== "");
+	const isProductListReady = masterProductList?.length > 1;
 
 	const [fetchSuccessRateData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,

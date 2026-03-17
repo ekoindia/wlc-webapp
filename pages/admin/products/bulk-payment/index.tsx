@@ -13,17 +13,9 @@ import { BulkPayout } from "page-components/products/bulk-payout";
 export default function BulkPayoutPage() {
 	const router = useRouter();
 
-	const labelOverrides = {
-		"bulk-payment": "Bulk Payment",
-	};
-
 	const omitPaths = ["/admin", "/admin/products"];
 
-	const crumbs = generateBreadcrumbs(
-		router.asPath,
-		labelOverrides,
-		omitPaths
-	);
+	const crumbs = generateBreadcrumbs(router.asPath, {}, omitPaths);
 
 	return (
 		<>
