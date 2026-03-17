@@ -36,7 +36,6 @@ import { InputMsg } from "./InputMsg";
 import { JsonViewer } from "./JsonViewer";
 import { Kbd } from "./Kbd";
 import { LocationCapture } from "./LocationCapture";
-import { Menus } from "./Menus";
 import { Modal } from "./Modal";
 import { NavBar } from "./NavBar";
 import { OrgLogo } from "./OrgLogo";
@@ -103,7 +102,6 @@ export {
 	JsonViewer,
 	Kbd,
 	LocationCapture,
-	Menus,
 	Modal,
 	NavBar,
 	OrgLogo,
