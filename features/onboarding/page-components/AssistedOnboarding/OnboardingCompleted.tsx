@@ -1,6 +1,5 @@
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { Button } from "components";
-import { useUser } from "contexts/UserContext";
 import { useRouter } from "next/router";
 import { FaCheckCircle } from "react-icons/fa";
 import { useOnboardingContext } from "../../context";
@@ -16,6 +15,10 @@ export interface OnboardingCompletedProps {
 	 * stale data from the previous agent leaking into the next onboarding.
 	 */
 	resetAgentState: () => void;
+	/**
+	 * Whether the current user is an admin (determines navigation target)
+	 */
+	isAdmin?: boolean;
 }
 
 /**
@@ -28,11 +31,10 @@ export interface OnboardingCompletedProps {
 const OnboardingCompleted = ({
 	setStep,
 	resetAgentState,
+	isAdmin = false,
 }: OnboardingCompletedProps): JSX.Element => {
 	const router = useRouter();
-	const { userData } = useUser();
 	const { mobile, userName } = useOnboardingContext();
-	const isAdmin = userData?.isAdmin ?? false;
 
 	/**
 	 * Handles navigation to home page based on user role

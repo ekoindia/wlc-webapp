@@ -10,8 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { UserTypeIcon } from "constants/UserTypes";
-import { useSession } from "contexts";
-import { useHslColor, useRefreshToken, useUserTypes } from "hooks";
+import { useHslColor, useUserTypes } from "hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { APPLICANT_TYPES, RESPONSE_TYPE_IDS } from "../constants";
 import { useOnboardingState } from "../hooks";
@@ -166,6 +165,8 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
  * @param {string} [props.agentMobile] - Mobile number of the assisted agent
  * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
  * @param {Function} props.refreshAgentProfile - Function to refresh the agent profile data
+ * @param props.accessToken
+ * @param props.generateNewToken
  * @returns {JSX.Element} The rendered RoleSelection component
  */
 const RoleSelection = ({
@@ -177,6 +178,8 @@ const RoleSelection = ({
 	agentMobile,
 	allowedMerchantTypes,
 	refreshAgentProfile,
+	accessToken,
+	generateNewToken,
 }) => {
 	const [selectedApplicantType, setSelectedApplicantType] = useState<
 		number | null
@@ -189,8 +192,6 @@ const RoleSelection = ({
 		: userData?.userDetails?.signup_mobile;
 
 	const { state, actions } = useOnboardingState();
-	const { accessToken } = useSession();
-	const { generateNewToken } = useRefreshToken();
 
 	/**
 	 * Submit role selection using the pipeline executor

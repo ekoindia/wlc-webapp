@@ -140,19 +140,13 @@ describe("OnboardingCompleted component", () => {
 	});
 
 	it("navigates to /admin for admin when Go to Home is clicked", () => {
-		const { useUser } = require("contexts/UserContext");
-		useUser.mockReturnValue({
-			userData: {
-				isAdmin: true,
-			},
-		});
-
 		const mockSetStep = jest.fn();
 		const mockResetAgentState = jest.fn();
 		const { getByText } = render(
 			<OnboardingCompleted
 				setStep={mockSetStep}
 				resetAgentState={mockResetAgentState}
+				isAdmin={true}
 			/>
 		);
 

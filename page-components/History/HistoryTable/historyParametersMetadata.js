@@ -1,4 +1,5 @@
 import { DisplayMedia } from "constants/trxnFramework";
+import { getNameStyle, getPaymentStyle } from "helpers";
 
 /**
  * Parameters to show in the Transaction History table (for agents)
@@ -42,10 +43,11 @@ export const historyParametersMetadata = [
 		name: "amount",
 		label: "Transaction\nAmount",
 		sorting: true,
-		show: "Payment",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
+		render: (row) =>
+			getPaymentStyle(row.amount, row.debit_credit ?? row.trx_type),
 	},
 
 	{
@@ -520,10 +522,10 @@ export const networkHistoryParametersMetadata = [
 		name: "agent_name",
 		label: "Agent",
 		sorting: true,
-		show: "Avatar",
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
+		render: (row) => getNameStyle(row.agent_name),
 	},
 	{
 		name: "agent_type",
@@ -553,10 +555,11 @@ export const networkHistoryParametersMetadata = [
 		name: "amount",
 		label: "Amount",
 		sorting: true,
-		show: "Payment",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
+		render: (row) =>
+			getPaymentStyle(row.amount, row.debit_credit ?? row.trx_type),
 	},
 	{
 		name: "datetime",

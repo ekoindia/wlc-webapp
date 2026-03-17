@@ -8,6 +8,7 @@ import {
 	switchTheme,
 	tableTheme,
 	tabsTheme,
+	menuTheme,
 } from "./theme_system/theme/components";
 
 export const light = extendTheme({
@@ -59,6 +60,7 @@ export const light = extendTheme({
 		Switch: switchTheme,
 		Table: tableTheme,
 		Tabs: tabsTheme,
+		Menu: menuTheme,
 		Skeleton: {
 			baseStyle: {
 				borderRadius: "4px",

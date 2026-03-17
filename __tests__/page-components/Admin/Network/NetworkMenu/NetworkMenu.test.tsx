@@ -1,4 +1,4 @@
-import { NetworkMenuWrapper } from "page-components/Admin/Network/NetworkMenuWrapper";
+import { NetworkMenu } from "page-components/Admin/Network/NetworkMenu/NetworkMenu";
 import { pageRender } from "test-utils";
 
 /*
@@ -15,9 +15,16 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("NetworkMenuWrapper", () => {
+describe("NetworkMenu", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<NetworkMenuWrapper />);
+		const { container } = pageRender(
+			<NetworkMenu
+				mobile_number="9999999999"
+				eko_code="10000000"
+				account_status_id={16}
+				user_type_id={2}
+			/>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -44,10 +51,4 @@ describe("NetworkMenuWrapper", () => {
 		// Enable snapshot testing:
 		// expect(container).toMatchSnapshot();
 	});
-
-	// TODO: Write other tests here..
-	// Start by writting all possible test cases here using test.todo()
-	test.todo(
-		"TODO: add proper test cases for NetworkMenuWrapper in __tests__/components/NetworkMenuWrapper/NetworkMenuWrapper.test.jsx"
-	);
 });
