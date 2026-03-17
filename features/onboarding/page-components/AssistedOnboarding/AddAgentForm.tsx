@@ -3,12 +3,12 @@ import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { ParamType } from "constants/trxnFramework";
-import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import router from "next/router";
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
+import { useOnboardingContext } from "../../context";
 import {
 	ASSISTED_ONBOARDING_STEPS,
 	RESPONSE_TYPE_IDS,
@@ -92,7 +92,8 @@ const AddAgentForm = ({
 	// });
 
 	// const toast = useToast();
-	const { accessToken } = useSession();
+	const { services } = useOnboardingContext();
+	const { accessToken } = services;
 
 	const handleFormSubmit = async (data) => {
 		const _cspId = data.csp_id;

@@ -3,7 +3,6 @@ import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import { ParamType } from "constants/trxnFramework";
-import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
@@ -87,7 +86,8 @@ const OtpVerificationForm = ({
 		},
 	];
 
-	const { accessToken } = useSession();
+	const { services } = useOnboardingContext();
+	const { accessToken } = services;
 	const toast = useToast();
 
 	const handleFormSubmit = async (data) => {
