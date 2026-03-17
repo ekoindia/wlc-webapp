@@ -16,6 +16,7 @@ import { useMemo } from "react";
 
 /**
  * Inner component that uses the KYC services context.
+ * @returns {JSX.Element} Admin service form route content
  */
 const AdminServiceFormRouteInner = (): JSX.Element => {
 	const router = useRouter();
@@ -76,6 +77,12 @@ const AdminServiceFormRouteInner = (): JSX.Element => {
 
 		return baseCrumbs;
 	}, [serviceObjects, router.asPath]);
+
+	// Guard: If the first slug is "workflows", this route should not handle it
+	// Let the specific workflows/[id] route handle it instead
+	if (slugs.length > 0 && slugs[0] === "workflows") {
+		return <></>;
+	}
 
 	return (
 		<>

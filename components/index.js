@@ -150,3 +150,5 @@ export { CopyButton } from "./CopyButton";
 export { SegmentedControl } from "./SegmentedControl";
 
 export { default as ToggleColumns } from "./ToggleColumns";
+
+export { WorkflowBuilder } from "./WorkflowBuilder";

@@ -1,13 +1,15 @@
 import { Flex } from "@chakra-ui/react";
 import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
-import { useNetworkUsers, useSession } from "contexts";
+import { useNetworkUsers, usePubSub, useSession } from "contexts";
+import { useAppSource } from "contexts/AppSourceContext";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
+import useRefreshToken from "hooks/useRefreshToken";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
 	AddAgentForm,
 	type AgentAlreadyExistsScreenProps,
@@ -15,6 +17,7 @@ import {
 	type OtpVerificationFormProps,
 } from ".";
 import { OnboardingProvider } from "../../context";
+import type { OnboardingServices } from "../../contracts";
 import {
 	getAgreementIdFromData,
 	getOnboardingStepsFromData,
@@ -90,18 +93,30 @@ const OnboardingCompleted = dynamic(() => import("./OnboardingCompleted"), {
  */
 const AssistedOnboarding = (): JSX.Element => {
 	const router = useRouter();
-	const { userData } = useUser();
+	const { isAdmin, userData } = useUser();
 	const { accessToken } = useSession();
+	const { generateNewToken } = useRefreshToken();
 	const { refreshUserList } = useNetworkUsers();
 	const { orgDetail } = useOrgDetailContext();
+	const { isAndroid } = useAppSource();
+	const pubsub = usePubSub();
+
+	// Build the services object for the onboarding feature
+	const services: OnboardingServices = useMemo(
+		() => ({
+			accessToken,
+			generateNewToken,
+			isAndroid,
+			pubsub,
+		}),
+		[accessToken, generateNewToken, isAndroid, pubsub]
+	);
 
 	const [step, setStep] = useState<keyof typeof ASSISTED_ONBOARDING_STEPS>(
 		ASSISTED_ONBOARDING_STEPS.ADD_AGENT
 	);
 	const [agentMobile, setAgentMobile] = useState<string>("");
 	const [agentDetails, setAgentDetails] = useState<any>(null);
-
-	const isAdmin = userData?.userType === "Admin";
 
 	/**
 	 * Resets agent-specific state when starting a new onboarding flow.
@@ -238,6 +253,8 @@ const AssistedOnboarding = (): JSX.Element => {
 						assistedAgentDetails={agentDetails}
 						agentMobile={agentMobile}
 						refreshAgentProfile={refreshAgentProfile}
+						services={services}
+						orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
 					/>
 				);
 
@@ -246,6 +263,7 @@ const AssistedOnboarding = (): JSX.Element => {
 					<OnboardingCompleted
 						setStep={setStep}
 						resetAgentState={resetAgentState}
+						isAdmin={isAdmin}
 					/>
 				);
 
@@ -302,6 +320,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				    via useOnboardingContext(). */}
 				<OnboardingProvider
 					key={agentMobile || "no-agent"}
+					services={services}
 					mobile={agentMobile}
 					userName={String(userName || "")}
 					agreementId={String(agreementId || "")}
