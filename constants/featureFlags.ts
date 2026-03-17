@@ -65,6 +65,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 	},
 
+	VERIFICATION_WORKFLOW_BUILDER: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// TODO: Update this feature flag on role basis instead of org-id basis after the role-based access control (RBAC) is implemented.
 	DEMO_ACCOUNT: {
 		enabled: true,

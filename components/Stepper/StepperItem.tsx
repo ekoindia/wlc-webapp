@@ -122,7 +122,8 @@ const StepperItem = ({
 				<Icon
 					name={icon}
 					color={getIndicatorTextColor()}
-					size={{ base: "18px", "2xl": "22px" }}
+					size="sm"
+					p="1px"
 				/>
 			);
 		}

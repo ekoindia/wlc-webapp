@@ -5,8 +5,11 @@
 
 import { Card, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, InfoTileGrid, PaddingBox, PageTitle } from "components";
+import type { WorkflowItem } from "components/WorkflowBuilder/types";
 import { UserType } from "constants/index";
 import { useSession } from "contexts";
+import useFeatureFlag from "hooks/useFeatureFlag";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { toKebabCase } from "utils";
@@ -21,6 +24,12 @@ import { ALL_CATEGORIES_VALUE } from "../constants";
 import { useKycServices, useServiceSelection } from "../hooks";
 import type { VerificationService } from "../types";
 import { ManageAgentServicesPage } from "./ManageAgentServicesPage";
+
+/** Lazy-load workflow builder to keep bundle lean */
+const WorkflowBuilder = dynamic(
+	() => import("components/WorkflowBuilder/WorkflowBuilder"),
+	{ ssr: false }
+);
 
 interface KycVerificationPageProps {
 	/** Base path for navigation (defaults to /products/kyc-verification) */
@@ -53,11 +62,18 @@ export const KycVerificationPage = ({
 		getServicesByCodes,
 	} = useKycServices();
 
+	const [isWorkflowBuilderEnabled] = useFeatureFlag(
+		"VERIFICATION_WORKFLOW_BUILDER"
+	);
+
 	// Add user modal state
 	// const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
 	// Manage services mode state
 	const [isManageMode, setIsManageMode] = useState(false);
+
+	// Builder mode state
+	const [isBuilderMode, setIsBuilderMode] = useState(false);
 
 	// Selection state
 	const {
@@ -105,6 +121,23 @@ export const KycVerificationPage = ({
 		selectedCategory,
 		basePath,
 	]);
+
+	// Map services to generic WorkflowItems for the builder
+	const workflowItems: WorkflowItem[] = useMemo(
+		() =>
+			filteredServices.map((s) => ({
+				id: s.serviceCode,
+				label: s.name,
+				category: s.category,
+				description: s.description,
+				icon: s.icon,
+				meta: {
+					endpointPath: s.endpointPath,
+					requestParamsCount: s.requestParams?.length ?? 0,
+				},
+			})),
+		[filteredServices]
+	);
 
 	// Handle continue button click
 	const handleContinue = () => {
@@ -163,6 +196,25 @@ export const KycVerificationPage = ({
 							}
 						/>
 
+						{/* Builder mode button */}
+						{isWorkflowBuilderEnabled && isAdmin && (
+							<Button
+								onClick={() =>
+									setIsBuilderMode((prev) => !prev)
+								}
+								size="sm"
+								icon="settings"
+								iconStyle={{ size: "xs" }}
+								variant={
+									isBuilderMode
+										? "primary"
+										: "primary_outline"
+								}
+							>
+								Builder
+							</Button>
+						)}
+
 						{(isAdmin || userType === UserType.DISTRIBUTOR) && (
 							<Button
 								onClick={() => setIsManageMode(!isManageMode)}
@@ -183,6 +235,25 @@ export const KycVerificationPage = ({
 			{/* Conditional content based on manage mode */}
 			{isManageMode ? (
 				<ManageAgentServicesPage />
+			) : isBuilderMode ? (
+				<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
+					<WorkflowBuilder
+						items={workflowItems}
+						storageKey="kyc-workflow-builder"
+						onSave={(workflow) =>
+							console.log(
+								"[KycVerificationPage] Workflow saved:",
+								workflow
+							)
+						}
+						onRun={(workflowId) => {
+							const path = isAdmin
+								? `/admin/products/kyc-verification/workflows/${workflowId}`
+								: `/products/kyc-verification/workflows/${workflowId}`;
+							router.push(path);
+						}}
+					/>
+				</Flex>
 			) : (
 				<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
 					{/* Category Tabs */}
@@ -268,13 +339,13 @@ export const KycVerificationPage = ({
 					/>
 
 					{/* Empty state */}
-					{filteredServices.length === 0 && (
+					{filteredServices.length === 0 ? (
 						<Card p="8" textAlign="center">
 							<Text color="gray.500">
 								No services found matching your criteria.
 							</Text>
 						</Card>
-					)}
+					) : null}
 				</Flex>
 			)}
 		</>
