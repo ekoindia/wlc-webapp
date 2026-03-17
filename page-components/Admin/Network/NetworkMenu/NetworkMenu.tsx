@@ -248,7 +248,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 										{item.label}
 									</MenuItem>
 									{index !== _finalMenuList.length - 1 && (
-										<MenuDivider margin="auto" w="90%" />
+										<MenuDivider margin="auto" />
 									)}
 								</Fragment>
 							))}
