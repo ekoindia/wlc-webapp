@@ -187,9 +187,10 @@ const RoleSelection = ({
 
 	const toast = useToast();
 
-	const mobile = isAssistedOnboarding
-		? agentMobile || assistedAgentDetails?.userDetails?.mobile
-		: userData?.userDetails?.signup_mobile;
+	const mobile =
+		agentMobile ||
+		assistedAgentDetails?.userDetails?.mobile ||
+		userData?.userDetails?.signup_mobile;
 
 	const { state, actions } = useOnboardingState();
 
