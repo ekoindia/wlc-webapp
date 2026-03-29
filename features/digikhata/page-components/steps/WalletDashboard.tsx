@@ -1,5 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
+import { FiSend } from "react-icons/fi";
+import { MdAddCard } from "react-icons/md";
 import { ActionCard } from "../../components/ActionCard";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
@@ -35,7 +37,7 @@ export const WalletDashboard = (): JSX.Element => {
 			<ActionCard
 				label="Load Wallet"
 				description="Add funds to your DigiKhata wallet"
-				icon="creditcard"
+				icon={MdAddCard}
 				gradient="linear(135deg, #b45309, #d97706)"
 				animationDelay="0s"
 				onClick={() =>
@@ -47,7 +49,7 @@ export const WalletDashboard = (): JSX.Element => {
 				<ActionCard
 					label="Transfer Fund"
 					description="Send money to a registered recipient"
-					icon="cash"
+					icon={FiSend}
 					gradient="linear(135deg, #1e40af, #3b82f6)"
 					animationDelay="0.1s"
 					onClick={() =>
