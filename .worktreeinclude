@@ -1,0 +1,5 @@
+# This file is for Claude worktrees. It should be included in the .worktreeinclude file at the root of the repository.
+
+# The .worktreeinclude file is used to specify gitignored files and directories that should be automatically copied to new worktrees created from the repository.
+
+.env\*.local
