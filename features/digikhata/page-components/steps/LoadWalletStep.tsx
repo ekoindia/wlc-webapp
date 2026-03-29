@@ -66,7 +66,7 @@ export const LoadWalletStep = ({
 		const res = await loadWallet({ amount: numAmount, pin: encodedPin });
 		if (res?.data?.status === 0) {
 			const otpRes = await generateSenderOtp();
-			if (otpRes?.data?.status === 0) {
+			if (otpRes?.data?.response_type_id === 2129) {
 				setIsOtpModalOpen(true);
 			} else {
 				toast({

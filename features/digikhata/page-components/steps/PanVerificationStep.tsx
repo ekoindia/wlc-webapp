@@ -43,7 +43,7 @@ export const PanVerificationStep = ({
 		if (res?.data?.status === 0) {
 			// PAN validated — now trigger sender OTP for wallet hydration
 			const otpRes = await generateSenderOtp();
-			if (otpRes?.data?.status === 0) {
+			if (otpRes?.data?.response_type_id === 2129) {
 				setIsOtpModalOpen(true);
 			} else {
 				toast({

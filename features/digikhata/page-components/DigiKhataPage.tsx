@@ -54,7 +54,7 @@ const DigiKhataInner = (): JSX.Element => {
 		const res = await generateSenderOtp();
 		dispatch({ type: "SET_LOADING", payload: false });
 
-		if (res?.data?.status === 0) {
+		if (res?.data?.response_type_id === 2129) {
 			setIsSenderOtpModalOpen(true);
 		}
 	};
