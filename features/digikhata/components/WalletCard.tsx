@@ -52,14 +52,14 @@ const BalanceCountUp = ({ target }: { target: number }): JSX.Element => {
 
 	return (
 		<Text
-			fontWeight="bold"
+			fontWeight="normal"
 			fontSize={{ base: "3xl", md: "4xl" }}
 			color="primary.DEFAULT"
 			letterSpacing="tight"
 			userSelect="none"
 			lineHeight="none"
 		>
-			₹{display.toLocaleString("en-IN")}
+			₹ {display.toLocaleString("en-IN")}
 		</Text>
 	);
 };
