@@ -199,7 +199,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 
 	{
 		id: 217,
-		label: "DigiKhata Wallet",
+		label: "My DigiKhata Wallet",
 		icon: "wallet",
 		link: "/admin/products/digikhata",
 		summary:
@@ -311,7 +311,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 	},
 	{
 		id: 217,
-		label: "DigiKhata Wallet",
+		label: "My DigiKhata Wallet",
 		icon: "wallet",
 		link: "/products/digikhata",
 		summary:
