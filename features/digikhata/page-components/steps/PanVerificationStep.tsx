@@ -2,6 +2,7 @@ import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -124,15 +125,10 @@ export const PanVerificationStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex direction="column" gap={1}>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						PAN Verification
-					</Text>
-					<Text fontSize="sm" color="light">
-						Enter your PAN card number to complete KYC and open your
-						wallet.
-					</Text>
-				</Flex>
+				<StepHeader
+					title="PAN Verification"
+					subtitle="Enter your PAN card number to complete KYC and open your wallet."
+				/>
 
 				<Box>
 					<Text fontSize="sm" fontWeight="medium" color="dark" mb={2}>

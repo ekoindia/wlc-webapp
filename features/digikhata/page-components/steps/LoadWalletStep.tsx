@@ -15,6 +15,7 @@ import { CopyButton } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -94,29 +95,13 @@ export const LoadWalletStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex align="center" gap={3}>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() =>
-							dispatch({
-								type: "SET_STEP",
-								step: "wallet-dashboard",
-							})
-						}
-						px={2}
-						color="light"
-					>
-						← Back
-					</Button>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Load Wallet
-					</Text>
-				</Flex>
-
-				<Text fontSize="sm" color="gray.600">
-					Choose how you want to add money to your DigiKhata wallet.
-				</Text>
+				<StepHeader
+					title="Load Wallet"
+					subtitle="Choose how you want to add money to your DigiKhata wallet."
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "wallet-dashboard" })
+					}
+				/>
 
 				<Box
 					borderWidth="1px"

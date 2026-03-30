@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -119,15 +120,10 @@ export const CustomerOnboardingStep = ({
 				animationDelay: ANIMATION.STEP_IN_DELAY,
 			}}
 		>
-			<Flex direction="column" gap={1}>
-				<Text fontWeight="semibold" fontSize="md" color="dark">
-					Customer Details
-				</Text>
-				<Text fontSize="sm" color="light">
-					Please provide the vendor&apos;s name to complete
-					onboarding.
-				</Text>
-			</Flex>
+			<StepHeader
+				title="Customer Details"
+				subtitle="Please provide the vendor's name to complete onboarding."
+			/>
 
 			<Box>
 				<FormControl isInvalid={!!nameError}>

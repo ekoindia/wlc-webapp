@@ -5,10 +5,10 @@ import {
 	FormControl,
 	FormLabel,
 	Input,
-	Text,
 } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION } from "../../constants";
 
 interface SearchCustomerStepProps {
@@ -58,15 +58,10 @@ export const SearchCustomerStep = ({
 				animationDelay: ANIMATION.STEP_IN_DELAY,
 			}}
 		>
-			<Flex direction="column" gap={1}>
-				<Text fontWeight="semibold" fontSize="md" color="dark">
-					Search Customer
-				</Text>
-				<Text fontSize="sm" color="light">
-					Enter the customer&apos;s 10-digit mobile number to load
-					their DigiKhata wallet details.
-				</Text>
-			</Flex>
+			<StepHeader
+				title="Search Customer"
+				subtitle="Enter the customer's 10-digit mobile number to load their DigiKhata wallet details."
+			/>
 
 			<Box>
 				<FormControl>

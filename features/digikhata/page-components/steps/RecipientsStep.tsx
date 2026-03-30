@@ -14,6 +14,7 @@ import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2, FiUserPlus } from "react-icons/fi";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { Recipient, transformRecipientList } from "../../context/types";
@@ -177,73 +178,38 @@ export const RecipientsStep = ({
 				}}
 			>
 				{/* Header Section */}
-				<Flex
-					direction={{ base: "column", md: "row" }}
-					align={{ base: "flex-start", md: "flex-end" }}
-					justify="space-between"
-					gap={4}
-				>
-					<Box>
-						<Flex align="center" gap={4} mb={2}>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={() =>
-									dispatch({
-										type: "SET_STEP",
-										step: "wallet-dashboard",
-									})
-								}
-								px={3}
-								bg="gray.50"
-								borderRadius="8px"
-								fontWeight="medium"
-								color="gray.600"
-								leftIcon={<Text fontSize="lg">←</Text>}
-								_hover={{ bg: "gray.100" }}
-							>
-								Back
-							</Button>
-							<Text
-								fontWeight="bold"
-								fontSize="3xl"
-								color="gray.800"
-							>
-								Registered Beneficiaries
-							</Text>
-						</Flex>
-						<Text
+				<StepHeader
+					title="Registered Beneficiaries"
+					subtitle="Manage your recipients and initiate transfers"
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "wallet-dashboard" })
+					}
+					toolComponent={
+						<Button
+							bg="primary.dark"
+							color="white"
+							leftIcon={<Icon as={FiUserPlus} />}
+							h="52px"
+							px={8}
+							borderRadius="10px"
+							shadow="0 4px 14px 0 rgba(26, 43, 136, 0.39)"
+							onClick={() =>
+								dispatch({
+									type: "SET_STEP",
+									step: "add-recipient",
+								})
+							}
+							_hover={{
+								bg: "primary.DEFAULT",
+								transform: "translateY(-1px)",
+							}}
+							transition="all 0.2s"
 							fontSize="md"
-							color="gray.500"
-							ml={{ md: "84px" }}
 						>
-							Manage your recipients and initiate transfers
-						</Text>
-					</Box>
-					<Button
-						bg="primary.dark"
-						color="white"
-						leftIcon={<Icon as={FiUserPlus} />}
-						h="52px"
-						px={8}
-						borderRadius="10px"
-						shadow="0 4px 14px 0 rgba(26, 43, 136, 0.39)"
-						onClick={() =>
-							dispatch({
-								type: "SET_STEP",
-								step: "add-recipient",
-							})
-						}
-						_hover={{
-							bg: "primary.DEFAULT",
-							transform: "translateY(-1px)",
-						}}
-						transition="all 0.2s"
-						fontSize="md"
-					>
-						Add New Recipient
-					</Button>
-				</Flex>
+							Add New Recipient
+						</Button>
+					}
+				/>
 
 				{/* Cards Grid */}
 				{isGettingRecipients ? (

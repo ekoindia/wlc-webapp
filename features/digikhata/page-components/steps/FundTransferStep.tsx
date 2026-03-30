@@ -16,6 +16,7 @@ import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -97,18 +98,12 @@ export const FundTransferStep = ({
 					animation: `${fadeSlideInBottom12} ${ANIMATION.STEP_IN} ${ANIMATION.EASING} both`,
 				}}
 			>
-				<Button
-					variant="ghost"
-					size="sm"
-					alignSelf="flex-start"
-					onClick={() =>
+				<StepHeader
+					title="Transfer Fund"
+					onBack={() =>
 						dispatch({ type: "SET_STEP", step: "recipients" })
 					}
-					px={2}
-					color="light"
-				>
-					← Back
-				</Button>
+				/>
 				<Alert status="warning" borderRadius="10">
 					<AlertIcon />
 					<Box>
@@ -261,22 +256,12 @@ export const FundTransferStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex align="center" gap={3}>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() =>
-							dispatch({ type: "SET_STEP", step: "recipients" })
-						}
-						px={2}
-						color="light"
-					>
-						← Back
-					</Button>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Transfer Fund
-					</Text>
-				</Flex>
+				<StepHeader
+					title="Transfer Fund"
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "recipients" })
+					}
+				/>
 
 				{/* Recipient summary */}
 				<Flex

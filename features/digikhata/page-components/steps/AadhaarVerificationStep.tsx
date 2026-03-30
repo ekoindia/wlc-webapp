@@ -2,6 +2,7 @@ import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -96,15 +97,10 @@ export const AadhaarVerificationStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex direction="column" gap={1}>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Aadhaar Verification
-					</Text>
-					<Text fontSize="sm" color="light">
-						Enter your 12-digit Aadhaar number. An OTP will be sent
-						to your Aadhaar-linked mobile.
-					</Text>
-				</Flex>
+				<StepHeader
+					title="Aadhaar Verification"
+					subtitle="Enter your 12-digit Aadhaar number. An OTP will be sent to your Aadhaar-linked mobile."
+				/>
 
 				<Box>
 					<Text fontSize="sm" fontWeight="medium" color="dark" mb={2}>
