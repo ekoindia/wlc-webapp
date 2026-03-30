@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { ANIMATION } from "../../constants";
 
@@ -15,16 +15,12 @@ export const InitialStep = (): JSX.Element => (
 		align="center"
 		justify="center"
 		gap={3}
-		py={10}
-		px={4}
+		p={4}
 		sx={{
 			animation: `${fadeSlideInBottom12} ${ANIMATION.STEP_IN} ${ANIMATION.EASING} both`,
 			animationDelay: ANIMATION.STEP_IN_DELAY,
 		}}
 	>
-		<Box fontSize="4xl" userSelect="none">
-			🔒
-		</Box>
 		<Text
 			fontWeight="semibold"
 			fontSize="md"
