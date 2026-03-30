@@ -134,7 +134,7 @@ export const CustomerOnboardingStep = ({
 					<FormLabel>
 						Vendor&apos;s Full Name (as per ID proof)
 						<Text as="span" color="error" ml={1}>
-							▲ (Required)
+							(Required)
 						</Text>
 					</FormLabel>
 					<Input

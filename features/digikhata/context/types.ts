@@ -93,25 +93,25 @@ export const transformToWalletData = (
 	const { customer_profile, wallet_token, kyc_state } = data ?? {};
 
 	// Extract chart data for limits
-	const chartData = customer_profile.chart?.[0]?.data;
+	const chartData = customer_profile?.chart?.[0]?.data;
 	const consumed = chartData?.used ?? 0;
 	const remaining = chartData?.remaining ?? 0;
-	const totalLimit = parseFloat(customer_profile.total_monthly_limit || "0");
+	const totalLimit = parseFloat(customer_profile?.total_monthly_limit || "0");
 
 	return {
 		walletAcOpened: kyc_state == 0,
 		// walletAcOpened: is_registered === 1,
 		walletAcOpeningInProgress: false,
-		walletHolderName: customer_profile.name || data.sender_name || "",
-		accountStatus: customer_profile.kyc_state == 0 ? "Active" : "Inactive",
+		walletHolderName: customer_profile?.name || data?.sender_name || "",
+		accountStatus: customer_profile?.kyc_state == 0 ? "Active" : "Inactive",
 		walletToBankLimitAvailable: remaining,
 		walletToBankLimitConsumed: consumed,
 		totalMonthlyLimit: totalLimit,
 		token: wallet_token || "",
-		walletCurrentBalance: parseFloat(customer_profile.balance || "0"),
+		walletCurrentBalance: parseFloat(customer_profile?.balance || "0"),
 		walletKYCDocStatus: {
-			aadharVerified: customer_profile.digital_ekyc === 1,
-			pancardVerified: customer_profile.kyc_type === "PAN",
+			aadharVerified: customer_profile?.digital_ekyc === 1,
+			pancardVerified: customer_profile?.kyc_type === "PAN",
 		},
 		lastUpdatedAt: new Date().toISOString(),
 	};
