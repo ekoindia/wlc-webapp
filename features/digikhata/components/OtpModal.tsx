@@ -52,9 +52,10 @@ export const OtpModal = ({
 		onClose();
 	};
 
-	const handleSubmit = async () => {
-		if (otp.length !== otpLength) return;
-		const result = await onSubmit(otp);
+	const handleSubmit = async (otpValue?: string) => {
+		const otpToSubmit = otpValue ?? otp;
+		if (otpToSubmit.length !== otpLength) return;
+		const result = await onSubmit(otpToSubmit);
 		if (isSuccessfulResponse(result)) {
 			setOtp("");
 		}
@@ -110,7 +111,7 @@ export const OtpModal = ({
 					borderRadius="10"
 					isLoading={isLoading}
 					isDisabled={otp.length !== otpLength}
-					onClick={handleSubmit}
+					onClick={() => handleSubmit()}
 					_hover={{ bg: "primary.dark" }}
 				>
 					Verify OTP
