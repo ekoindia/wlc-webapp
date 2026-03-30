@@ -115,7 +115,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// DigiKhata Wallet & Fund Transfer product for agents
 	DIGIKHATA_WALLET: {
 		enabled: true,
-		forEnv: ["development"],
+		forEnv: ["development", "staging"],
 	},
 
 	// ------------------------------------------------------------------------
