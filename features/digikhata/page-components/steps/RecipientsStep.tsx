@@ -1,18 +1,15 @@
 import {
-	Badge,
 	Box,
 	Button,
 	Flex,
-	Icon,
-	IconButton,
 	SimpleGrid,
 	Skeleton,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
+import { Icon } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
-import { FiPlus, FiTrash2, FiUserPlus } from "react-icons/fi";
 import { OtpModal } from "../../components/OtpModal";
 import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
@@ -188,7 +185,7 @@ export const RecipientsStep = ({
 						<Button
 							bg="primary.dark"
 							color="white"
-							leftIcon={<Icon as={FiUserPlus} />}
+							leftIcon={<Icon name="person-add" size="sm" />}
 							h="48px"
 							px={8}
 							borderRadius="10px"
@@ -281,11 +278,11 @@ export const RecipientsStep = ({
 										flex={1}
 										borderRadius="10px"
 									/>
-									<Skeleton
+									{/* <Skeleton
 										h="44px"
 										w="44px"
 										borderRadius="10px"
-									/>
+									/> */}
 								</Flex>
 							</Flex>
 						))}
@@ -307,6 +304,7 @@ export const RecipientsStep = ({
 									key={r.recipient_id}
 									direction="column"
 									p={7}
+									gap="6"
 									bg="white"
 									borderRadius="10px"
 									boxShadow="0 4px 20px -4px rgba(0,0,0,0.05)"
@@ -323,7 +321,6 @@ export const RecipientsStep = ({
 									<Flex
 										justify="space-between"
 										align="center"
-										mb={6}
 									>
 										<Flex align="center" gap={4}>
 											<Flex
@@ -334,7 +331,7 @@ export const RecipientsStep = ({
 												h="48px"
 												borderRadius="12px"
 											>
-												<Text fontSize="2xl">🏦</Text>
+												<Icon name="account-balance" />
 											</Flex>
 											<Box>
 												<Text
@@ -354,7 +351,7 @@ export const RecipientsStep = ({
 												</Text>
 											</Box>
 										</Flex>
-										<Badge
+										{/* <Badge
 											bg="#E6FFFA"
 											color="#319795"
 											borderRadius="full"
@@ -370,52 +367,52 @@ export const RecipientsStep = ({
 												.includes("current")
 												? "CURRENT"
 												: "SAVINGS"}
-										</Badge>
+										</Badge> */}
 									</Flex>
 
-									<Flex
-										justify="space-between"
-										align="center"
-										mb={3}
-									>
-										<Text
-											fontSize="xs"
-											fontWeight="medium"
-											color="gray.400"
+									<Flex direction="column" gap={3}>
+										<Flex
+											justify="space-between"
+											align="center"
 										>
-											Account Number
-										</Text>
-										<Text
-											fontSize="xs"
-											fontWeight="semibold"
-											color="gray.700"
-											letterSpacing="wider"
-										>
-											XXXX XXXX{" "}
-											{r.accountNumber.slice(-4) ||
-												"????"}
-										</Text>
-									</Flex>
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="gray.400"
+											>
+												Account Number
+											</Text>
+											<Text
+												fontSize="xs"
+												fontWeight="semibold"
+												color="gray.700"
+												letterSpacing="wider"
+											>
+												XXXX XXXX{" "}
+												{r.accountNumber.slice(-4) ||
+													"????"}
+											</Text>
+										</Flex>
 
-									<Flex
-										justify="space-between"
-										align="center"
-										mb={6}
-									>
-										<Text
-											fontSize="xs"
-											fontWeight="medium"
-											color="gray.400"
+										<Flex
+											justify="space-between"
+											align="center"
 										>
-											IFSC Code
-										</Text>
-										<Text
-											fontSize="xs"
-											fontWeight="semibold"
-											color="gray.700"
-										>
-											{r.ifsc}
-										</Text>
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="gray.400"
+											>
+												IFSC Code
+											</Text>
+											<Text
+												fontSize="xs"
+												fontWeight="semibold"
+												color="gray.700"
+											>
+												{r.ifsc}
+											</Text>
+										</Flex>
 									</Flex>
 
 									<Flex gap={3} mt="auto">
@@ -436,7 +433,7 @@ export const RecipientsStep = ({
 										>
 											Transfer Fund
 										</Button>
-										<IconButton
+										{/* <IconButton
 											aria-label="Delete Recipient"
 											icon={<Icon as={FiTrash2} />}
 											variant="ghost"
@@ -449,7 +446,7 @@ export const RecipientsStep = ({
 												bg: "red.50",
 												color: "red.400",
 											}}
-										/>
+										/> */}
 									</Flex>
 								</Flex>
 							);
@@ -490,7 +487,7 @@ export const RecipientsStep = ({
 								color="gray.300"
 								mb={4}
 							>
-								<Icon as={FiPlus} boxSize={6} />
+								<Icon name="add" size="sm" />
 							</Flex>
 							<Text
 								fontWeight="bold"
