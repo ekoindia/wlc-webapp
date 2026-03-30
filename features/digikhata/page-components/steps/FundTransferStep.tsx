@@ -328,10 +328,6 @@ export const FundTransferStep = ({
 				txnRef={txnRef}
 				txnData={txnData}
 				onBack={() => {
-					dispatch({
-						type: "SET_SELECTED_RECIPIENT",
-						payload: null,
-					});
 					onFetchBalance();
 				}}
 			/>
