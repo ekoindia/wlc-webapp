@@ -75,6 +75,7 @@ export const OtpModal = ({
 			size="md"
 			isCentered
 			motionPreset="slideInBottom"
+			closeOnOverlayClick={false}
 		>
 			<VStack spacing={6} pb={4}>
 				<Text fontSize="sm" color="light" textAlign="center">
