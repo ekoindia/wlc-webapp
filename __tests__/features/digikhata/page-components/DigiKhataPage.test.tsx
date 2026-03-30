@@ -1,5 +1,20 @@
 import { DigiKhataPage } from "features/digikhata";
-import { pageRender } from "test-utils";
+import { render } from "test-utils";
+
+const mockCheckFeatureFlag = jest.fn(() => true);
+
+jest.mock("@copilotkit/react-core", () => ({
+	__esModule: true,
+	CopilotKit: ({ children }: { children: React.ReactNode }) => children,
+	useCopilotAction: jest.fn(),
+	useCopilotReadable: jest.fn(),
+}));
+
+jest.mock("@copilotkit/react-ui", () => ({
+	__esModule: true,
+	CopilotPopup: () => null,
+	useCopilotChatSuggestions: jest.fn(),
+}));
 
 jest.mock("hooks/useApiFetch", () => ({
 	__esModule: true,
@@ -20,30 +35,27 @@ jest.mock("hooks/useBankList", () => ({
 
 jest.mock("hooks/useFeatureFlag", () => ({
 	__esModule: true,
-	default: () => [true, jest.fn()],
+	default: () => [true, mockCheckFeatureFlag],
+}));
+
+jest.mock("contexts", () => ({
+	__esModule: true,
+	useUser: () => ({
+		userData: {
+			userDetails: {
+				mobile: "9999999999",
+			},
+		},
+	}),
 }));
 
 describe("DigiKhataPage", () => {
-	it("renders without crashing", () => {
-		const { container } = pageRender(<DigiKhataPage />);
+	it("renders initial DigiKhata wallet state", () => {
+		const { container, getByRole, getByText } = render(<DigiKhataPage />);
 		expect(container).not.toBeEmptyDOMElement();
-	});
-
-	it("shows the wallet card", () => {
-		const { container } = pageRender(<DigiKhataPage />);
-		// WalletCard always renders — check for "DigiKhata" label or Fetch Balance button
 		expect(
-			container.querySelector("[data-testid='wallet-card']") ?? container
-		).not.toBeEmptyDOMElement();
-	});
-
-	it("shows 'Fetch Balance' in the initial state", () => {
-		const { getByText } = pageRender(<DigiKhataPage />);
-		expect(getByText(/Fetch Balance/i)).toBeInTheDocument();
-	});
-
-	it("shows the initial locked wallet message", () => {
-		const { getByText } = pageRender(<DigiKhataPage />);
+			getByRole("button", { name: /Fetch Balance/i })
+		).toBeInTheDocument();
 		expect(
 			getByText(/Your DigiKhata Wallet is locked/i)
 		).toBeInTheDocument();
