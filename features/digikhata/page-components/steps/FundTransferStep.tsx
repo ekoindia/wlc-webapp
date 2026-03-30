@@ -24,6 +24,9 @@ interface FundTransferStepProps {
 
 type TransferStatus = "idle" | "success" | "failed";
 
+const MIN_AMOUNT = 100;
+const MAX_AMOUNT = 50000;
+
 /**
  * Final step: transfer funds to the selected recipient.
  * Flow: Enter Amount + PIN → sendTransactionOtp → OtpModal
@@ -130,7 +133,13 @@ export const FundTransferStep = ({
 
 	const handleSendOtp = async () => {
 		const numAmount = parseFloat(amount);
-		if (isNaN(numAmount) || numAmount <= 0 || !isPinComplete) return false;
+		if (
+			isNaN(numAmount) ||
+			numAmount < MIN_AMOUNT ||
+			numAmount > MAX_AMOUNT ||
+			!isPinComplete
+		)
+			return false;
 
 		const res = await sendTransactionOtp({
 			amount: numAmount,
@@ -188,8 +197,11 @@ export const FundTransferStep = ({
 			? `••••${recipient.accountNumber.slice(-4)}`
 			: recipient.accountNumber;
 
+	const numAmount = parseFloat(amount);
+	const isAmountValid =
+		!isNaN(numAmount) && numAmount >= MIN_AMOUNT && numAmount <= MAX_AMOUNT;
 	const canSubmit =
-		isPinComplete && parseFloat(amount) > 0 && !isSendingTransactionOtp;
+		isPinComplete && isAmountValid && !isSendingTransactionOtp;
 
 	// Success / failure terminal states
 	if (transferStatus === "success" || transferStatus === "failed") {
@@ -287,18 +299,48 @@ export const FundTransferStep = ({
 						Amount (₹)
 					</Text>
 					<NumberInput
-						min={1}
+						min={MIN_AMOUNT}
+						max={MAX_AMOUNT}
 						value={amount}
-						onChange={(val) => setAmount(val)}
+						onChange={(val) => {
+							const num = parseFloat(val);
+							if (!isNaN(num) && num > MAX_AMOUNT) return;
+							setAmount(val);
+						}}
 						borderRadius="10"
+						focusBorderColor={
+							amount !== "" && !isAmountValid
+								? "error"
+								: "primary.DEFAULT"
+						}
 					>
 						<NumberInputField
 							placeholder="Enter amount"
 							borderRadius="10"
 							h="14"
 							fontSize="xl"
+							borderColor={
+								amount !== "" && !isAmountValid
+									? "error"
+									: undefined
+							}
+							_hover={{
+								borderColor:
+									amount !== "" && !isAmountValid
+										? "error"
+										: undefined,
+							}}
 						/>
 					</NumberInput>
+					<Text
+						fontSize="xs"
+						color={isAmountValid ? "light" : "error"}
+						mt={1}
+					>
+						{""}
+						Amount should be between ₹{MIN_AMOUNT.toLocaleString()}{" "}
+						and ₹{MAX_AMOUNT.toLocaleString()}
+					</Text>
 				</Box>
 
 				{/* PIN */}
