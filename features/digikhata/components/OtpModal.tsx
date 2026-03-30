@@ -96,6 +96,7 @@ export const OtpModal = ({
 					value={otp}
 					onChange={setOtp}
 					onComplete={handleSubmit}
+					onEnter={handleSubmit}
 					isDisabled={isLoading}
 					inputStyle={{ w: 14, h: 14, fontSize: "xl" }}
 					containerStyle={{ gap: 3, justifyContent: "center" }}

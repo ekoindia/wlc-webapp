@@ -185,7 +185,6 @@ export const PanVerificationStep = ({
 				isLoading={isVerifyingSenderOtp}
 				title={OTP_MODAL_TITLES.SENDER_VERIFY}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);

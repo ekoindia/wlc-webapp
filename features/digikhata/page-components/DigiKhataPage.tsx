@@ -293,7 +293,6 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 				isLoading={isVerifyingSenderOtp}
 				title={OTP_MODAL_TITLES.SENDER_VERIFY}
 				mobileHint={`XXXXXX${state.activeMobile.slice(-4)}`}
-				otpLength={6}
 			/>
 		</Flex>
 	);

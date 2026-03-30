@@ -161,7 +161,6 @@ export const AadhaarVerificationStep = ({
 				isLoading={isValidatingAadhaarOtp}
 				title={OTP_MODAL_TITLES.AADHAAR}
 				mobileHint="Aadhaar-linked mobile"
-				// otpLength={4}
 			/>
 		</>
 	);
