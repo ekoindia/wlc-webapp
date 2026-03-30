@@ -221,7 +221,7 @@ export const RecipientsStep = ({
 								gap={5}
 								p={7}
 								bg="white"
-								borderRadius="16px"
+								borderRadius="10px"
 								border="1px solid"
 								borderColor="gray.100"
 							>
@@ -308,7 +308,7 @@ export const RecipientsStep = ({
 									direction="column"
 									p={7}
 									bg="white"
-									borderRadius="16px"
+									borderRadius="10px"
 									boxShadow="0 4px 20px -4px rgba(0,0,0,0.05)"
 									border="1px solid"
 									borderColor="gray.100"
