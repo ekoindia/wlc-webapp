@@ -3,21 +3,27 @@ import { STEP_STATUS, Stepper } from "components/Stepper";
 import type { StepStatus } from "components/Stepper/types";
 import { useUser } from "contexts";
 import { fadeSlideInTop12 } from "libs/chakraKeyframes";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { OtpModal } from "../components/OtpModal";
 import { WalletCard } from "../components/WalletCard";
 import { ANIMATION, KYC_STEPS, OTP_MODAL_TITLES } from "../constants";
 import { DigiKhataProvider, useDigiKhata } from "../context/DigiKhataContext";
-import { DigiKhataStep } from "../context/types";
+import {
+	DigiKhataApiResponse,
+	DigiKhataStep,
+	transformToWalletData,
+} from "../context/types";
 import { useDigiKhataApi } from "../hooks/useDigiKhataApi";
 import { AadhaarConsentStep } from "./steps/AadhaarConsentStep";
 import { AadhaarVerificationStep } from "./steps/AadhaarVerificationStep";
 import { AddRecipientStep } from "./steps/AddRecipientStep";
+import { CustomerOnboardingStep } from "./steps/CustomerOnboardingStep";
 import { FundTransferStep } from "./steps/FundTransferStep";
 import { InitialStep } from "./steps/InitialStep";
 import { LoadWalletStep } from "./steps/LoadWalletStep";
 import { PanVerificationStep } from "./steps/PanVerificationStep";
 import { RecipientsStep } from "./steps/RecipientsStep";
+import { SearchCustomerStep } from "./steps/SearchCustomerStep";
 import { WalletDashboard } from "./steps/WalletDashboard";
 
 /** Step → human-readable label mapping for the KYC Stepper */
@@ -33,18 +39,47 @@ const KYC_STEP_ORDER: DigiKhataStep[] = [
 	"pan-verify",
 ];
 
-/** Inner component — consumes DigiKhataContext */
-const DigiKhataInner = (): JSX.Element => {
+interface DigiKhataInnerProps {
+	mode: "self" | "assisted";
+}
+
+/**
+ * Inner component — consumes DigiKhataContext
+ * @param root0
+ * @param root0.mode
+ */
+const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
 	const { userData } = useUser();
-	const mobile = userData?.userDetails?.mobile ?? "";
+
+	// In self mode, seed activeMobile from the logged-in user on first render
+	useEffect(() => {
+		const userMobile = userData?.userDetails?.mobile ?? "";
+
+		if (mode === "self" && !state.activeMobile && userMobile) {
+			dispatch({ type: "SET_ACTIVE_MOBILE", payload: userMobile });
+		}
+	}, [mode, userData?.userDetails?.mobile, state.activeMobile, dispatch]);
+
+	// In assisted mode, trigger balance fetch once activeMobile is set from search-customer step
+	useEffect(() => {
+		if (
+			mode === "assisted" &&
+			state.activeMobile &&
+			!state.hasFetchedWallet &&
+			state.step === "search-customer"
+		) {
+			handleFetchBalance();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [state.activeMobile]);
 
 	const {
 		generateSenderOtp,
 		isGeneratingSenderOtp,
 		verifySenderOtp,
 		isVerifyingSenderOtp,
-	} = useDigiKhataApi(mobile);
+	} = useDigiKhataApi(state.activeMobile);
 
 	const [isSenderOtpModalOpen, setIsSenderOtpModalOpen] = useState(false);
 
@@ -54,18 +89,29 @@ const DigiKhataInner = (): JSX.Element => {
 		const res = await generateSenderOtp();
 		dispatch({ type: "SET_LOADING", payload: false });
 
-		if (res?.data?.response_type_id === 2129) {
+		const responseType = res?.data?.response_type_id;
+
+		// OTP required - show OTP modal
+		if (responseType === 2129) {
 			dispatch({
 				type: "SET_OTP_REF_ID",
 				payload: res?.data?.data?.otp_ref_id ?? null,
 			});
 			setIsSenderOtpModalOpen(true);
-		} else if (res?.data?.response_type_id === 308) {
-			dispatch({
-				type: "SET_ERROR",
-				payload:
-					"Sender onboarding is required. Please complete onboarding to continue.",
-			});
+		}
+		// Onboarding required
+		else if (responseType === 308) {
+			dispatch({ type: "SET_STEP", step: "customer-onboarding" });
+		}
+		// Direct profile data returned (balance refresh without OTP)
+		else if (responseType === 309 && res?.data?.status === 0) {
+			const walletData = transformToWalletData(
+				res.data as DigiKhataApiResponse
+			);
+			dispatch({ type: "SET_WALLET_DATA", payload: walletData });
+			if (walletData.walletAcOpened) {
+				dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
+			}
 		}
 	};
 
@@ -80,9 +126,12 @@ const DigiKhataInner = (): JSX.Element => {
 
 		const res = await verifySenderOtp({ otp, otp_ref_id: state.otpRefId });
 		if (res?.data?.status === 0) {
-			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
+			const walletData = transformToWalletData(
+				res.data as DigiKhataApiResponse
+			);
+			dispatch({ type: "SET_WALLET_DATA", payload: walletData });
 			setIsSenderOtpModalOpen(false);
-			if (res.data.data?.walletAcOpened) {
+			if (walletData.walletAcOpened) {
 				dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
 			} else {
 				dispatch({ type: "SET_STEP", step: "aadhaar-consent" });
@@ -113,50 +162,72 @@ const DigiKhataInner = (): JSX.Element => {
 		switch (state.step) {
 			case "initial":
 				return <InitialStep />;
+			case "search-customer":
+				return (
+					<SearchCustomerStep
+						onSearch={handleSearchCustomer}
+						isLoading={state.isLoading || isGeneratingSenderOtp}
+					/>
+				);
+			case "customer-onboarding":
+				return (
+					<CustomerOnboardingStep
+						mobile={state.activeMobile}
+						onSuccess={handleFetchBalance}
+					/>
+				);
 			case "aadhaar-consent":
-				return <AadhaarConsentStep mobile={mobile} />;
+				return <AadhaarConsentStep mobile={state.activeMobile} />;
 			case "aadhaar-verify":
-				return <AadhaarVerificationStep mobile={mobile} />;
+				return <AadhaarVerificationStep mobile={state.activeMobile} />;
 			case "pan-verify":
-				return <PanVerificationStep mobile={mobile} />;
+				return <PanVerificationStep mobile={state.activeMobile} />;
 			case "wallet-dashboard":
 				return <WalletDashboard />;
 			case "load-wallet":
-				return <LoadWalletStep mobile={mobile} />;
+				return <LoadWalletStep mobile={state.activeMobile} />;
 			case "recipients":
-				return <RecipientsStep mobile={mobile} />;
+				return <RecipientsStep mobile={state.activeMobile} />;
 			case "add-recipient":
-				return <AddRecipientStep mobile={mobile} />;
+				return <AddRecipientStep mobile={state.activeMobile} />;
 			case "fund-transfer":
-				return <FundTransferStep mobile={mobile} />;
+				return <FundTransferStep mobile={state.activeMobile} />;
 			default:
 				return <InitialStep />;
 		}
 	};
 
+	const handleSearchCustomer = (searchMobile: string) => {
+		dispatch({ type: "SET_ACTIVE_MOBILE", payload: searchMobile });
+		// Balance fetch is triggered by the useEffect watching state.activeMobile
+	};
+
 	return (
-		<Flex direction="column" gap={5} w="full" pt={4} pb={10}>
-			{/* Wallet card — full width hero element */}
-			<Box
-				px={{ base: 3, md: 0 }}
-				sx={{
-					animation: `${fadeSlideInTop12} ${ANIMATION.WALLET_CARD_IN} ${ANIMATION.EASING} both`,
-				}}
-			>
-				<WalletCard
-					walletData={state.walletData}
-					isLoading={state.isLoading || isGeneratingSenderOtp}
-					hasFetchedWallet={state.hasFetchedWallet}
-					onFetchBalance={handleFetchBalance}
-				/>
-			</Box>
+		<Flex direction="column" gap={5} w="full" align="center" pt={4} pb={10}>
+			{/* Wallet card — visible always in self mode; only after first fetch in assisted mode */}
+			{mode === "self" || state.hasFetchedWallet ? (
+				<Box
+					px={{ base: 3, md: 0 }}
+					w={{ base: "full", lg: "800px" }}
+					sx={{
+						animation: `${fadeSlideInTop12} ${ANIMATION.WALLET_CARD_IN} ${ANIMATION.EASING} both`,
+					}}
+				>
+					<WalletCard
+						walletData={state.walletData}
+						isLoading={state.isLoading || isGeneratingSenderOtp}
+						hasFetchedWallet={state.hasFetchedWallet}
+						onFetchBalance={handleFetchBalance}
+					/>
+				</Box>
+			) : null}
 
 			{/* Constrained content area for step forms */}
 			<Flex
 				direction="column"
 				gap={5}
 				w="full"
-				maxW="520px"
+				maxW={{ base: "full", lg: "800px" }}
 				mx="auto"
 				px={{ base: 3, md: 0 }}
 			>
@@ -205,19 +276,28 @@ const DigiKhataInner = (): JSX.Element => {
 				onResend={generateSenderOtp}
 				isLoading={isVerifyingSenderOtp}
 				title={OTP_MODAL_TITLES.SENDER_VERIFY}
-				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
+				mobileHint={`XXXXXX${state.activeMobile.slice(-4)}`}
+				otpLength={6}
 			/>
 		</Flex>
 	);
 };
 
+interface DigiKhataPageProps {
+	/** Flow mode — "self" uses the agent's own mobile (default), "assisted" starts at customer search */
+	mode?: "self" | "assisted";
+}
+
 /**
  * DigiKhataPage — root page component for the DigiKhata Wallet & Fund Transfer product.
  * Wraps the entire feature in DigiKhataProvider.
+ * @param root0
+ * @param root0.mode
  */
-export const DigiKhataPage = (): JSX.Element => (
-	<DigiKhataProvider>
-		<DigiKhataInner />
+export const DigiKhataPage = ({
+	mode = "self",
+}: DigiKhataPageProps): JSX.Element => (
+	<DigiKhataProvider mode={mode}>
+		<DigiKhataInner mode={mode} />
 	</DigiKhataProvider>
 );

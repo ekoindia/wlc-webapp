@@ -38,6 +38,13 @@ export const digiKhataReducer = (
 		case "SET_AADHAAR_NUMBER":
 			return { ...state, aadhaarNumber: action.payload };
 
+		case "SET_AADHAAR_OTP_DATA":
+			return {
+				...state,
+				aadhaarIntentId: action.payload.intentId,
+				aadhaarOtpRefId: action.payload.otpRefId,
+			};
+
 		case "SET_RECIPIENTS":
 			return { ...state, recipients: action.payload };
 
@@ -53,6 +60,19 @@ export const digiKhataReducer = (
 		case "SET_SELECTED_RECIPIENT":
 			return { ...state, selectedRecipient: action.payload };
 
+		case "UPDATE_RECIPIENT_BENEFICIARY":
+			return {
+				...state,
+				recipients: state.recipients.map((r) =>
+					r.recipient_id === action.payload.recipient_id
+						? {
+								...r,
+								beneficiary_id: action.payload.beneficiary_id,
+							}
+						: r
+				),
+			};
+
 		case "SET_LOADING":
 			return { ...state, isLoading: action.payload };
 
@@ -61,6 +81,12 @@ export const digiKhataReducer = (
 
 		case "RESET_ERROR":
 			return { ...state, error: null };
+
+		case "SET_MODE":
+			return { ...state, mode: action.payload };
+
+		case "SET_ACTIVE_MOBILE":
+			return { ...state, activeMobile: action.payload };
 
 		default:
 			return state;

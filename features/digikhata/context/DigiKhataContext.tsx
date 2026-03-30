@@ -9,17 +9,38 @@ interface DigiKhataContextValue {
 
 export const DigiKhataContext = createContext<DigiKhataContextValue>(null!);
 
+interface DigiKhataProviderProps {
+	children: React.ReactNode;
+	/** Flow mode — "assisted" starts at search-customer step, "self" uses default initial state */
+	mode?: "self" | "assisted";
+}
+
 /**
  * Provider for DigiKhata product state.
  * Wrap the DigiKhata page component with this to enable all step components
  * to access shared wallet/recipient/step state.
  * @param root0
  * @param root0.children
+ * @param root0.mode
  */
-export const DigiKhataProvider: React.FC<{ children: React.ReactNode }> = ({
+export const DigiKhataProvider: React.FC<DigiKhataProviderProps> = ({
 	children,
+	mode = "self",
 }) => {
-	const [state, dispatch] = useReducer(digiKhataReducer, initialState);
+	const computedInitialState: DigiKhataState =
+		mode === "assisted"
+			? {
+					...initialState,
+					step: "search-customer",
+					mode: "assisted",
+					activeMobile: "",
+				}
+			: initialState;
+
+	const [state, dispatch] = useReducer(
+		digiKhataReducer,
+		computedInitialState
+	);
 	const value = useMemo(() => ({ state, dispatch }), [state]);
 
 	return (

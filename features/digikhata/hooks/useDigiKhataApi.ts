@@ -15,6 +15,12 @@ export const useDigiKhataApi = (mobile: string) => {
 	const senderProfileBase = `/customer/profile/${mobile}/ppi-digikhata`;
 	const consentDetailsBase = `${base}/aadhaar/consent/details`;
 
+	// ── Customer Account ─────────────────────────────────────────────────────
+	const [createCustomerAccountCall, isCreatingCustomerAccount] =
+		useEpsV3Fetch(`/customer/account/${mobile}`, {
+			method: "POST",
+		});
+
 	// ── Sender Profile / Verification ────────────────────────────────────────
 	const [generateSenderOtp, isGeneratingSenderOtp] = useEpsV3Fetch(
 		senderProfileBase,
@@ -76,7 +82,7 @@ export const useDigiKhataApi = (mobile: string) => {
 		}
 	);
 	const [sendAddRecipientOtpCall, isSendingAddRecipientOtp] = useEpsV3Fetch(
-		`${base}/recipient/otp`,
+		`${base}/recipient`,
 		{ method: "POST" }
 	);
 	const [addRecipientCall, isAddingRecipient] = useEpsV3Fetch(
@@ -100,6 +106,11 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	// ── Bound API functions ───────────────────────────────────────────────────
 
+	const createCustomerAccount = (body: Record<string, unknown>) =>
+		createCustomerAccountCall({
+			body,
+		});
+
 	const verifySenderOtp = (body: VerifySenderOtpPayload) =>
 		verifySenderOtpCall({
 			body: {
@@ -113,9 +124,8 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	const getConsentDetails = (consentlangId: string) =>
 		getConsentDetailsCall({
-			url_endpoint: consentDetailsBase,
 			headers: {
-				"tf-req-uri": `${consentDetailsBase}?consentlangId=${consentlangId}`,
+				"tf-req-uri": `${consentDetailsBase}?consent_language=${consentlangId}`,
 			},
 		});
 
@@ -162,6 +172,8 @@ export const useDigiKhataApi = (mobile: string) => {
 		});
 
 	return {
+		createCustomerAccount,
+		isCreatingCustomerAccount,
 		generateSenderOtp,
 		isGeneratingSenderOtp,
 		verifySenderOtp,

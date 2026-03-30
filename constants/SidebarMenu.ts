@@ -209,6 +209,15 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		featureFlag: "DIGIKHATA_WALLET",
 		beta: true,
 	},
+	{
+		id: 218,
+		label: "DigiKhata Fund Transfer",
+		icon: "send",
+		link: "/admin/products/digikhata/fund-transfer",
+		summary: "Transfer funds on behalf of a customer using DigiKhata.",
+		featureFlag: "DIGIKHATA_WALLET",
+		beta: true,
+	},
 
 	// TODO: DEMO: TSP Bank Features
 	{
@@ -318,6 +327,15 @@ export const sidebarMenu: sidebarMenuType[] = [
 			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
 		fullDescription:
 			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
+		featureFlag: "DIGIKHATA_WALLET",
+		beta: true,
+	},
+	{
+		id: 218,
+		label: "DigiKhata Fund Transfer",
+		icon: "send",
+		link: "/products/digikhata/fund-transfer",
+		summary: "Transfer funds on behalf of a customer using DigiKhata.",
 		featureFlag: "DIGIKHATA_WALLET",
 		beta: true,
 	},

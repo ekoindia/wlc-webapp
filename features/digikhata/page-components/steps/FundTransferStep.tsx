@@ -58,6 +58,7 @@ export const FundTransferStep = ({
 	const [transferStatus, setTransferStatus] =
 		useState<TransferStatus>("idle");
 	const [txnRef, setTxnRef] = useState<string | null>(null);
+	const [otpRefId, setOtpRefId] = useState(null);
 
 	if (!recipient) {
 		return (
@@ -85,8 +86,8 @@ export const FundTransferStep = ({
 		);
 	}
 
-	// If the recipient is not bank-registered (beneficiary_id === 0), block transfer
-	if (recipient.beneficiary_id === 0) {
+	// If the recipient is not bank-registered (beneficiary_id === 0 or null), block transfer
+	if (!recipient.beneficiary_id) {
 		return (
 			<Flex
 				direction="column"
@@ -141,9 +142,12 @@ export const FundTransferStep = ({
 		const res = await sendTransactionOtp({
 			amount: numAmount,
 			beneficiary_id: recipient.beneficiary_id,
+			recipient_id: recipient.recipient_id,
+			customer_id: mobile,
 		});
 
 		if (res?.data?.status === 0) {
+			setOtpRefId(res.data.data?.otp_ref_id);
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
@@ -161,8 +165,13 @@ export const FundTransferStep = ({
 		const res = await initiateTransaction({
 			amount: numAmount,
 			beneficiary_id: recipient.beneficiary_id,
+			recipient_id: recipient.recipient_id,
+			bank_recipient: recipient.recipient_id,
 			otp,
 			pin: encodedPin,
+			customer_id: mobile,
+			otp_ref_id: otpRefId,
+			name: recipient.name,
 		});
 
 		setIsOtpModalOpen(false);
@@ -357,7 +366,6 @@ export const FundTransferStep = ({
 				isLoading={isInitiatingTransaction}
 				title={OTP_MODAL_TITLES.TRANSFER}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);

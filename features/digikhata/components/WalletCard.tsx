@@ -134,6 +134,7 @@ export const WalletCard = ({
 	return (
 		<Box
 			w="full"
+			maxW={{ base: "full", lg: "800px" }}
 			bg="white"
 			borderRadius="10"
 			border="card"

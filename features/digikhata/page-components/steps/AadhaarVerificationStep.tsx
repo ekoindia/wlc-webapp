@@ -38,8 +38,15 @@ export const AadhaarVerificationStep = ({
 		if (!AADHAAR_REGEX.test(aadhaar)) return false;
 		dispatch({ type: "SET_AADHAAR_NUMBER", payload: aadhaar });
 
-		const res = await generateAadhaarOtp({ aadhaar });
+		const res = await generateAadhaarOtp({ aadhar: aadhaar });
 		if (res?.data?.status === 0) {
+			dispatch({
+				type: "SET_AADHAAR_OTP_DATA",
+				payload: {
+					intentId: res.data.data.intent_id,
+					otpRefId: res.data.data.otp_ref_id,
+				},
+			});
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
@@ -54,9 +61,11 @@ export const AadhaarVerificationStep = ({
 
 	const handleOtpSubmit = async (otp: string) => {
 		const res = await validateAadhaarOtp({
-			aadhaar,
+			aadhar: aadhaar,
 			otp,
 			consent_id: state.consentId,
+			intent_id: state.aadhaarIntentId,
+			otp_ref_id: state.aadhaarOtpRefId,
 		});
 
 		if (res?.data?.status === 0) {
@@ -155,7 +164,7 @@ export const AadhaarVerificationStep = ({
 				isLoading={isValidatingAadhaarOtp}
 				title={OTP_MODAL_TITLES.AADHAAR}
 				mobileHint="Aadhaar-linked mobile"
-				otpLength={4}
+				// otpLength={4}
 			/>
 		</>
 	);

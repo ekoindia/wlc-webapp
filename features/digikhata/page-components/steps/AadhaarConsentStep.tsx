@@ -52,13 +52,30 @@ export const AadhaarConsentStep = ({
 	const [showFull, setShowFull] = useState(false);
 	const [agreed, setAgreed] = useState(false);
 
+	// Audio playback with react-sounds
+	// const {
+	// 	play: playAudio,
+	// 	stop: stopAudio,
+	// 	isPlaying,
+	// } = useSound(consentDetails?.audioUrl ?? "", { volume: 0.8 });
+
+	// const handleAudioToggle = () => {
+	// 	if (isPlaying) {
+	// 		stopAudio();
+	// 	} else {
+	// 		playAudio();
+	// 	}
+	// };
+
 	// Fetch languages on mount
 	useEffect(() => {
 		const load = async () => {
 			const res = await getConsentLanguages();
 			if (res?.data?.status === 0) {
 				const langs: ConsentLanguage[] =
-					res.data.data?.consentlanguage ?? [];
+					res.data.data?.consentlanguage ??
+					res.data.data?.consent_language_list ??
+					[];
 				setLanguages(langs);
 				if (langs.length > 0) setSelectedLangId(langs[0].pkid);
 			} else {
@@ -83,7 +100,7 @@ export const AadhaarConsentStep = ({
 			setAgreed(false);
 			const res = await getConsentDetails(selectedLangId);
 			if (res?.data?.status === 0) {
-				setConsentDetails(res.data.data);
+				setConsentDetails(res.data.data?.consent_detail);
 			} else {
 				toast({
 					title: "Failed to load consent details",
@@ -194,7 +211,7 @@ export const AadhaarConsentStep = ({
 								lineHeight="tall"
 								whiteSpace="pre-wrap"
 							>
-								{consentDetails.consentContent}
+								{consentDetails?.consentContent}
 							</Text>
 						</Box>
 					</Collapse>

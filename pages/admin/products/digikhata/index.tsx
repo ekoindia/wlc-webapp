@@ -14,7 +14,7 @@ const DigiKhataRoute = (): JSX.Element => {
 	return (
 		<PaddingBox>
 			<PageTitle title="My DigiKhata Wallet" isBeta hideBackIcon />
-			<DigiKhataPage />
+			<DigiKhataPage mode="self" />
 		</PaddingBox>
 	);
 };

@@ -3,26 +3,26 @@ import { DigiKhataPage } from "features/digikhata";
 import { useFeatureFlag } from "hooks";
 
 /**
- * DigiKhata Wallet & Fund Transfer page route.
+ * DigiKhata Fund Transfer — assisted mode page route.
  * Protected by the DIGIKHATA_WALLET feature flag.
  */
-const DigiKhataRoute = (): JSX.Element => {
+const DigiKhataFundTransferRoute = (): JSX.Element => {
 	const [isEnabled] = useFeatureFlag("DIGIKHATA_WALLET");
 
 	if (!isEnabled) return null;
 
 	return (
 		<PaddingBox>
-			<PageTitle title="My DigiKhata Wallet" isBeta hideBackIcon />
-			<DigiKhataPage mode="self" />
+			<PageTitle title="DigiKhata Fund Transfer" isBeta hideBackIcon />
+			<DigiKhataPage mode="assisted" />
 		</PaddingBox>
 	);
 };
 
-DigiKhataRoute.pageMeta = {
-	title: "DigiKhata Wallet",
+DigiKhataFundTransferRoute.pageMeta = {
+	title: "DigiKhata Fund Transfer",
 	isBeta: true,
 	isSubPage: false,
 };
 
-export default DigiKhataRoute;
+export default DigiKhataFundTransferRoute;
