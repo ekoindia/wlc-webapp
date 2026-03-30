@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import { STEP_STATUS, Stepper } from "components/Stepper";
 import type { StepStatus } from "components/Stepper/types";
 import { useUser } from "contexts";
@@ -53,6 +53,7 @@ interface DigiKhataInnerProps {
 const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
 	const { userData } = useUser();
+	const toast = useToast();
 
 	// In self mode, seed activeMobile from the logged-in user on first render
 	useEffect(() => {
@@ -138,6 +139,14 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 			} else {
 				dispatch({ type: "SET_STEP", step: "aadhaar-consent" });
 			}
+		} else {
+			toast({
+				title: res?.data?.message ?? "OTP verification failed",
+				description: res?.data?.data?.description ?? "",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
 		}
 		return res;
 	};
