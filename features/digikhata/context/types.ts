@@ -103,7 +103,7 @@ export const transformToWalletData = (
 		// walletAcOpened: is_registered === 1,
 		walletAcOpeningInProgress: false,
 		walletHolderName: customer_profile?.name || data?.sender_name || "",
-		accountStatus: customer_profile?.kyc_state == 0 ? "Active" : "Inactive",
+		accountStatus: customer_profile?.kyc_state == 0 ? "Active" : "Inactive", // TODO: This is not the correct status, need to confirm with backend on correct field for account status
 		walletToBankLimitAvailable: remaining,
 		walletToBankLimitConsumed: consumed,
 		totalMonthlyLimit: totalLimit,
