@@ -17,10 +17,6 @@ import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
-import {
-	DigiKhataApiResponse,
-	transformToWalletData,
-} from "../../context/types";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 
 interface LoadWalletStepProps {
@@ -65,16 +61,7 @@ export const LoadWalletStep = ({
 		const res = await loadWallet({ amount: numAmount, pin: encodedPin });
 		if (res?.data?.status === 0) {
 			if (res?.data?.response_type_id === 2447) {
-				// Wallet loaded successfully — refresh balance and trigger OTP flow
-				const walletResponse = res.data as DigiKhataApiResponse;
-				if (walletResponse?.data?.customer_profile) {
-					dispatch({
-						type: "SET_WALLET_DATA",
-						payload: transformToWalletData(walletResponse),
-					});
-				}
-
-				// Trigger parent's balance fetch to handle OTP flow
+				// Trigger parent's balance fetch to handle OTP flow, to show the updated balance, and to navigate back to the dashboard
 				await onFetchBalance();
 			} else {
 				toast({

@@ -88,9 +88,9 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 
 	// ── Fetch Balance / Refresh ────────────────────────────────────────────────
 	const handleFetchBalance = async () => {
-		dispatch({ type: "SET_LOADING", payload: true });
+		// dispatch({ type: "SET_LOADING", payload: true });
 		const res = await generateSenderOtp();
-		dispatch({ type: "SET_LOADING", payload: false });
+		// dispatch({ type: "SET_LOADING", payload: false });
 
 		const responseType = res?.data?.response_type_id;
 
@@ -231,7 +231,7 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 				>
 					<WalletCard
 						walletData={state.walletData}
-						isLoading={state.isLoading || isGeneratingSenderOtp}
+						isLoading={state.isLoading}
 						hasFetchedWallet={state.hasFetchedWallet}
 						onFetchBalance={handleFetchBalance}
 					/>
