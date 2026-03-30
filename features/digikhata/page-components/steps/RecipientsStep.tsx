@@ -26,8 +26,9 @@ interface RecipientsStepProps {
 /**
  * Shows all registered recipients in a responsive card grid format.
  * Gated selection for legacy recipients handles OTP verification inline.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Recipients list with add/delete actions and inline OTP verification
  */
 export const RecipientsStep = ({
 	mobile,

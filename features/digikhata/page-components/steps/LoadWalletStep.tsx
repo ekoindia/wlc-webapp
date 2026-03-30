@@ -15,41 +15,40 @@ import { CopyButton } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
-import { OtpModal } from "../../components/OtpModal";
-import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
+import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
+import {
+	DigiKhataApiResponse,
+	transformToWalletData,
+} from "../../context/types";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 
 interface LoadWalletStepProps {
 	mobile: string;
+	onFetchBalance: () => Promise<void>;
 }
 
 /**
  * Lets the agent load funds into their DigiKhata wallet.
- * Flow: Enter Amount + PIN → loadWallet → generateSenderOtp → OtpModal
+ * Flow: Enter Amount + PIN → loadWallet → on 2447 calls onFetchBalance for OTP flow
  * → verifySenderOtp → hydrate wallet → back to dashboard.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @param {() => Promise<void>} root0.onFetchBalance - Callback to trigger balance refresh and OTP handling
+ * @returns {JSX.Element} Wallet loading form with UPI and virtual account options
  */
 export const LoadWalletStep = ({
 	mobile,
+	onFetchBalance,
 }: LoadWalletStepProps): JSX.Element => {
-	const { state, dispatch } = useDigiKhata();
-	const {
-		loadWallet,
-		isLoadingWallet,
-		generateSenderOtp,
-		isGeneratingSenderOtp,
-		verifySenderOtp,
-		isVerifyingSenderOtp,
-	} = useDigiKhataApi(mobile);
+	const { dispatch } = useDigiKhata();
+	const { loadWallet, isLoadingWallet } = useDigiKhataApi(mobile);
 
 	const toast = useToast();
 
 	const [amount, setAmount] = useState("");
 	const [encodedPin, setEncodedPin] = useState("");
 	const [isPinComplete, setIsPinComplete] = useState(false);
-	const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 	const upiVpa = `${mobile}@digikhata`;
 	const virtualAccountNumber = `DIGIKTWT${mobile}`;
 	const virtualAccountIfsc = "IDFB0040101";
@@ -65,15 +64,21 @@ export const LoadWalletStep = ({
 
 		const res = await loadWallet({ amount: numAmount, pin: encodedPin });
 		if (res?.data?.status === 0) {
-			if (res?.data?.response_type_id === 2129) {
-				dispatch({
-					type: "SET_OTP_REF_ID",
-					payload: res?.data?.data?.otp_ref_id ?? null,
-				});
-				setIsOtpModalOpen(true);
+			if (res?.data?.response_type_id === 2447) {
+				// Wallet loaded successfully — refresh balance and trigger OTP flow
+				const walletResponse = res.data as DigiKhataApiResponse;
+				if (walletResponse?.data?.customer_profile) {
+					dispatch({
+						type: "SET_WALLET_DATA",
+						payload: transformToWalletData(walletResponse),
+					});
+				}
+
+				// Trigger parent's balance fetch to handle OTP flow
+				await onFetchBalance();
 			} else {
 				toast({
-					title: res?.data?.message ?? "Failed to send OTP",
+					title: res?.data?.message ?? "Failed to load wallet",
 					status: "error",
 					duration: 4000,
 					isClosable: true,
@@ -89,47 +94,8 @@ export const LoadWalletStep = ({
 		}
 	};
 
-	const handleOtpSubmit = async (otp: string) => {
-		if (!state.otpRefId) {
-			toast({
-				title: "Missing OTP reference. Please request OTP again.",
-				status: "error",
-				duration: 4000,
-				isClosable: true,
-			});
-			return null;
-		}
-
-		const res = await verifySenderOtp({
-			otp,
-			otp_ref_id: state.otpRefId,
-		});
-		if (res?.data?.status === 0) {
-			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
-			setIsOtpModalOpen(false);
-			toast({
-				title: "Wallet loaded successfully!",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
-			dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
-		} else {
-			toast({
-				title: res?.data?.message ?? "Invalid OTP",
-				status: "error",
-				duration: 4000,
-				isClosable: true,
-			});
-		}
-		return res;
-	};
-
 	const canSubmit =
-		isPinComplete &&
-		parseFloat(amount) > 0 &&
-		!isLoadingWallet &&
-		!isGeneratingSenderOtp;
+		isPinComplete && parseFloat(amount) > 0 && !isLoadingWallet;
 
 	return (
 		<>
@@ -255,10 +221,8 @@ export const LoadWalletStep = ({
 						borderRadius="10"
 						size="lg"
 						isDisabled={!canSubmit}
-						isLoading={isLoadingWallet || isGeneratingSenderOtp}
-						loadingText={
-							isLoadingWallet ? "Loading Wallet…" : "Sending OTP…"
-						}
+						isLoading={isLoadingWallet}
+						loadingText="Loading Wallet…"
 						onClick={handleLoadWallet}
 						sx={{
 							animation: `${fadeSlideInBottom12} 0.18s ${ANIMATION.EASING} both`,
@@ -422,16 +386,6 @@ export const LoadWalletStep = ({
 					</Text>
 				</Box>
 			</Flex>
-
-			<OtpModal
-				isOpen={isOtpModalOpen}
-				onClose={() => setIsOtpModalOpen(false)}
-				onSubmit={handleOtpSubmit}
-				onResend={generateSenderOtp}
-				isLoading={isVerifyingSenderOtp}
-				title={OTP_MODAL_TITLES.SENDER_VERIFY}
-				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-			/>
 		</>
 	);
 };

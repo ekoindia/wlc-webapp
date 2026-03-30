@@ -44,9 +44,11 @@ interface DigiKhataInnerProps {
 }
 
 /**
- * Inner component — consumes DigiKhataContext
- * @param root0
- * @param root0.mode
+ * Inner component — consumes DigiKhataContext state and dispatch.
+ * Renders step-based flow: customer search, onboarding, KYC, wallet dashboard, transfers.
+ * @param {object} root0 - Component props
+ * @param {"self" | "assisted"} root0.mode - Flow mode: "self" for agent's wallet, "assisted" for customer search
+ * @returns {JSX.Element} DigiKhata flow container with stepper, step content, and OTP modal
  */
 const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
@@ -185,7 +187,12 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 			case "wallet-dashboard":
 				return <WalletDashboard />;
 			case "load-wallet":
-				return <LoadWalletStep mobile={state.activeMobile} />;
+				return (
+					<LoadWalletStep
+						mobile={state.activeMobile}
+						onFetchBalance={handleFetchBalance}
+					/>
+				);
 			case "recipients":
 				return <RecipientsStep mobile={state.activeMobile} />;
 			case "add-recipient":
@@ -290,9 +297,10 @@ interface DigiKhataPageProps {
 
 /**
  * DigiKhataPage — root page component for the DigiKhata Wallet & Fund Transfer product.
- * Wraps the entire feature in DigiKhataProvider.
- * @param root0
- * @param root0.mode
+ * Wraps the entire feature in DigiKhataProvider and orchestrates state management.
+ * @param {object} root0 - Component props
+ * @param {("self" | "assisted")} [root0.mode] - Flow mode: "self" uses agent's mobile (default), "assisted" starts at customer search
+ * @returns {JSX.Element} Provider-wrapped DigiKhata flow container
  */
 export const DigiKhataPage = ({
 	mode = "self",

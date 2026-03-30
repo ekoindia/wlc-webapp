@@ -19,9 +19,10 @@ interface SearchCustomerStepProps {
 /**
  * Step for searching a customer by mobile number in assisted mode.
  * The agent enters the customer's 10-digit mobile number to load their wallet.
- * @param root0
- * @param root0.onSearch
- * @param root0.isLoading
+ * @param {object} root0 - Component props
+ * @param {(mobile: string) => void} root0.onSearch - Callback with searched mobile number
+ * @param {boolean} root0.isLoading - Loading state indicator
+ * @returns {JSX.Element} Mobile number search input form with validation
  */
 export const SearchCustomerStep = ({
 	onSearch,
@@ -58,13 +59,10 @@ export const SearchCustomerStep = ({
 			}}
 		>
 			<Flex direction="column" gap={1}>
-				<Box fontSize="4xl" userSelect="none">
-					🔍
-				</Box>
 				<Text fontWeight="semibold" fontSize="md" color="dark">
 					Search Customer
 				</Text>
-				<Text fontSize="sm" color="light" maxW="360px">
+				<Text fontSize="sm" color="light">
 					Enter the customer&apos;s 10-digit mobile number to load
 					their DigiKhata wallet details.
 				</Text>
@@ -72,7 +70,7 @@ export const SearchCustomerStep = ({
 
 			<Box>
 				<FormControl>
-					<FormLabel>Customer Mobile Number</FormLabel>
+					<FormLabel>Enter Mobile Number</FormLabel>
 					<Input
 						type="tel"
 						placeholder="Enter 10-digit mobile number"

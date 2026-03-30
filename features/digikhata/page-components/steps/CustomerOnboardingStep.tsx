@@ -23,9 +23,10 @@ interface CustomerOnboardingStepProps {
  * Step for collecting customer name during onboarding.
  * Shown when responseType === 308 (sender onboarding required).
  * On success, calls onSuccess to trigger fetchBalance again.
- * @param root0
- * @param root0.mobile
- * @param root0.onSuccess
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @param {() => void} root0.onSuccess - Callback invoked after successful account creation
+ * @returns {JSX.Element} Customer name input form with validation
  */
 export const CustomerOnboardingStep = ({
 	mobile,

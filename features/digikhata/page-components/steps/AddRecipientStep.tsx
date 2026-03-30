@@ -21,8 +21,9 @@ interface BankOption {
  * Form to register a new fund transfer recipient.
  * Flow: fill details → sendAddRecipientOtp → OtpModal → addRecipient
  * → ADD_RECIPIENT (with isNew flag) → navigate to recipients list.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Recipient registration form with bank selection and OTP verification
  */
 export const AddRecipientStep = ({
 	mobile,

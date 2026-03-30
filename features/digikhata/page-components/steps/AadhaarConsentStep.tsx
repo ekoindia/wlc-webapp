@@ -28,8 +28,9 @@ interface AadhaarConsentStepProps {
  * Fetches consent languages → shows consent text (summary + expandable full text)
  * + audio player + "I Agree" toggle.
  * On proceed: saves consentId and navigates to Aadhaar verification.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Consent selection form with language picker and agreement toggle
  */
 export const AadhaarConsentStep = ({
 	mobile,

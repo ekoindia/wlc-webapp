@@ -15,8 +15,9 @@ const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 /**
  * Step 3 of KYC: validates PAN, then sends sender OTP → on success
  * hydrates wallet data and navigates to the wallet dashboard.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} PAN input form with OTP verification modal for wallet hydration
  */
 export const PanVerificationStep = ({
 	mobile,

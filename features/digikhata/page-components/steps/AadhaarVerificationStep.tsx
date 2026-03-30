@@ -15,8 +15,9 @@ const AADHAAR_REGEX = /^\d{12}$/;
 /**
  * Step 2 of KYC: collect 12-digit Aadhaar, generate OTP, validate OTP.
  * On success navigates to PAN verification.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Aadhaar input form with OTP verification modal
  */
 export const AadhaarVerificationStep = ({
 	mobile,

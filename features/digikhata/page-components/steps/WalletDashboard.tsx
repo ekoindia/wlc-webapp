@@ -9,6 +9,7 @@ import { useDigiKhata } from "../../context/DigiKhataContext";
 /**
  * Main wallet action hub — shown once the wallet is confirmed open.
  * Renders Load Wallet and (conditionally) Transfer Fund action cards.
+ * @returns {JSX.Element} Action card grid with wallet operations
  */
 export const WalletDashboard = (): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();

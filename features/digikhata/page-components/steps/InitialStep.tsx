@@ -7,6 +7,7 @@ import { ANIMATION } from "../../constants";
  * Instructs the user to click "Fetch Balance" on the WalletCard above.
  * Navigation is driven by the root DigiKhataPage after a successful
  * sender OTP verification.
+ * @returns {JSX.Element} Locked wallet instruction screen with icon and guidance text
  */
 export const InitialStep = (): JSX.Element => (
 	<Flex

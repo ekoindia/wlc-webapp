@@ -33,8 +33,9 @@ type TransferStatus = "idle" | "success" | "failed";
  *
  * If the selected recipient has beneficiary_id === 0 (not yet bank-registered),
  * the component shows an informational warning and blocks transfer.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Fund transfer form with amount, PIN, OTP confirmation, and status display
  */
 export const FundTransferStep = ({
 	mobile,
