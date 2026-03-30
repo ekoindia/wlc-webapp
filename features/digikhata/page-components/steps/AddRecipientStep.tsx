@@ -88,16 +88,24 @@ export const AddRecipientStep = ({
 		});
 
 		if (res?.data?.status === 0) {
-			const newRecipient = res.data.data?.recipient ?? {
-				beneficiary_id: res.data.data?.beneficiary_id ?? 0,
-				recipient_name: recipientName.trim(),
+			const recipientData = res.data.data?.recipient;
+			const newRecipient = {
+				recipient_id: recipientData?.recipient_id ?? 0,
+				bank_recipient_id: recipientData?.bank_recipient_id ?? null,
+				name: recipientData?.recipient_name ?? recipientName.trim(),
 				accountNumber: accountNumber.trim(),
 				ifsc: ifsc.trim().toUpperCase(),
 				bankName: selectedBank!.label,
+				accountType: "Bank Account",
+				isVerified: recipientData?.is_verified === 1,
+				mobile: recipientMobile.trim(),
+				recipientIdType: "acc_ifsc",
+				beneficiary_id: res.data.data?.beneficiary_id ?? null,
+				isNew: true,
 			};
 			dispatch({
 				type: "ADD_RECIPIENT",
-				payload: { ...newRecipient, isNew: true },
+				payload: newRecipient,
 			});
 			setIsOtpModalOpen(false);
 			toast({
@@ -274,7 +282,6 @@ export const AddRecipientStep = ({
 				isLoading={isAddingRecipient}
 				title={OTP_MODAL_TITLES.ADD_RECIPIENT}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);

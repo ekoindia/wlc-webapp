@@ -121,7 +121,7 @@ export const WalletCard = ({
 
 	const consumed = walletData?.walletToBankLimitConsumed ?? 0;
 	const available = walletData?.walletToBankLimitAvailable ?? 0;
-	const total = consumed + available;
+	const total = walletData?.totalMonthlyLimit ?? consumed + available;
 	const consumedPercent =
 		total > 0 ? Math.round((consumed / total) * 100) : 0;
 
@@ -134,6 +134,7 @@ export const WalletCard = ({
 	return (
 		<Box
 			w="full"
+			maxW={{ base: "full", lg: "800px" }}
 			bg="white"
 			borderRadius="10"
 			border="card"
@@ -251,7 +252,7 @@ export const WalletCard = ({
 										color="primary.DEFAULT"
 										userSelect="none"
 									>
-										{consumedPercent}% Consumed
+										₹{total.toLocaleString("en-IN")}
 									</Text>
 								) : null}
 							</Flex>
@@ -278,6 +279,16 @@ export const WalletCard = ({
 									>
 										₹{consumed.toLocaleString("en-IN")}
 									</Text>
+									{consumedPercent > 0 && (
+										<Text
+											as="span"
+											color="light"
+											fontSize="xxs"
+											ml={1}
+										>
+											({consumedPercent}%)
+										</Text>
+									)}
 								</Text>
 								<Text
 									fontSize="xs"

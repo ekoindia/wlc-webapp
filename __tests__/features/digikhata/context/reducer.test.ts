@@ -14,6 +14,7 @@ const mockWalletData: WalletData = {
 	accountStatus: "ACTIVE",
 	walletToBankLimitAvailable: 50000,
 	walletToBankLimitConsumed: 10000,
+	totalMonthlyLimit: 100000,
 	token: "mock-token",
 	walletCurrentBalance: 2500,
 	walletKYCDocStatus: { aadharVerified: true, pancardVerified: true },
@@ -21,11 +22,17 @@ const mockWalletData: WalletData = {
 };
 
 const mockRecipient: Recipient = {
-	beneficiary_id: 1,
+	recipient_id: 10012870,
+	bank_recipient_id: 4202612,
 	name: "John Doe",
 	accountNumber: "12345678",
 	ifsc: "HDFC0001234",
 	bankName: "HDFC Bank",
+	accountType: "Bank Account",
+	isVerified: true,
+	mobile: "XXXXXX1234",
+	recipientIdType: "acc_ifsc",
+	beneficiary_id: 1,
 };
 
 describe("digiKhataReducer", () => {
@@ -150,11 +157,17 @@ describe("digiKhataReducer", () => {
 				recipients: [mockRecipient],
 			};
 			const newRecipient: Recipient = {
-				beneficiary_id: 2,
+				recipient_id: 10012871,
+				bank_recipient_id: 4202613,
 				name: "Jane Doe",
 				accountNumber: "87654321",
 				ifsc: "SBI00001234",
 				bankName: "SBI",
+				accountType: "Bank Account",
+				isVerified: false,
+				mobile: "XXXXXX5678",
+				recipientIdType: "acc_ifsc",
+				beneficiary_id: 2,
 			};
 			const action: Action = {
 				type: "ADD_RECIPIENT",

@@ -65,16 +65,15 @@ export const LoadWalletStep = ({
 
 		const res = await loadWallet({ amount: numAmount, pin: encodedPin });
 		if (res?.data?.status === 0) {
-			const otpRes = await generateSenderOtp();
-			if (otpRes?.data?.response_type_id === 2129) {
+			if (res?.data?.response_type_id === 2129) {
 				dispatch({
 					type: "SET_OTP_REF_ID",
-					payload: otpRes?.data?.data?.otp_ref_id ?? null,
+					payload: res?.data?.data?.otp_ref_id ?? null,
 				});
 				setIsOtpModalOpen(true);
 			} else {
 				toast({
-					title: otpRes?.data?.message ?? "Failed to send OTP",
+					title: res?.data?.message ?? "Failed to send OTP",
 					status: "error",
 					duration: 4000,
 					isClosable: true,
@@ -432,7 +431,6 @@ export const LoadWalletStep = ({
 				isLoading={isVerifyingSenderOtp}
 				title={OTP_MODAL_TITLES.SENDER_VERIFY}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);

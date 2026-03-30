@@ -72,7 +72,7 @@ export const OtpModal = ({
 			title={title}
 			isOpen={isOpen}
 			onClose={handleClose}
-			size="sm"
+			size="md"
 			isCentered
 			motionPreset="slideInBottom"
 		>

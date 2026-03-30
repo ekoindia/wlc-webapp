@@ -9,6 +9,7 @@ const mockWalletData: WalletData = {
 	accountStatus: "ACTIVE",
 	walletToBankLimitAvailable: 50000,
 	walletToBankLimitConsumed: 10000,
+	totalMonthlyLimit: 100000,
 	token: "mock-token",
 	walletCurrentBalance: 2500,
 	walletKYCDocStatus: { aadharVerified: true, pancardVerified: true },
