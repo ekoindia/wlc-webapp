@@ -390,7 +390,7 @@ export const WalletCard = ({
 								<Icon
 									name="refresh"
 									color="white"
-									size="sm"
+									size="14px"
 									style={
 										isLoading
 											? {
