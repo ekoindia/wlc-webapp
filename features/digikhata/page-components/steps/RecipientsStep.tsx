@@ -1,19 +1,17 @@
 import {
-	Badge,
 	Box,
 	Button,
 	Flex,
-	Icon,
-	IconButton,
 	SimpleGrid,
 	Skeleton,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
+import { Icon } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
-import { FiPlus, FiTrash2, FiUserPlus } from "react-icons/fi";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { Recipient, transformRecipientList } from "../../context/types";
@@ -26,8 +24,9 @@ interface RecipientsStepProps {
 /**
  * Shows all registered recipients in a responsive card grid format.
  * Gated selection for legacy recipients handles OTP verification inline.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Recipients list with add/delete actions and inline OTP verification
  */
 export const RecipientsStep = ({
 	mobile,
@@ -176,85 +175,50 @@ export const RecipientsStep = ({
 				}}
 			>
 				{/* Header Section */}
-				<Flex
-					direction={{ base: "column", md: "row" }}
-					align={{ base: "flex-start", md: "flex-end" }}
-					justify="space-between"
-					gap={4}
-				>
-					<Box>
-						<Flex align="center" gap={4} mb={2}>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={() =>
-									dispatch({
-										type: "SET_STEP",
-										step: "wallet-dashboard",
-									})
-								}
-								px={3}
-								bg="gray.50"
-								borderRadius="8px"
-								fontWeight="medium"
-								color="gray.600"
-								leftIcon={<Text fontSize="lg">←</Text>}
-								_hover={{ bg: "gray.100" }}
-							>
-								Back
-							</Button>
-							<Text
-								fontWeight="bold"
-								fontSize="3xl"
-								color="gray.800"
-							>
-								Registered Beneficiaries
-							</Text>
-						</Flex>
-						<Text
+				<StepHeader
+					title="Registered Beneficiaries"
+					subtitle="Manage your recipients and initiate transfers"
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "wallet-dashboard" })
+					}
+					toolComponent={
+						<Button
+							bg="primary.DEFAULT"
+							color="white"
+							leftIcon={<Icon name="person-add" size="sm" />}
+							h="48px"
+							px={8}
+							borderRadius="10px"
+							shadow="0 4px 14px 0 rgba(26, 43, 136, 0.39)"
+							onClick={() =>
+								dispatch({
+									type: "SET_STEP",
+									step: "add-recipient",
+								})
+							}
+							_hover={{
+								bg: "primary.dark",
+								transform: "translateY(-1px)",
+							}}
+							transition="all 0.2s"
 							fontSize="md"
-							color="gray.500"
-							ml={{ md: "84px" }}
 						>
-							Manage your recipients and initiate transfers
-						</Text>
-					</Box>
-					<Button
-						bg="primary.dark"
-						color="white"
-						leftIcon={<Icon as={FiUserPlus} />}
-						h="52px"
-						px={8}
-						borderRadius="10px"
-						shadow="0 4px 14px 0 rgba(26, 43, 136, 0.39)"
-						onClick={() =>
-							dispatch({
-								type: "SET_STEP",
-								step: "add-recipient",
-							})
-						}
-						_hover={{
-							bg: "primary.DEFAULT",
-							transform: "translateY(-1px)",
-						}}
-						transition="all 0.2s"
-						fontSize="md"
-					>
-						Add New Recipient
-					</Button>
-				</Flex>
+							Add New Recipient
+						</Button>
+					}
+				/>
 
 				{/* Cards Grid */}
 				{isGettingRecipients ? (
 					<SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-						{[1, 2, 3].map((i) => (
+						{[1, 2].map((i) => (
 							<Flex
 								key={i}
 								direction="column"
 								gap={5}
 								p={7}
 								bg="white"
-								borderRadius="16px"
+								borderRadius="10px"
 								border="1px solid"
 								borderColor="gray.100"
 							>
@@ -314,11 +278,11 @@ export const RecipientsStep = ({
 										flex={1}
 										borderRadius="10px"
 									/>
-									<Skeleton
+									{/* <Skeleton
 										h="44px"
 										w="44px"
 										borderRadius="10px"
-									/>
+									/> */}
 								</Flex>
 							</Flex>
 						))}
@@ -340,8 +304,9 @@ export const RecipientsStep = ({
 									key={r.recipient_id}
 									direction="column"
 									p={7}
+									gap="6"
 									bg="white"
-									borderRadius="16px"
+									borderRadius="10px"
 									boxShadow="0 4px 20px -4px rgba(0,0,0,0.05)"
 									border="1px solid"
 									borderColor="gray.100"
@@ -356,7 +321,6 @@ export const RecipientsStep = ({
 									<Flex
 										justify="space-between"
 										align="center"
-										mb={6}
 									>
 										<Flex align="center" gap={4}>
 											<Flex
@@ -367,7 +331,7 @@ export const RecipientsStep = ({
 												h="48px"
 												borderRadius="12px"
 											>
-												<Text fontSize="2xl">🏦</Text>
+												<Icon name="account-balance" />
 											</Flex>
 											<Box>
 												<Text
@@ -387,7 +351,7 @@ export const RecipientsStep = ({
 												</Text>
 											</Box>
 										</Flex>
-										<Badge
+										{/* <Badge
 											bg="#E6FFFA"
 											color="#319795"
 											borderRadius="full"
@@ -403,52 +367,52 @@ export const RecipientsStep = ({
 												.includes("current")
 												? "CURRENT"
 												: "SAVINGS"}
-										</Badge>
+										</Badge> */}
 									</Flex>
 
-									<Flex
-										justify="space-between"
-										align="center"
-										mb={3}
-									>
-										<Text
-											fontSize="xs"
-											fontWeight="medium"
-											color="gray.400"
+									<Flex direction="column" gap={3}>
+										<Flex
+											justify="space-between"
+											align="center"
 										>
-											Account Number
-										</Text>
-										<Text
-											fontSize="xs"
-											fontWeight="semibold"
-											color="gray.700"
-											letterSpacing="wider"
-										>
-											XXXX XXXX{" "}
-											{r.accountNumber.slice(-4) ||
-												"????"}
-										</Text>
-									</Flex>
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="gray.400"
+											>
+												Account Number
+											</Text>
+											<Text
+												fontSize="xs"
+												fontWeight="semibold"
+												color="gray.700"
+												letterSpacing="wider"
+											>
+												XXXX XXXX{" "}
+												{r.accountNumber.slice(-4) ||
+													"????"}
+											</Text>
+										</Flex>
 
-									<Flex
-										justify="space-between"
-										align="center"
-										mb={6}
-									>
-										<Text
-											fontSize="xs"
-											fontWeight="medium"
-											color="gray.400"
+										<Flex
+											justify="space-between"
+											align="center"
 										>
-											IFSC Code
-										</Text>
-										<Text
-											fontSize="xs"
-											fontWeight="semibold"
-											color="gray.700"
-										>
-											{r.ifsc}
-										</Text>
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="gray.400"
+											>
+												IFSC Code
+											</Text>
+											<Text
+												fontSize="xs"
+												fontWeight="semibold"
+												color="gray.700"
+											>
+												{r.ifsc}
+											</Text>
+										</Flex>
 									</Flex>
 
 									<Flex gap={3} mt="auto">
@@ -469,7 +433,7 @@ export const RecipientsStep = ({
 										>
 											Transfer Fund
 										</Button>
-										<IconButton
+										{/* <IconButton
 											aria-label="Delete Recipient"
 											icon={<Icon as={FiTrash2} />}
 											variant="ghost"
@@ -482,7 +446,7 @@ export const RecipientsStep = ({
 												bg: "red.50",
 												color: "red.400",
 											}}
-										/>
+										/> */}
 									</Flex>
 								</Flex>
 							);
@@ -523,7 +487,7 @@ export const RecipientsStep = ({
 								color="gray.300"
 								mb={4}
 							>
-								<Icon as={FiPlus} boxSize={6} />
+								<Icon name="add" size="sm" />
 							</Flex>
 							<Text
 								fontWeight="bold"

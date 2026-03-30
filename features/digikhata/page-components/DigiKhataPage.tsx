@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import { STEP_STATUS, Stepper } from "components/Stepper";
 import type { StepStatus } from "components/Stepper/types";
 import { useUser } from "contexts";
@@ -44,13 +44,16 @@ interface DigiKhataInnerProps {
 }
 
 /**
- * Inner component — consumes DigiKhataContext
- * @param root0
- * @param root0.mode
+ * Inner component — consumes DigiKhataContext state and dispatch.
+ * Renders step-based flow: customer search, onboarding, KYC, wallet dashboard, transfers.
+ * @param {object} root0 - Component props
+ * @param {"self" | "assisted"} root0.mode - Flow mode: "self" for agent's wallet, "assisted" for customer search
+ * @returns {JSX.Element} DigiKhata flow container with stepper, step content, and OTP modal
  */
 const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
 	const { userData } = useUser();
+	const toast = useToast();
 
 	// In self mode, seed activeMobile from the logged-in user on first render
 	useEffect(() => {
@@ -85,9 +88,9 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 
 	// ── Fetch Balance / Refresh ────────────────────────────────────────────────
 	const handleFetchBalance = async () => {
-		dispatch({ type: "SET_LOADING", payload: true });
+		// dispatch({ type: "SET_LOADING", payload: true });
 		const res = await generateSenderOtp();
-		dispatch({ type: "SET_LOADING", payload: false });
+		// dispatch({ type: "SET_LOADING", payload: false });
 
 		const responseType = res?.data?.response_type_id;
 
@@ -136,6 +139,14 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 			} else {
 				dispatch({ type: "SET_STEP", step: "aadhaar-consent" });
 			}
+		} else {
+			toast({
+				title: res?.data?.message ?? "OTP verification failed",
+				description: res?.data?.data?.description ?? "",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
 		}
 		return res;
 	};
@@ -185,13 +196,23 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 			case "wallet-dashboard":
 				return <WalletDashboard />;
 			case "load-wallet":
-				return <LoadWalletStep mobile={state.activeMobile} />;
+				return (
+					<LoadWalletStep
+						mobile={state.activeMobile}
+						onFetchBalance={handleFetchBalance}
+					/>
+				);
 			case "recipients":
 				return <RecipientsStep mobile={state.activeMobile} />;
 			case "add-recipient":
 				return <AddRecipientStep mobile={state.activeMobile} />;
 			case "fund-transfer":
-				return <FundTransferStep mobile={state.activeMobile} />;
+				return (
+					<FundTransferStep
+						mobile={state.activeMobile}
+						onFetchBalance={handleFetchBalance}
+					/>
+				);
 			default:
 				return <InitialStep />;
 		}
@@ -215,7 +236,7 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 				>
 					<WalletCard
 						walletData={state.walletData}
-						isLoading={state.isLoading || isGeneratingSenderOtp}
+						isLoading={state.isLoading}
 						hasFetchedWallet={state.hasFetchedWallet}
 						onFetchBalance={handleFetchBalance}
 					/>
@@ -277,7 +298,6 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 				isLoading={isVerifyingSenderOtp}
 				title={OTP_MODAL_TITLES.SENDER_VERIFY}
 				mobileHint={`XXXXXX${state.activeMobile.slice(-4)}`}
-				otpLength={6}
 			/>
 		</Flex>
 	);
@@ -290,9 +310,10 @@ interface DigiKhataPageProps {
 
 /**
  * DigiKhataPage — root page component for the DigiKhata Wallet & Fund Transfer product.
- * Wraps the entire feature in DigiKhataProvider.
- * @param root0
- * @param root0.mode
+ * Wraps the entire feature in DigiKhataProvider and orchestrates state management.
+ * @param {object} root0 - Component props
+ * @param {("self" | "assisted")} [root0.mode] - Flow mode: "self" uses agent's mobile (default), "assisted" starts at customer search
+ * @returns {JSX.Element} Provider-wrapped DigiKhata flow container
  */
 export const DigiKhataPage = ({
 	mode = "self",

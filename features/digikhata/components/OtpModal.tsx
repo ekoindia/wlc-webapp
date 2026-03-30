@@ -52,9 +52,10 @@ export const OtpModal = ({
 		onClose();
 	};
 
-	const handleSubmit = async () => {
-		if (otp.length !== otpLength) return;
-		const result = await onSubmit(otp);
+	const handleSubmit = async (otpValue?: string) => {
+		const otpToSubmit = otpValue ?? otp;
+		if (otpToSubmit.length !== otpLength) return;
+		const result = await onSubmit(otpToSubmit);
 		if (isSuccessfulResponse(result)) {
 			setOtp("");
 		}
@@ -75,6 +76,7 @@ export const OtpModal = ({
 			size="md"
 			isCentered
 			motionPreset="slideInBottom"
+			closeOnOverlayClick={false}
 		>
 			<VStack spacing={6} pb={4}>
 				<Text fontSize="sm" color="light" textAlign="center">
@@ -95,6 +97,7 @@ export const OtpModal = ({
 					value={otp}
 					onChange={setOtp}
 					onComplete={handleSubmit}
+					onEnter={handleSubmit}
 					isDisabled={isLoading}
 					inputStyle={{ w: 14, h: 14, fontSize: "xl" }}
 					containerStyle={{ gap: 3, justifyContent: "center" }}
@@ -108,7 +111,7 @@ export const OtpModal = ({
 					borderRadius="10"
 					isLoading={isLoading}
 					isDisabled={otp.length !== otpLength}
-					onClick={handleSubmit}
+					onClick={() => handleSubmit()}
 					_hover={{ bg: "primary.dark" }}
 				>
 					Verify OTP

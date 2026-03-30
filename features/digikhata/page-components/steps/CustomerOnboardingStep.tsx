@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -23,9 +24,10 @@ interface CustomerOnboardingStepProps {
  * Step for collecting customer name during onboarding.
  * Shown when responseType === 308 (sender onboarding required).
  * On success, calls onSuccess to trigger fetchBalance again.
- * @param root0
- * @param root0.mobile
- * @param root0.onSuccess
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @param {() => void} root0.onSuccess - Callback invoked after successful account creation
+ * @returns {JSX.Element} Customer name input form with validation
  */
 export const CustomerOnboardingStep = ({
 	mobile,
@@ -118,22 +120,17 @@ export const CustomerOnboardingStep = ({
 				animationDelay: ANIMATION.STEP_IN_DELAY,
 			}}
 		>
-			<Flex direction="column" gap={1}>
-				<Text fontWeight="semibold" fontSize="md" color="dark">
-					Customer Details
-				</Text>
-				<Text fontSize="sm" color="light">
-					Please provide the vendor&apos;s name to complete
-					onboarding.
-				</Text>
-			</Flex>
+			<StepHeader
+				title="Customer Details"
+				subtitle="Please provide the vendor's name to complete onboarding."
+			/>
 
 			<Box>
 				<FormControl isInvalid={!!nameError}>
 					<FormLabel>
 						Vendor&apos;s Full Name (as per ID proof)
 						<Text as="span" color="error" ml={1}>
-							▲ (Required)
+							(Required)
 						</Text>
 					</FormLabel>
 					<Input

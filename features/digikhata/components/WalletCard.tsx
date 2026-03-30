@@ -69,33 +69,33 @@ const BalanceCountUp = ({ target }: { target: number }): JSX.Element => {
  * @param root0
  * @param root0.status
  */
-const StatusPill = ({ status }: { status: string }): JSX.Element => {
-	const isActive = status?.toLowerCase() === "active";
-	return (
-		<Flex
-			as="span"
-			display="inline-flex"
-			align="center"
-			gap={1}
-			bg={isActive ? "green.100" : "red.100"}
-			color={isActive ? "green.700" : "red.700"}
-			borderRadius="full"
-			px={2}
-			py="2px"
-		>
-			<Box
-				w="6px"
-				h="6px"
-				borderRadius="full"
-				bg={isActive ? "success" : "error"}
-				flexShrink={0}
-			/>
-			<Text fontSize="xxs" fontWeight="semibold" userSelect="none">
-				{status ?? "Unknown"}
-			</Text>
-		</Flex>
-	);
-};
+// const StatusPill = ({ status }: { status: string }): JSX.Element => {
+// 	const isActive = status?.toLowerCase() === "active";
+// 	return (
+// 		<Flex
+// 			as="span"
+// 			display="inline-flex"
+// 			align="center"
+// 			gap={1}
+// 			bg={isActive ? "green.100" : "red.100"}
+// 			color={isActive ? "green.700" : "red.700"}
+// 			borderRadius="full"
+// 			px={2}
+// 			py="2px"
+// 		>
+// 			<Box
+// 				w="6px"
+// 				h="6px"
+// 				borderRadius="full"
+// 				bg={isActive ? "success" : "error"}
+// 				flexShrink={0}
+// 			/>
+// 			<Text fontSize="xxs" fontWeight="semibold" userSelect="none">
+// 				{status ?? "Unknown"}
+// 			</Text>
+// 		</Flex>
+// 	);
+// };
 
 /**
  * DigiKhata Wallet Card — persistent hero card shown at the top of every screen.
@@ -216,11 +216,11 @@ export const WalletCard = ({
 									{walletData?.walletHolderName ?? "—"}
 								</Text>
 								<Flex align="center" gap={2} wrap="wrap">
-									{walletData?.accountStatus ? (
+									{/* {walletData?.accountStatus ? (
 										<StatusPill
 											status={walletData.accountStatus}
 										/>
-									) : null}
+									) : null} */}
 									{maskedMobile ? (
 										<Text
 											fontSize="xs"
@@ -390,7 +390,7 @@ export const WalletCard = ({
 								<Icon
 									name="refresh"
 									color="white"
-									size="sm"
+									size="14px"
 									style={
 										isLoading
 											? {

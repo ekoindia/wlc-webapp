@@ -4,6 +4,7 @@ import { useBankList } from "hooks";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -21,8 +22,9 @@ interface BankOption {
  * Form to register a new fund transfer recipient.
  * Flow: fill details → sendAddRecipientOtp → OtpModal → addRecipient
  * → ADD_RECIPIENT (with isNew flag) → navigate to recipients list.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Recipient registration form with bank selection and OTP verification
  */
 export const AddRecipientStep = ({
 	mobile,
@@ -136,22 +138,12 @@ export const AddRecipientStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex align="center" gap={3}>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() =>
-							dispatch({ type: "SET_STEP", step: "recipients" })
-						}
-						px={2}
-						color="light"
-					>
-						← Back
-					</Button>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Add Recipient
-					</Text>
-				</Flex>
+				<StepHeader
+					title="Add Recipient"
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "recipients" })
+					}
+				/>
 
 				{/* Bank selector */}
 				<Select

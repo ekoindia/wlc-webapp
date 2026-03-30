@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { ConsentDetails, ConsentLanguage } from "../../context/types";
@@ -28,8 +29,9 @@ interface AadhaarConsentStepProps {
  * Fetches consent languages → shows consent text (summary + expandable full text)
  * + audio player + "I Agree" toggle.
  * On proceed: saves consentId and navigates to Aadhaar verification.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Consent selection form with language picker and agreement toggle
  */
 export const AadhaarConsentStep = ({
 	mobile,
@@ -130,15 +132,10 @@ export const AadhaarConsentStep = ({
 				animationDelay: ANIMATION.STEP_IN_DELAY,
 			}}
 		>
-			<Flex direction="column" gap={1}>
-				<Text fontWeight="semibold" fontSize="md" color="dark">
-					Aadhaar KYC Consent
-				</Text>
-				<Text fontSize="sm" color="light">
-					To open your Digi Khata wallet, your Aadhaar must be
-					verified. Please read the consent below.
-				</Text>
-			</Flex>
+			<StepHeader
+				title="Aadhaar KYC Consent"
+				subtitle="To open your Digi Khata wallet, your Aadhaar must be verified. Please read the consent below."
+			/>
 
 			{/* Language selector */}
 			<FormControl>
