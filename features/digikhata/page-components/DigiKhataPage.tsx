@@ -207,7 +207,12 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 			case "add-recipient":
 				return <AddRecipientStep mobile={state.activeMobile} />;
 			case "fund-transfer":
-				return <FundTransferStep mobile={state.activeMobile} />;
+				return (
+					<FundTransferStep
+						mobile={state.activeMobile}
+						onFetchBalance={handleFetchBalance}
+					/>
+				);
 			default:
 				return <InitialStep />;
 		}

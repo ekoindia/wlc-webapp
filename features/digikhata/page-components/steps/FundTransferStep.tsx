@@ -22,6 +22,7 @@ import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 
 interface FundTransferStepProps {
 	mobile: string;
+	onFetchBalance: () => void;
 }
 
 type TransferStatus = "idle" | "pending" | "success" | "failed";
@@ -143,10 +144,12 @@ const TransferStatusCard = ({
  * the component shows an informational warning and blocks transfer.
  * @param {object} root0 - Component props
  * @param {string} root0.mobile - User's mobile number for API calls
+ * @param {Function} root0.onFetchBalance - Callback to refresh wallet balance and navigate to dashboard
  * @returns {JSX.Element} Fund transfer form with amount, PIN, OTP confirmation, and status display
  */
 export const FundTransferStep = ({
 	mobile,
+	onFetchBalance,
 }: FundTransferStepProps): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
 	const {
@@ -326,13 +329,10 @@ export const FundTransferStep = ({
 				txnData={txnData}
 				onBack={() => {
 					dispatch({
-						type: "SET_STEP",
-						step: "wallet-dashboard",
-					});
-					dispatch({
 						type: "SET_SELECTED_RECIPIENT",
 						payload: null,
 					});
+					onFetchBalance();
 				}}
 			/>
 		);
