@@ -199,13 +199,13 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 
 	{
 		id: 217,
-		label: "My DigiKhata Wallet",
+		label: "My Digi Khata Wallet",
 		icon: "wallet",
 		link: "/admin/products/digikhata",
 		summary:
-			"Manage your DigiKhata wallet — instant and secure transfers to any bank account in India.",
+			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
 		fullDescription:
-			"DigiKhata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
+			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
 		featureFlag: "DIGIKHATA_WALLET",
 		beta: true,
 	},
@@ -311,13 +311,13 @@ export const sidebarMenu: sidebarMenuType[] = [
 	},
 	{
 		id: 217,
-		label: "My DigiKhata Wallet",
+		label: "My Digi Khata Wallet",
 		icon: "wallet",
 		link: "/products/digikhata",
 		summary:
-			"Manage your DigiKhata wallet — instant and secure transfers to any bank account in India.",
+			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
 		fullDescription:
-			"DigiKhata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
+			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
 		featureFlag: "DIGIKHATA_WALLET",
 		beta: true,
 	},

@@ -52,6 +52,41 @@ describe("digiKhataReducer", () => {
 			expect(state.walletData?.lastUpdatedAt).toBeTruthy();
 			expect(typeof state.walletData?.lastUpdatedAt).toBe("string");
 		});
+
+		it("clears otpRefId after successful wallet hydration", () => {
+			const action: Action = {
+				type: "SET_WALLET_DATA",
+				payload: mockWalletData,
+			};
+			const state = digiKhataReducer(
+				{ ...initialState, otpRefId: "otp-ref-1" },
+				action
+			);
+			expect(state.otpRefId).toBeNull();
+		});
+	});
+
+	describe("SET_OTP_REF_ID", () => {
+		it("stores otpRefId", () => {
+			const action: Action = {
+				type: "SET_OTP_REF_ID",
+				payload: "otp-ref-123",
+			};
+			const state = digiKhataReducer(initialState, action);
+			expect(state.otpRefId).toBe("otp-ref-123");
+		});
+
+		it("can clear otpRefId", () => {
+			const action: Action = {
+				type: "SET_OTP_REF_ID",
+				payload: null,
+			};
+			const state = digiKhataReducer(
+				{ ...initialState, otpRefId: "otp-ref-123" },
+				action
+			);
+			expect(state.otpRefId).toBeNull();
+		});
 	});
 
 	describe("SET_CONSENT_ID", () => {
@@ -205,6 +240,10 @@ describe("digiKhataReducer", () => {
 
 		it("starts with hasFetchedWallet = false", () => {
 			expect(initialState.hasFetchedWallet).toBe(false);
+		});
+
+		it("starts with otpRefId = null", () => {
+			expect(initialState.otpRefId).toBeNull();
 		});
 	});
 });

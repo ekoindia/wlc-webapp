@@ -118,7 +118,7 @@ export const AadhaarConsentStep = ({
 					Aadhaar KYC Consent
 				</Text>
 				<Text fontSize="sm" color="light">
-					To open your DigiKhata wallet, your Aadhaar must be
+					To open your Digi Khata wallet, your Aadhaar must be
 					verified. Please read the consent below.
 				</Text>
 			</Flex>

@@ -66,6 +66,7 @@ export interface ConsentDetails {
 export interface DigiKhataState {
 	step: DigiKhataStep;
 	walletData: WalletData | null;
+	otpRefId: string | null;
 	consentId: string | null;
 	consentLangId: string | null;
 	aadhaarNumber: string;
@@ -81,6 +82,7 @@ export interface DigiKhataState {
 export type Action =
 	| { type: "SET_STEP"; step: DigiKhataStep }
 	| { type: "SET_WALLET_DATA"; payload: WalletData }
+	| { type: "SET_OTP_REF_ID"; payload: string | null }
 	| { type: "SET_CONSENT_ID"; payload: string }
 	| { type: "SET_CONSENT_LANG_ID"; payload: string }
 	| { type: "SET_AADHAAR_NUMBER"; payload: string }
@@ -95,6 +97,7 @@ export type Action =
 export const initialState: DigiKhataState = {
 	step: "initial",
 	walletData: null,
+	otpRefId: null,
 	consentId: null,
 	consentLangId: null,
 	aadhaarNumber: "",

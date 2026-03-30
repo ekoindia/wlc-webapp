@@ -1,6 +1,11 @@
 import { useEpsV3Fetch } from "hooks";
 import { DK_BASE } from "../constants";
 
+interface VerifySenderOtpPayload {
+	otp: string;
+	otp_ref_id: string;
+}
+
 /**
  * All DigiKhata API calls, each backed by an independent useEpsV3Fetch instance.
  * @param mobile - The logged-in user's mobile number (customer_id)
@@ -95,9 +100,13 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	// ── Bound API functions ───────────────────────────────────────────────────
 
-	const verifySenderOtp = (body: Record<string, unknown>) =>
+	const verifySenderOtp = (body: VerifySenderOtpPayload) =>
 		verifySenderOtpCall({
-			body,
+			body: {
+				...body,
+				service_code: 80,
+				intent_id: 19,
+			},
 		});
 
 	const getConsentLanguages = () => getConsentLanguagesCall();

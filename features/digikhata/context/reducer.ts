@@ -20,10 +20,14 @@ export const digiKhataReducer = (
 					...action.payload,
 					lastUpdatedAt: new Date().toISOString(),
 				},
+				otpRefId: null,
 				hasFetchedWallet: true,
 				isLoading: false,
 				error: null,
 			};
+
+		case "SET_OTP_REF_ID":
+			return { ...state, otpRefId: action.payload };
 
 		case "SET_CONSENT_ID":
 			return { ...state, consentId: action.payload };

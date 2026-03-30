@@ -34,7 +34,7 @@ interface LoadWalletStepProps {
 export const LoadWalletStep = ({
 	mobile,
 }: LoadWalletStepProps): JSX.Element => {
-	const { dispatch } = useDigiKhata();
+	const { state, dispatch } = useDigiKhata();
 	const {
 		loadWallet,
 		isLoadingWallet,
@@ -67,6 +67,10 @@ export const LoadWalletStep = ({
 		if (res?.data?.status === 0) {
 			const otpRes = await generateSenderOtp();
 			if (otpRes?.data?.response_type_id === 2129) {
+				dispatch({
+					type: "SET_OTP_REF_ID",
+					payload: otpRes?.data?.data?.otp_ref_id ?? null,
+				});
 				setIsOtpModalOpen(true);
 			} else {
 				toast({
@@ -87,7 +91,20 @@ export const LoadWalletStep = ({
 	};
 
 	const handleOtpSubmit = async (otp: string) => {
-		const res = await verifySenderOtp({ otp });
+		if (!state.otpRefId) {
+			toast({
+				title: "Missing OTP reference. Please request OTP again.",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+			return null;
+		}
+
+		const res = await verifySenderOtp({
+			otp,
+			otp_ref_id: state.otpRefId,
+		});
 		if (res?.data?.status === 0) {
 			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
 			setIsOtpModalOpen(false);

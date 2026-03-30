@@ -55,12 +55,30 @@ const DigiKhataInner = (): JSX.Element => {
 		dispatch({ type: "SET_LOADING", payload: false });
 
 		if (res?.data?.response_type_id === 2129) {
+			dispatch({
+				type: "SET_OTP_REF_ID",
+				payload: res?.data?.data?.otp_ref_id ?? null,
+			});
 			setIsSenderOtpModalOpen(true);
+		} else if (res?.data?.response_type_id === 308) {
+			dispatch({
+				type: "SET_ERROR",
+				payload:
+					"Sender onboarding is required. Please complete onboarding to continue.",
+			});
 		}
 	};
 
 	const handleSenderOtpSubmit = async (otp: string) => {
-		const res = await verifySenderOtp({ otp });
+		if (!state.otpRefId) {
+			dispatch({
+				type: "SET_ERROR",
+				payload: "Missing OTP reference. Please request OTP again.",
+			});
+			return null;
+		}
+
+		const res = await verifySenderOtp({ otp, otp_ref_id: state.otpRefId });
 		if (res?.data?.status === 0) {
 			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
 			setIsSenderOtpModalOpen(false);
