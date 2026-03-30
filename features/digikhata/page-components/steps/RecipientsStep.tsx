@@ -183,7 +183,7 @@ export const RecipientsStep = ({
 					}
 					toolComponent={
 						<Button
-							bg="primary.dark"
+							bg="primary.DEFAULT"
 							color="white"
 							leftIcon={<Icon name="person-add" size="sm" />}
 							h="48px"
@@ -197,7 +197,7 @@ export const RecipientsStep = ({
 								})
 							}
 							_hover={{
-								bg: "primary.DEFAULT",
+								bg: "primary.dark",
 								transform: "translateY(-1px)",
 							}}
 							transition="all 0.2s"
