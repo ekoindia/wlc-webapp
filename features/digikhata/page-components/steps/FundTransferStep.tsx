@@ -4,11 +4,8 @@ import {
 	Box,
 	Button,
 	Flex,
-	NumberDecrementStepper,
-	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
-	NumberInputStepper,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
@@ -301,10 +298,6 @@ export const FundTransferStep = ({
 							h="14"
 							fontSize="xl"
 						/>
-						<NumberInputStepper>
-							<NumberIncrementStepper />
-							<NumberDecrementStepper />
-						</NumberInputStepper>
 					</NumberInput>
 				</Box>
 

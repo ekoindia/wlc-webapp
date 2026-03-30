@@ -211,7 +211,7 @@ export const RecipientsStep = ({
 				{/* Cards Grid */}
 				{isGettingRecipients ? (
 					<SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-						{[1, 2, 3].map((i) => (
+						{[1, 2].map((i) => (
 							<Flex
 								key={i}
 								direction="column"

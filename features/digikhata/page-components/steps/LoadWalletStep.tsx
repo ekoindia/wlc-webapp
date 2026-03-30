@@ -3,11 +3,8 @@ import {
 	Button,
 	Flex,
 	Input,
-	NumberDecrementStepper,
-	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
-	NumberInputStepper,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
@@ -165,10 +162,6 @@ export const LoadWalletStep = ({
 								fontSize="xl"
 								h="14"
 							/>
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
 						</NumberInput>
 					</Box>
 
