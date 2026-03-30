@@ -189,7 +189,7 @@ export const RecipientsStep = ({
 							bg="primary.dark"
 							color="white"
 							leftIcon={<Icon as={FiUserPlus} />}
-							h="52px"
+							h="48px"
 							px={8}
 							borderRadius="10px"
 							shadow="0 4px 14px 0 rgba(26, 43, 136, 0.39)"
