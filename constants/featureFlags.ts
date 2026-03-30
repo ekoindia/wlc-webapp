@@ -48,7 +48,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		envConstraints: {
 			development: {
-				forOrgId: [26],
+				forOrgId: [3, 26],
 			},
 			staging: {
 				forOrgId: [26],
@@ -108,6 +108,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Eloka Gateway for redirection-based transaction processing.
 	ELOKA_GATEWAY: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// DigiKhata Wallet & Fund Transfer product for agents
+	DIGIKHATA_WALLET: {
 		enabled: true,
 		forEnv: ["development"],
 	},

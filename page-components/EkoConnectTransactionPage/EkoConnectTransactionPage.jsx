@@ -53,7 +53,7 @@ const EkoConnectTransactionPage = ({ start_id, paths, ...rest }) => {
 	const { role_tx_list } = interactions || {};
 	const { balance } = useWallet();
 	const { subscribe, TOPICS } = usePubSub();
-	const { appSource } = useAppSource();
+	const { appSource, nativeVersion } = useAppSource();
 	const { setSearchTitle } = useGlobalSearch();
 
 	// The current state of the transaction flow
@@ -369,6 +369,7 @@ const EkoConnectTransactionPage = ({ start_id, paths, ...rest }) => {
 							userData?.userDetails?.is_pin_not_set
 						)}
 						appsource={appSource}
+						nativeVersion={nativeVersion}
 						// receipt-title={
 						// 	orgDetail.app_name || orgDetail.org_name || ""
 						// }

@@ -34,7 +34,7 @@ export const CategoryTabs = ({
 	const segments = categories.map((cat) => ({
 		value: cat.value,
 		label: cat.count ? `${cat.label} (${cat.count})` : cat.label,
-		icon: cat.icon ? <Icon name={cat.icon} size="xs" /> : undefined,
+		icon: cat.icon ? <Icon name={cat.icon} size="14px" /> : undefined,
 	}));
 
 	return (
@@ -49,6 +49,7 @@ export const CategoryTabs = ({
 				equalWidth={false}
 				bg="gray.50"
 				color="primary.DEFAULT"
+				showDividers
 			/>
 		</Box>
 	);

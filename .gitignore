@@ -43,3 +43,6 @@ build-storybook.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI Tooling
+.claude/worktrees/
