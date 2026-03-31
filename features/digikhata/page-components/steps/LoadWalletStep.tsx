@@ -17,6 +17,76 @@ import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 
+interface EValueFormProps {
+	amount: string;
+	onAmountChange: (_val: string) => void;
+	onPinComplete: (_pin: string, _encodedPin: string) => void;
+	onPinChange: () => void;
+	onSubmit: () => void;
+	canSubmit: boolean;
+	isLoading: boolean;
+}
+
+const EValueForm = ({
+	amount,
+	onAmountChange,
+	onPinComplete,
+	onPinChange,
+	onSubmit,
+	canSubmit,
+	isLoading,
+}: EValueFormProps): JSX.Element => (
+	<>
+		<Box>
+			<Text fontSize="sm" fontWeight="medium" color="dark" mb={2}>
+				Amount (₹)
+			</Text>
+			<NumberInput
+				min={1}
+				value={amount}
+				onChange={onAmountChange}
+				borderRadius="10"
+			>
+				<NumberInputField
+					placeholder="Enter amount"
+					borderRadius="10"
+					fontSize="xl"
+					h="14"
+				/>
+			</NumberInput>
+		</Box>
+
+		<Box mt={4}>
+			<Pintwin
+				label="Secret PIN"
+				length={4}
+				onPinComplete={onPinComplete}
+				onPinChange={onPinChange}
+			/>
+		</Box>
+
+		<Button
+			w="full"
+			mt={4}
+			bg="primary.DEFAULT"
+			color="white"
+			borderRadius="10"
+			size="lg"
+			isDisabled={!canSubmit}
+			isLoading={isLoading}
+			loadingText="Loading Wallet…"
+			onClick={onSubmit}
+			sx={{
+				animation: `${fadeSlideInBottom12} 0.18s ${ANIMATION.EASING} both`,
+				animationDelay: ANIMATION.CTA_DELAY,
+			}}
+			_hover={{ bg: "primary.dark" }}
+		>
+			Proceed
+		</Button>
+	</>
+);
+
 interface LoadWalletStepProps {
 	mobile: string;
 	onFetchBalance: () => Promise<void>;
@@ -86,6 +156,19 @@ export const LoadWalletStep = ({
 	const canSubmit =
 		isPinComplete && parseFloat(amount) > 0 && !isLoadingWallet;
 
+	const eValueFormProps: EValueFormProps = {
+		amount,
+		onAmountChange: setAmount,
+		onPinComplete: handlePinComplete,
+		onPinChange: () => {
+			setIsPinComplete(false);
+			setEncodedPin("");
+		},
+		onSubmit: handleLoadWallet,
+		canSubmit,
+		isLoading: isLoadingWallet,
+	};
+
 	return (
 		<>
 			<Flex
@@ -98,110 +181,65 @@ export const LoadWalletStep = ({
 			>
 				<StepHeader
 					title="Load Wallet"
-					subtitle="Choose how you want to add money to your DigiKhata wallet."
+					subtitle={
+						mode === "self"
+							? "Choose how you want to add money to your DigiKhata wallet."
+							: "Enter amount and PIN to load the customer's wallet."
+					}
 					onBack={() =>
 						dispatch({ type: "SET_STEP", step: "wallet-dashboard" })
 					}
 				/>
 
-				<Box
-					borderWidth="1px"
-					borderColor="gray.200"
-					borderRadius="16px"
-					bg="white"
-					p={4}
-					boxShadow="sm"
-				>
-					<Flex
-						justify="space-between"
-						align="flex-start"
-						gap={3}
-						mb={3}
+				{mode === "self" ? (
+					<Box
+						borderWidth="1px"
+						borderColor="gray.200"
+						borderRadius="16px"
+						bg="white"
+						p={4}
+						boxShadow="sm"
 					>
-						<Box>
+						<Flex
+							justify="space-between"
+							align="flex-start"
+							gap={3}
+							mb={3}
+						>
+							<Box>
+								<Text
+									fontSize="lg"
+									fontWeight="semibold"
+									color="dark"
+								>
+									Via E-value
+								</Text>
+								<Text fontSize="sm" color="gray.600" mt={1}>
+									Load wallet instantly inside DigiKhata using
+									amount, PIN, and OTP verification.
+								</Text>
+							</Box>
 							<Text
-								fontSize="lg"
+								fontSize="xs"
 								fontWeight="semibold"
-								color="dark"
+								color="primary.DEFAULT"
+								bg="primary.50"
+								px={3}
+								py={1}
+								borderRadius="full"
 							>
-								Via E-value
+								In app
 							</Text>
-							<Text fontSize="sm" color="gray.600" mt={1}>
-								Load wallet instantly inside DigiKhata using
-								amount, PIN, and OTP verification.
-							</Text>
-						</Box>
-						<Text
-							fontSize="xs"
-							fontWeight="semibold"
-							color="primary.DEFAULT"
-							bg="primary.50"
-							px={3}
-							py={1}
-							borderRadius="full"
-						>
-							In app
-						</Text>
-					</Flex>
+						</Flex>
 
-					{/* Amount */}
-					<Box>
-						<Text
-							fontSize="sm"
-							fontWeight="medium"
-							color="dark"
-							mb={2}
-						>
-							Amount (₹)
-						</Text>
-						<NumberInput
-							min={1}
-							value={amount}
-							onChange={(val) => setAmount(val)}
-							borderRadius="10"
-						>
-							<NumberInputField
-								placeholder="Enter amount"
-								borderRadius="10"
-								fontSize="xl"
-								h="14"
-							/>
-						</NumberInput>
+						{/* Amount + PIN + CTA */}
+						<EValueForm {...eValueFormProps} />
 					</Box>
-
-					{/* PIN */}
-					<Box mt={4}>
-						<Pintwin
-							label="Secret PIN"
-							length={4}
-							onPinComplete={handlePinComplete}
-							onPinChange={() => {
-								setIsPinComplete(false);
-								setEncodedPin("");
-							}}
-						/>
+				) : (
+					<Box px="4">
+						<EValueForm {...eValueFormProps} />
 					</Box>
-
-					<Button
-						w="full"
-						mt={4}
-						bg="primary.DEFAULT"
-						color="white"
-						borderRadius="10"
-						size="lg"
-						isDisabled={!canSubmit}
-						isLoading={isLoadingWallet}
-						loadingText="Loading Wallet…"
-						onClick={handleLoadWallet}
-						sx={{
-							animation: `${fadeSlideInBottom12} 0.18s ${ANIMATION.EASING} both`,
-							animationDelay: ANIMATION.CTA_DELAY,
-						}}
-						_hover={{ bg: "primary.dark" }}
-					>
-						Proceed
-					</Button>
-				</Box>
+				)}
 
 				{mode === "self" ? (
 					<>
