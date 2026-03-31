@@ -207,6 +207,7 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 					<LoadWalletStep
 						mobile={state.activeMobile}
 						onFetchBalance={handleFetchBalance}
+						mode={mode}
 					/>
 				);
 			case "recipients":

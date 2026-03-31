@@ -20,6 +20,8 @@ import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 interface LoadWalletStepProps {
 	mobile: string;
 	onFetchBalance: () => Promise<void>;
+	/** Flow mode — "self" shows all load options; "assisted" hides external transfer options */
+	mode?: "self" | "assisted";
 }
 
 /**
@@ -29,11 +31,13 @@ interface LoadWalletStepProps {
  * @param {object} root0 - Component props
  * @param {string} root0.mobile - User's mobile number for API calls
  * @param {() => Promise<void>} root0.onFetchBalance - Callback to trigger balance refresh and OTP handling
+ * @param root0.mode
  * @returns {JSX.Element} Wallet loading form with UPI and virtual account options
  */
 export const LoadWalletStep = ({
 	mobile,
 	onFetchBalance,
+	mode = "self",
 }: LoadWalletStepProps): JSX.Element => {
 	const { dispatch } = useDigiKhata();
 	const { loadWallet, isLoadingWallet } = useDigiKhataApi(mobile);
@@ -199,157 +203,162 @@ export const LoadWalletStep = ({
 					</Button>
 				</Box>
 
-				<Box
-					borderWidth="1px"
-					borderColor="gray.200"
-					borderRadius="16px"
-					bg="white"
-					p={4}
-					boxShadow="sm"
-				>
-					<Flex
-						justify="space-between"
-						align="flex-start"
-						gap={3}
-						mb={3}
-					>
-						<Box>
-							<Text
-								fontSize="lg"
-								fontWeight="semibold"
-								color="dark"
+				{mode === "self" ? (
+					<>
+						<Box
+							borderWidth="1px"
+							borderColor="gray.200"
+							borderRadius="16px"
+							bg="white"
+							p={4}
+							boxShadow="sm"
+						>
+							<Flex
+								justify="space-between"
+								align="flex-start"
+								gap={3}
+								mb={3}
 							>
-								Via UPI
-							</Text>
-							<Text fontSize="sm" color="gray.600" mt={1}>
-								Use any UPI app like GPay, BHIM, PhonePe, or
-								Paytm to transfer money to this DigiKhata VPA.
+								<Box>
+									<Text
+										fontSize="lg"
+										fontWeight="semibold"
+										color="dark"
+									>
+										Via UPI
+									</Text>
+									<Text fontSize="sm" color="gray.600" mt={1}>
+										Use any UPI app like GPay, BHIM,
+										PhonePe, or PhonePe, or Paytm to trans
+										er money to this DigiKhata VPA.
+									</Text>
+								</Box>
+								<Text
+									fontSize="xs"
+									fontWeight="semibold"
+									color="orange.600"
+									bg="orange.50"
+									px={3}
+									py={1}
+									borderRadius="full"
+								>
+									External transfer
+								</Text>
+							</Flex>
+
+							<Box>
+								<Text
+									fontSize="xs"
+									fontWeight="medium"
+									color="gray.500"
+									mb={1}
+								>
+									UPI VPA
+								</Text>
+								<Flex align="center" gap={2}>
+									<Input
+										value={upiVpa}
+										isReadOnly
+										borderRadius="10"
+									/>
+									<CopyButton text={upiVpa} />
+								</Flex>
+							</Box>
+
+							<Text fontSize="sm" color="gray.600" mt={3}>
+								Open your preferred UPI app and send money to
+								this this VPA. Your wallet balance will update r
+								the the transfer is processed.
 							</Text>
 						</Box>
-						<Text
-							fontSize="xs"
-							fontWeight="semibold"
-							color="orange.600"
-							bg="orange.50"
-							px={3}
-							py={1}
-							borderRadius="full"
+
+						<Box
+							borderWidth="1px"
+							borderColor="gray.200"
+							borderRadius="16px"
+							bg="white"
+							p={4}
+							boxShadow="sm"
 						>
-							External transfer
-						</Text>
-					</Flex>
-
-					<Box>
-						<Text
-							fontSize="xs"
-							fontWeight="medium"
-							color="gray.500"
-							mb={1}
-						>
-							UPI VPA
-						</Text>
-						<Flex align="center" gap={2}>
-							<Input
-								value={upiVpa}
-								isReadOnly
-								borderRadius="10"
-							/>
-							<CopyButton text={upiVpa} />
-						</Flex>
-					</Box>
-
-					<Text fontSize="sm" color="gray.600" mt={3}>
-						Open your preferred UPI app and send money to this VPA.
-						Your wallet balance will update after the transfer is
-						processed.
-					</Text>
-				</Box>
-
-				<Box
-					borderWidth="1px"
-					borderColor="gray.200"
-					borderRadius="16px"
-					bg="white"
-					p={4}
-					boxShadow="sm"
-				>
-					<Flex
-						justify="space-between"
-						align="flex-start"
-						gap={3}
-						mb={3}
-					>
-						<Box>
-							<Text
-								fontSize="lg"
-								fontWeight="semibold"
-								color="dark"
+							<Flex
+								justify="space-between"
+								align="flex-start"
+								gap={3}
+								mb={3}
 							>
-								Via Virtual Account
-							</Text>
-							<Text fontSize="sm" color="gray.600" mt={1}>
-								Use your bank's online banking app or website to
-								transfer money digitally to this DigiKhata
-								account.
+								<Box>
+									<Text
+										fontSize="lg"
+										fontWeight="semibold"
+										color="dark"
+									>
+										Via Virtual Account
+									</Text>
+									<Text fontSize="sm" color="gray.600" mt={1}>
+										Use your bank's online banking app or
+										website to transfer money digitally to
+										this this DigiKhata account.
+									</Text>
+								</Box>
+								<Text
+									fontSize="xs"
+									fontWeight="semibold"
+									color="orange.600"
+									bg="orange.50"
+									px={3}
+									py={1}
+									borderRadius="full"
+								>
+									External transfer
+								</Text>
+							</Flex>
+
+							<Box>
+								<Text
+									fontSize="xs"
+									fontWeight="medium"
+									color="gray.500"
+									mb={1}
+								>
+									Virtual Account Number
+								</Text>
+								<Flex align="center" gap={2}>
+									<Input
+										value={virtualAccountNumber}
+										isReadOnly
+										borderRadius="10"
+									/>
+									<CopyButton text={virtualAccountNumber} />
+								</Flex>
+							</Box>
+
+							<Box mt={3}>
+								<Text
+									fontSize="xs"
+									fontWeight="medium"
+									color="gray.500"
+									mb={1}
+								>
+									IFSC
+								</Text>
+								<Flex align="center" gap={2}>
+									<Input
+										value={virtualAccountIfsc}
+										isReadOnly
+										borderRadius="10"
+									/>
+									<CopyButton text={virtualAccountIfsc} />
+								</Flex>
+							</Box>
+
+							<Text fontSize="sm" color="gray.600" mt={3}>
+								Use your bank's app to make an online transfer
+								to to the account shown above. Balance will ref
+								after after the transfer is processed.
 							</Text>
 						</Box>
-						<Text
-							fontSize="xs"
-							fontWeight="semibold"
-							color="orange.600"
-							bg="orange.50"
-							px={3}
-							py={1}
-							borderRadius="full"
-						>
-							External transfer
-						</Text>
-					</Flex>
-
-					<Box>
-						<Text
-							fontSize="xs"
-							fontWeight="medium"
-							color="gray.500"
-							mb={1}
-						>
-							Virtual Account Number
-						</Text>
-						<Flex align="center" gap={2}>
-							<Input
-								value={virtualAccountNumber}
-								isReadOnly
-								borderRadius="10"
-							/>
-							<CopyButton text={virtualAccountNumber} />
-						</Flex>
-					</Box>
-
-					<Box mt={3}>
-						<Text
-							fontSize="xs"
-							fontWeight="medium"
-							color="gray.500"
-							mb={1}
-						>
-							IFSC
-						</Text>
-						<Flex align="center" gap={2}>
-							<Input
-								value={virtualAccountIfsc}
-								isReadOnly
-								borderRadius="10"
-							/>
-							<CopyButton text={virtualAccountIfsc} />
-						</Flex>
-					</Box>
-
-					<Text fontSize="sm" color="gray.600" mt={3}>
-						Use your bank's app to make an online transfer to the
-						account shown above. Balance will reflect after the
-						transfer is processed.
-					</Text>
-				</Box>
+					</>
+				) : null}
 			</Flex>
 		</>
 	);
