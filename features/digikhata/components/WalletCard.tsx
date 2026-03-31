@@ -243,7 +243,7 @@ export const WalletCard = ({
 									color="dark"
 									userSelect="none"
 								>
-									Monthly Transaction Limit
+									Monthly Wallet Load Limit
 								</Text>
 								{total > 0 ? (
 									<Text
