@@ -8,7 +8,7 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { CopyButton } from "components";
+import { CopyButton, InputLabel } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
@@ -86,7 +86,7 @@ export const LoadWalletStep = ({
 		<>
 			<Flex
 				direction="column"
-				gap={5}
+				gap={10}
 				sx={{
 					animation: `${fadeSlideInBottom12} ${ANIMATION.STEP_IN} ${ANIMATION.EASING} both`,
 					animationDelay: ANIMATION.STEP_IN_DELAY,
@@ -100,6 +100,7 @@ export const LoadWalletStep = ({
 					}
 				/>
 
+				{/* MARK: E-value */}
 				<Box
 					borderWidth="1px"
 					borderColor="gray.200"
@@ -120,11 +121,21 @@ export const LoadWalletStep = ({
 								fontWeight="semibold"
 								color="dark"
 							>
-								Via E-value
+								Via E-value (Cash Load)
 							</Text>
 							<Text fontSize="sm" color="gray.600" mt={1}>
-								Load wallet instantly inside DigiKhata using
-								amount, PIN, and OTP verification.
+								Load this Digi Khata wallet instantly from your
+								E-value balance.
+							</Text>
+							<Text fontSize="sm" color="gray.600" mt={1}>
+								<strong>Note:&nbsp;</strong>This is considered
+								Cash Load and you can load{" "}
+								<strong>
+									upto a total of ₹50,000 per month
+								</strong>
+								&nbsp; using this method. If you want to add
+								more, please use the UPI or Virtual Account
+								options below.
 							</Text>
 						</Box>
 						<Text
@@ -140,43 +151,51 @@ export const LoadWalletStep = ({
 						</Text>
 					</Flex>
 
-					{/* Amount */}
-					<Box>
-						<Text
-							fontSize="sm"
-							fontWeight="medium"
-							color="dark"
-							mb={2}
-						>
-							Amount (₹)
-						</Text>
-						<NumberInput
-							min={1}
-							value={amount}
-							onChange={(val) => setAmount(val)}
-							borderRadius="10"
-						>
-							<NumberInputField
-								placeholder="Enter amount"
+					<Flex
+						// direction={{ base: "column", md: "row" }}
+						// gap={{ base: 6, md: "2em" }}
+						direction="column"
+						gap={4}
+						align={{ base: "center", md: "flex-start" }}
+					>
+						{/* Amount */}
+						<Box>
+							<InputLabel
+								fontSize="sm"
+								fontWeight="medium"
+								color="dark"
+								mb={2}
+							>
+								Amount (₹)
+							</InputLabel>
+							<NumberInput
+								min={1}
+								value={amount}
+								onChange={(val) => setAmount(val)}
 								borderRadius="10"
-								fontSize="xl"
-								h="14"
-							/>
-						</NumberInput>
-					</Box>
+							>
+								<NumberInputField
+									placeholder="Enter amount"
+									borderRadius="10"
+									fontSize="xl"
+									h="14"
+								/>
+							</NumberInput>
+						</Box>
 
-					{/* PIN */}
-					<Box mt={4}>
-						<Pintwin
-							label="Secret PIN"
-							length={4}
-							onPinComplete={handlePinComplete}
-							onPinChange={() => {
-								setIsPinComplete(false);
-								setEncodedPin("");
-							}}
-						/>
-					</Box>
+						{/* PIN */}
+						<Box>
+							<Pintwin
+								label="Your Secret PIN"
+								length={4}
+								onPinComplete={handlePinComplete}
+								onPinChange={() => {
+									setIsPinComplete(false);
+									setEncodedPin("");
+								}}
+							/>
+						</Box>
+					</Flex>
 
 					<Button
 						w="full"
@@ -199,6 +218,7 @@ export const LoadWalletStep = ({
 					</Button>
 				</Box>
 
+				{/* MARK: UPI */}
 				<Box
 					borderWidth="1px"
 					borderColor="gray.200"
@@ -224,6 +244,14 @@ export const LoadWalletStep = ({
 							<Text fontSize="sm" color="gray.600" mt={1}>
 								Use any UPI app like GPay, BHIM, PhonePe, or
 								Paytm to transfer money to this DigiKhata VPA.
+							</Text>
+							<Text fontSize="sm" color="gray.600" mt={1}>
+								<strong>Note:&nbsp;</strong>You can load{" "}
+								<strong>
+									upto a total of ₹25 Lakh per month
+								</strong>
+								&nbsp; using digital methods like UPI or Virtual
+								Account.
 							</Text>
 						</Box>
 						<Text
@@ -265,6 +293,7 @@ export const LoadWalletStep = ({
 					</Text>
 				</Box>
 
+				{/* MARK: VA */}
 				<Box
 					borderWidth="1px"
 					borderColor="gray.200"
@@ -289,8 +318,16 @@ export const LoadWalletStep = ({
 							</Text>
 							<Text fontSize="sm" color="gray.600" mt={1}>
 								Use your bank's online banking app or website to
-								transfer money digitally to this DigiKhata
-								account.
+								transfer money digitally to DigiKhata virtual
+								account for this wallet.
+							</Text>
+							<Text fontSize="sm" color="gray.600" mt={1}>
+								<strong>Note:&nbsp;</strong>You can load{" "}
+								<strong>
+									upto a total of ₹25 Lakh per month
+								</strong>
+								&nbsp; using digital methods like UPI or Virtual
+								Account.
 							</Text>
 						</Box>
 						<Text

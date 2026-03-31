@@ -423,7 +423,7 @@ export const FundTransferStep = ({
 				{/* PIN */}
 				<Box>
 					<Pintwin
-						label="Secret PIN"
+						label="Your Secret PIN"
 						length={4}
 						onPinComplete={(_pin, ep) => {
 							setEncodedPin(ep);

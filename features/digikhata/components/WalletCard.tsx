@@ -243,7 +243,7 @@ export const WalletCard = ({
 									color="dark"
 									userSelect="none"
 								>
-									Monthly Wallet Load Limit
+									Monthly Wallet Load Limit via Cash
 								</Text>
 								{total > 0 ? (
 									<Text
@@ -305,6 +305,47 @@ export const WalletCard = ({
 									</Text>
 								</Text>
 							</Flex>
+
+							{/* Show wallet limit notes to the user, as three bullet points */}
+							<Flex
+								direction="column"
+								gap={1}
+								borderLeft="4px solid #999"
+								bg="divider"
+								p={2}
+								mt={2}
+								borderRadius={4}
+							>
+								<Text
+									fontSize="xs"
+									color="gray.600"
+									userSelect="none"
+									fontWeight="bold"
+								>
+									Note:
+								</Text>
+								<Box
+									as="ul"
+									fontSize="xs"
+									color="gray.600"
+									userSelect="none"
+									pl={4}
+									m={0}
+								>
+									<Box as="li">
+										Total monthly wallet load limit is ₹25
+										Lakh.
+									</Box>
+									<Box as="li">
+										Monthly load limit using cash (E-value)
+										is ₹50,000.
+									</Box>
+									<Box as="li">
+										Wallet balance cannot exceed ₹2 Lakh at
+										any time.
+									</Box>
+								</Box>
+							</Flex>
 						</Flex>
 					</Flex>
 
@@ -320,8 +361,8 @@ export const WalletCard = ({
 					<Flex
 						direction="column"
 						align={{ base: "flex-start", md: "flex-end" }}
-						justify="space-between"
-						gap={3}
+						justify="center"
+						gap={10}
 						w={{ base: "full", md: "190px" }}
 						flexShrink={0}
 					>
@@ -331,7 +372,7 @@ export const WalletCard = ({
 							align={{ base: "flex-start", md: "flex-end" }}
 						>
 							<Text
-								fontSize="xxs"
+								fontSize="xs"
 								fontWeight="semibold"
 								color="light"
 								textTransform="uppercase"
