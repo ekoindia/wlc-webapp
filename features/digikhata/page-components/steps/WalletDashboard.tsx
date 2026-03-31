@@ -46,7 +46,7 @@ export const WalletDashboard = (): JSX.Element => {
 				}
 			/>
 
-			{balance > 0 ? (
+			{balance >= 100 ? (
 				<ActionCard
 					label="Transfer Fund"
 					description="Send money to a registered recipient"
@@ -72,7 +72,7 @@ export const WalletDashboard = (): JSX.Element => {
 				>
 					<Text fontSize="sm" color="light" userSelect="none">
 						Fund transfer is available once your wallet has a
-						balance.
+						minimum balance of ₹100.
 					</Text>
 				</Flex>
 			)}

@@ -10,6 +10,7 @@ interface WalletCardProps {
 	isLoading: boolean;
 	hasFetchedWallet: boolean;
 	mobile?: string;
+	compactMode?: boolean;
 	onFetchBalance: () => void;
 }
 
@@ -108,6 +109,7 @@ const BalanceCountUp = ({ target }: { target: number }): JSX.Element => {
  * @param root0.isLoading
  * @param root0.hasFetchedWallet
  * @param root0.mobile
+ * @param root0.compactMode
  * @param root0.onFetchBalance
  */
 export const WalletCard = ({
@@ -115,6 +117,7 @@ export const WalletCard = ({
 	isLoading,
 	hasFetchedWallet,
 	mobile,
+	compactMode = true,
 	onFetchBalance,
 }: WalletCardProps): JSX.Element => {
 	const buttonLabel = hasFetchedWallet ? "Refresh Balance" : "Fetch Balance";
@@ -234,77 +237,129 @@ export const WalletCard = ({
 							</Flex>
 						</Flex>
 
-						{/* Monthly limit progress */}
+						{/* Left section */}
 						<Flex direction="column" gap={2}>
-							<Flex justify="space-between" align="center">
-								<Text
-									fontSize="sm"
-									fontWeight="semibold"
-									color="dark"
-									userSelect="none"
-								>
-									Monthly Wallet Load Limit
-								</Text>
-								{total > 0 ? (
+							{/*
+								MARK: Limits
+								--- Monthly limit progress ---
+							*/}
+							<Flex direction="column" gap={2}>
+								<Flex justify="space-between" align="center">
 									<Text
 										fontSize="sm"
 										fontWeight="semibold"
-										color="primary.DEFAULT"
+										color="dark"
 										userSelect="none"
 									>
-										₹{total.toLocaleString("en-IN")}
+										Monthly Wallet Load Limit via Cash
 									</Text>
-								) : null}
-							</Flex>
+									{total > 0 ? (
+										<Text
+											fontSize="sm"
+											fontWeight="semibold"
+											color="primary.DEFAULT"
+											userSelect="none"
+										>
+											₹{total.toLocaleString("en-IN")}
+										</Text>
+									) : null}
+								</Flex>
 
-							<Progress
-								value={consumedPercent}
-								h="8px"
-								borderRadius="full"
-								colorScheme="blue"
-								bg="darkShade"
-							/>
+								<Progress
+									value={consumedPercent}
+									h="8px"
+									borderRadius="full"
+									colorScheme="blue"
+									bg="darkShade"
+								/>
 
-							<Flex justify="space-between">
-								<Text
-									fontSize="xs"
-									color="light"
-									userSelect="none"
-								>
-									Consumed:{" "}
+								<Flex justify="space-between">
 									<Text
-										as="span"
-										color="dark"
-										fontWeight="medium"
+										fontSize="xs"
+										color="light"
+										userSelect="none"
 									>
-										₹{consumed.toLocaleString("en-IN")}
-									</Text>
-									{consumedPercent > 0 && (
+										Consumed:{" "}
 										<Text
 											as="span"
-											color="light"
-											fontSize="xxs"
-											ml={1}
+											color="dark"
+											fontWeight="medium"
 										>
-											({consumedPercent}%)
+											₹{consumed.toLocaleString("en-IN")}
 										</Text>
-									)}
-								</Text>
-								<Text
-									fontSize="xs"
-									color="light"
-									userSelect="none"
-								>
-									Available:{" "}
-									<Text
-										as="span"
-										color="dark"
-										fontWeight="medium"
-									>
-										₹{available.toLocaleString("en-IN")}
+										{consumedPercent > 0 && (
+											<Text
+												as="span"
+												color="light"
+												fontSize="xxs"
+												ml={1}
+											>
+												({consumedPercent}%)
+											</Text>
+										)}
 									</Text>
-								</Text>
+									<Text
+										fontSize="xs"
+										color="light"
+										userSelect="none"
+									>
+										Available:{" "}
+										<Text
+											as="span"
+											color="dark"
+											fontWeight="medium"
+										>
+											₹{available.toLocaleString("en-IN")}
+										</Text>
+									</Text>
+								</Flex>
 							</Flex>
+
+							{/*
+								MARK: Notes
+								Show wallet limit notes to the user, as three bullet points
+							*/}
+							{compactMode ? null : (
+								<Flex
+									direction="column"
+									gap={1}
+									borderLeft="4px solid #999"
+									bg="divider"
+									p={2}
+									mt={2}
+									borderRadius={4}
+								>
+									<Text
+										fontSize="xs"
+										color="gray.600"
+										userSelect="none"
+										fontWeight="bold"
+									>
+										Note:
+									</Text>
+									<Box
+										as="ul"
+										fontSize="xs"
+										color="gray.600"
+										userSelect="none"
+										pl={4}
+										m={0}
+									>
+										<Box as="li">
+											Total monthly wallet load limit is
+											₹25 Lakh.
+										</Box>
+										<Box as="li">
+											Monthly load limit using cash
+											(E-value) is ₹50,000.
+										</Box>
+										<Box as="li">
+											Wallet balance cannot exceed ₹2 Lakh
+											at any time.
+										</Box>
+									</Box>
+								</Flex>
+							)}
 						</Flex>
 					</Flex>
 
@@ -316,12 +371,15 @@ export const WalletCard = ({
 						alignSelf="stretch"
 					/>
 
-					{/* ── Right: Balance + Button ── */}
+					{/*
+						MARK: Balance
+						── Right: Balance + Button ──
+					*/}
 					<Flex
 						direction="column"
 						align={{ base: "flex-start", md: "flex-end" }}
-						justify="space-between"
-						gap={3}
+						justify="center"
+						gap={compactMode ? 2 : 10}
 						w={{ base: "full", md: "190px" }}
 						flexShrink={0}
 					>
@@ -331,7 +389,7 @@ export const WalletCard = ({
 							align={{ base: "flex-start", md: "flex-end" }}
 						>
 							<Text
-								fontSize="xxs"
+								fontSize={compactMode ? "xxs" : "xs"}
 								fontWeight="semibold"
 								color="light"
 								textTransform="uppercase"
@@ -382,7 +440,7 @@ export const WalletCard = ({
 							bg="primary.DEFAULT"
 							color="white"
 							borderRadius="10"
-							size="md"
+							size={compactMode ? "sm" : "md"}
 							onClick={onFetchBalance}
 							isDisabled={isLoading}
 							_hover={{ bg: "primary.dark" }}

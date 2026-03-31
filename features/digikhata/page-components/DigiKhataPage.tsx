@@ -246,6 +246,13 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 						isLoading={state.isLoading}
 						hasFetchedWallet={state.hasFetchedWallet}
 						onFetchBalance={handleFetchBalance}
+						compactMode={
+							state.step === "initial" ||
+							state.step === "wallet-dashboard" ||
+							state.step === "load-wallet"
+								? false
+								: true
+						}
 					/>
 				</Box>
 			) : null}
