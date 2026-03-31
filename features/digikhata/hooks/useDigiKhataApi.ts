@@ -35,6 +35,13 @@ export const useDigiKhataApi = (mobile: string) => {
 		}
 	);
 
+	const [verifySenderBankOtpCall, isVerifyingSenderBankOtp] = useEpsV3Fetch(
+		`${base}/recipient/bank/otp/verify`,
+		{
+			method: "POST",
+		}
+	);
+
 	// ── Consent ──────────────────────────────────────────────────────────────
 	const [getConsentLanguagesCall, isGettingConsentLanguages] = useEpsV3Fetch(
 		`${base}/aadhaar/consent/languages`,
@@ -85,6 +92,14 @@ export const useDigiKhataApi = (mobile: string) => {
 		`${base}/recipient`,
 		{ method: "POST" }
 	);
+
+	const [sendRecipientBankOtpCall, isSendingRecipientBankOtp] = useEpsV3Fetch(
+		`${base}/recipient/bank/otp`,
+		{
+			method: "POST",
+		}
+	);
+
 	const [addRecipientCall, isAddingRecipient] = useEpsV3Fetch(
 		`${base}/recipient`,
 		{
@@ -117,6 +132,15 @@ export const useDigiKhataApi = (mobile: string) => {
 				...body,
 				service_code: 80,
 				intent_id: 19,
+			},
+		});
+
+	const verifySenderBankOtp = (body: VerifySenderOtpPayload) =>
+		verifySenderBankOtpCall({
+			body: {
+				...body,
+				service_code: 80,
+				intent_id: 21,
 			},
 		});
 
@@ -161,6 +185,11 @@ export const useDigiKhataApi = (mobile: string) => {
 			body,
 		});
 
+	const sendRecipientBankOtp = (body: Record<string, unknown>) =>
+		sendRecipientBankOtpCall({
+			body,
+		});
+
 	const sendTransactionOtp = (body: Record<string, unknown>) =>
 		sendTransactionOtpCall({
 			body,
@@ -178,6 +207,8 @@ export const useDigiKhataApi = (mobile: string) => {
 		isGeneratingSenderOtp,
 		verifySenderOtp,
 		isVerifyingSenderOtp,
+		verifySenderBankOtp,
+		isVerifyingSenderBankOtp,
 		getConsentLanguages,
 		isGettingConsentLanguages,
 		getConsentDetails,
@@ -196,6 +227,8 @@ export const useDigiKhataApi = (mobile: string) => {
 		isSendingAddRecipientOtp,
 		addRecipient,
 		isAddingRecipient,
+		sendRecipientBankOtp,
+		isSendingRecipientBankOtp,
 		sendTransactionOtp,
 		isSendingTransactionOtp,
 		initiateTransaction,

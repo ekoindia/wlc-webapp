@@ -35,10 +35,10 @@ export const RecipientsStep = ({
 	const {
 		getRecipients,
 		isGettingRecipients,
-		sendAddRecipientOtp,
-		isSendingAddRecipientOtp,
-		addRecipient,
-		isAddingRecipient,
+		sendRecipientBankOtp,
+		isSendingRecipientBankOtp,
+		verifySenderBankOtp,
+		isVerifyingSenderBankOtp,
 	} = useDigiKhataApi(mobile);
 
 	const toast = useToast();
@@ -47,6 +47,7 @@ export const RecipientsStep = ({
 	const [pendingRecipient, setPendingRecipient] = useState<Recipient | null>(
 		null
 	);
+	const [otpRefId, setOtpRefId] = useState<string>("");
 
 	useEffect(() => {
 		const load = async () => {
@@ -73,7 +74,7 @@ export const RecipientsStep = ({
 	}, []);
 
 	const handleSendOtpForRecipient = async (recipient: Recipient) => {
-		const res = await sendAddRecipientOtp({
+		const res = await sendRecipientBankOtp({
 			account: recipient.accountNumber,
 			ifsc: recipient.ifsc,
 			recipient_name: recipient.name,
@@ -84,6 +85,7 @@ export const RecipientsStep = ({
 		});
 
 		if (res?.data?.status === 0) {
+			setOtpRefId(res.data.data?.otp_ref_id ?? "");
 			setIsOtpOpen(true);
 		} else {
 			toast({
@@ -112,15 +114,9 @@ export const RecipientsStep = ({
 	const handleOtpSubmit = async (otp: string) => {
 		if (!pendingRecipient) return;
 
-		const res = await addRecipient({
-			account: pendingRecipient.accountNumber,
-			ifsc: pendingRecipient.ifsc,
-			recipient_name: pendingRecipient.name,
-			recipient_mobile: pendingRecipient.mobile || "",
-			bank: pendingRecipient.bankName,
-			bank_code: pendingRecipient.bankName,
-			recipient_id: pendingRecipient.recipient_id,
+		const res = await verifySenderBankOtp({
 			otp,
+			otp_ref_id: otpRefId,
 		});
 
 		if (res?.data?.status === 0) {
@@ -297,7 +293,7 @@ export const RecipientsStep = ({
 					>
 						{state.recipients.map((r) => {
 							const isDoingOtp =
-								isSendingAddRecipientOtp &&
+								isSendingRecipientBankOtp &&
 								pendingRecipient?.recipient_id ===
 									r.recipient_id;
 
@@ -520,7 +516,7 @@ export const RecipientsStep = ({
 					onClose={() => setIsOtpOpen(false)}
 					onSubmit={handleOtpSubmit}
 					onResend={() => handleSendOtpForRecipient(pendingRecipient)}
-					isLoading={isAddingRecipient}
+					isLoading={isVerifyingSenderBankOtp}
 					title={
 						OTP_MODAL_TITLES?.ADD_RECIPIENT || "Verify Recipient"
 					}

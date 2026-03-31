@@ -128,13 +128,20 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 		}
 
 		const res = await verifySenderOtp({ otp, otp_ref_id: state.otpRefId });
+
+		const responseType = res?.data?.response_type_id;
+
 		if (res?.data?.status === 0) {
 			const walletData = transformToWalletData(
 				res.data as DigiKhataApiResponse
 			);
 			dispatch({ type: "SET_WALLET_DATA", payload: walletData });
 			setIsSenderOtpModalOpen(false);
-			if (walletData.walletAcOpened) {
+
+			// Pan Verification Pending, response_type_id 2147
+			if (responseType === 2147) {
+				dispatch({ type: "SET_STEP", step: "pan-verify" });
+			} else if (walletData.walletAcOpened) {
 				dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
 			} else {
 				dispatch({ type: "SET_STEP", step: "aadhaar-consent" });
