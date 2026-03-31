@@ -80,6 +80,7 @@ export const RecipientsStep = ({
 			recipient_mobile: recipient.mobile || "",
 			bank: recipient.bankName,
 			bank_code: recipient.bankName, // Pass as fallback
+			recipient_id: recipient.recipient_id,
 		});
 
 		if (res?.data?.status === 0) {
@@ -118,6 +119,7 @@ export const RecipientsStep = ({
 			recipient_mobile: pendingRecipient.mobile || "",
 			bank: pendingRecipient.bankName,
 			bank_code: pendingRecipient.bankName,
+			recipient_id: pendingRecipient.recipient_id,
 			otp,
 		});
 
@@ -457,7 +459,7 @@ export const RecipientsStep = ({
 							direction="column"
 							p={7}
 							bg="gray.25"
-							borderRadius="16px"
+							borderRadius="10px"
 							border="2px dashed"
 							borderColor="gray.200"
 							align="center"
