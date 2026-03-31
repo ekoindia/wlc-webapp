@@ -36,7 +36,7 @@ export const RecipientsStep = ({
 		getRecipients,
 		isGettingRecipients,
 		sendRecipientBankOtp,
-		isSendingAddRecipientOtp,
+		isSendingRecipientBankOtp,
 		verifySenderBankOtp,
 		isVerifyingSenderBankOtp,
 	} = useDigiKhataApi(mobile);
@@ -293,7 +293,7 @@ export const RecipientsStep = ({
 					>
 						{state.recipients.map((r) => {
 							const isDoingOtp =
-								isSendingAddRecipientOtp &&
+								isSendingRecipientBankOtp &&
 								pendingRecipient?.recipient_id ===
 									r.recipient_id;
 
