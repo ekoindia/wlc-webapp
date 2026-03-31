@@ -20,7 +20,6 @@ export {
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
-	getModalStyle,
 	getNameStyle,
 	getPaymentStyle,
 	getShareMobileButton,

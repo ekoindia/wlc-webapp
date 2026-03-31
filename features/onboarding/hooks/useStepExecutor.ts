@@ -1,7 +1,5 @@
 import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useRefreshToken } from "hooks";
 import { useCallback, useState } from "react";
 import type {
 	ApiPipelineStep,
@@ -61,6 +59,10 @@ interface UseStepExecutorProps {
 	userId: string;
 	/** CSP ID for API calls */
 	cspId: string;
+	/** Auth token for API calls (injected from services) */
+	accessToken: string;
+	/** Token refresh function (injected from services) */
+	generateNewToken: () => Promise<string>;
 	/** Callback when pipeline completes successfully */
 	onComplete?: (_response: any) => void;
 	/** Callback when pipeline fails */
@@ -95,12 +97,11 @@ export const useStepExecutor = ({
 	sharedState,
 	userId,
 	cspId,
+	accessToken,
+	generateNewToken,
 	onComplete,
 	onError,
 }: UseStepExecutorProps): UseStepExecutorReturn => {
-	const { accessToken } = useSession();
-	const { generateNewToken } = useRefreshToken();
-
 	const [pipelineState, setPipelineState] = useState<PipelineState>({});
 	const [isExecuting, setIsExecuting] = useState(false);
 

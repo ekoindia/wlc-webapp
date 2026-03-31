@@ -1,11 +1,15 @@
 import { Flex } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
+import { usePubSub } from "contexts";
+import { useAppSource } from "contexts/AppSourceContext";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useSession, useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import router from "next/router";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { OnboardingWidget } from "../../components";
+import type { OnboardingServices } from "../../contracts";
 
 /**
  * An Onboarding component for self-onboarding of users.
@@ -19,8 +23,26 @@ import { OnboardingWidget } from "../../components";
 const Onboarding = () => {
 	const { userData, updateUserInfo } = useUser();
 	console.log("[AgentOnboarding] userData", userData);
-	const { generateNewToken } = useRefreshToken();
 	const { accessToken } = useSession();
+	const { generateNewToken } = useRefreshToken();
+	const { isAndroid } = useAppSource();
+	const pubsub = usePubSub();
+	const { orgDetail } = useOrgDetailContext();
+
+	// Build the services object for the onboarding feature
+	const services: OnboardingServices = useMemo(
+		() => ({
+			accessToken,
+			generateNewToken,
+			isAndroid,
+			pubsub,
+		}),
+		[accessToken, generateNewToken, isAndroid, pubsub]
+	);
+
+	const isSelfOnboardingDisabled =
+		orgDetail?.metadata?.disable_self_onboarding?.value ?? false;
+
 	// Method to refresh user profile and update states
 	const refreshAgentProfile = useCallback(async () => {
 		try {
@@ -66,6 +88,9 @@ const Onboarding = () => {
 				updateUserInfo={updateUserInfo}
 				isAssistedOnboarding={false}
 				refreshAgentProfile={refreshAgentProfile}
+				services={services}
+				orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
+				isSelfOnboardingDisabled={isSelfOnboardingDisabled}
 			/>
 		</Flex>
 	);

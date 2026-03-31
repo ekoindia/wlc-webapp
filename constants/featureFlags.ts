@@ -48,7 +48,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		envConstraints: {
 			development: {
-				forOrgId: [26],
+				forOrgId: [3, 26],
 			},
 			staging: {
 				forOrgId: [26],
@@ -63,6 +63,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Deprecate the usage of this flag across the project.
 	EKO_SHIELD: {
 		enabled: true,
+	},
+
+	VERIFICATION_WORKFLOW_BUILDER: {
+		enabled: true,
+		forEnv: ["development"],
 	},
 
 	// TODO: Update this feature flag on role basis instead of org-id basis after the role-based access control (RBAC) is implemented.

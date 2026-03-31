@@ -1,15 +1,21 @@
-import { Box, Flex, Grid, Spinner, Text } from "@chakra-ui/react";
-import { Button, Icon, Menus, PageTitle } from "components";
+import {
+	Flex,
+	Grid,
+	Spinner,
+	Text,
+	useBreakpointValue,
+} from "@chakra-ui/react";
+import { Button, Icon, PageTitle } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { NetworkMenu } from "page-components/Admin/Network/NetworkMenu/NetworkMenu";
 import { lazy, Suspense, useEffect, useState } from "react";
 
 // Utility: Check if all values in an object are null/blank/empty
-const isAllFieldsEmpty = (obj, fields) => {
+const areAllFieldsEmpty = (obj, fields) => {
 	if (!obj) return true;
 	return fields.every((key) => {
 		const val = obj[key];
@@ -57,92 +63,18 @@ const PaneLoadingFallback = () => (
 );
 
 /**
- * Change Role Menu for Desktop View
- * @param {*} props - Props object
- * @param {Array} props.changeRoleMenuList - List of menu items for changing roles
- * @param {Function} props.menuHandler - Handler function for menu actions
- * @returns {JSX.Element} - The ChangeRoleDesktop component
- */
-const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
-	return (
-		<Box>
-			<Box display={{ base: "none", md: "block" }}>
-				<Menus
-					as={Button}
-					type="everted"
-					title="Change Role"
-					menulist={changeRoleMenuList}
-					iconPos="right"
-					iconName="caret-down"
-					iconStyles={{ size: "xs" }}
-					rounded="10px"
-					buttonStyle={{
-						height: { base: "48px", lg: "52px" },
-						minW: { base: "150px", lg: "220px" },
-						// border: "1px solid #FE9F00",
-						// boxShadow: "0px 3px 10px #FE9F0040",
-						textAlign: "left",
-					}}
-					listStyles={{
-						width: "250px",
-					}}
-				/>
-			</Box>
-			<Button
-				display={{ base: "block", md: "none" }}
-				onClick={menuHandler}
-				variant="link"
-				color="accent.DEFAULT"
-				px="none"
-			>
-				Change Role
-			</Button>
-		</Box>
-	);
-};
-
-/**
- * Change Role Menu for Mobile View
- * @param {*} props - Props object
- * @param {Array} props.changeRoleMenuList - List of menu items for changing roles
- * @returns {JSX.Element} - The ChangeRoleMobile component
- */
-const ChangeRoleMobile = ({ changeRoleMenuList }) => {
-	return (
-		<Box bg="shade" w="100%" h="100vh" px="4" mt="-10px">
-			{changeRoleMenuList.map((ele, idx) => (
-				<Flex
-					w="100%"
-					justify="space-between"
-					key={ele.label}
-					py="6"
-					borderBottom={
-						idx === changeRoleMenuList.length - 1 ? null : "card"
-					}
-					onClick={() => ele.onClick()}
-				>
-					<Text fontSize="1rem">{ele.label}</Text>
-					<Icon name="chevron-right" color="light" />
-				</Flex>
-			))}
-		</Box>
-	);
-};
-
-/**
  * Display user/agent profile panel (page) with multiple data panes.
  * This is intended for Admins or any sub-network owner such as distributor to view the profile of their sub-network users/agents.
  * MARK: ProfilePanel
  * @returns {JSX.Element} - The ProfilePanel component
  */
 const ProfilePanel = () => {
-	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
+	const menuVariant =
+		useBreakpointValue({ base: "link", md: "accent" }) || "link";
 	const router = useRouter();
 	const [agentDocuments, setAgentDocuments] = useState({});
-	const [isMenuVisible, setIsMenuVisible] = useState(false);
-	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 
-	const { accessToken, isAdmin } = useSession();
+	const { accessToken } = useSession();
 	const { mobile } = router.query;
 
 	// Use the agent details hook with session caching
@@ -150,6 +82,7 @@ const ProfilePanel = () => {
 		agent: agentData,
 		loading: fetchingData,
 		error: agentError,
+		refetch: refetchAgentData,
 	} = useAgentDetails(mobile);
 
 	// console.log("[ProfilePanel] agentData:", agentData);
@@ -176,36 +109,15 @@ const ProfilePanel = () => {
 	};
 
 	/**
-	 * Filter "Change Role" menu list based on agent type
-	 * MARK: Filter Change Role
-	 */
-	useEffect(() => {
-		let _changeRoleMenuList = [];
-		let tabIndex = 0;
-		AGENT_VIEW_TABS.forEach(({ label, path, allowedUserTypes }) => {
-			if (allowedUserTypes.includes(+agentData?.user_type_id)) {
-				let _listItem = {};
-				_listItem.label = label;
-				_listItem.onClick = (() => {
-					const index = tabIndex;
-					return () => {
-						router.push(`${path}?mobile=${mobile}&tab=${index}`);
-					};
-				})();
-				_changeRoleMenuList.push(_listItem);
-				tabIndex = tabIndex + 1;
-			}
-		});
-		setChangeRoleMenuList(_changeRoleMenuList);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [agentData?.agent_type, agentData?.user_type_id, mobile]);
-
-	/**
 	 * Fetch agent documents when mobile changes or when agentDocuments is empty
 	 * MARK: Fetch Data
 	 */
 	useEffect(() => {
-		if (mobile && Object.keys(agentDocuments).length === 0) {
+		if (
+			mobile &&
+			agentDocuments &&
+			Object.keys(agentDocuments).length === 0
+		) {
 			fetchAgentDocuments();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -265,7 +177,7 @@ const ProfilePanel = () => {
 		),
 	});
 	// AddressPane: only if any field present
-	if (!isAllFieldsEmpty(addressData, addressFields)) {
+	if (!areAllFieldsEmpty(addressData, addressFields)) {
 		panes.push({
 			id: 2,
 			comp: <AddressPane data={addressData} />,
@@ -274,7 +186,7 @@ const ProfilePanel = () => {
 	// DocPane
 	panes.push({ id: 3, comp: <DocPane documentData={agentDocuments} /> });
 	// PersonalPane: only if any field present
-	if (!isAllFieldsEmpty(personalData, personalFields)) {
+	if (!areAllFieldsEmpty(personalData, personalFields)) {
 		panes.push({
 			id: 4,
 			comp: <PersonalPane data={personalData} />,
@@ -293,25 +205,30 @@ const ProfilePanel = () => {
 		),
 	});
 
-	const menuHandler = () => {
-		setIsMenuVisible((prev) => !prev);
-	};
-
 	// MARK: JSX
 	return (
 		<>
 			<PageTitle
-				title={isMenuVisible ? "Change Role" : "Details"}
+				title="Details"
 				toolComponent={
-					isAdmin && changeRoleMenuList.length > 0 ? (
-						<ChangeRoleDesktop
-							changeRoleMenuList={changeRoleMenuList}
-							menuHandler={menuHandler}
-						/>
-					) : null
+					<Flex gap="2" align="center">
+						{agentData ? (
+							<NetworkMenu
+								label="Options"
+								variant={menuVariant}
+								mobile_number={mobile}
+								eko_code={
+									agentData?.profile?.eko_code?.[0] ??
+									agentData?.profile?.eko_code ??
+									agentData?.eko_code
+								}
+								account_status_id={agentData?.account_status_id}
+								user_type_id={agentData?.user_type_id}
+								onStatusUpdate={refetchAgentData}
+							/>
+						) : null}
+					</Flex>
 				}
-				onBack={isMenuVisible ? menuHandler : null}
-				hideToolComponent={isMenuVisible}
 			/>
 
 			{fetchingData ? (
@@ -352,8 +269,6 @@ const ProfilePanel = () => {
 						Go Back
 					</Button>
 				</Flex>
-			) : isAdmin && isMenuVisible ? (
-				<ChangeRoleMobile changeRoleMenuList={changeRoleMenuList} />
 			) : agentData ? (
 				<Suspense fallback={<PaneLoadingFallback />}>
 					<Grid

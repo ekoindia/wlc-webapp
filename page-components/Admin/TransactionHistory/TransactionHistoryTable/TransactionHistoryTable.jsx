@@ -1,10 +1,16 @@
 import { Table } from "components";
+import { getNameStyle } from "helpers";
 import { useRouter } from "next/router";
 import { TransactionHistoryCard } from "..";
 
 const trxnHistoryTableParameterList = [
 	{ label: "Sr. No.", show: "#" },
-	{ name: "agent_name", label: "Name", show: "Avatar", sorting: true },
+	{
+		name: "agent_name",
+		label: "Name",
+		sorting: true,
+		render: (row) => getNameStyle(row.agent_name),
+	},
 	{
 		name: "agent_mobile",
 		label: "Mobile",

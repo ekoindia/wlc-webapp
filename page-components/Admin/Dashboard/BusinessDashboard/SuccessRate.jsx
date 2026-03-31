@@ -79,6 +79,9 @@ const SuccessRate = ({
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
+		// wait for real product list
+		if (!masterProductList?.length > 1) return;
+
 		const cacheKey = getCacheKey(masterProductList, dateFrom, dateTo);
 		const cachedData = businessDashboardData?.successRateCache?.[cacheKey];
 		if (cachedData) {

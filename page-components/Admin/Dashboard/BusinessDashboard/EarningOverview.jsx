@@ -284,7 +284,7 @@ const EarningOverview = ({
 		},
 		{
 			key: "averageRevenue",
-			label: "Average Revenue",
+			label: "Average Revenue/Charges",
 			value: earningOverviewData?.gtv?.averageRevenue || 0,
 			lastPeriod: earningOverviewData?.gtv?.averageRevenueLastPeriod || 0,
 			type: "amount",

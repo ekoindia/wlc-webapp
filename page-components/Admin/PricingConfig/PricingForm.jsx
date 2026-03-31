@@ -410,9 +410,15 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 
 				if (
 					response?.status === 0 &&
-					response?.param_attributes?.message
+					response?.param_attributes !== null
 				) {
-					setPricingMessage(response.param_attributes.message);
+					const { type, value } = response.param_attributes;
+					const formattedValue =
+						type === PRICING_TYPES.FIXED
+							? formatCurrency(value)
+							: `${value}%`;
+
+					setPricingMessage(formattedValue);
 				} else {
 					setPricingMessage("");
 				}
@@ -423,7 +429,13 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 				setIsFetchingPricingMessage(false);
 			}
 		},
-		[accessToken, generateNewToken, watcher, state?.productId]
+		[
+			accessToken,
+			generateNewToken,
+			watcher.operation_type,
+			watcher.CspList,
+			state?.productId,
+		]
 	);
 
 	// Effect to fetch pricing message when all fields are filled
@@ -436,13 +448,11 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		}
 	}, [
 		isDataAvailableToFetchCurrentPricing,
-		fetchCurrentPricing,
 		watcher?.select?.value,
 		state?.slabOptions,
 		watcher?.payment_mode?.value,
 		watcher?.category?.value,
 		watcher?.operation_type,
-		watcher?.CspList,
 		state?.productId,
 	]);
 
@@ -886,6 +896,15 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					duration: 6000,
 					isClosable: true,
 				});
+
+				// update pricing message after setting new pricing, to reflect the change immediately in the UI
+				const PriceType = data.pricing_type;
+				const _PricingMessage =
+					PriceType === PRICING_TYPES.FIXED
+						? formatCurrency(data.actual_pricing)
+						: `${data.actual_pricing}%`;
+				setPricingMessage(_PricingMessage);
+
 				// handleReset();
 			})
 			.catch((error) => {

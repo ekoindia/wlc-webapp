@@ -14,6 +14,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { formatCurrency } from "utils/numberFormat";
 
 /** Chart colors - matching project color scheme */
 const CHART_COLORS = [
@@ -92,6 +93,12 @@ const CustomTooltip = ({
 }: CustomTooltipProps): JSX.Element | null => {
 	if (active && payload && payload.length) {
 		const { totalCount, name, totalRevenue } = payload[0].payload;
+		const formattedRevenue = formatCurrency(
+			totalRevenue,
+			"INR",
+			false,
+			true
+		);
 
 		return (
 			<Flex
@@ -113,9 +120,9 @@ const CustomTooltip = ({
 					</Text>
 				</Text>
 				<Text fontSize="xs" color="gray.600">
-					Revenue (₹):{" "}
+					Revenue/Charges:{" "}
 					<Text as="span" fontWeight="600" color="primary.DEFAULT">
-						{totalRevenue?.toLocaleString()}
+						{formattedRevenue}
 					</Text>
 				</Text>
 			</Flex>
