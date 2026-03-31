@@ -14,7 +14,7 @@ const DigiKhataRoute = (): JSX.Element => {
 };
 
 DigiKhataRoute.pageMeta = {
-	title: "DigiKhata Wallet",
+	title: "My Digi Khata Wallet",
 	isBeta: true,
 	isSubPage: false,
 };
