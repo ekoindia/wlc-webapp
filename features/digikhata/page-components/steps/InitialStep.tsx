@@ -28,7 +28,7 @@ export const InitialStep = (): JSX.Element => (
 			textAlign="center"
 			userSelect="none"
 		>
-			Your DigiKhata Wallet is locked.
+			Your Digi Khata Wallet is locked.
 		</Text>
 		<Text
 			fontSize="sm"
