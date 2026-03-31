@@ -28,7 +28,7 @@ interface FundTransferStepProps {
 type TransferStatus = "idle" | "pending" | "success" | "failed";
 
 const MIN_AMOUNT = 100;
-const MAX_AMOUNT = 50000;
+const MAX_AMOUNT = 200000;
 
 interface TransferStatusCardProps {
 	status: Exclude<TransferStatus, "idle">;
