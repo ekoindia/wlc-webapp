@@ -1,4 +1,8 @@
 import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
+import {
+	DigiKhataApiResponse,
+	transformToWalletData,
+} from "features/digikhata/context/types";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
@@ -41,7 +45,7 @@ export const PanVerificationStep = ({
 	const handleValidatePan = async () => {
 		if (!PAN_REGEX.test(pan)) return;
 
-		const res = await validatePan({ pan });
+		const res = await validatePan({ pan_number: pan });
 		if (res?.data?.status === 0) {
 			// PAN validated — now trigger sender OTP for wallet hydration
 			const otpRes = await generateSenderOtp();
@@ -85,7 +89,10 @@ export const PanVerificationStep = ({
 			otp_ref_id: state.otpRefId,
 		});
 		if (res?.data?.status === 0) {
-			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
+			const walletData = transformToWalletData(
+				res.data as DigiKhataApiResponse
+			);
+			dispatch({ type: "SET_WALLET_DATA", payload: walletData });
 			setIsOtpModalOpen(false);
 			dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
 		} else {
