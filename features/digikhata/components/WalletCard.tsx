@@ -343,7 +343,9 @@ export const WalletCard = ({
 
 							{walletData ? (
 								<BalanceCountUp
-									target={walletData.walletCurrentBalance}
+									target={
+										walletData.walletCurrentBalance ?? 0
+									}
 								/>
 							) : (
 								<Text
