@@ -164,7 +164,7 @@ const MostUsedServices = ({
 
 	const cacheKey = useMemo(
 		() => getCacheKey(mostUsedServicesLocalCacheKey, dateFrom, dateTo),
-		[dateFrom, dateTo, productFilter]
+		[dateFrom, dateTo]
 	);
 
 	const cachedMostUsedServices =

@@ -412,7 +412,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					response?.status === 0 &&
 					response?.param_attributes !== null
 				) {
-					const { type, value } = response?.param_attributes && {};
+					const { type, value } = response?.param_attributes;
 					const formattedValue =
 						type === PRICING_TYPES.FIXED
 							? formatCurrency(value)

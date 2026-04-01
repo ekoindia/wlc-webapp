@@ -32,7 +32,7 @@ const earningOverviewLocalCacheKey = "inf-dashboard-business-overview";
 
 // Helper function to generate cache key
 const getCacheKey = (prefix, dateFrom, dateTo, productFilter) => {
-	return `${prefix}-${dateFrom}-${dateTo}-${productFilter || "all"}`;
+	return `${prefix}-${dateFrom.substring(0, 10)}-${dateTo.substring(0, 10)}-${productFilter || "all"}`;
 };
 
 /**
