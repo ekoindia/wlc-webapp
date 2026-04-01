@@ -69,7 +69,7 @@ const [otpRefId, setOtpRefId] = useState<string>("");
 
 		if (res?.data?.status === 0) {
 			// console.log("OTP sent successfully:", res.data);
-			setOtpRefId(res.data.data?.otp_ref_id);
+setOtpRefId(res.data.data?.otp_ref_id ?? "");
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
