@@ -4,6 +4,7 @@ import { useBankList } from "hooks";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -21,8 +22,9 @@ interface BankOption {
  * Form to register a new fund transfer recipient.
  * Flow: fill details → sendAddRecipientOtp → OtpModal → addRecipient
  * → ADD_RECIPIENT (with isNew flag) → navigate to recipients list.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Recipient registration form with bank selection and OTP verification
  */
 export const AddRecipientStep = ({
 	mobile,
@@ -31,8 +33,8 @@ export const AddRecipientStep = ({
 	const {
 		sendAddRecipientOtp,
 		isSendingAddRecipientOtp,
-		addRecipient,
-		isAddingRecipient,
+		verifySenderBankOtp,
+		isVerifyingSenderBankOtp,
 	} = useDigiKhataApi(mobile);
 
 	const { banks, isLoading: isBanksLoading } = useBankList();
@@ -45,6 +47,7 @@ export const AddRecipientStep = ({
 	const [recipientMobile, setRecipientMobile] = useState("");
 	const [recipientName, setRecipientName] = useState("");
 	const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+	const [otpRefId, setOtpRefId] = useState<string | null>(null);
 
 	const isFormValid =
 		!!selectedBank &&
@@ -65,6 +68,8 @@ export const AddRecipientStep = ({
 		});
 
 		if (res?.data?.status === 0) {
+			// console.log("OTP sent successfully:", res.data);
+			setOtpRefId(res.data.data?.otp_ref_id);
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
@@ -78,27 +83,31 @@ export const AddRecipientStep = ({
 	};
 
 	const handleOtpSubmit = async (otp: string) => {
-		const res = await addRecipient({
-			account: accountNumber.trim(),
-			ifsc: ifsc.trim().toUpperCase(),
-			recipient_name: recipientName.trim(),
-			recipient_mobile: recipientMobile.trim(),
-			bank_code: selectedBank!.value,
+		const res = await verifySenderBankOtp({
 			otp,
+			otp_ref_id: otpRefId,
 		});
 
 		if (res?.data?.status === 0) {
-			const newRecipient = res.data.data?.recipient ?? {
-				beneficiary_id: res.data.data?.beneficiary_id ?? 0,
-				recipient_name: recipientName.trim(),
-				accountNumber: accountNumber.trim(),
-				ifsc: ifsc.trim().toUpperCase(),
-				bankName: selectedBank!.label,
-			};
-			dispatch({
-				type: "ADD_RECIPIENT",
-				payload: { ...newRecipient, isNew: true },
-			});
+			// const recipientData = res.data.data?.recipient;
+			// const newRecipient = {
+			// 	recipient_id: recipientData?.recipient_id ?? 0,
+			// 	bank_recipient_id: recipientData?.bank_recipient_id ?? null,
+			// 	name: recipientData?.recipient_name ?? recipientName.trim(),
+			// 	accountNumber: accountNumber.trim(),
+			// 	ifsc: ifsc.trim().toUpperCase(),
+			// 	bankName: selectedBank!.label,
+			// 	accountType: "Bank Account",
+			// 	isVerified: recipientData?.is_verified === 1,
+			// 	mobile: recipientMobile.trim(),
+			// 	recipientIdType: "acc_ifsc",
+			// 	beneficiary_id: res.data.data?.beneficiary_id ?? null,
+			// 	isNew: true,
+			// };
+			// dispatch({
+			// 	type: "ADD_RECIPIENT",
+			// 	payload: newRecipient,
+			// });
 			setIsOtpModalOpen(false);
 			toast({
 				title: "Recipient added successfully!",
@@ -128,22 +137,12 @@ export const AddRecipientStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex align="center" gap={3}>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() =>
-							dispatch({ type: "SET_STEP", step: "recipients" })
-						}
-						px={2}
-						color="light"
-					>
-						← Back
-					</Button>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Add Recipient
-					</Text>
-				</Flex>
+				<StepHeader
+					title="Add Recipient"
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "recipients" })
+					}
+				/>
 
 				{/* Bank selector */}
 				<Select
@@ -271,10 +270,9 @@ export const AddRecipientStep = ({
 				onClose={() => setIsOtpModalOpen(false)}
 				onSubmit={handleOtpSubmit}
 				onResend={handleSendOtp}
-				isLoading={isAddingRecipient}
+				isLoading={isVerifyingSenderBankOtp}
 				title={OTP_MODAL_TITLES.ADD_RECIPIENT}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);

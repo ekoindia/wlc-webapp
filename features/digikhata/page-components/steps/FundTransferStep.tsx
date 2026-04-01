@@ -4,27 +4,136 @@ import {
 	Box,
 	Button,
 	Flex,
-	NumberDecrementStepper,
-	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
-	NumberInputStepper,
+	Spinner,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
+import { Icon, JsonViewer } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 
 interface FundTransferStepProps {
 	mobile: string;
+	onFetchBalance: () => void;
 }
 
-type TransferStatus = "idle" | "success" | "failed";
+type TransferStatus = "idle" | "pending" | "success" | "failed";
+
+const MIN_AMOUNT = 100;
+const MAX_AMOUNT = 200000;
+
+interface TransferStatusCardProps {
+	status: Exclude<TransferStatus, "idle">;
+	txnRef: string | null;
+	txnData: Record<string, unknown> | null;
+	onBack: () => void;
+}
+
+const TransferStatusCard = ({
+	status,
+	txnRef,
+	txnData,
+	onBack,
+}: TransferStatusCardProps): JSX.Element => {
+	const isSuccess = status === "success";
+	const isPending = status === "pending";
+
+	const borderColor = isSuccess
+		? "rgba(0, 195, 65, 0.4)"
+		: isPending
+			? "blue.200"
+			: "rgba(255, 64, 129, 0.4)";
+
+	const bg = isSuccess
+		? "linear-gradient(rgba(0, 195, 65, 0.15), rgba(0, 195, 65, 0.15)), white"
+		: isPending
+			? "blue.50"
+			: "linear-gradient(rgba(255, 64, 129, 0.15), rgba(255, 64, 129, 0.15)), white";
+
+	const iconName = isSuccess ? "check-circle" : "warning";
+	const iconColor = isSuccess ? "success" : "error";
+
+	const title = isSuccess
+		? "Transfer Successful!"
+		: isPending
+			? "Processing Transfer…"
+			: "Transfer Failed";
+
+	const displayData: Record<string, unknown> = {
+		...(txnRef ? { transaction_id: txnRef } : {}),
+		...(txnData ?? {}),
+	};
+
+	return (
+		<Flex
+			direction="column"
+			gap={4}
+			sx={{
+				animation: `${fadeSlideInBottom12} 0.2s ${ANIMATION.EASING} both`,
+			}}
+		>
+			<Box
+				border="1px solid"
+				borderColor={borderColor}
+				bg={bg}
+				borderRadius="12"
+				overflow="hidden"
+			>
+				{/* Header */}
+				<Flex p={4} align="center" gap={3}>
+					{isPending ? (
+						<Spinner size="sm" color="blue.500" />
+					) : (
+						<Icon name={iconName} size="sm" color={iconColor} />
+					)}
+					<Box flex={1}>
+						<Text fontWeight="bold" fontSize="md" color="dark">
+							{title}
+						</Text>
+						{txnRef ? (
+							<Text fontSize="xs" color="light">
+								Ref: {txnRef}
+							</Text>
+						) : null}
+					</Box>
+				</Flex>
+
+				{/* Transaction details */}
+				{Object.keys(displayData).length > 0 ? (
+					<Box
+						px={4}
+						pb={4}
+						pt={2}
+						borderTop="1px"
+						borderColor="gray.100"
+						bg="white"
+					>
+						<JsonViewer data={displayData} collapseAfterLevel={2} />
+					</Box>
+				) : null}
+			</Box>
+
+			{isPending ? null : (
+				<Button
+					w="full"
+					variant="outline"
+					borderRadius="10"
+					onClick={onBack}
+				>
+					Back to Dashboard
+				</Button>
+			)}
+		</Flex>
+	);
+};
 
 /**
  * Final step: transfer funds to the selected recipient.
@@ -33,11 +142,14 @@ type TransferStatus = "idle" | "success" | "failed";
  *
  * If the selected recipient has beneficiary_id === 0 (not yet bank-registered),
  * the component shows an informational warning and blocks transfer.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @param {Function} root0.onFetchBalance - Callback to refresh wallet balance and navigate to dashboard
+ * @returns {JSX.Element} Fund transfer form with amount, PIN, OTP confirmation, and status display
  */
 export const FundTransferStep = ({
 	mobile,
+	onFetchBalance,
 }: FundTransferStepProps): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
 	const {
@@ -58,6 +170,10 @@ export const FundTransferStep = ({
 	const [transferStatus, setTransferStatus] =
 		useState<TransferStatus>("idle");
 	const [txnRef, setTxnRef] = useState<string | null>(null);
+	const [txnData, setTxnData] = useState<Record<string, unknown> | null>(
+		null
+	);
+	const [otpRefId, setOtpRefId] = useState(null);
 
 	if (!recipient) {
 		return (
@@ -85,8 +201,8 @@ export const FundTransferStep = ({
 		);
 	}
 
-	// If the recipient is not bank-registered (beneficiary_id === 0), block transfer
-	if (recipient.beneficiary_id === 0) {
+	// If the recipient is not bank-registered (beneficiary_id === 0 or null), block transfer
+	if (!recipient.beneficiary_id) {
 		return (
 			<Flex
 				direction="column"
@@ -95,18 +211,12 @@ export const FundTransferStep = ({
 					animation: `${fadeSlideInBottom12} ${ANIMATION.STEP_IN} ${ANIMATION.EASING} both`,
 				}}
 			>
-				<Button
-					variant="ghost"
-					size="sm"
-					alignSelf="flex-start"
-					onClick={() =>
+				<StepHeader
+					title="Transfer Fund"
+					onBack={() =>
 						dispatch({ type: "SET_STEP", step: "recipients" })
 					}
-					px={2}
-					color="light"
-				>
-					← Back
-				</Button>
+				/>
 				<Alert status="warning" borderRadius="10">
 					<AlertIcon />
 					<Box>
@@ -136,14 +246,23 @@ export const FundTransferStep = ({
 
 	const handleSendOtp = async () => {
 		const numAmount = parseFloat(amount);
-		if (isNaN(numAmount) || numAmount <= 0 || !isPinComplete) return false;
+		if (
+			isNaN(numAmount) ||
+			numAmount < MIN_AMOUNT ||
+			numAmount > MAX_AMOUNT ||
+			!isPinComplete
+		)
+			return false;
 
 		const res = await sendTransactionOtp({
 			amount: numAmount,
 			beneficiary_id: recipient.beneficiary_id,
+			recipient_id: recipient.recipient_id,
+			customer_id: mobile,
 		});
 
 		if (res?.data?.status === 0) {
+			setOtpRefId(res.data.data?.otp_ref_id);
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
@@ -158,19 +277,28 @@ export const FundTransferStep = ({
 
 	const handleOtpSubmit = async (otp: string) => {
 		const numAmount = parseFloat(amount);
+		setIsOtpModalOpen(false);
+		setTransferStatus("pending");
+
 		const res = await initiateTransaction({
 			amount: numAmount,
 			beneficiary_id: recipient.beneficiary_id,
+			recipient_id: recipient.recipient_id,
+			bank_recipient: recipient.recipient_id,
 			otp,
 			pin: encodedPin,
+			customer_id: mobile,
+			otp_ref_id: otpRefId,
+			name: recipient.name,
 		});
 
-		setIsOtpModalOpen(false);
 		if (res?.data?.status === 0) {
 			setTransferStatus("success");
 			setTxnRef(res.data.data?.transaction_id ?? null);
+			setTxnData(res.data.data ?? null);
 		} else {
 			setTransferStatus("failed");
+			setTxnData(res.data?.data ?? null);
 			toast({
 				title: res?.data?.message ?? "Transaction failed",
 				status: "error",
@@ -186,58 +314,23 @@ export const FundTransferStep = ({
 			? `••••${recipient.accountNumber.slice(-4)}`
 			: recipient.accountNumber;
 
+	const numAmount = parseFloat(amount);
+	const isAmountValid =
+		!isNaN(numAmount) && numAmount >= MIN_AMOUNT && numAmount <= MAX_AMOUNT;
 	const canSubmit =
-		isPinComplete && parseFloat(amount) > 0 && !isSendingTransactionOtp;
+		isPinComplete && isAmountValid && !isSendingTransactionOtp;
 
-	// Success / failure terminal states
-	if (transferStatus === "success" || transferStatus === "failed") {
+	// Non-idle terminal states (pending / success / failed)
+	if (transferStatus !== "idle") {
 		return (
-			<Flex
-				direction="column"
-				align="center"
-				gap={4}
-				py={6}
-				sx={{
-					animation: `${fadeSlideInBottom12} 0.2s ${ANIMATION.EASING} both`,
+			<TransferStatusCard
+				status={transferStatus}
+				txnRef={txnRef}
+				txnData={txnData}
+				onBack={() => {
+					onFetchBalance();
 				}}
-			>
-				<Alert
-					status={transferStatus === "success" ? "success" : "error"}
-					borderRadius="12"
-					flexDirection="column"
-					textAlign="center"
-					py={6}
-				>
-					<AlertIcon boxSize="36px" mb={2} />
-					<Text fontWeight="bold" fontSize="md">
-						{transferStatus === "success"
-							? "Transfer Successful!"
-							: "Transfer Failed"}
-					</Text>
-					{txnRef ? (
-						<Text fontSize="xs" color="light" mt={1}>
-							Reference: {txnRef}
-						</Text>
-					) : null}
-				</Alert>
-				<Button
-					w="full"
-					variant="outline"
-					borderRadius="10"
-					onClick={() => {
-						dispatch({
-							type: "SET_STEP",
-							step: "wallet-dashboard",
-						});
-						dispatch({
-							type: "SET_SELECTED_RECIPIENT",
-							payload: null,
-						});
-					}}
-				>
-					Back to Dashboard
-				</Button>
-			</Flex>
+			/>
 		);
 	}
 
@@ -251,22 +344,12 @@ export const FundTransferStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex align="center" gap={3}>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() =>
-							dispatch({ type: "SET_STEP", step: "recipients" })
-						}
-						px={2}
-						color="light"
-					>
-						← Back
-					</Button>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Transfer Fund
-					</Text>
-				</Flex>
+				<StepHeader
+					title="Transfer Fund"
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "recipients" })
+					}
+				/>
 
 				{/* Recipient summary */}
 				<Flex
@@ -295,28 +378,52 @@ export const FundTransferStep = ({
 						Amount (₹)
 					</Text>
 					<NumberInput
-						min={1}
 						value={amount}
-						onChange={(val) => setAmount(val)}
+						onChange={(val) => {
+							const num = parseFloat(val);
+							if (!isNaN(num) && num > MAX_AMOUNT) return;
+							setAmount(val);
+						}}
 						borderRadius="10"
+						focusBorderColor={
+							amount !== "" && !isAmountValid
+								? "error"
+								: "primary.DEFAULT"
+						}
 					>
 						<NumberInputField
 							placeholder="Enter amount"
 							borderRadius="10"
 							h="14"
 							fontSize="xl"
+							borderColor={
+								amount !== "" && !isAmountValid
+									? "error"
+									: undefined
+							}
+							_hover={{
+								borderColor:
+									amount !== "" && !isAmountValid
+										? "error"
+										: undefined,
+							}}
 						/>
-						<NumberInputStepper>
-							<NumberIncrementStepper />
-							<NumberDecrementStepper />
-						</NumberInputStepper>
 					</NumberInput>
+					<Text
+						fontSize="xs"
+						color={isAmountValid ? "light" : "error"}
+						mt={1}
+					>
+						{""}
+						Amount should be between ₹{MIN_AMOUNT.toLocaleString()}{" "}
+						and ₹{MAX_AMOUNT.toLocaleString()}
+					</Text>
 				</Box>
 
 				{/* PIN */}
 				<Box>
 					<Pintwin
-						label="Secret PIN"
+						label="Your Secret PIN"
 						length={4}
 						onPinComplete={(_pin, ep) => {
 							setEncodedPin(ep);
@@ -345,7 +452,7 @@ export const FundTransferStep = ({
 					}}
 					_hover={{ bg: "primary.dark" }}
 				>
-					Proceed to Transfer
+					Transfer
 				</Button>
 			</Flex>
 
@@ -357,7 +464,6 @@ export const FundTransferStep = ({
 				isLoading={isInitiatingTransaction}
 				title={OTP_MODAL_TITLES.TRANSFER}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);

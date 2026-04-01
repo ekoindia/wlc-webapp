@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { ConsentDetails, ConsentLanguage } from "../../context/types";
@@ -28,8 +29,9 @@ interface AadhaarConsentStepProps {
  * Fetches consent languages → shows consent text (summary + expandable full text)
  * + audio player + "I Agree" toggle.
  * On proceed: saves consentId and navigates to Aadhaar verification.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} Consent selection form with language picker and agreement toggle
  */
 export const AadhaarConsentStep = ({
 	mobile,
@@ -52,13 +54,30 @@ export const AadhaarConsentStep = ({
 	const [showFull, setShowFull] = useState(false);
 	const [agreed, setAgreed] = useState(false);
 
+	// Audio playback with react-sounds
+	// const {
+	// 	play: playAudio,
+	// 	stop: stopAudio,
+	// 	isPlaying,
+	// } = useSound(consentDetails?.audioUrl ?? "", { volume: 0.8 });
+
+	// const handleAudioToggle = () => {
+	// 	if (isPlaying) {
+	// 		stopAudio();
+	// 	} else {
+	// 		playAudio();
+	// 	}
+	// };
+
 	// Fetch languages on mount
 	useEffect(() => {
 		const load = async () => {
 			const res = await getConsentLanguages();
 			if (res?.data?.status === 0) {
 				const langs: ConsentLanguage[] =
-					res.data.data?.consentlanguage ?? [];
+					res.data.data?.consentlanguage ??
+					res.data.data?.consent_language_list ??
+					[];
 				setLanguages(langs);
 				if (langs.length > 0) setSelectedLangId(langs[0].pkid);
 			} else {
@@ -83,7 +102,7 @@ export const AadhaarConsentStep = ({
 			setAgreed(false);
 			const res = await getConsentDetails(selectedLangId);
 			if (res?.data?.status === 0) {
-				setConsentDetails(res.data.data);
+				setConsentDetails(res.data.data?.consent_detail);
 			} else {
 				toast({
 					title: "Failed to load consent details",
@@ -113,15 +132,10 @@ export const AadhaarConsentStep = ({
 				animationDelay: ANIMATION.STEP_IN_DELAY,
 			}}
 		>
-			<Flex direction="column" gap={1}>
-				<Text fontWeight="semibold" fontSize="md" color="dark">
-					Aadhaar KYC Consent
-				</Text>
-				<Text fontSize="sm" color="light">
-					To open your Digi Khata wallet, your Aadhaar must be
-					verified. Please read the consent below.
-				</Text>
-			</Flex>
+			<StepHeader
+				title="Aadhaar KYC Consent"
+				subtitle="To open your Digi Khata wallet, your Aadhaar must be verified. Please read the consent below."
+			/>
 
 			{/* Language selector */}
 			<FormControl>
@@ -194,7 +208,7 @@ export const AadhaarConsentStep = ({
 								lineHeight="tall"
 								whiteSpace="pre-wrap"
 							>
-								{consentDetails.consentContent}
+								{consentDetails?.consentContent}
 							</Text>
 						</Box>
 					</Collapse>

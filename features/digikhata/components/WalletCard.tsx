@@ -10,6 +10,7 @@ interface WalletCardProps {
 	isLoading: boolean;
 	hasFetchedWallet: boolean;
 	mobile?: string;
+	compactMode?: boolean;
 	onFetchBalance: () => void;
 }
 
@@ -69,33 +70,33 @@ const BalanceCountUp = ({ target }: { target: number }): JSX.Element => {
  * @param root0
  * @param root0.status
  */
-const StatusPill = ({ status }: { status: string }): JSX.Element => {
-	const isActive = status?.toLowerCase() === "active";
-	return (
-		<Flex
-			as="span"
-			display="inline-flex"
-			align="center"
-			gap={1}
-			bg={isActive ? "green.100" : "red.100"}
-			color={isActive ? "green.700" : "red.700"}
-			borderRadius="full"
-			px={2}
-			py="2px"
-		>
-			<Box
-				w="6px"
-				h="6px"
-				borderRadius="full"
-				bg={isActive ? "success" : "error"}
-				flexShrink={0}
-			/>
-			<Text fontSize="xxs" fontWeight="semibold" userSelect="none">
-				{status ?? "Unknown"}
-			</Text>
-		</Flex>
-	);
-};
+// const StatusPill = ({ status }: { status: string }): JSX.Element => {
+// 	const isActive = status?.toLowerCase() === "active";
+// 	return (
+// 		<Flex
+// 			as="span"
+// 			display="inline-flex"
+// 			align="center"
+// 			gap={1}
+// 			bg={isActive ? "green.100" : "red.100"}
+// 			color={isActive ? "green.700" : "red.700"}
+// 			borderRadius="full"
+// 			px={2}
+// 			py="2px"
+// 		>
+// 			<Box
+// 				w="6px"
+// 				h="6px"
+// 				borderRadius="full"
+// 				bg={isActive ? "success" : "error"}
+// 				flexShrink={0}
+// 			/>
+// 			<Text fontSize="xxs" fontWeight="semibold" userSelect="none">
+// 				{status ?? "Unknown"}
+// 			</Text>
+// 		</Flex>
+// 	);
+// };
 
 /**
  * DigiKhata Wallet Card — persistent hero card shown at the top of every screen.
@@ -108,6 +109,7 @@ const StatusPill = ({ status }: { status: string }): JSX.Element => {
  * @param root0.isLoading
  * @param root0.hasFetchedWallet
  * @param root0.mobile
+ * @param root0.compactMode
  * @param root0.onFetchBalance
  */
 export const WalletCard = ({
@@ -115,13 +117,14 @@ export const WalletCard = ({
 	isLoading,
 	hasFetchedWallet,
 	mobile,
+	compactMode = true,
 	onFetchBalance,
 }: WalletCardProps): JSX.Element => {
 	const buttonLabel = hasFetchedWallet ? "Refresh Balance" : "Fetch Balance";
 
 	const consumed = walletData?.walletToBankLimitConsumed ?? 0;
 	const available = walletData?.walletToBankLimitAvailable ?? 0;
-	const total = consumed + available;
+	const total = walletData?.totalMonthlyLimit ?? consumed + available;
 	const consumedPercent =
 		total > 0 ? Math.round((consumed / total) * 100) : 0;
 
@@ -134,6 +137,7 @@ export const WalletCard = ({
 	return (
 		<Box
 			w="full"
+			maxW={{ base: "full", lg: "800px" }}
 			bg="white"
 			borderRadius="10"
 			border="card"
@@ -215,11 +219,11 @@ export const WalletCard = ({
 									{walletData?.walletHolderName ?? "—"}
 								</Text>
 								<Flex align="center" gap={2} wrap="wrap">
-									{walletData?.accountStatus ? (
+									{/* {walletData?.accountStatus ? (
 										<StatusPill
 											status={walletData.accountStatus}
 										/>
-									) : null}
+									) : null} */}
 									{maskedMobile ? (
 										<Text
 											fontSize="xs"
@@ -233,67 +237,129 @@ export const WalletCard = ({
 							</Flex>
 						</Flex>
 
-						{/* Monthly limit progress */}
+						{/* Left section */}
 						<Flex direction="column" gap={2}>
-							<Flex justify="space-between" align="center">
-								<Text
-									fontSize="sm"
-									fontWeight="semibold"
-									color="dark"
-									userSelect="none"
-								>
-									Monthly Transaction Limit
-								</Text>
-								{total > 0 ? (
+							{/*
+								MARK: Limits
+								--- Monthly limit progress ---
+							*/}
+							<Flex direction="column" gap={2}>
+								<Flex justify="space-between" align="center">
 									<Text
 										fontSize="sm"
 										fontWeight="semibold"
-										color="primary.DEFAULT"
+										color="dark"
 										userSelect="none"
 									>
-										{consumedPercent}% Consumed
+										Monthly Wallet Load Limit via Cash
 									</Text>
-								) : null}
+									{total > 0 ? (
+										<Text
+											fontSize="sm"
+											fontWeight="semibold"
+											color="primary.DEFAULT"
+											userSelect="none"
+										>
+											₹{total.toLocaleString("en-IN")}
+										</Text>
+									) : null}
+								</Flex>
+
+								<Progress
+									value={consumedPercent}
+									h="8px"
+									borderRadius="full"
+									colorScheme="blue"
+									bg="darkShade"
+								/>
+
+								<Flex justify="space-between">
+									<Text
+										fontSize="xs"
+										color="light"
+										userSelect="none"
+									>
+										Consumed:{" "}
+										<Text
+											as="span"
+											color="dark"
+											fontWeight="medium"
+										>
+											₹{consumed.toLocaleString("en-IN")}
+										</Text>
+										{consumedPercent > 0 && (
+											<Text
+												as="span"
+												color="light"
+												fontSize="xxs"
+												ml={1}
+											>
+												({consumedPercent}%)
+											</Text>
+										)}
+									</Text>
+									<Text
+										fontSize="xs"
+										color="light"
+										userSelect="none"
+									>
+										Available:{" "}
+										<Text
+											as="span"
+											color="dark"
+											fontWeight="medium"
+										>
+											₹{available.toLocaleString("en-IN")}
+										</Text>
+									</Text>
+								</Flex>
 							</Flex>
 
-							<Progress
-								value={consumedPercent}
-								h="8px"
-								borderRadius="full"
-								colorScheme="blue"
-								bg="darkShade"
-							/>
-
-							<Flex justify="space-between">
-								<Text
-									fontSize="xs"
-									color="light"
-									userSelect="none"
+							{/*
+								MARK: Notes
+								Show wallet limit notes to the user, as three bullet points
+							*/}
+							{compactMode ? null : (
+								<Flex
+									direction="column"
+									gap={1}
+									borderLeft="4px solid #999"
+									bg="divider"
+									p={2}
+									mt={2}
+									borderRadius={4}
 								>
-									Consumed:{" "}
 									<Text
-										as="span"
-										color="dark"
-										fontWeight="medium"
+										fontSize="xs"
+										color="gray.600"
+										userSelect="none"
+										fontWeight="bold"
 									>
-										₹{consumed.toLocaleString("en-IN")}
+										Note:
 									</Text>
-								</Text>
-								<Text
-									fontSize="xs"
-									color="light"
-									userSelect="none"
-								>
-									Available:{" "}
-									<Text
-										as="span"
-										color="dark"
-										fontWeight="medium"
+									<Box
+										as="ul"
+										fontSize="xs"
+										color="gray.600"
+										userSelect="none"
+										pl={4}
+										m={0}
 									>
-										₹{available.toLocaleString("en-IN")}
-									</Text>
-								</Text>
-							</Flex>
+										<Box as="li">
+											Total monthly wallet load limit is
+											₹25 Lakh.
+										</Box>
+										<Box as="li">
+											Monthly load limit using cash
+											(E-value) is ₹50,000.
+										</Box>
+										<Box as="li">
+											Wallet balance cannot exceed ₹2 Lakh
+											at any time.
+										</Box>
+									</Box>
+								</Flex>
+							)}
 						</Flex>
 					</Flex>
 
@@ -305,12 +371,15 @@ export const WalletCard = ({
 						alignSelf="stretch"
 					/>
 
-					{/* ── Right: Balance + Button ── */}
+					{/*
+						MARK: Balance
+						── Right: Balance + Button ──
+					*/}
 					<Flex
 						direction="column"
 						align={{ base: "flex-start", md: "flex-end" }}
-						justify="space-between"
-						gap={3}
+						justify="center"
+						gap={compactMode ? 2 : 10}
 						w={{ base: "full", md: "190px" }}
 						flexShrink={0}
 					>
@@ -320,7 +389,7 @@ export const WalletCard = ({
 							align={{ base: "flex-start", md: "flex-end" }}
 						>
 							<Text
-								fontSize="xxs"
+								fontSize={compactMode ? "xxs" : "xs"}
 								fontWeight="semibold"
 								color="light"
 								textTransform="uppercase"
@@ -332,7 +401,9 @@ export const WalletCard = ({
 
 							{walletData ? (
 								<BalanceCountUp
-									target={walletData.walletCurrentBalance}
+									target={
+										walletData.walletCurrentBalance ?? 0
+									}
 								/>
 							) : (
 								<Text
@@ -369,7 +440,7 @@ export const WalletCard = ({
 							bg="primary.DEFAULT"
 							color="white"
 							borderRadius="10"
-							size="md"
+							size={compactMode ? "sm" : "md"}
 							onClick={onFetchBalance}
 							isDisabled={isLoading}
 							_hover={{ bg: "primary.dark" }}
@@ -379,7 +450,7 @@ export const WalletCard = ({
 								<Icon
 									name="refresh"
 									color="white"
-									size="sm"
+									size="14px"
 									style={
 										isLoading
 											? {

@@ -15,6 +15,12 @@ export const useDigiKhataApi = (mobile: string) => {
 	const senderProfileBase = `/customer/profile/${mobile}/ppi-digikhata`;
 	const consentDetailsBase = `${base}/aadhaar/consent/details`;
 
+	// ── Customer Account ─────────────────────────────────────────────────────
+	const [createCustomerAccountCall, isCreatingCustomerAccount] =
+		useEpsV3Fetch(`/customer/account/${mobile}`, {
+			method: "POST",
+		});
+
 	// ── Sender Profile / Verification ────────────────────────────────────────
 	const [generateSenderOtp, isGeneratingSenderOtp] = useEpsV3Fetch(
 		senderProfileBase,
@@ -24,6 +30,13 @@ export const useDigiKhataApi = (mobile: string) => {
 	);
 	const [verifySenderOtpCall, isVerifyingSenderOtp] = useEpsV3Fetch(
 		`${base}/otp/verify`,
+		{
+			method: "POST",
+		}
+	);
+
+	const [verifySenderBankOtpCall, isVerifyingSenderBankOtp] = useEpsV3Fetch(
+		`${base}/recipient/bank/otp/verify`,
 		{
 			method: "POST",
 		}
@@ -76,9 +89,17 @@ export const useDigiKhataApi = (mobile: string) => {
 		}
 	);
 	const [sendAddRecipientOtpCall, isSendingAddRecipientOtp] = useEpsV3Fetch(
-		`${base}/recipient/otp`,
+		`${base}/recipient`,
 		{ method: "POST" }
 	);
+
+	const [sendRecipientBankOtpCall, isSendingRecipientBankOtp] = useEpsV3Fetch(
+		`${base}/recipient/bank/otp`,
+		{
+			method: "POST",
+		}
+	);
+
 	const [addRecipientCall, isAddingRecipient] = useEpsV3Fetch(
 		`${base}/recipient`,
 		{
@@ -100,6 +121,11 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	// ── Bound API functions ───────────────────────────────────────────────────
 
+	const createCustomerAccount = (body: Record<string, unknown>) =>
+		createCustomerAccountCall({
+			body,
+		});
+
 	const verifySenderOtp = (body: VerifySenderOtpPayload) =>
 		verifySenderOtpCall({
 			body: {
@@ -109,13 +135,21 @@ export const useDigiKhataApi = (mobile: string) => {
 			},
 		});
 
+	const verifySenderBankOtp = (body: VerifySenderOtpPayload) =>
+		verifySenderBankOtpCall({
+			body: {
+				...body,
+				service_code: 80,
+				intent_id: 21,
+			},
+		});
+
 	const getConsentLanguages = () => getConsentLanguagesCall();
 
 	const getConsentDetails = (consentlangId: string) =>
 		getConsentDetailsCall({
-			url_endpoint: consentDetailsBase,
 			headers: {
-				"tf-req-uri": `${consentDetailsBase}?consentlangId=${consentlangId}`,
+				"tf-req-uri": `${consentDetailsBase}?consent_language=${consentlangId}`,
 			},
 		});
 
@@ -151,6 +185,11 @@ export const useDigiKhataApi = (mobile: string) => {
 			body,
 		});
 
+	const sendRecipientBankOtp = (body: Record<string, unknown>) =>
+		sendRecipientBankOtpCall({
+			body,
+		});
+
 	const sendTransactionOtp = (body: Record<string, unknown>) =>
 		sendTransactionOtpCall({
 			body,
@@ -162,10 +201,14 @@ export const useDigiKhataApi = (mobile: string) => {
 		});
 
 	return {
+		createCustomerAccount,
+		isCreatingCustomerAccount,
 		generateSenderOtp,
 		isGeneratingSenderOtp,
 		verifySenderOtp,
 		isVerifyingSenderOtp,
+		verifySenderBankOtp,
+		isVerifyingSenderBankOtp,
 		getConsentLanguages,
 		isGettingConsentLanguages,
 		getConsentDetails,
@@ -184,6 +227,8 @@ export const useDigiKhataApi = (mobile: string) => {
 		isSendingAddRecipientOtp,
 		addRecipient,
 		isAddingRecipient,
+		sendRecipientBankOtp,
+		isSendingRecipientBankOtp,
 		sendTransactionOtp,
 		isSendingTransactionOtp,
 		initiateTransaction,

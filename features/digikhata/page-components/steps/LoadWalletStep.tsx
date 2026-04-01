@@ -3,53 +3,46 @@ import {
 	Button,
 	Flex,
 	Input,
-	NumberDecrementStepper,
-	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
-	NumberInputStepper,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { CopyButton } from "components";
+import { CopyButton, InputLabel } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
-import { OtpModal } from "../../components/OtpModal";
-import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
+import { StepHeader } from "../../components/StepHeader";
+import { ANIMATION } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
 
 interface LoadWalletStepProps {
 	mobile: string;
+	onFetchBalance: () => Promise<void>;
 }
 
 /**
  * Lets the agent load funds into their DigiKhata wallet.
- * Flow: Enter Amount + PIN → loadWallet → generateSenderOtp → OtpModal
+ * Flow: Enter Amount + PIN → loadWallet → on 2447 calls onFetchBalance for OTP flow
  * → verifySenderOtp → hydrate wallet → back to dashboard.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @param {() => Promise<void>} root0.onFetchBalance - Callback to trigger balance refresh and OTP handling
+ * @returns {JSX.Element} Wallet loading form with UPI and virtual account options
  */
 export const LoadWalletStep = ({
 	mobile,
+	onFetchBalance,
 }: LoadWalletStepProps): JSX.Element => {
-	const { state, dispatch } = useDigiKhata();
-	const {
-		loadWallet,
-		isLoadingWallet,
-		generateSenderOtp,
-		isGeneratingSenderOtp,
-		verifySenderOtp,
-		isVerifyingSenderOtp,
-	} = useDigiKhataApi(mobile);
+	const { dispatch } = useDigiKhata();
+	const { loadWallet, isLoadingWallet } = useDigiKhataApi(mobile);
 
 	const toast = useToast();
 
 	const [amount, setAmount] = useState("");
 	const [encodedPin, setEncodedPin] = useState("");
 	const [isPinComplete, setIsPinComplete] = useState(false);
-	const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 	const upiVpa = `${mobile}@digikhata`;
 	const virtualAccountNumber = `DIGIKTWT${mobile}`;
 	const virtualAccountIfsc = "IDFB0040101";
@@ -65,16 +58,12 @@ export const LoadWalletStep = ({
 
 		const res = await loadWallet({ amount: numAmount, pin: encodedPin });
 		if (res?.data?.status === 0) {
-			const otpRes = await generateSenderOtp();
-			if (otpRes?.data?.response_type_id === 2129) {
-				dispatch({
-					type: "SET_OTP_REF_ID",
-					payload: otpRes?.data?.data?.otp_ref_id ?? null,
-				});
-				setIsOtpModalOpen(true);
+			if (res?.data?.response_type_id === 2447) {
+				// Trigger parent's balance fetch to handle OTP flow, to show the updated balance, and to navigate back to the dashboard
+				await onFetchBalance();
 			} else {
 				toast({
-					title: otpRes?.data?.message ?? "Failed to send OTP",
+					title: res?.data?.message ?? "Failed to load wallet",
 					status: "error",
 					duration: 4000,
 					isClosable: true,
@@ -90,82 +79,28 @@ export const LoadWalletStep = ({
 		}
 	};
 
-	const handleOtpSubmit = async (otp: string) => {
-		if (!state.otpRefId) {
-			toast({
-				title: "Missing OTP reference. Please request OTP again.",
-				status: "error",
-				duration: 4000,
-				isClosable: true,
-			});
-			return null;
-		}
-
-		const res = await verifySenderOtp({
-			otp,
-			otp_ref_id: state.otpRefId,
-		});
-		if (res?.data?.status === 0) {
-			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
-			setIsOtpModalOpen(false);
-			toast({
-				title: "Wallet loaded successfully!",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
-			dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
-		} else {
-			toast({
-				title: res?.data?.message ?? "Invalid OTP",
-				status: "error",
-				duration: 4000,
-				isClosable: true,
-			});
-		}
-		return res;
-	};
-
 	const canSubmit =
-		isPinComplete &&
-		parseFloat(amount) > 0 &&
-		!isLoadingWallet &&
-		!isGeneratingSenderOtp;
+		isPinComplete && parseFloat(amount) > 0 && !isLoadingWallet;
 
 	return (
 		<>
 			<Flex
 				direction="column"
-				gap={5}
+				gap={10}
 				sx={{
 					animation: `${fadeSlideInBottom12} ${ANIMATION.STEP_IN} ${ANIMATION.EASING} both`,
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex align="center" gap={3}>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={() =>
-							dispatch({
-								type: "SET_STEP",
-								step: "wallet-dashboard",
-							})
-						}
-						px={2}
-						color="light"
-					>
-						← Back
-					</Button>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						Load Wallet
-					</Text>
-				</Flex>
+				<StepHeader
+					title="Load Wallet"
+					subtitle="Choose how you want to add money to your DigiKhata wallet."
+					onBack={() =>
+						dispatch({ type: "SET_STEP", step: "wallet-dashboard" })
+					}
+				/>
 
-				<Text fontSize="sm" color="gray.600">
-					Choose how you want to add money to your DigiKhata wallet.
-				</Text>
-
+				{/* MARK: E-value */}
 				<Box
 					borderWidth="1px"
 					borderColor="gray.200"
@@ -186,11 +121,21 @@ export const LoadWalletStep = ({
 								fontWeight="semibold"
 								color="dark"
 							>
-								Via E-value
+								Via E-value (Cash Load)
 							</Text>
 							<Text fontSize="sm" color="gray.600" mt={1}>
-								Load wallet instantly inside DigiKhata using
-								amount, PIN, and OTP verification.
+								Load this Digi Khata wallet instantly from your
+								E-value balance.
+							</Text>
+							<Text fontSize="sm" color="gray.600" mt={1}>
+								<strong>Note:&nbsp;</strong>This is considered
+								Cash Load and you can load{" "}
+								<strong>
+									upto a total of ₹50,000 per month
+								</strong>
+								&nbsp; using this method. If you want to add
+								more, please use the UPI or Virtual Account
+								options below.
 							</Text>
 						</Box>
 						<Text
@@ -206,47 +151,51 @@ export const LoadWalletStep = ({
 						</Text>
 					</Flex>
 
-					{/* Amount */}
-					<Box>
-						<Text
-							fontSize="sm"
-							fontWeight="medium"
-							color="dark"
-							mb={2}
-						>
-							Amount (₹)
-						</Text>
-						<NumberInput
-							min={1}
-							value={amount}
-							onChange={(val) => setAmount(val)}
-							borderRadius="10"
-						>
-							<NumberInputField
-								placeholder="Enter amount"
+					<Flex
+						// direction={{ base: "column", md: "row" }}
+						// gap={{ base: 6, md: "2em" }}
+						direction="column"
+						gap={4}
+						align={{ base: "center", md: "flex-start" }}
+					>
+						{/* Amount */}
+						<Box>
+							<InputLabel
+								fontSize="sm"
+								fontWeight="medium"
+								color="dark"
+								mb={2}
+							>
+								Amount (₹)
+							</InputLabel>
+							<NumberInput
+								min={1}
+								value={amount}
+								onChange={(val) => setAmount(val)}
 								borderRadius="10"
-								fontSize="xl"
-								h="14"
-							/>
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
-						</NumberInput>
-					</Box>
+							>
+								<NumberInputField
+									placeholder="Enter amount"
+									borderRadius="10"
+									fontSize="xl"
+									h="14"
+								/>
+							</NumberInput>
+						</Box>
 
-					{/* PIN */}
-					<Box mt={4}>
-						<Pintwin
-							label="Secret PIN"
-							length={4}
-							onPinComplete={handlePinComplete}
-							onPinChange={() => {
-								setIsPinComplete(false);
-								setEncodedPin("");
-							}}
-						/>
-					</Box>
+						{/* PIN */}
+						<Box>
+							<Pintwin
+								label="Your Secret PIN"
+								length={4}
+								onPinComplete={handlePinComplete}
+								onPinChange={() => {
+									setIsPinComplete(false);
+									setEncodedPin("");
+								}}
+							/>
+						</Box>
+					</Flex>
 
 					<Button
 						w="full"
@@ -256,10 +205,8 @@ export const LoadWalletStep = ({
 						borderRadius="10"
 						size="lg"
 						isDisabled={!canSubmit}
-						isLoading={isLoadingWallet || isGeneratingSenderOtp}
-						loadingText={
-							isLoadingWallet ? "Loading Wallet…" : "Sending OTP…"
-						}
+						isLoading={isLoadingWallet}
+						loadingText="Loading Wallet…"
 						onClick={handleLoadWallet}
 						sx={{
 							animation: `${fadeSlideInBottom12} 0.18s ${ANIMATION.EASING} both`,
@@ -271,6 +218,7 @@ export const LoadWalletStep = ({
 					</Button>
 				</Box>
 
+				{/* MARK: UPI */}
 				<Box
 					borderWidth="1px"
 					borderColor="gray.200"
@@ -296,6 +244,14 @@ export const LoadWalletStep = ({
 							<Text fontSize="sm" color="gray.600" mt={1}>
 								Use any UPI app like GPay, BHIM, PhonePe, or
 								Paytm to transfer money to this DigiKhata VPA.
+							</Text>
+							<Text fontSize="sm" color="gray.600" mt={1}>
+								<strong>Note:&nbsp;</strong>You can load{" "}
+								<strong>
+									upto a total of ₹25 Lakh per month
+								</strong>
+								&nbsp; using digital methods like UPI or Virtual
+								Account.
 							</Text>
 						</Box>
 						<Text
@@ -337,6 +293,7 @@ export const LoadWalletStep = ({
 					</Text>
 				</Box>
 
+				{/* MARK: VA */}
 				<Box
 					borderWidth="1px"
 					borderColor="gray.200"
@@ -361,8 +318,16 @@ export const LoadWalletStep = ({
 							</Text>
 							<Text fontSize="sm" color="gray.600" mt={1}>
 								Use your bank's online banking app or website to
-								transfer money digitally to this DigiKhata
-								account.
+								transfer money digitally to DigiKhata virtual
+								account for this wallet.
+							</Text>
+							<Text fontSize="sm" color="gray.600" mt={1}>
+								<strong>Note:&nbsp;</strong>You can load{" "}
+								<strong>
+									upto a total of ₹25 Lakh per month
+								</strong>
+								&nbsp; using digital methods like UPI or Virtual
+								Account.
 							</Text>
 						</Box>
 						<Text
@@ -423,17 +388,6 @@ export const LoadWalletStep = ({
 					</Text>
 				</Box>
 			</Flex>
-
-			<OtpModal
-				isOpen={isOtpModalOpen}
-				onClose={() => setIsOtpModalOpen(false)}
-				onSubmit={handleOtpSubmit}
-				onResend={generateSenderOtp}
-				isLoading={isVerifyingSenderOtp}
-				title={OTP_MODAL_TITLES.SENDER_VERIFY}
-				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
-			/>
 		</>
 	);
 };

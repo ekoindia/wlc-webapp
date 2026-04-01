@@ -112,12 +112,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
-	// DigiKhata Wallet & Fund Transfer product for agents
-	DIGIKHATA_WALLET: {
-		enabled: true,
-		forEnv: ["development"],
-	},
-
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production

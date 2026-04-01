@@ -9,6 +9,7 @@ import { useDigiKhata } from "../../context/DigiKhataContext";
 /**
  * Main wallet action hub — shown once the wallet is confirmed open.
  * Renders Load Wallet and (conditionally) Transfer Fund action cards.
+ * @returns {JSX.Element} Action card grid with wallet operations
  */
 export const WalletDashboard = (): JSX.Element => {
 	const { state, dispatch } = useDigiKhata();
@@ -45,7 +46,7 @@ export const WalletDashboard = (): JSX.Element => {
 				}
 			/>
 
-			{balance > 0 ? (
+			{balance >= 100 ? (
 				<ActionCard
 					label="Transfer Fund"
 					description="Send money to a registered recipient"
@@ -71,7 +72,7 @@ export const WalletDashboard = (): JSX.Element => {
 				>
 					<Text fontSize="sm" color="light" userSelect="none">
 						Fund transfer is available once your wallet has a
-						balance.
+						minimum balance of ₹100.
 					</Text>
 				</Flex>
 			)}

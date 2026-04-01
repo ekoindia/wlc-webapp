@@ -1,7 +1,12 @@
 import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
+import {
+	DigiKhataApiResponse,
+	transformToWalletData,
+} from "features/digikhata/context/types";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
+import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
 import { useDigiKhata } from "../../context/DigiKhataContext";
 import { useDigiKhataApi } from "../../hooks/useDigiKhataApi";
@@ -15,8 +20,9 @@ const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 /**
  * Step 3 of KYC: validates PAN, then sends sender OTP → on success
  * hydrates wallet data and navigates to the wallet dashboard.
- * @param root0
- * @param root0.mobile
+ * @param {object} root0 - Component props
+ * @param {string} root0.mobile - User's mobile number for API calls
+ * @returns {JSX.Element} PAN input form with OTP verification modal for wallet hydration
  */
 export const PanVerificationStep = ({
 	mobile,
@@ -39,7 +45,7 @@ export const PanVerificationStep = ({
 	const handleValidatePan = async () => {
 		if (!PAN_REGEX.test(pan)) return;
 
-		const res = await validatePan({ pan });
+		const res = await validatePan({ pan_number: pan });
 		if (res?.data?.status === 0) {
 			// PAN validated — now trigger sender OTP for wallet hydration
 			const otpRes = await generateSenderOtp();
@@ -83,7 +89,10 @@ export const PanVerificationStep = ({
 			otp_ref_id: state.otpRefId,
 		});
 		if (res?.data?.status === 0) {
-			dispatch({ type: "SET_WALLET_DATA", payload: res.data.data });
+			const walletData = transformToWalletData(
+				res.data as DigiKhataApiResponse
+			);
+			dispatch({ type: "SET_WALLET_DATA", payload: walletData });
 			setIsOtpModalOpen(false);
 			dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
 		} else {
@@ -123,15 +132,10 @@ export const PanVerificationStep = ({
 					animationDelay: ANIMATION.STEP_IN_DELAY,
 				}}
 			>
-				<Flex direction="column" gap={1}>
-					<Text fontWeight="semibold" fontSize="md" color="dark">
-						PAN Verification
-					</Text>
-					<Text fontSize="sm" color="light">
-						Enter your PAN card number to complete KYC and open your
-						wallet.
-					</Text>
-				</Flex>
+				<StepHeader
+					title="PAN Verification"
+					subtitle="Enter your PAN card number to complete KYC and open your wallet."
+				/>
 
 				<Box>
 					<Text fontSize="sm" fontWeight="medium" color="dark" mb={2}>
@@ -188,7 +192,6 @@ export const PanVerificationStep = ({
 				isLoading={isVerifyingSenderOtp}
 				title={OTP_MODAL_TITLES.SENDER_VERIFY}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
-				otpLength={4}
 			/>
 		</>
 	);
