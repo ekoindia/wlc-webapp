@@ -301,6 +301,8 @@ export const FundTransferStep = ({
 			setTxnData(res.data?.data ?? null);
 			toast({
 				title: res?.data?.message ?? "Transaction failed",
+				description:
+					res?.data?.data?.description ?? "Please try again later.",
 				status: "error",
 				duration: 5000,
 				isClosable: true,

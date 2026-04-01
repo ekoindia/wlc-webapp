@@ -120,36 +120,44 @@ export const RecipientsStep = ({
 		});
 
 		if (res?.data?.status === 0) {
-			const beneficiaryId = res.data.data?.beneficiary_id;
-			if (beneficiaryId) {
-				// Update global context so the recipient is fixed
-				dispatch({
-					type: "UPDATE_RECIPIENT_BENEFICIARY",
-					payload: {
-						recipient_id: pendingRecipient.recipient_id,
-						beneficiary_id: beneficiaryId,
-					},
-				});
+			setIsOtpOpen(false);
+			toast({
+				title: "Recipient verified successfully!",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+			dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
+			// const beneficiaryId = res.data.data?.beneficiary_id;
+			// if (beneficiaryId) {
+			// 	// Update global context so the recipient is fixed
+			// 	dispatch({
+			// 		type: "UPDATE_RECIPIENT_BENEFICIARY",
+			// 		payload: {
+			// 			recipient_id: pendingRecipient.recipient_id,
+			// 			beneficiary_id: beneficiaryId,
+			// 		},
+			// 	});
 
-				// Set selected and move forward
-				const updatedRecipient = {
-					...pendingRecipient,
-					beneficiary_id: beneficiaryId,
-				};
-				dispatch({
-					type: "SET_SELECTED_RECIPIENT",
-					payload: updatedRecipient,
-				});
-				setIsOtpOpen(false);
-				dispatch({ type: "SET_STEP", step: "fund-transfer" });
-			} else {
-				toast({
-					title: "Failed to fetch updated beneficiary details",
-					status: "error",
-					duration: 4000,
-					isClosable: true,
-				});
-			}
+			// 	// Set selected and move forward
+			// 	const updatedRecipient = {
+			// 		...pendingRecipient,
+			// 		beneficiary_id: beneficiaryId,
+			// 	};
+			// 	dispatch({
+			// 		type: "SET_SELECTED_RECIPIENT",
+			// 		payload: updatedRecipient,
+			// 	});
+			// 	setIsOtpOpen(false);
+			// 	dispatch({ type: "SET_STEP", step: "fund-transfer" });
+			// } else {
+			// 	toast({
+			// 		title: "Failed to fetch updated beneficiary details",
+			// 		status: "error",
+			// 		duration: 4000,
+			// 		isClosable: true,
+			// 	});
+			// }
 		} else {
 			toast({
 				title: res?.data?.message ?? "Verification failed",
