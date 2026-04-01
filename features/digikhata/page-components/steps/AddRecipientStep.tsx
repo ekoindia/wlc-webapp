@@ -33,8 +33,8 @@ export const AddRecipientStep = ({
 	const {
 		sendAddRecipientOtp,
 		isSendingAddRecipientOtp,
-		addRecipient,
-		isAddingRecipient,
+		verifySenderBankOtp,
+		isVerifyingSenderBankOtp,
 	} = useDigiKhataApi(mobile);
 
 	const { banks, isLoading: isBanksLoading } = useBankList();
@@ -47,6 +47,7 @@ export const AddRecipientStep = ({
 	const [recipientMobile, setRecipientMobile] = useState("");
 	const [recipientName, setRecipientName] = useState("");
 	const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+	const [otpRefId, setOtpRefId] = useState<string | null>(null);
 
 	const isFormValid =
 		!!selectedBank &&
@@ -67,6 +68,8 @@ export const AddRecipientStep = ({
 		});
 
 		if (res?.data?.status === 0) {
+			// console.log("OTP sent successfully:", res.data);
+			setOtpRefId(res.data.data?.otp_ref_id);
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
@@ -80,35 +83,31 @@ export const AddRecipientStep = ({
 	};
 
 	const handleOtpSubmit = async (otp: string) => {
-		const res = await addRecipient({
-			account: accountNumber.trim(),
-			ifsc: ifsc.trim().toUpperCase(),
-			recipient_name: recipientName.trim(),
-			recipient_mobile: recipientMobile.trim(),
-			bank_code: selectedBank!.value,
+		const res = await verifySenderBankOtp({
 			otp,
+			otp_ref_id: otpRefId,
 		});
 
 		if (res?.data?.status === 0) {
-			const recipientData = res.data.data?.recipient;
-			const newRecipient = {
-				recipient_id: recipientData?.recipient_id ?? 0,
-				bank_recipient_id: recipientData?.bank_recipient_id ?? null,
-				name: recipientData?.recipient_name ?? recipientName.trim(),
-				accountNumber: accountNumber.trim(),
-				ifsc: ifsc.trim().toUpperCase(),
-				bankName: selectedBank!.label,
-				accountType: "Bank Account",
-				isVerified: recipientData?.is_verified === 1,
-				mobile: recipientMobile.trim(),
-				recipientIdType: "acc_ifsc",
-				beneficiary_id: res.data.data?.beneficiary_id ?? null,
-				isNew: true,
-			};
-			dispatch({
-				type: "ADD_RECIPIENT",
-				payload: newRecipient,
-			});
+			// const recipientData = res.data.data?.recipient;
+			// const newRecipient = {
+			// 	recipient_id: recipientData?.recipient_id ?? 0,
+			// 	bank_recipient_id: recipientData?.bank_recipient_id ?? null,
+			// 	name: recipientData?.recipient_name ?? recipientName.trim(),
+			// 	accountNumber: accountNumber.trim(),
+			// 	ifsc: ifsc.trim().toUpperCase(),
+			// 	bankName: selectedBank!.label,
+			// 	accountType: "Bank Account",
+			// 	isVerified: recipientData?.is_verified === 1,
+			// 	mobile: recipientMobile.trim(),
+			// 	recipientIdType: "acc_ifsc",
+			// 	beneficiary_id: res.data.data?.beneficiary_id ?? null,
+			// 	isNew: true,
+			// };
+			// dispatch({
+			// 	type: "ADD_RECIPIENT",
+			// 	payload: newRecipient,
+			// });
 			setIsOtpModalOpen(false);
 			toast({
 				title: "Recipient added successfully!",
@@ -271,7 +270,7 @@ export const AddRecipientStep = ({
 				onClose={() => setIsOtpModalOpen(false)}
 				onSubmit={handleOtpSubmit}
 				onResend={handleSendOtp}
-				isLoading={isAddingRecipient}
+				isLoading={isVerifyingSenderBankOtp}
 				title={OTP_MODAL_TITLES.ADD_RECIPIENT}
 				mobileHint={`XXXXXX${mobile.slice(-4)}`}
 			/>
