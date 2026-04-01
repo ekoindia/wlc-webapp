@@ -165,6 +165,7 @@ export const LoadWalletStep = ({
 								fontWeight="medium"
 								color="dark"
 								mb={2}
+								required
 							>
 								Amount (₹)
 							</InputLabel>
