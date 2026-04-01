@@ -47,7 +47,7 @@ export const AddRecipientStep = ({
 	const [recipientMobile, setRecipientMobile] = useState("");
 	const [recipientName, setRecipientName] = useState("");
 	const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
-	const [otpRefId, setOtpRefId] = useState<string | null>(null);
+const [otpRefId, setOtpRefId] = useState<string>("");
 
 	const isFormValid =
 		!!selectedBank &&
