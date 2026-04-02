@@ -1,3 +1,5 @@
+import { Box } from "@chakra-ui/react";
+import Breadcrumb from "components/Breadcrumb/Breadcrumb";
 import BulkVerification from "features/kyc-verification/components/BulkVerification";
 
 /**
@@ -5,7 +7,33 @@ import BulkVerification from "features/kyc-verification/components/BulkVerificat
  * @returns {JSX.Element} Bulk Verification page
  */
 export default function BulkVerificationPage() {
-	return <BulkVerification />;
+	const crumbs = [
+		{
+			label: "Kyc & Verification",
+			href: "/admin/products/kyc-verification",
+			isCurrent: false,
+		},
+		{
+			label: "Bulk Verification",
+			href: "/admin/products/bulk-verification",
+			isCurrent: true,
+		},
+	];
+
+	return (
+		<>
+			<Box
+				p={{
+					base: "0px",
+					md: "30px",
+				}}
+				pb={{ base: "20px", md: "5px" }}
+			>
+				<Breadcrumb crumbs={crumbs} />
+			</Box>
+			<BulkVerification />
+		</>
+	);
 }
 
 BulkVerificationPage.pageMeta = {

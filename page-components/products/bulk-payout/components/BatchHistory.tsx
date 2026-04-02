@@ -18,7 +18,14 @@ import {
 	Tr,
 	useBreakpointValue,
 } from "@chakra-ui/react";
-import { Button, Card, Icon, PageTitle, Pagination } from "components";
+import {
+	Button,
+	Card,
+	Currency,
+	Icon,
+	PageTitle,
+	Pagination,
+} from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -56,6 +63,7 @@ export interface ApiBatch {
 	failureCount: number;
 	pendingCount: number;
 	totalRecordsApproved: number;
+	serviceName?: string; // Only for verification
 }
 
 export type BatchStatus = "PROCESSING" | "PROCESSED";
@@ -465,6 +473,11 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 								<Thead bg="shade">
 									<Tr>
 										<Th textAlign="center">Upload Date</Th>
+										{isVerification ? (
+											<Th textAlign="center">
+												Service Name
+											</Th>
+										) : null}
 										{!isVerification ? (
 											<Th textAlign="center">Vendor</Th>
 										) : null}
@@ -521,6 +534,16 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 														)}
 													</Text>
 												</Td>
+												{isVerification ? (
+													<Td>
+														<Text
+															textAlign="center"
+															fontSize="sm"
+														>
+															{batch.serviceName}
+														</Text>
+													</Td>
+												) : null}
 												{!isVerification ? (
 													<Td>
 														<HStack
@@ -554,14 +577,14 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 													</Text>
 												</Td>
 												<Td isNumeric>
-													<Text
-														fontSize="sm"
-														fontWeight="medium"
-													>
-														₹
-														{batch.totalAmount.toLocaleString(
-															"en-IN"
-														)}
+													<Text fontSize="sm">
+														{
+															<Currency
+																amount={
+																	batch.totalAmount
+																}
+															/>
+														}
 													</Text>
 												</Td>
 												<Td>

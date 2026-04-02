@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { getPaymentStyle } from "helpers";
 import { DetailedStatementCard } from "..";
 
 /**
@@ -21,7 +22,12 @@ const detailedStatementTableParameterList = [
 		label: "Description",
 		show: "Description",
 	},
-	{ name: "amount", label: "Amount", show: "Payment" },
+	{
+		name: "amount",
+		label: "Amount",
+		render: (row) =>
+			getPaymentStyle(row.amount, row.debit_credit ?? row.trx_type),
+	},
 	{ name: "running_balance", label: "Running Balance", show: "Amount" },
 ];
 

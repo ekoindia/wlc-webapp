@@ -46,38 +46,52 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// KYC Verification
 	KYC_VERIFICATION: {
 		enabled: true,
-		forEnv: ["development", "staging"],
-		// envConstraints: {
-		// 	development: {
-		// 		forOrgId: [3],
-		// 	},
-		// 	staging: {
-		// 		forOrgId: [3],
-		// 	},
-		// 	production: {
-		// 		forOrgId: [3],
-		// 	},
-		// },
+		envConstraints: {
+			development: {
+				forOrgId: [3, 26],
+			},
+			staging: {
+				forOrgId: [26],
+			},
+			production: {
+				forOrgId: [420],
+			},
+		},
 	},
 
 	//  Eko Shield
 	// TODO: Deprecate the usage of this flag across the project.
 	EKO_SHIELD: {
 		enabled: true,
-		forEnv: ["development", "staging"],
 	},
 
+	VERIFICATION_WORKFLOW_BUILDER: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// TODO: Update this feature flag on role basis instead of org-id basis after the role-based access control (RBAC) is implemented.
 	DEMO_ACCOUNT: {
 		enabled: true,
-		forEnv: ["development", "staging"],
-		forRoles: ["51900"],
+		forUserType: [1],
+		envConstraints: {
+			development: {
+				forOrgId: [26],
+			},
+			staging: {
+				forOrgId: [26],
+			},
+			production: {
+				forOrgId: [420],
+			},
+		},
 	},
 
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
 		forUserType: [1], // 7 = SuperDistributor
-		forEnv: ["development", "staging"],
+		forEnv: ["development"],
 	},
 
 	// Custom theme support (paid tier)

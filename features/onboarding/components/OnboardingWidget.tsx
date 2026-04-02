@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Flex } from "@chakra-ui/react";
 import { Button } from "components/Button";
-import { useOrgDetailContext } from "contexts";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
+import type { OnboardingServices } from "../contracts";
 import { getOnboardingStepsFromData, getUserTypeFromData } from "../utils";
 import OnboardingSkeleton from "./OnboardingSkeleton";
 import OnboardingSteps from "./OnboardingSteps";
@@ -28,6 +28,12 @@ interface OnboardingWidgetProps {
 	agentMobile?: string;
 	allowedMerchantTypes?: number[];
 	refreshAgentProfile: () => Promise<void>;
+	/** Injected services from the host app */
+	services: OnboardingServices;
+	/** Org metadata for onboarding config (disabled steps, skippable steps, etc.) */
+	orgMetadataOnboarding?: any;
+	/** Whether self-onboarding is disabled */
+	isSelfOnboardingDisabled?: boolean;
 }
 
 /**
@@ -57,15 +63,14 @@ const OnboardingWidget = ({
 	agentMobile,
 	allowedMerchantTypes,
 	refreshAgentProfile,
+	services,
+	orgMetadataOnboarding,
+	isSelfOnboardingDisabled: isSelfOnboardingDisabledProp = false,
 }: OnboardingWidgetProps): JSX.Element => {
 	const [_selectedRole, setSelectedRole] = useState<string>("");
 
-	const { orgDetail } = useOrgDetailContext();
-	const { metadata } = orgDetail || {};
-	const { disable_self_onboarding } = metadata || {};
-
 	const isSelfOnboardingDisabled =
-		disable_self_onboarding?.value ||
+		isSelfOnboardingDisabledProp ||
 		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
 		false;
 
@@ -175,6 +180,8 @@ const OnboardingWidget = ({
 						agentMobile={agentMobile}
 						allowedMerchantTypes={allowedMerchantTypes}
 						refreshAgentProfile={refreshAgentProfile}
+						accessToken={services.accessToken}
+						generateNewToken={services.generateNewToken}
 					/>
 				);
 			case "KYC_FLOW":
@@ -185,6 +192,8 @@ const OnboardingWidget = ({
 						assistedAgentDetails={assistedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}
 						initialLatLong={initialLatLong}
+						services={services}
+						orgMetadataOnboarding={orgMetadataOnboarding}
 					/>
 				);
 			default:
