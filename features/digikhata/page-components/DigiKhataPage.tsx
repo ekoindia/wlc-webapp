@@ -116,8 +116,17 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 				dispatch({ type: "SET_STEP", step: "wallet-dashboard" });
 			}
 		}
+		// Handle all other cases (e.g., Send OTP Failed or any unhandled response_type_id)
+		else {
+			toast({
+				title: res?.data?.message ?? "Send OTP Failed",
+				description: res?.data?.data?.description ?? "",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+		}
 	};
-
 	const handleSenderOtpSubmit = async (otp: string) => {
 		if (!state.otpRefId) {
 			dispatch({
