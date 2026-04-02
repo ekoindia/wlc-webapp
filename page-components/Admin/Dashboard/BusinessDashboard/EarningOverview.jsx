@@ -273,7 +273,7 @@ const EarningOverview = ({
 		},
 		{
 			key: "revenue",
-			label: "Revenue",
+			label: "Total Revenue/Charges",
 			value: earningOverviewData?.gtv?.revenue || 0,
 			lastPeriod: earningOverviewData?.gtv?.revenuelastPeriod || 0,
 			type: "amount",
@@ -284,7 +284,7 @@ const EarningOverview = ({
 		},
 		{
 			key: "averageRevenue",
-			label: "Average Revenue",
+			label: "Average Revenue/Charges",
 			value: earningOverviewData?.gtv?.averageRevenue || 0,
 			lastPeriod: earningOverviewData?.gtv?.averageRevenueLastPeriod || 0,
 			type: "amount",
@@ -296,7 +296,7 @@ const EarningOverview = ({
 		// TODO: Display Transaction and API Calls according to feature flag
 		{
 			key: "transactions",
-			label: "Transactions",
+			label: "Total Transactions",
 			value: earningOverviewData?.transactions?.transactions || 0,
 			lastPeriod: earningOverviewData?.transactions?.lastPeriod || 0,
 			type: "number",
@@ -306,8 +306,19 @@ const EarningOverview = ({
 			),
 		},
 		{
+			key: "successCases",
+			label: "Successful Transactions",
+			value: earningOverviewData?.successCases?.successCases || 0,
+			lastPeriod: earningOverviewData?.successCases?.lastPeriod || 0,
+			type: "number",
+			variation: calculateVariation(
+				earningOverviewData?.successCases?.successCases || 0,
+				earningOverviewData?.successCases?.lastPeriod || 0
+			),
+		},
+		{
 			key: "failedCases",
-			label: "Failed Cases",
+			label: "Failed Transactions",
 			value: earningOverviewData?.failedCases?.failedCases || 0,
 			lastPeriod: earningOverviewData?.failedCases?.lastPeriod || 0,
 			type: "number",

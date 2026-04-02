@@ -1,4 +1,12 @@
-import { Box, Flex, Link, useToast } from "@chakra-ui/react";
+import {
+	Alert,
+	AlertIcon,
+	Box,
+	Flex,
+	Link,
+	Text,
+	useToast,
+} from "@chakra-ui/react";
 import {
 	ActionButtonGroup,
 	Card,
@@ -13,6 +21,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pintwin } from "tf-components/Pintwin";
 import { useBulkPayout } from "../context/BulkPayoutContext";
+
+const MAX_BULK_UPLOAD_RECORDS = 50;
 
 export interface ServiceOption {
 	label: string;
@@ -244,6 +254,17 @@ export const BulkUploadUI: React.FC<BulkUploadProps> = ({
 							setFile={setFile}
 							accept=".xlsx,.xls"
 						/>
+						<Alert status="warning" borderRadius="md" py={2}>
+							<AlertIcon />
+							<Text fontSize="sm">
+								The uploaded Excel/CSV file must not exceed{" "}
+								<strong>
+									{MAX_BULK_UPLOAD_RECORDS} records
+								</strong>
+								. Please split larger files into smaller batches
+								for processing.
+							</Text>
+						</Alert>
 					</Flex>
 
 					{showPinInput && (

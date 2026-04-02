@@ -1,6 +1,4 @@
 import { useToast } from "@chakra-ui/react";
-import { useSession } from "contexts";
-import { useRefreshToken } from "hooks";
 import {
 	createContext,
 	useCallback,
@@ -15,6 +13,7 @@ import {
 	type OnboardingStep,
 	type PipelineResult,
 } from "../constants";
+import { type OnboardingServices } from "../contracts";
 import {
 	useOnboardingState,
 	type OnboardingStateHook,
@@ -49,6 +48,9 @@ import {
  * 3. Include it in the `contextValue` useMemo below
  */
 export interface OnboardingContextValue extends OnboardingStateHook {
+	// Injected services from the host app
+	services: OnboardingServices;
+
 	// Pipeline results for smart retry (stores last result per step)
 	pipelineResults: Record<number, PipelineResult>;
 	setPipelineResult: (_stepId: number, _result: PipelineResult) => void;
@@ -73,6 +75,8 @@ const OnboardingContext = createContext<OnboardingContextValue | null>(null);
 
 interface OnboardingProviderProps {
 	children: ReactNode;
+	/** Injected services from the host app (auth, pubsub, platform info) */
+	services: OnboardingServices;
 	userName: string;
 	mobile: string;
 	agreementId: string;
@@ -106,6 +110,7 @@ interface OnboardingProviderProps {
  */
 export const OnboardingProvider = ({
 	children,
+	services,
 	userName,
 	mobile,
 	agreementId,
@@ -120,8 +125,7 @@ export const OnboardingProvider = ({
 	const internalStateHook = useOnboardingState();
 	const { state, dispatch, actions } = externalState || internalStateHook;
 
-	const { accessToken } = useSession();
-	const { generateNewToken } = useRefreshToken();
+	const { accessToken, generateNewToken } = services;
 	const toast = useToast();
 
 	// Pipeline results for tracking API execution per step (used for smart retry)
@@ -476,6 +480,9 @@ export const OnboardingProvider = ({
 			dispatch,
 			actions,
 
+			// Injected services
+			services,
+
 			// Pipeline results for smart retry
 			pipelineResults,
 			setPipelineResult,
@@ -497,6 +504,7 @@ export const OnboardingProvider = ({
 			state,
 			dispatch,
 			actions,
+			services,
 			pipelineResults,
 			setPipelineResult,
 			currentStepId,

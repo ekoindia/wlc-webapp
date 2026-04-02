@@ -527,7 +527,7 @@ const UsageAnalytics = ({
 							<Bar
 								yAxisId="left"
 								dataKey="totalCount"
-								name="Verifications"
+								name="Transactions"
 								fill={CHART_COLORS.bar}
 								barSize={20}
 								radius={[4, 4, 0, 0]}

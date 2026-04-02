@@ -1,6 +1,6 @@
 export { default as Network } from "./Network";
 export { NetworkCard } from "./NetworkCard";
-export { NetworkMenuWrapper } from "./NetworkMenuWrapper";
+export { NetworkMenu } from "./NetworkMenu/NetworkMenu";
 export { NetworkSort } from "./NetworkSort";
 export { NetworkTable } from "./NetworkTable";
 export { default as NetworkToggleColumns } from "./NetworkToggleColumns";

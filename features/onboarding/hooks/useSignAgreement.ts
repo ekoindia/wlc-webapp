@@ -6,8 +6,6 @@
  * Supports multiple providers (Leegality, Karza, Signzy) and Android WebView.
  */
 import { useToast } from "@chakra-ui/react";
-import { useAppSource, usePubSub, useSession } from "contexts";
-import { useRefreshToken } from "hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ANDROID_ACTION } from "utils";
 import { useOnboardingContext } from "../context";
@@ -47,11 +45,16 @@ export const useSignAgreement = (): UseSignAgreementReturn => {
 	const isInitializing = useRef(false);
 
 	// Context and hooks
-	const { mobile, agreementId, state, actions } = useOnboardingContext();
-	const { accessToken } = useSession();
-	const { generateNewToken } = useRefreshToken();
-	const { isAndroid } = useAppSource();
-	const { subscribe, TOPICS } = usePubSub();
+	const { mobile, agreementId, state, actions, services } =
+		useOnboardingContext();
+	const {
+		accessToken,
+		generateNewToken,
+		isAndroid = false,
+		pubsub,
+	} = services;
+	const subscribe = pubsub?.subscribe ?? (() => () => {});
+	const TOPICS = pubsub?.TOPICS ?? ({} as Record<string, string>);
 	const toast = useToast();
 
 	// Get latLong from state

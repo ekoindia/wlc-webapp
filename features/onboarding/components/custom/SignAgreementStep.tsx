@@ -16,7 +16,6 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Button, Icon } from "components";
-import { useAppSource } from "contexts/AppSourceContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingContext } from "../../context";
 import { useSignAgreement } from "../../hooks/useSignAgreement";
@@ -52,13 +51,14 @@ const SignAgreementStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
-	const { isAndroid } = useAppSource();
 	const {
 		userName,
 		agreementId,
 		state: _contextState,
 		pipelineResults,
+		services,
 	} = useOnboardingContext();
+	const isAndroid = services.isAndroid ?? false;
 	const { status, initialize, openSigning, documentId } = useSignAgreement();
 
 	// Track if esign was cancelled (1657 error - user didn't sign)
