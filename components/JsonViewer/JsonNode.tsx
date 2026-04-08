@@ -217,6 +217,7 @@ const JsonNode = memo(function JsonNode({
 	const openBracket = showBrackets ? (isArray ? "[" : "{") : "";
 	const closeBracket = showBrackets ? (isArray ? "]" : "}") : "";
 	const isEmpty = children.length === 0;
+	const isInteractive = !isEmpty && isRootToggleable;
 	const collectionInfo = getCollectionInfo(value as object);
 
 	return (
@@ -225,22 +226,16 @@ const JsonNode = memo(function JsonNode({
 			<Flex
 				{...getRowStyles(!isRoot)}
 				align="center"
-				cursor={isEmpty || !isRootToggleable ? "default" : "pointer"}
-				onClick={
-					isEmpty || !isRootToggleable ? undefined : handleToggle
-				}
-				onKeyDown={
-					isEmpty || !isRootToggleable ? undefined : handleKeyDown
-				}
-				tabIndex={isEmpty || !isRootToggleable ? -1 : 0}
+				cursor={isInteractive ? "pointer" : "default"}
+				onClick={isInteractive ? handleToggle : undefined}
+				onKeyDown={isInteractive ? handleKeyDown : undefined}
+				tabIndex={isInteractive ? 0 : -1}
 				borderRadius="sm"
-				_hover={
-					isEmpty || !isRootToggleable ? {} : { bg: "blackAlpha.50" }
-				}
+				_hover={isInteractive ? { bg: "blackAlpha.50" } : {}}
 				_focus={{ outline: "none" }}
 			>
 				{/* Chevron icon */}
-				{!isEmpty && isRootToggleable && (
+				{isInteractive && (
 					<Box
 						as="span"
 						mr="4px"
