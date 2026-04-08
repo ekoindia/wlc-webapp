@@ -108,7 +108,9 @@ export const AadhaarVerificationStep = ({
 			piddata: pidData,
 		});
 
-		if (res?.data?.status === 0) {
+		const responseType = res?.data?.response_type_id;
+
+		if (res?.data?.status === 0 && responseType === 2450) {
 			dispatch({ type: "SET_STEP", step: "pan-verify" });
 		} else {
 			toast({
