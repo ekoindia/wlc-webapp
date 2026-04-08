@@ -90,6 +90,7 @@ export const RecipientsStep = ({
 		} else {
 			toast({
 				title: res?.data?.message ?? "Failed to initiate verification",
+				description: res?.data?.data?.description ?? "",
 				status: "error",
 				duration: 4000,
 				isClosable: true,
