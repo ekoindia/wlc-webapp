@@ -148,11 +148,16 @@ const TransferStatusCard = ({
 				borderColor={headerBorderColor}
 				borderRadius="12"
 				textAlign="center"
+				sx={{ "@media print": { display: "none" } }}
 			>
 				{isPending ? (
-					<Spinner size="lg" color="blue.500" mb={3} />
+					<Flex justify="center" mb={3}>
+						<Spinner size="lg" color="blue.500" />
+					</Flex>
 				) : (
-					<Icon name={iconName} size="xl" color={iconColor} mb={3} />
+					<Flex justify="center" mb={3}>
+						<Icon name={iconName} size="xl" color={iconColor} />
+					</Flex>
 				)}
 				<Text fontWeight="bold" fontSize="lg" color="dark">
 					{title}
@@ -175,6 +180,7 @@ const TransferStatusCard = ({
 					borderRadius="12"
 					bg="white"
 					p={4}
+					sx={{ "@media print": { display: "none" } }}
 				>
 					<Text
 						fontSize="xs"
@@ -222,6 +228,7 @@ const TransferStatusCard = ({
 					<Flex
 						direction="row"
 						align="center"
+						justify="flex-end"
 						gap={4}
 						sx={{
 							"@media print": { display: "none !important" },
@@ -232,7 +239,7 @@ const TransferStatusCard = ({
 							fontSize="xs"
 							size="md"
 							icon="print"
-							color="accent.DEFAULT"
+							// color="accent.DEFAULT"
 							onClick={() => printPage("DigiKhata Receipt")}
 						>
 							Print
