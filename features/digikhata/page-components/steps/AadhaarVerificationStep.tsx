@@ -23,6 +23,55 @@ interface AadhaarVerificationStepProps {
 
 const AADHAAR_REGEX = /^\d{12}$/;
 
+interface MethodCardProps {
+	icon: string;
+	title: string;
+	subtitle: string;
+	onClick: () => void;
+}
+
+/**
+ * Selectable card for choosing a KYC verification method.
+ * @param {object} root0 - Component props
+ * @param {string} root0.icon - Icon name from the icon library
+ * @param {string} root0.title - Short label displayed on the card
+ * @param {string} root0.subtitle - Descriptive text shown below the title
+ * @param {Function} root0.onClick - Callback invoked when the card is clicked
+ * @returns {JSX.Element} Styled card with icon, title, and subtitle
+ */
+const MethodCard = ({
+	icon,
+	title,
+	subtitle,
+	onClick,
+}: MethodCardProps): JSX.Element => (
+	<Flex
+		direction="column"
+		align="center"
+		justify="center"
+		bg="shade"
+		borderRadius="10"
+		p={6}
+		cursor="pointer"
+		border="1px solid"
+		borderColor="divider"
+		transition="all 0.2s"
+		_hover={{
+			borderColor: "primary.DEFAULT",
+			bg: "primary.tint",
+		}}
+		onClick={onClick}
+	>
+		<Icon name={icon} size="lg" color="primary.DEFAULT" mb={3} />
+		<Text fontWeight="medium" color="dark">
+			{title}
+		</Text>
+		<Text fontSize="xs" color="light" textAlign="center" mt={1}>
+			{subtitle}
+		</Text>
+	</Flex>
+);
+
 /**
  * Step 2 of KYC: select validation method, collect 12-digit Aadhaar,
  * verify via OTP or Biometrics. On success navigates to PAN verification.
@@ -149,77 +198,18 @@ export const AadhaarVerificationStep = ({
 					subtitle="Choose an option to verify your Aadhaar."
 				/>
 				<SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
-					<Flex
-						direction="column"
-						align="center"
-						justify="center"
-						bg="shade"
-						borderRadius="10"
-						p={6}
-						cursor="pointer"
-						border="1px solid"
-						borderColor="divider"
-						transition="all 0.2s"
-						_hover={{
-							borderColor: "primary.DEFAULT",
-							bg: "primary.tint",
-						}}
+					<MethodCard
+						icon="message"
+						title="Via OTP"
+						subtitle="OTP will be sent to your Aadhaar-linked mobile"
 						onClick={() => setMethod("otp")}
-					>
-						<Icon
-							name="message"
-							size="lg"
-							color="primary.DEFAULT"
-							mb={3}
-						/>
-						<Text fontWeight="medium" color="dark">
-							Via OTP
-						</Text>
-						<Text
-							fontSize="xs"
-							color="light"
-							textAlign="center"
-							mt={1}
-						>
-							OTP will be sent to your Aadhaar-linked mobile
-						</Text>
-					</Flex>
-
-					<Flex
-						direction="column"
-						align="center"
-						justify="center"
-						bg="shade"
-						borderRadius="10"
-						p={6}
-						cursor="pointer"
-						border="1px solid"
-						borderColor="divider"
-						transition="all 0.2s"
-						_hover={{
-							borderColor: "primary.DEFAULT",
-							bg: "primary.tint",
-						}}
+					/>
+					<MethodCard
+						icon="fingerprint"
+						title="Via Biometrics"
+						subtitle="Verify using fingerprint scanner"
 						onClick={() => setMethod("biometrics")}
-					>
-						<Icon
-							name="fingerprint"
-							size="lg"
-							color="primary.DEFAULT"
-							mb={3}
-						/>
-						<Text fontWeight="medium" color="dark">
-							Via Biometrics
-						</Text>
-						<Text
-							fontSize="xs"
-							color="light"
-							textAlign="center"
-							mt={1}
-						>
-							Verify using fingerprint scanner
-						</Text>
-					</Flex>
+					/>
 				</SimpleGrid>
 			</Flex>
 		);
