@@ -360,6 +360,22 @@ export const LoadWalletStep = ({
 						</Text>
 					</Flex>
 
+					{/* Info Note */}
+					<Alert status="info" borderRadius="10" mb={3}>
+						<AlertIcon />
+						<Box>
+							<Text fontWeight="semibold" fontSize="sm">
+								Don't have a DigiKhata Virtual Account yet?
+							</Text>
+							<Text fontSize="sm" color="light">
+								To get your Virtual Account, download the{" "}
+								<strong>DigiKhata app</strong>, register
+								yourself, and find your Virtual Account from the
+								app.
+							</Text>
+						</Box>
+					</Alert>
+
 					<Box>
 						<Text
 							fontSize="xs"
