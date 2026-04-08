@@ -28,6 +28,7 @@ export const OTP_MODAL_TITLES = {
 	SENDER_VERIFY: "Verify Your Identity",
 	AADHAAR: "Aadhaar OTP Verification",
 	ADD_RECIPIENT: "Verify Recipient Addition",
+	DELETE_RECIPIENT: "Confirm Recipient Deletion",
 	TRANSFER: "Confirm Fund Transfer",
 	CUSTOMER_VERIFY: "Verify Customer Identity",
 } as const;

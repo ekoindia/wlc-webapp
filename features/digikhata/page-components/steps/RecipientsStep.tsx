@@ -35,8 +35,10 @@ export const RecipientsStep = ({
 	const {
 		getRecipients,
 		isGettingRecipients,
-		deleteRecipient,
-		isDeletingRecipient,
+		sendDeleteRecipientOtp,
+		isSendingDeleteRecipientOtp,
+		verifyDeleteRecipientOtp,
+		isVerifyingDeleteRecipientOtp,
 		sendRecipientBankOtp,
 		isSendingRecipientBankOtp,
 		verifySenderBankOtp,
@@ -50,9 +52,10 @@ export const RecipientsStep = ({
 		null
 	);
 	const [otpRefId, setOtpRefId] = useState<string>("");
-	const [deletingRecipientId, setDeletingRecipientId] = useState<
-		number | null
-	>(null);
+	const [deleteOtpOpen, setDeleteOtpOpen] = useState(false);
+	const [deleteOtpRefId, setDeleteOtpRefId] = useState<string>("");
+	const [pendingDeleteRecipient, setPendingDeleteRecipient] =
+		useState<Recipient | null>(null);
 
 	useEffect(() => {
 		const load = async () => {
@@ -118,15 +121,35 @@ export const RecipientsStep = ({
 	};
 
 	const handleDeleteRecipient = async (recipient: Recipient) => {
-		setDeletingRecipientId(recipient.recipient_id);
-		// console.log("Deleting recipient ID:", recipient.recipient_id);
-		const res = await deleteRecipient(recipient.recipient_id);
-		setDeletingRecipientId(null);
+		const res = await sendDeleteRecipientOtp(recipient.recipient_id);
+		if (res?.data?.status === 0) {
+			setDeleteOtpRefId(res.data.data?.otp_ref_id ?? "");
+			setPendingDeleteRecipient(recipient);
+			setDeleteOtpOpen(true);
+		} else {
+			toast({
+				title: res?.data?.message ?? "Failed to initiate deletion",
+				description: res?.data?.data?.description ?? "",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+		}
+	};
+
+	const handleDeleteOtpSubmit = async (otp: string) => {
+		if (!pendingDeleteRecipient) return;
+
+		const res = await verifyDeleteRecipientOtp({
+			otp,
+			otp_ref_id: deleteOtpRefId,
+		});
 
 		if (res?.data?.status === 0) {
+			setDeleteOtpOpen(false);
 			dispatch({
 				type: "REMOVE_RECIPIENT",
-				payload: recipient.recipient_id,
+				payload: pendingDeleteRecipient.recipient_id,
 			});
 			toast({
 				title: "Recipient deleted successfully",
@@ -134,14 +157,16 @@ export const RecipientsStep = ({
 				duration: 3000,
 				isClosable: true,
 			});
+			setPendingDeleteRecipient(null);
 		} else {
 			toast({
-				title: res?.data?.message ?? "Failed to delete recipient",
+				title: res?.data?.message ?? "Verification failed",
 				status: "error",
 				duration: 4000,
 				isClosable: true,
 			});
 		}
+		return res;
 	};
 
 	const handleOtpSubmit = async (otp: string) => {
@@ -373,8 +398,9 @@ export const RecipientsStep = ({
 								pendingRecipient?.recipient_id ===
 									r.recipient_id;
 							const isDeleting =
-								isDeletingRecipient &&
-								deletingRecipientId === r.recipient_id;
+								isSendingDeleteRecipientOtp &&
+								pendingDeleteRecipient?.recipient_id ===
+									r.recipient_id;
 
 							return (
 								<Flex
@@ -604,6 +630,22 @@ export const RecipientsStep = ({
 					title={
 						OTP_MODAL_TITLES?.ADD_RECIPIENT || "Verify Recipient"
 					}
+					mobileHint={`XXXXXX${mobile.slice(-4)}`}
+				/>
+			)}
+
+			{pendingDeleteRecipient && (
+				<OtpModal
+					isOpen={deleteOtpOpen}
+					onClose={() => setDeleteOtpOpen(false)}
+					onSubmit={handleDeleteOtpSubmit}
+					onResend={() =>
+						sendDeleteRecipientOtp(
+							pendingDeleteRecipient.recipient_id
+						)
+					}
+					isLoading={isVerifyingDeleteRecipientOtp}
+					title={OTP_MODAL_TITLES.DELETE_RECIPIENT}
 					mobileHint={`XXXXXX${mobile.slice(-4)}`}
 				/>
 			)}

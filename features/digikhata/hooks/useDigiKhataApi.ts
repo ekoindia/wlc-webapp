@@ -99,12 +99,14 @@ export const useDigiKhataApi = (mobile: string) => {
 			method: "GET",
 		}
 	);
-	const [deleteRecipientCall, isDeletingRecipient] = useEpsV3Fetch(
-		`/customers/mobile_number:${mobile}/recipients/recipient_id:0`,
-		{
-			method: "DELETE",
-		}
-	);
+	// TODO: Replace placeholder URLs with confirmed endpoints from backend
+	const [sendDeleteRecipientOtpCall, isSendingDeleteRecipientOtp] =
+		useEpsV3Fetch(`${base}/recipient/delete/otp`, { method: "POST" });
+
+	const [verifyDeleteRecipientOtpCall, isVerifyingDeleteRecipientOtp] =
+		useEpsV3Fetch(`${base}/recipient/delete/otp/verify`, {
+			method: "POST",
+		});
 	const [sendAddRecipientOtpCall, isSendingAddRecipientOtp] = useEpsV3Fetch(
 		`${base}/recipient`,
 		{ method: "POST" }
@@ -202,12 +204,11 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	const getRecipients = () => getRecipientsCall();
 
-	const deleteRecipient = (recipientId: number) =>
-		deleteRecipientCall({
-			headers: {
-				"tf-req-uri": `/customers/mobile_number:${mobile}/recipients/recipient_id:${recipientId}`,
-			},
-		});
+	const sendDeleteRecipientOtp = (recipientId: number) =>
+		sendDeleteRecipientOtpCall({ body: { recipient_id: recipientId } });
+
+	const verifyDeleteRecipientOtp = (body: VerifySenderOtpPayload) =>
+		verifyDeleteRecipientOtpCall({ body });
 
 	const sendAddRecipientOtp = (body: Record<string, unknown>) =>
 		sendAddRecipientOtpCall({
@@ -261,8 +262,10 @@ export const useDigiKhataApi = (mobile: string) => {
 		isLoadingWallet,
 		getRecipients,
 		isGettingRecipients,
-		deleteRecipient,
-		isDeletingRecipient,
+		sendDeleteRecipientOtp,
+		isSendingDeleteRecipientOtp,
+		verifyDeleteRecipientOtp,
+		isVerifyingDeleteRecipientOtp,
 		sendAddRecipientOtp,
 		isSendingAddRecipientOtp,
 		addRecipient,
