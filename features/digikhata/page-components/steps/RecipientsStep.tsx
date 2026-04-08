@@ -215,6 +215,41 @@ export const RecipientsStep = ({
 					}
 				/>
 
+				{/* Info Note */}
+				<Flex
+					align="center"
+					gap={4}
+					px={4}
+					py={3}
+					bg="blue.50"
+					borderRadius="10px"
+					border="1px solid"
+					borderColor="blue.100"
+				>
+					<Icon
+						name="info-outline"
+						size="md"
+						color="blue.400"
+						flexShrink={0}
+					/>
+					<Box>
+						<Text fontSize="xs" color="blue.700" lineHeight="tall">
+							You can add up to{" "}
+							<Text as="span" fontWeight="bold">
+								5 beneficiaries per day
+							</Text>
+							.
+						</Text>
+						<Text fontSize="xs" color="blue.700" lineHeight="tall">
+							A maximum of{" "}
+							<Text as="span" fontWeight="bold">
+								25 beneficiaries
+							</Text>{" "}
+							can be added in total.
+						</Text>
+					</Box>
+				</Flex>
+
 				{/* Cards Grid */}
 				{isGettingRecipients ? (
 					<SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
