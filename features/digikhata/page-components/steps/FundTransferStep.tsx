@@ -453,6 +453,8 @@ export const FundTransferStep = ({
 						</Text>
 					</Box>
 					<Switch
+						size={{ base: "sm", md: "md" }}
+						variant="primary"
 						isChecked={isSchedule}
 						onChange={() => setIsSchedule((prev) => !prev)}
 					/>
