@@ -7,7 +7,7 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { IcoButton, Icon } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
@@ -35,6 +35,10 @@ export const RecipientsStep = ({
 	const {
 		getRecipients,
 		isGettingRecipients,
+		sendDeleteRecipientOtp,
+		isSendingDeleteRecipientOtp,
+		verifyDeleteRecipientOtp,
+		isVerifyingDeleteRecipientOtp,
 		sendRecipientBankOtp,
 		isSendingRecipientBankOtp,
 		verifySenderBankOtp,
@@ -48,6 +52,10 @@ export const RecipientsStep = ({
 		null
 	);
 	const [otpRefId, setOtpRefId] = useState<string>("");
+	const [deleteOtpOpen, setDeleteOtpOpen] = useState(false);
+	const [deleteOtpRefId, setDeleteOtpRefId] = useState<string>("");
+	const [pendingDeleteRecipient, setPendingDeleteRecipient] =
+		useState<Recipient | null>(null);
 
 	useEffect(() => {
 		const load = async () => {
@@ -90,6 +98,7 @@ export const RecipientsStep = ({
 		} else {
 			toast({
 				title: res?.data?.message ?? "Failed to initiate verification",
+				description: res?.data?.data?.description ?? "",
 				status: "error",
 				duration: 4000,
 				isClosable: true,
@@ -109,6 +118,55 @@ export const RecipientsStep = ({
 		// Null/0 beneficiary_id -> trigger OTP re-registration
 		setPendingRecipient(recipient);
 		await handleSendOtpForRecipient(recipient);
+	};
+
+	const handleDeleteRecipient = async (recipient: Recipient) => {
+		const res = await sendDeleteRecipientOtp(recipient.recipient_id);
+		if (res?.data?.status === 0) {
+			setDeleteOtpRefId(res.data.data?.otp_ref_id ?? "");
+			setPendingDeleteRecipient(recipient);
+			setDeleteOtpOpen(true);
+		} else {
+			toast({
+				title: res?.data?.message ?? "Failed to initiate deletion",
+				description: res?.data?.data?.description ?? "",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+		}
+	};
+
+	const handleDeleteOtpSubmit = async (otp: string) => {
+		if (!pendingDeleteRecipient) return;
+
+		const res = await verifyDeleteRecipientOtp({
+			otp,
+			otp_ref_id: deleteOtpRefId,
+		});
+
+		if (res?.data?.status === 0) {
+			setDeleteOtpOpen(false);
+			dispatch({
+				type: "REMOVE_RECIPIENT",
+				payload: pendingDeleteRecipient.recipient_id,
+			});
+			toast({
+				title: "Recipient deleted successfully",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+			setPendingDeleteRecipient(null);
+		} else {
+			toast({
+				title: res?.data?.message ?? "Verification failed",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+		}
+		return res;
 	};
 
 	const handleOtpSubmit = async (otp: string) => {
@@ -214,6 +272,41 @@ export const RecipientsStep = ({
 					}
 				/>
 
+				{/* Info Note */}
+				<Flex
+					align="center"
+					gap={4}
+					px={4}
+					py={3}
+					bg="blue.50"
+					borderRadius="10px"
+					border="1px solid"
+					borderColor="blue.100"
+				>
+					<Icon
+						name="info-outline"
+						size="md"
+						color="blue.400"
+						flexShrink={0}
+					/>
+					<Box>
+						<Text fontSize="xs" color="blue.700" lineHeight="tall">
+							You can add up to{" "}
+							<Text as="span" fontWeight="bold">
+								5 beneficiaries per day
+							</Text>
+							.
+						</Text>
+						<Text fontSize="xs" color="blue.700" lineHeight="tall">
+							A maximum of{" "}
+							<Text as="span" fontWeight="bold">
+								25 beneficiaries
+							</Text>{" "}
+							can be added in total.
+						</Text>
+					</Box>
+				</Flex>
+
 				{/* Cards Grid */}
 				{isGettingRecipients ? (
 					<SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
@@ -303,6 +396,10 @@ export const RecipientsStep = ({
 							const isDoingOtp =
 								isSendingRecipientBankOtp &&
 								pendingRecipient?.recipient_id ===
+									r.recipient_id;
+							const isDeleting =
+								isSendingDeleteRecipientOtp &&
+								pendingDeleteRecipient?.recipient_id ===
 									r.recipient_id;
 
 							return (
@@ -439,20 +536,25 @@ export const RecipientsStep = ({
 										>
 											Transfer Fund
 										</Button>
-										{/* <IconButton
-											aria-label="Delete Recipient"
-											icon={<Icon as={FiTrash2} />}
-											variant="ghost"
-											bg="gray.50"
-											color="gray.400"
-											h="44px"
-											w="44px"
-											borderRadius="10px"
+										<IcoButton
+											iconName="delete"
+											theme="ghost"
+											size="44px"
+											iconSize="md"
+											bg="#F3F5FF"
+											color="primary.dark"
+											rounded="10px"
+											title="Delete Recipient"
+											onClick={() =>
+												handleDeleteRecipient(r)
+											}
+											isLoading={isDeleting}
 											_hover={{
-												bg: "red.50",
-												color: "red.400",
+												bg: "#FFF0F3",
+												color: "error",
 											}}
-										/> */}
+											transition="all 0.2s"
+										/>
 									</Flex>
 								</Flex>
 							);
@@ -528,6 +630,22 @@ export const RecipientsStep = ({
 					title={
 						OTP_MODAL_TITLES?.ADD_RECIPIENT || "Verify Recipient"
 					}
+					mobileHint={`XXXXXX${mobile.slice(-4)}`}
+				/>
+			)}
+
+			{pendingDeleteRecipient && (
+				<OtpModal
+					isOpen={deleteOtpOpen}
+					onClose={() => setDeleteOtpOpen(false)}
+					onSubmit={handleDeleteOtpSubmit}
+					onResend={() =>
+						sendDeleteRecipientOtp(
+							pendingDeleteRecipient.recipient_id
+						)
+					}
+					isLoading={isVerifyingDeleteRecipientOtp}
+					title={OTP_MODAL_TITLES.DELETE_RECIPIENT}
 					mobileHint={`XXXXXX${mobile.slice(-4)}`}
 				/>
 			)}

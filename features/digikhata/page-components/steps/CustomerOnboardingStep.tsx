@@ -91,6 +91,7 @@ export const CustomerOnboardingStep = ({
 				dispatch({ type: "SET_ERROR", payload: errorMsg });
 				toast({
 					title: errorMsg,
+					description: res?.data?.data?.description ?? "",
 					status: "error",
 					duration: 4000,
 					isClosable: true,

@@ -83,6 +83,7 @@ export const AadhaarConsentStep = ({
 			} else {
 				toast({
 					title: "Failed to load consent languages",
+					description: res?.data?.data?.description ?? "",
 					status: "error",
 					duration: 4000,
 					isClosable: true,
@@ -106,6 +107,7 @@ export const AadhaarConsentStep = ({
 			} else {
 				toast({
 					title: "Failed to load consent details",
+					description: res?.data?.data?.description ?? "",
 					status: "error",
 					duration: 4000,
 					isClosable: true,
