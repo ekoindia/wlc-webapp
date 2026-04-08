@@ -15,6 +15,8 @@ jest.mock("features/digikhata/hooks/useDigiKhataApi", () => {
 			isGettingRecipients: false,
 			sendAddRecipientOtp: mockSendAddRecipientOtp,
 			isSendingAddRecipientOtp: false,
+			sendRecipientBankOtp: mockSendAddRecipientOtp,
+			isSendingRecipientBankOtp: false,
 			addRecipient: mockAddRecipient,
 			isAddingRecipient: false,
 		}),

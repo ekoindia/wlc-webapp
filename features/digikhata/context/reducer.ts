@@ -88,6 +88,9 @@ export const digiKhataReducer = (
 		case "SET_ACTIVE_MOBILE":
 			return { ...state, activeMobile: action.payload };
 
+		case "SET_AADHAAR_KYC_METHOD":
+			return { ...state, aadhaarKycMethod: action.payload };
+
 		default:
 			return state;
 	}

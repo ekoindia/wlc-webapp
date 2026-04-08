@@ -238,6 +238,8 @@ export interface DigiKhataState {
 	mode: "self" | "assisted";
 	/** Mobile number used for all API calls (agent's own in self mode, customer's in assisted mode) */
 	activeMobile: string;
+	/** Aadhaar KYC flow selected by user: Via OTP or Via Biometrics */
+	aadhaarKycMethod: "otp" | "biometrics" | null;
 }
 
 /** All reducer action types */
@@ -263,7 +265,8 @@ export type Action =
 	| { type: "SET_ERROR"; payload: string | null }
 	| { type: "RESET_ERROR" }
 	| { type: "SET_MODE"; payload: "self" | "assisted" }
-	| { type: "SET_ACTIVE_MOBILE"; payload: string };
+	| { type: "SET_ACTIVE_MOBILE"; payload: string }
+	| { type: "SET_AADHAAR_KYC_METHOD"; payload: "otp" | "biometrics" | null };
 
 /** Default initial state */
 export const initialState: DigiKhataState = {
@@ -282,4 +285,5 @@ export const initialState: DigiKhataState = {
 	hasFetchedWallet: false,
 	mode: "self",
 	activeMobile: "",
+	aadhaarKycMethod: null,
 };

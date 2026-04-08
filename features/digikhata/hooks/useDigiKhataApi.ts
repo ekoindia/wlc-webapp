@@ -67,11 +67,22 @@ export const useDigiKhataApi = (mobile: string) => {
 			method: "POST",
 		}
 	);
+	const [validateAadhaarBiometricCall, isValidatingAadhaarBiometric] =
+		useEpsV3Fetch(`${base}/kyc/biometric`, {
+			method: "POST",
+		});
 
 	// ── PAN ───────────────────────────────────────────────────────────────────
 	const [validatePanCall, isValidatingPan] = useEpsV3Fetch(`${base}/pan`, {
 		method: "POST",
 	});
+
+	const [createWalletCall, isCreatingWallet] = useEpsV3Fetch(
+		`${base}/wallet/createwallet`,
+		{
+			method: "POST",
+		}
+	);
 
 	// ── Wallet ────────────────────────────────────────────────────────────────
 	const [loadWalletCall, isLoadingWallet] = useEpsV3Fetch(
@@ -163,8 +174,18 @@ export const useDigiKhataApi = (mobile: string) => {
 			body,
 		});
 
+	const validateAadhaarBiometric = (body: Record<string, unknown>) =>
+		validateAadhaarBiometricCall({
+			body,
+		});
+
 	const validatePan = (body: Record<string, unknown>) =>
 		validatePanCall({
+			body,
+		});
+
+	const createWallet = (body: Record<string, unknown>) =>
+		createWalletCall({
 			body,
 		});
 
@@ -217,8 +238,12 @@ export const useDigiKhataApi = (mobile: string) => {
 		isGeneratingAadhaarOtp,
 		validateAadhaarOtp,
 		isValidatingAadhaarOtp,
+		validateAadhaarBiometric,
+		isValidatingAadhaarBiometric,
 		validatePan,
 		isValidatingPan,
+		createWallet,
+		isCreatingWallet,
 		loadWallet,
 		isLoadingWallet,
 		getRecipients,

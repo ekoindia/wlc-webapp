@@ -31,6 +31,8 @@ export const PanVerificationStep = ({
 	const {
 		validatePan,
 		isValidatingPan,
+		createWallet,
+		isCreatingWallet,
 		generateSenderOtp,
 		isGeneratingSenderOtp,
 		verifySenderOtp,
@@ -45,7 +47,13 @@ export const PanVerificationStep = ({
 	const handleValidatePan = async () => {
 		if (!PAN_REGEX.test(pan)) return;
 
-		const res = await validatePan({ pan_number: pan });
+		let res;
+		if (state.aadhaarKycMethod === "biometrics") {
+			res = await createWallet({ pan_number: pan });
+		} else {
+			res = await validatePan({ pan_number: pan });
+		}
+
 		if (res?.data?.status === 0) {
 			// PAN validated — now trigger sender OTP for wallet hydration
 			const otpRes = await generateSenderOtp();
@@ -120,7 +128,8 @@ export const PanVerificationStep = ({
 	};
 
 	const isValid = PAN_REGEX.test(pan);
-	const isWorking = isValidatingPan || isGeneratingSenderOtp;
+	const isWorking =
+		isValidatingPan || isCreatingWallet || isGeneratingSenderOtp;
 
 	return (
 		<>
