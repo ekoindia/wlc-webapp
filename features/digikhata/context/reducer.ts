@@ -57,6 +57,14 @@ export const digiKhataReducer = (
 				],
 			};
 
+		case "REMOVE_RECIPIENT":
+			return {
+				...state,
+				recipients: state.recipients.filter(
+					(r) => r.recipient_id !== action.payload
+				),
+			};
+
 		case "SET_SELECTED_RECIPIENT":
 			return { ...state, selectedRecipient: action.payload };
 

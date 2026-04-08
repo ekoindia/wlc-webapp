@@ -7,7 +7,7 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { IcoButton, Icon } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
 import { OtpModal } from "../../components/OtpModal";
@@ -35,6 +35,8 @@ export const RecipientsStep = ({
 	const {
 		getRecipients,
 		isGettingRecipients,
+		deleteRecipient,
+		isDeletingRecipient,
 		sendRecipientBankOtp,
 		isSendingRecipientBankOtp,
 		verifySenderBankOtp,
@@ -48,6 +50,9 @@ export const RecipientsStep = ({
 		null
 	);
 	const [otpRefId, setOtpRefId] = useState<string>("");
+	const [deletingRecipientId, setDeletingRecipientId] = useState<
+		number | null
+	>(null);
 
 	useEffect(() => {
 		const load = async () => {
@@ -110,6 +115,33 @@ export const RecipientsStep = ({
 		// Null/0 beneficiary_id -> trigger OTP re-registration
 		setPendingRecipient(recipient);
 		await handleSendOtpForRecipient(recipient);
+	};
+
+	const handleDeleteRecipient = async (recipient: Recipient) => {
+		setDeletingRecipientId(recipient.recipient_id);
+		// console.log("Deleting recipient ID:", recipient.recipient_id);
+		const res = await deleteRecipient(recipient.recipient_id);
+		setDeletingRecipientId(null);
+
+		if (res?.data?.status === 0) {
+			dispatch({
+				type: "REMOVE_RECIPIENT",
+				payload: recipient.recipient_id,
+			});
+			toast({
+				title: "Recipient deleted successfully",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+		} else {
+			toast({
+				title: res?.data?.message ?? "Failed to delete recipient",
+				status: "error",
+				duration: 4000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const handleOtpSubmit = async (otp: string) => {
@@ -340,6 +372,9 @@ export const RecipientsStep = ({
 								isSendingRecipientBankOtp &&
 								pendingRecipient?.recipient_id ===
 									r.recipient_id;
+							const isDeleting =
+								isDeletingRecipient &&
+								deletingRecipientId === r.recipient_id;
 
 							return (
 								<Flex
@@ -475,20 +510,25 @@ export const RecipientsStep = ({
 										>
 											Transfer Fund
 										</Button>
-										{/* <IconButton
-											aria-label="Delete Recipient"
-											icon={<Icon as={FiTrash2} />}
-											variant="ghost"
-											bg="gray.50"
-											color="gray.400"
-											h="44px"
-											w="44px"
-											borderRadius="10px"
+										<IcoButton
+											iconName="delete"
+											theme="ghost"
+											size="44px"
+											iconSize="md"
+											bg="#F3F5FF"
+											color="primary.dark"
+											rounded="10px"
+											title="Delete Recipient"
+											onClick={() =>
+												handleDeleteRecipient(r)
+											}
+											isLoading={isDeleting}
 											_hover={{
-												bg: "red.50",
-												color: "red.400",
+												bg: "#FFF0F3",
+												color: "error",
 											}}
-										/> */}
+											transition="all 0.2s"
+										/>
 									</Flex>
 								</Flex>
 							);

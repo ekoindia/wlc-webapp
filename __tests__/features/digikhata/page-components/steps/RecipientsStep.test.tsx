@@ -7,6 +7,7 @@ import { pageRender } from "test-utils";
 const mockGetRecipients = jest.fn();
 const mockSendAddRecipientOtp = jest.fn();
 const mockAddRecipient = jest.fn();
+const mockDeleteRecipient = jest.fn();
 
 jest.mock("features/digikhata/hooks/useDigiKhataApi", () => {
 	return {
@@ -19,6 +20,8 @@ jest.mock("features/digikhata/hooks/useDigiKhataApi", () => {
 			isSendingRecipientBankOtp: false,
 			addRecipient: mockAddRecipient,
 			isAddingRecipient: false,
+			deleteRecipient: mockDeleteRecipient,
+			isDeletingRecipient: false,
 		}),
 	};
 });
@@ -164,5 +167,48 @@ describe("RecipientsStep", () => {
 		expect(
 			await screen.findByRole("button", { name: "Verify OTP" })
 		).toBeInTheDocument();
+	});
+
+	it("calls deleteRecipient and dispatches REMOVE_RECIPIENT on success", async () => {
+		mockDeleteRecipient.mockResolvedValue({
+			data: { status: 0, message: "Recipient deleted successfully" },
+		});
+
+		const mockDispatch = jest.fn();
+		const Wrapper = ({ children }: { children: React.ReactNode }) => {
+			const defaultState =
+				require("features/digikhata/context/types").initialState;
+			return (
+				<DigiKhataContext.Provider
+					value={{
+						state: {
+							...defaultState,
+							recipients: [registeredRecipient],
+						},
+						dispatch: mockDispatch,
+					}}
+				>
+					{children}
+				</DigiKhataContext.Provider>
+			);
+		};
+
+		pageRender(<RecipientsStep mobile={mockMobile} />, {
+			wrapper: Wrapper,
+		});
+
+		const deleteButton = screen.getByTitle("Delete Recipient");
+
+		await act(async () => {
+			fireEvent.click(deleteButton);
+		});
+
+		expect(mockDeleteRecipient).toHaveBeenCalledWith(
+			registeredRecipient.recipient_id
+		);
+		expect(mockDispatch).toHaveBeenCalledWith({
+			type: "REMOVE_RECIPIENT",
+			payload: registeredRecipient.recipient_id,
+		});
 	});
 });

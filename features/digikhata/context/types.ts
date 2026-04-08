@@ -256,6 +256,7 @@ export type Action =
 	  }
 	| { type: "SET_RECIPIENTS"; payload: Recipient[] }
 	| { type: "ADD_RECIPIENT"; payload: Recipient }
+	| { type: "REMOVE_RECIPIENT"; payload: number }
 	| { type: "SET_SELECTED_RECIPIENT"; payload: Recipient | null }
 	| {
 			type: "UPDATE_RECIPIENT_BENEFICIARY";

@@ -99,6 +99,12 @@ export const useDigiKhataApi = (mobile: string) => {
 			method: "GET",
 		}
 	);
+	const [deleteRecipientCall, isDeletingRecipient] = useEpsV3Fetch(
+		`/customers/mobile_number:${mobile}/recipients/recipient_id:0`,
+		{
+			method: "DELETE",
+		}
+	);
 	const [sendAddRecipientOtpCall, isSendingAddRecipientOtp] = useEpsV3Fetch(
 		`${base}/recipient`,
 		{ method: "POST" }
@@ -196,6 +202,13 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	const getRecipients = () => getRecipientsCall();
 
+	const deleteRecipient = (recipientId: number) =>
+		deleteRecipientCall({
+			headers: {
+				"tf-req-uri": `/customers/mobile_number:${mobile}/recipients/recipient_id:${recipientId}`,
+			},
+		});
+
 	const sendAddRecipientOtp = (body: Record<string, unknown>) =>
 		sendAddRecipientOtpCall({
 			body,
@@ -248,6 +261,8 @@ export const useDigiKhataApi = (mobile: string) => {
 		isLoadingWallet,
 		getRecipients,
 		isGettingRecipients,
+		deleteRecipient,
+		isDeletingRecipient,
 		sendAddRecipientOtp,
 		isSendingAddRecipientOtp,
 		addRecipient,
