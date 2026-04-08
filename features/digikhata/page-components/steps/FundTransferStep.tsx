@@ -7,6 +7,7 @@ import {
 	NumberInput,
 	NumberInputField,
 	Spinner,
+	Switch,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
@@ -300,6 +301,7 @@ export const FundTransferStep = ({
 		null
 	);
 	const [otpRefId, setOtpRefId] = useState(null);
+	const [isSchedule, setIsSchedule] = useState(false);
 
 	if (!recipient) {
 		return (
@@ -385,6 +387,7 @@ export const FundTransferStep = ({
 			beneficiary_id: recipient.beneficiary_id,
 			recipient_id: recipient.recipient_id,
 			customer_id: mobile,
+			isschedule: isSchedule,
 		});
 
 		if (res?.data?.status === 0) {
@@ -563,6 +566,25 @@ export const FundTransferStep = ({
 						}}
 					/>
 				</Box>
+
+				{/* Schedule Transfer */}
+				<Flex align="center" justify="space-between">
+					<Box>
+						<Text fontSize="sm" fontWeight="medium" color="dark">
+							Schedule
+						</Text>
+						<Text fontSize="xs" color="light">
+							Schedule this transfer to be sent automatically
+							after recipient verification.
+						</Text>
+					</Box>
+					<Switch
+						size={{ base: "sm", md: "md" }}
+						variant="primary"
+						isChecked={isSchedule}
+						onChange={() => setIsSchedule((prev) => !prev)}
+					/>
+				</Flex>
 
 				<Button
 					w="full"
