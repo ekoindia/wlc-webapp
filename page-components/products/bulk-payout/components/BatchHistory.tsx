@@ -581,7 +581,7 @@ const BatchHistory: React.FC<BatchHistoryProps> = ({
 														{
 															<Currency
 																amount={
-																	batch.totalAmount
+																	batch?.totalAmount
 																}
 															/>
 														}

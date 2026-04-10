@@ -73,7 +73,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Update this feature flag on role basis instead of org-id basis after the role-based access control (RBAC) is implemented.
 	DEMO_ACCOUNT: {
 		enabled: true,
-		forUserType: [1],
+		forAdminOnly: true,
 		envConstraints: {
 			development: {
 				forOrgId: [26],
