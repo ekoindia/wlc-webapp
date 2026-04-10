@@ -55,6 +55,7 @@ const JsonViewer = ({
 	variant = "plain",
 	keyOverrides,
 	valueTransforms,
+	rootCollapsible = false,
 }: JsonViewerProps): JSX.Element => {
 	// Parse input data
 	const parseResult = useMemo(() => parseJsonInput(data), [data]);
@@ -108,6 +109,7 @@ const JsonViewer = ({
 					variant={variant}
 					keyOverrides={keyOverrides}
 					valueTransforms={valueTransforms}
+					rootCollapsible={rootCollapsible}
 				/>
 			</Box>
 		</Box>

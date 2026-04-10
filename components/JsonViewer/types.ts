@@ -103,6 +103,12 @@ export interface JsonViewerProps {
 	 * Supports key-based and path-based transformations.
 	 */
 	valueTransforms?: ValueTransformConfig;
+
+	/**
+	 * Whether the root node can be collapsed.
+	 * Default is false (root is always expanded and has no toggle).
+	 */
+	rootCollapsible?: boolean;
 }
 
 /**
@@ -164,6 +170,12 @@ export interface JsonNodeProps {
 	 * Configuration for transforming display values.
 	 */
 	valueTransforms?: ValueTransformConfig;
+
+	/**
+	 * Whether the root node can be collapsed.
+	 * Default is false.
+	 */
+	rootCollapsible?: boolean;
 }
 
 /**

@@ -47,7 +47,7 @@ export const AddRecipientStep = ({
 	const [recipientMobile, setRecipientMobile] = useState("");
 	const [recipientName, setRecipientName] = useState("");
 	const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
-	const [otpRefId, setOtpRefId] = useState<string | null>(null);
+	const [otpRefId, setOtpRefId] = useState<string>("");
 
 	const isFormValid =
 		!!selectedBank &&
@@ -69,11 +69,12 @@ export const AddRecipientStep = ({
 
 		if (res?.data?.status === 0) {
 			// console.log("OTP sent successfully:", res.data);
-			setOtpRefId(res.data.data?.otp_ref_id);
+			setOtpRefId(res.data.data?.otp_ref_id ?? "");
 			setIsOtpModalOpen(true);
 		} else {
 			toast({
 				title: res?.data?.message ?? "Failed to send OTP",
+				description: res?.data?.data?.description ?? "",
 				status: "error",
 				duration: 4000,
 				isClosable: true,
@@ -119,6 +120,7 @@ export const AddRecipientStep = ({
 		} else {
 			toast({
 				title: res?.data?.message ?? "Failed to add recipient",
+				description: res?.data?.data?.description ?? "",
 				status: "error",
 				duration: 4000,
 				isClosable: true,

@@ -67,11 +67,22 @@ export const useDigiKhataApi = (mobile: string) => {
 			method: "POST",
 		}
 	);
+	const [validateAadhaarBiometricCall, isValidatingAadhaarBiometric] =
+		useEpsV3Fetch(`${base}/kyc/biometric`, {
+			method: "POST",
+		});
 
 	// ── PAN ───────────────────────────────────────────────────────────────────
 	const [validatePanCall, isValidatingPan] = useEpsV3Fetch(`${base}/pan`, {
 		method: "POST",
 	});
+
+	const [createWalletCall, isCreatingWallet] = useEpsV3Fetch(
+		`${base}/wallet/createwallet`,
+		{
+			method: "POST",
+		}
+	);
 
 	// ── Wallet ────────────────────────────────────────────────────────────────
 	const [loadWalletCall, isLoadingWallet] = useEpsV3Fetch(
@@ -88,6 +99,14 @@ export const useDigiKhataApi = (mobile: string) => {
 			method: "GET",
 		}
 	);
+	// TODO: Replace placeholder URLs with confirmed endpoints from backend
+	const [sendDeleteRecipientOtpCall, isSendingDeleteRecipientOtp] =
+		useEpsV3Fetch(`${base}/recipient/delete/otp`, { method: "POST" });
+
+	const [verifyDeleteRecipientOtpCall, isVerifyingDeleteRecipientOtp] =
+		useEpsV3Fetch(`${base}/recipient/delete/otp/verify`, {
+			method: "POST",
+		});
 	const [sendAddRecipientOtpCall, isSendingAddRecipientOtp] = useEpsV3Fetch(
 		`${base}/recipient`,
 		{ method: "POST" }
@@ -163,8 +182,18 @@ export const useDigiKhataApi = (mobile: string) => {
 			body,
 		});
 
+	const validateAadhaarBiometric = (body: Record<string, unknown>) =>
+		validateAadhaarBiometricCall({
+			body,
+		});
+
 	const validatePan = (body: Record<string, unknown>) =>
 		validatePanCall({
+			body,
+		});
+
+	const createWallet = (body: Record<string, unknown>) =>
+		createWalletCall({
 			body,
 		});
 
@@ -174,6 +203,12 @@ export const useDigiKhataApi = (mobile: string) => {
 		});
 
 	const getRecipients = () => getRecipientsCall();
+
+	const sendDeleteRecipientOtp = (recipientId: number) =>
+		sendDeleteRecipientOtpCall({ body: { recipient_id: recipientId } });
+
+	const verifyDeleteRecipientOtp = (body: VerifySenderOtpPayload) =>
+		verifyDeleteRecipientOtpCall({ body });
 
 	const sendAddRecipientOtp = (body: Record<string, unknown>) =>
 		sendAddRecipientOtpCall({
@@ -217,12 +252,20 @@ export const useDigiKhataApi = (mobile: string) => {
 		isGeneratingAadhaarOtp,
 		validateAadhaarOtp,
 		isValidatingAadhaarOtp,
+		validateAadhaarBiometric,
+		isValidatingAadhaarBiometric,
 		validatePan,
 		isValidatingPan,
+		createWallet,
+		isCreatingWallet,
 		loadWallet,
 		isLoadingWallet,
 		getRecipients,
 		isGettingRecipients,
+		sendDeleteRecipientOtp,
+		isSendingDeleteRecipientOtp,
+		verifyDeleteRecipientOtp,
+		isVerifyingDeleteRecipientOtp,
 		sendAddRecipientOtp,
 		isSendingAddRecipientOtp,
 		addRecipient,

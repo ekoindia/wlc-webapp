@@ -1,4 +1,6 @@
 import {
+	Alert,
+	AlertIcon,
 	Box,
 	Button,
 	Flex,
@@ -165,6 +167,7 @@ export const LoadWalletStep = ({
 								fontWeight="medium"
 								color="dark"
 								mb={2}
+								required
 							>
 								Amount (₹)
 							</InputLabel>
@@ -268,6 +271,20 @@ export const LoadWalletStep = ({
 					</Flex>
 
 					<Box>
+						{/* Info Note */}
+						<Alert status="info" borderRadius="10" mb={3}>
+							<AlertIcon />
+							<Box>
+								<Text fontWeight="semibold" fontSize="sm">
+									Don't have a DigiKhata VPA yet?
+								</Text>
+								<Text fontSize="sm" color="light">
+									To get your VPA ID, download the{" "}
+									<strong>DigiKhata app</strong>, register
+									yourself, and find your VPA ID from the app.
+								</Text>
+							</Box>
+						</Alert>
 						<Text
 							fontSize="xs"
 							fontWeight="medium"
@@ -342,6 +359,22 @@ export const LoadWalletStep = ({
 							External transfer
 						</Text>
 					</Flex>
+
+					{/* Info Note */}
+					<Alert status="info" borderRadius="10" mb={3}>
+						<AlertIcon />
+						<Box>
+							<Text fontWeight="semibold" fontSize="sm">
+								Don't have a DigiKhata Virtual Account yet?
+							</Text>
+							<Text fontSize="sm" color="light">
+								To get your Virtual Account, download the{" "}
+								<strong>DigiKhata app</strong>, register
+								yourself, and find your Virtual Account from the
+								app.
+							</Text>
+						</Box>
+					</Alert>
 
 					<Box>
 						<Text
