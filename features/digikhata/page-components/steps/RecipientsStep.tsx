@@ -121,7 +121,7 @@ export const RecipientsStep = ({
 	};
 
 	const handleDeleteRecipient = async (recipient: Recipient) => {
-		const res = await sendDeleteRecipientOtp(recipient.recipient_id);
+		const res = await sendDeleteRecipientOtp(recipient.beneficiary_id ?? 0);
 		if (res?.data?.status === 0) {
 			setDeleteOtpRefId(res.data.data?.otp_ref_id ?? "");
 			setPendingDeleteRecipient(recipient);
@@ -143,6 +143,7 @@ export const RecipientsStep = ({
 		const res = await verifyDeleteRecipientOtp({
 			otp,
 			otp_ref_id: deleteOtpRefId,
+			recipient_id: pendingDeleteRecipient.recipient_id,
 		});
 
 		if (res?.data?.status === 0) {
@@ -536,25 +537,27 @@ export const RecipientsStep = ({
 										>
 											Transfer Fund
 										</Button>
-										<IcoButton
-											iconName="delete"
-											theme="ghost"
-											size="44px"
-											iconSize="md"
-											bg="#F3F5FF"
-											color="primary.dark"
-											rounded="10px"
-											title="Delete Recipient"
-											onClick={() =>
-												handleDeleteRecipient(r)
-											}
-											isLoading={isDeleting}
-											_hover={{
-												bg: "#FFF0F3",
-												color: "error",
-											}}
-											transition="all 0.2s"
-										/>
+										{r.beneficiary_id !== null ? (
+											<IcoButton
+												iconName="delete"
+												theme="ghost"
+												size="44px"
+												iconSize="md"
+												bg="#F3F5FF"
+												color="primary.dark"
+												rounded="10px"
+												title="Delete Recipient"
+												onClick={() =>
+													handleDeleteRecipient(r)
+												}
+												isLoading={isDeleting}
+												_hover={{
+													bg: "#FFF0F3",
+													color: "error",
+												}}
+												transition="all 0.2s"
+											/>
+										) : null}
 									</Flex>
 								</Flex>
 							);
@@ -641,7 +644,7 @@ export const RecipientsStep = ({
 					onSubmit={handleDeleteOtpSubmit}
 					onResend={() =>
 						sendDeleteRecipientOtp(
-							pendingDeleteRecipient.recipient_id
+							pendingDeleteRecipient.beneficiary_id ?? 0
 						)
 					}
 					isLoading={isVerifyingDeleteRecipientOtp}
