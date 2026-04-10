@@ -642,7 +642,7 @@ export const RecipientsStep = ({
 					onSubmit={handleDeleteOtpSubmit}
 					onResend={() =>
 						sendDeleteRecipientOtp(
-							pendingDeleteRecipient.recipient_id
+							pendingDeleteRecipient.beneficiary_id ?? 0
 						)
 					}
 					isLoading={isVerifyingDeleteRecipientOtp}
