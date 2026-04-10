@@ -1,7 +1,9 @@
 import { Divider, Flex, Grid, Skeleton, Text } from "@chakra-ui/react";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants/EndPoints";
-import { useApiFetch } from "hooks";
+import { isToday } from "date-fns";
+import { useApiFetch, useDailyCacheState } from "hooks";
+import { useDashboard } from "page-components/Admin/Dashboard/DashboardContext";
 import { useEffect, useMemo, useState } from "react";
 import { LuChartColumn } from "react-icons/lu";
 import {
@@ -15,6 +17,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { getCacheKey } from "./utils";
+
+const usageAnalyticsLocalCacheKey = "inf-dashboard-usage-analytics";
 
 /**
  * Chart color scheme for Area + Histogram hybrid.
@@ -235,6 +240,40 @@ const UsageAnalytics = ({
 	isDraggable,
 }: UsageAnalyticsProps): JSX.Element => {
 	const [trendsData, setTrendsData] = useState<VerificationTrendItem[]>([]);
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+	const [usageAnalyticsCache, setUsageAnalyticsCache, isCacheValid] =
+		useDailyCacheState(usageAnalyticsLocalCacheKey, {});
+	const isTodayRange = isToday(dateFrom) && isToday(dateTo);
+
+	const cacheKey = useMemo(
+		() => getCacheKey(usageAnalyticsLocalCacheKey, dateFrom, dateTo),
+		[dateFrom, dateTo]
+	);
+
+	const cachedTrendsData =
+		businessDashboardData?.usageAnalyticsCache?.[cacheKey];
+
+	const updateUsageAnalyticsCache = (
+		_trendsData: VerificationTrendItem[]
+	) => {
+		const updatedCache = {
+			...(usageAnalyticsCache || {}),
+			data: {
+				...(usageAnalyticsCache?.data || {}),
+				[cacheKey]: _trendsData || [],
+			},
+		};
+
+		setUsageAnalyticsCache(updatedCache);
+
+		setBusinessDashboardData((prev) => ({
+			...prev,
+			usageAnalyticsCache: {
+				...(prev?.usageAnalyticsCache || {}),
+				[cacheKey]: _trendsData || [],
+			},
+		}));
+	};
 
 	// Determine if we should show hourly or daily data
 	const isHourly = useMemo(
@@ -256,6 +295,7 @@ const UsageAnalytics = ({
 				const _data =
 					res?.data?.dashboard_object?.verificationTrends ?? [];
 				setTrendsData(_data);
+				updateUsageAnalyticsCache(_data);
 			},
 		}
 	);
@@ -263,6 +303,34 @@ const UsageAnalytics = ({
 	// MARK: Fetch Data
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
+
+		if (isTodayRange) {
+			fetchTrendsData({
+				body: {
+					interaction_type_id: 682,
+					requestPayload: {
+						verification_trends: {
+							datefrom: dateFrom,
+							dateto: dateTo,
+						},
+					},
+				},
+			});
+
+			return;
+		}
+
+		if (cachedTrendsData !== undefined) {
+			setTrendsData(cachedTrendsData);
+			return;
+		}
+
+		if (isCacheValid && usageAnalyticsCache?.data?.[cacheKey]) {
+			const cached = usageAnalyticsCache.data[cacheKey];
+			updateUsageAnalyticsCache(cached);
+			setTrendsData(cached);
+			return;
+		}
 
 		fetchTrendsData({
 			body: {
@@ -275,7 +343,7 @@ const UsageAnalytics = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo]);
+	}, [dateFrom, dateTo, cacheKey, isTodayRange]);
 
 	// Transform API data for chart display
 	const chartData = useMemo((): ChartDataItem[] => {
