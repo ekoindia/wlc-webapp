@@ -289,7 +289,7 @@ export const LoadWalletStep = ({
 									To get your VPA ID, download the DigiKhata
 									app from{" "}
 									<Link
-										href="https://play.google.com/store/apps/details?id=com.androidapp.digikhata&hl=en"
+										href="https://play.google.com/store/apps/details?id=com.paypointz.wallet&hl=en"
 										isExternal
 										fontWeight="bold"
 										textDecoration="underline"
@@ -299,7 +299,7 @@ export const LoadWalletStep = ({
 									</Link>{" "}
 									or{" "}
 									<Link
-										href="https://apps.apple.com/in/app/digi-khata-money-manager/id1571599845"
+										href="https://apps.apple.com/in/app/digi-khata/id1194920306"
 										isExternal
 										fontWeight="bold"
 										textDecoration="underline"
@@ -404,7 +404,7 @@ export const LoadWalletStep = ({
 								To get your VPA ID, download the DigiKhata app
 								from{" "}
 								<Link
-									href="https://play.google.com/store/apps/details?id=com.androidapp.digikhata&hl=en"
+									href="https://play.google.com/store/apps/details?id=com.paypointz.wallet&hl=en"
 									isExternal
 									fontWeight="bold"
 									textDecoration="underline"
@@ -414,7 +414,7 @@ export const LoadWalletStep = ({
 								</Link>{" "}
 								or{" "}
 								<Link
-									href="https://apps.apple.com/in/app/digi-khata-money-manager/id1571599845"
+									href="https://apps.apple.com/in/app/digi-khata/id1194920306"
 									isExternal
 									fontWeight="bold"
 									textDecoration="underline"
