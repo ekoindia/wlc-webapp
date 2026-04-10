@@ -537,25 +537,27 @@ export const RecipientsStep = ({
 										>
 											Transfer Fund
 										</Button>
-										<IcoButton
-											iconName="delete"
-											theme="ghost"
-											size="44px"
-											iconSize="md"
-											bg="#F3F5FF"
-											color="primary.dark"
-											rounded="10px"
-											title="Delete Recipient"
-											onClick={() =>
-												handleDeleteRecipient(r)
-											}
-											isLoading={isDeleting}
-											_hover={{
-												bg: "#FFF0F3",
-												color: "error",
-											}}
-											transition="all 0.2s"
-										/>
+										{r.beneficiary_id !== null ? (
+											<IcoButton
+												iconName="delete"
+												theme="ghost"
+												size="44px"
+												iconSize="md"
+												bg="#F3F5FF"
+												color="primary.dark"
+												rounded="10px"
+												title="Delete Recipient"
+												onClick={() =>
+													handleDeleteRecipient(r)
+												}
+												isLoading={isDeleting}
+												_hover={{
+													bg: "#FFF0F3",
+													color: "error",
+												}}
+												transition="all 0.2s"
+											/>
+										) : null}
 									</Flex>
 								</Flex>
 							);
