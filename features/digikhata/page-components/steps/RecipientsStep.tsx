@@ -121,7 +121,7 @@ export const RecipientsStep = ({
 	};
 
 	const handleDeleteRecipient = async (recipient: Recipient) => {
-		const res = await sendDeleteRecipientOtp(recipient.recipient_id);
+		const res = await sendDeleteRecipientOtp(recipient.beneficiary_id ?? 0);
 		if (res?.data?.status === 0) {
 			setDeleteOtpRefId(res.data.data?.otp_ref_id ?? "");
 			setPendingDeleteRecipient(recipient);
@@ -143,6 +143,7 @@ export const RecipientsStep = ({
 		const res = await verifyDeleteRecipientOtp({
 			otp,
 			otp_ref_id: deleteOtpRefId,
+			recipient_id: pendingDeleteRecipient.recipient_id,
 		});
 
 		if (res?.data?.status === 0) {

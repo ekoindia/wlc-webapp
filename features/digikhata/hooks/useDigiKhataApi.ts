@@ -6,6 +6,12 @@ interface VerifySenderOtpPayload {
 	otp_ref_id: string;
 }
 
+interface VerifyDeleteRecipientOtpPayload {
+	otp: string;
+	otp_ref_id: string;
+	recipient_id: number;
+}
+
 /**
  * All DigiKhata API calls, each backed by an independent useEpsV3Fetch instance.
  * @param mobile - The logged-in user's mobile number (customer_id)
@@ -99,7 +105,6 @@ export const useDigiKhataApi = (mobile: string) => {
 			method: "GET",
 		}
 	);
-	// TODO: Replace placeholder URLs with confirmed endpoints from backend
 	const [sendDeleteRecipientOtpCall, isSendingDeleteRecipientOtp] =
 		useEpsV3Fetch(`${base}/recipient/delete/otp`, { method: "POST" });
 
@@ -204,10 +209,10 @@ export const useDigiKhataApi = (mobile: string) => {
 
 	const getRecipients = () => getRecipientsCall();
 
-	const sendDeleteRecipientOtp = (recipientId: number) =>
-		sendDeleteRecipientOtpCall({ body: { recipient_id: recipientId } });
+	const sendDeleteRecipientOtp = (beneficiaryId: number) =>
+		sendDeleteRecipientOtpCall({ body: { beneficiary_id: beneficiaryId } });
 
-	const verifyDeleteRecipientOtp = (body: VerifySenderOtpPayload) =>
+	const verifyDeleteRecipientOtp = (body: VerifyDeleteRecipientOtpPayload) =>
 		verifyDeleteRecipientOtpCall({ body });
 
 	const sendAddRecipientOtp = (body: Record<string, unknown>) =>
