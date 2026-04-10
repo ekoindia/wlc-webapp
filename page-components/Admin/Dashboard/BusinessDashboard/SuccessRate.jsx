@@ -1,29 +1,58 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
-import { useApiFetch } from "hooks";
-import { useEffect, useState } from "react";
+import { isToday } from "date-fns";
+import { useApiFetch, useDailyCacheState } from "hooks";
+import { useEffect, useMemo, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 import { Cell, Label, Pie, PieChart } from "recharts";
+import { useDashboard } from "../DashboardContext";
+import { getCacheKey } from "./utils";
 
-// Helper function to generate cache key
-const getCacheKey = (productFilterList, dateFrom, dateTo) => {
-	const productIds = (productFilterList || [])
-		.map((p) => p.value)
-		.sort()
-		.join(",");
-	return `${productIds}-${dateFrom}-${dateTo}`;
-};
+const successRateLocalCacheKey = "inf-dashboard-success-rate";
 
 const SuccessRate = ({
 	dateFrom,
 	dateTo,
 	isDraggable,
 	productFilterList: masterProductList,
-	businessDashboardData,
-	setBusinessDashboardData,
 }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
+	const isProductListReady = masterProductList?.length > 1;
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+	const isTodayRange = isToday(dateFrom) && isToday(dateTo);
+
+	const [successRateCache, setSuccessRateCache, isCacheValid] =
+		useDailyCacheState(successRateLocalCacheKey, {});
+
+	const cacheKey = useMemo(
+		() => getCacheKey(successRateLocalCacheKey, dateFrom, dateTo),
+		[dateFrom, dateTo]
+	);
+
+	const cachedSuccessRate =
+		businessDashboardData?.successRateCache?.[cacheKey];
+
+	const updateSuccessRateCache = (_successRate) => {
+		// Always store something in the cache (even if empty)
+		const updatedCache = {
+			...(successRateCache || {}),
+			data: {
+				...(successRateCache?.data || {}),
+				[cacheKey]: _successRate.length ? _successRate : [], // Store empty array if no data
+			},
+		};
+
+		setSuccessRateCache(updatedCache);
+
+		setBusinessDashboardData((prev) => ({
+			...prev,
+			successRateCache: {
+				...(prev?.successRateCache || {}),
+				[cacheKey]: _successRate,
+			},
+		}));
+	};
 
 	const [fetchSuccessRateData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
@@ -55,21 +84,9 @@ const SuccessRate = ({
 					};
 				});
 
-				// Cache data for future use
-				if (setBusinessDashboardData) {
-					const cacheKey = getCacheKey(
-						masterProductList,
-						dateFrom,
-						dateTo
-					);
-					setBusinessDashboardData((prev) => ({
-						...prev,
-						successRateCache: {
-							...(prev?.successRateCache || {}),
-							[cacheKey]: formattedData,
-						},
-					}));
-				}
+				updateSuccessRateCache(
+					formattedData.length ? formattedData : []
+				);
 
 				setSuccessRateData(formattedData);
 			},
@@ -80,12 +97,36 @@ const SuccessRate = ({
 		if (!dateFrom || !dateTo) return;
 
 		// wait for real product list
-		if (!masterProductList?.length > 1) return;
+		if (!isProductListReady) return;
 
-		const cacheKey = getCacheKey(masterProductList, dateFrom, dateTo);
-		const cachedData = businessDashboardData?.successRateCache?.[cacheKey];
-		if (cachedData) {
-			setSuccessRateData(cachedData);
+		if (isTodayRange) {
+			// For today's data, always fetch fresh data and skip cache
+			fetchSuccessRateData({
+				body: {
+					interaction_type_id: 682,
+					requestPayload: {
+						success_rate: {
+							datefrom: dateFrom,
+							dateto: dateTo,
+						},
+					},
+				},
+			});
+
+			return;
+		}
+
+		// Step 1: in-memory context cache (fastest)
+		if (cachedSuccessRate !== undefined) {
+			// Cache exists, even if empty
+			setSuccessRateData(cachedSuccessRate);
+			return;
+		}
+
+		// Step 2: localStorage cache check
+		if (isCacheValid && successRateCache?.data?.[cacheKey]?.length) {
+			updateSuccessRateCache(successRateCache.data[cacheKey]);
+			setSuccessRateData(successRateCache.data[cacheKey]);
 			return;
 		}
 
@@ -100,12 +141,7 @@ const SuccessRate = ({
 				},
 			},
 		});
-	}, [
-		dateFrom,
-		dateTo,
-		masterProductList,
-		businessDashboardData?.successRateCache,
-	]);
+	}, [dateFrom, dateTo, cacheKey, isProductListReady, isTodayRange]);
 
 	// MARK: jsx
 	return (
