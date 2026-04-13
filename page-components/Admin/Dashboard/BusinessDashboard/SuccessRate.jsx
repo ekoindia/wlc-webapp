@@ -1,29 +1,35 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
-import { Endpoints, ProductRoleConfiguration } from "constants";
-import { useApiFetch, useDailyCacheState, useFeatureFlag } from "hooks";
+import { DragHandle } from "components/DraggableGrid";
+import { Endpoints } from "constants";
+import { isToday } from "date-fns";
+import { useApiFetch, useDailyCacheState } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 import { Cell, Label, Pie, PieChart } from "recharts";
-import { useDashboard } from "..";
+import { useDashboard } from "../DashboardContext";
+import { getCacheKey } from "./utils";
 
 const successRateLocalCacheKey = "inf-dashboard-success-rate";
 
-// Generate cache key using only date range
-const getCacheKey = (dateFrom, dateTo) =>
-	`successRate-${dateFrom.substring(0, 10)}-${dateTo.substring(0, 10)}`;
-
-const SuccessRate = ({ dateFrom, dateTo }) => {
+const SuccessRate = ({
+	dateFrom,
+	dateTo,
+	isDraggable,
+	productFilterList: masterProductList,
+}) => {
 	const [successRateData, setSuccessRateData] = useState([]);
+	const isProductListReady = masterProductList?.length > 1;
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+	const isTodayRange = isToday(dateFrom) && isToday(dateTo);
+
 	const [successRateCache, setSuccessRateCache, isCacheValid] =
 		useDailyCacheState(successRateLocalCacheKey, {});
 
-	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
-
 	const cacheKey = useMemo(
-		() => getCacheKey(dateFrom, dateTo),
+		() => getCacheKey(successRateLocalCacheKey, dateFrom, dateTo),
 		[dateFrom, dateTo]
 	);
+
 	const cachedSuccessRate =
 		businessDashboardData?.successRateCache?.[cacheKey];
 
@@ -38,9 +44,13 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		};
 
 		setSuccessRateCache(updatedCache);
+
 		setBusinessDashboardData((prev) => ({
 			...prev,
-			successRateCache: updatedCache.data,
+			successRateCache: {
+				...(prev?.successRateCache || {}),
+				[cacheKey]: _successRate,
+			},
 		}));
 	};
 
@@ -49,44 +59,36 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		{
 			onSuccess: (res) => {
 				const _data = res?.data?.dashboard_object?.successRate || {};
-				const _product = ProductRoleConfiguration?.products ?? [];
 
-				// Check if _data has any success rate data
-				const _successRate = _product
-					.filter((p) => p.tx_typeid && _data[p.tx_typeid])
-					.map((p) => {
-						const productData = _data[p.tx_typeid];
+				const successRateKeys = Object.keys(_data);
+				const formattedData = successRateKeys.map((id) => {
+					const product = masterProductList?.find(
+						(p) => p.value == id
+					);
+					const successCount = _data[id]?.successCount;
+					const totalCount = _data[id]?.totalCount;
+					const percentage =
+						totalCount > 0
+							? Number(
+									((successCount / totalCount) * 100).toFixed(
+										2
+									)
+								)
+							: 0;
+					return {
+						id: id,
+						label: product?.label,
+						successCount,
+						totalCount,
+						value: percentage,
+					};
+				});
 
-						if (
-							!productData?.successCount ||
-							!productData?.totalCount
-						) {
-							return null;
-						}
+				updateSuccessRateCache(
+					formattedData.length ? formattedData : []
+				);
 
-						const successPercent =
-							(productData.successCount /
-								productData.totalCount) *
-							100;
-
-						const successRate = successPercent.toFixed(
-							successPercent == 100 ? 0 : 1
-						);
-
-						return {
-							key: p.tx_typeid,
-							label: p.label,
-							value: successRate,
-							success: productData.successCount,
-							total: productData.totalCount,
-						};
-					})
-					.filter(Boolean); // Remove null values
-
-				// If _successRate is empty, store [] instead of undefined
-				updateSuccessRateCache(_successRate.length ? _successRate : []);
-
-				setSuccessRateData(_successRate);
+				setSuccessRateData(formattedData);
 			},
 		}
 	);
@@ -94,12 +96,34 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
+		// wait for real product list
+		if (!isProductListReady) return;
+
+		if (isTodayRange) {
+			// For today's data, always fetch fresh data and skip cache
+			fetchSuccessRateData({
+				body: {
+					interaction_type_id: 682,
+					requestPayload: {
+						success_rate: {
+							datefrom: dateFrom,
+							dateto: dateTo,
+						},
+					},
+				},
+			});
+
+			return;
+		}
+
+		// Step 1: in-memory context cache (fastest)
 		if (cachedSuccessRate !== undefined) {
 			// Cache exists, even if empty
 			setSuccessRateData(cachedSuccessRate);
 			return;
 		}
 
+		// Step 2: localStorage cache check
 		if (isCacheValid && successRateCache?.data?.[cacheKey]?.length) {
 			updateSuccessRateCache(successRateCache.data[cacheKey]);
 			setSuccessRateData(successRateCache.data[cacheKey]);
@@ -117,14 +141,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				},
 			},
 		});
-	}, [
-		dateFrom,
-		dateTo,
-		cacheKey,
-		cachedSuccessRate,
-		isCacheValid,
-		successRateCache,
-	]);
+	}, [dateFrom, dateTo, cacheKey, isProductListReady, isTodayRange]);
 
 	// MARK: jsx
 	return (
@@ -132,24 +149,24 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			direction="column"
 			bg="white"
 			borderRadius="10px"
-			p="5"
+			p="6"
 			w="100%"
-			// h={{ base: "auto", xl: "280px" }}
+			h="100%"
 			overflowY="auto"
 			className="customScrollbars"
 			gap="4"
 		>
-			<Flex
-				fontSize="lg"
-				fontWeight="semibold"
-				align="center"
-				gap="0.4em"
-			>
-				<LuShieldCheck color="#16a249" />
-				Success Rates
-			</Flex>
-
-			{/* <Divider /> */}
+			<DragHandle isDraggable={isDraggable}>
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuShieldCheck color="#16a249" />
+					Success Rates
+				</Flex>
+			</DragHandle>
 
 			<Flex
 				direction="column"
@@ -158,8 +175,6 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				flex="1"
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
-				maxH="180px"
-				// gap="10px"
 			>
 				{successRateData?.length ? (
 					successRateData.map((item, index) => {
@@ -177,7 +192,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 							>
 								<Text flex="1" fontSize="0.75rem">
 									<Skeleton isLoaded={!isLoading}>
-										{item.label}
+										{item?.label}
 									</Skeleton>
 								</Text>
 								<Text
@@ -188,15 +203,14 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 										{item.value}%
 									</Skeleton>
 								</Text>
-								{showNewDashboard ? (
-									<Chart
-										successCount={item.success}
-										totalCount={item.total}
-										size={30}
-										innerRadius="60%"
-										hideLabel
-									/>
-								) : null}
+
+								<Chart
+									successCount={item.successCount}
+									totalCount={item.totalCount}
+									size={30}
+									innerRadius="60%"
+									hideLabel
+								/>
 							</Flex>
 						);
 					})

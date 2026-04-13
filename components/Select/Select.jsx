@@ -4,23 +4,64 @@ import { default as ReactSelect } from "react-select";
 import { Icon, InputLabel } from "..";
 
 /**
- * A Select component
- * TODO: support for Chakra-Input-like "size" parameter: sm | md | lg
- * @param root0
- * @param root0.placeholder
- * @param root0.onChange
- * @param root0.options
- * @param root0.renderer
- * @param root0.isMulti
- * @param root0.value
- * @param root0.label
- * @param root0.id
- * @param root0.disabled
- * @param root0.required
- * @param root0.hideOptionalMark
- * @param root0.labelStyle
- * @param root0.getOptionLabel
- * @param root0.getOptionValue
+ * Size configuration for control height.
+ * - sm: 32px (2rem)
+ * - md: 40px (2.5rem)
+ * - lg: 48px (3rem)
+ */
+const SIZE_CONFIG = {
+	sm: "2rem",
+	md: "2.5rem",
+	lg: "3rem",
+};
+
+/**
+ * @typedef {object} SelectOption
+ * @property {string} label - Display text for the option
+ * @property {string|number} value - Value of the option
+ */
+
+/**
+ * @typedef {object} SelectRenderer
+ * @property {string} label - Key to use for option label (default: 'label')
+ * @property {string} value - Key to use for option value (default: 'value')
+ */
+
+/**
+ * A customizable Select component built on react-select with Chakra UI styling.
+ * Supports single/multi select, custom renderers, and size variants.
+ * @param {object} props - Component props
+ * @param {string} [props.placeholder] - Placeholder text when no option is selected
+ * @param {Function} props.onChange - Callback when selection changes. Receives selected option(s)
+ * @param {SelectOption[]} [props.options] - Array of options to display
+ * @param {SelectRenderer} [props.renderer] - Keys to use for label/value in options
+ * @param {boolean} [props.isMulti] - Enable multi-select mode
+ * @param {SelectOption|SelectOption[]} [props.value] - Currently selected option(s)
+ * @param {string} [props.label] - Label text displayed above the select
+ * @param {string} [props.id] - HTML id attribute for the select
+ * @param {boolean} [props.disabled] - Whether the select is disabled
+ * @param {boolean} [props.required] - Whether the field is required
+ * @param {boolean} [props.hideOptionalMark] - Hide the optional indicator when not required
+ * @param {object} [props.labelStyle] - Style props passed to the InputLabel component
+ * @param {Function} [props.getOptionLabel] - Custom function to get option label
+ * @param {Function} [props.getOptionValue] - Custom function to get option value
+ * @param {'sm'|'md'|'lg'} [props.size] - Size variant: 'sm' (32px), 'md' (40px), 'lg' (48px)
+ * @example
+ * // Basic usage
+ * <Select
+ *   options={[{ label: 'Option 1', value: '1' }, { label: 'Option 2', value: '2' }]}
+ *   onChange={(option) => console.log(option)}
+ *   placeholder="Select an option"
+ * />
+ * @example
+ * // Multi-select with custom size
+ * <Select
+ *   isMulti
+ *   size="md"
+ *   options={options}
+ *   value={selectedOptions}
+ *   onChange={setSelectedOptions}
+ * />
  */
 const Select = ({
 	placeholder = "--Select--",
@@ -37,6 +78,7 @@ const Select = ({
 	labelStyle,
 	getOptionLabel,
 	getOptionValue, // Check if really required
+	size = "lg",
 	...rest
 }) => {
 	const _id = useId();
@@ -50,7 +92,7 @@ const Select = ({
 				borderColor: menuIsOpen ? colors.primary.DEFAULT : colors.hint,
 				borderRadius: radii.lg,
 				boxShadow: "none",
-				minHeight: "3rem",
+				minHeight: SIZE_CONFIG[size],
 				maxHeight: "6rem",
 				overflowY: "auto",
 				":hover": {
@@ -73,6 +115,7 @@ const Select = ({
 				borderRadius: radii.lg,
 				border: borders.card,
 				boxShadow: shadows.basic,
+				zIndex: 10,
 			};
 		},
 		menuList: (base) => {

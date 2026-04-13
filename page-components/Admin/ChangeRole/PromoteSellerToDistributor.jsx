@@ -1,8 +1,10 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
-import { Endpoints, ParamType, UserTypeLabel } from "constants";
+import { Endpoints, ParamType } from "constants";
+import { UserType } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useUserTypes } from "hooks/useUserTypes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -18,32 +20,19 @@ const AGENT_TYPE = {
 	INDEPENDENT_RETAILER: "3",
 };
 
-const retailer_type_list = [
-	{
-		value: AGENT_TYPE.INDEPENDENT_RETAILER,
-		label: "Retailers not mapped to any distributor",
-	},
-	{
-		value: AGENT_TYPE.RETAILER,
-		label: "Retailers already mapped to a distributor",
-	},
-];
-
 /**
  * PromoteSellerToDistributor page-component
  * @param root0
  * @param root0.agentData
- * @param root0.setResponseDetails
  * @param root0.showOrgChangeRoleView
  * @returns
  */
-const PromoteSellerToDistributor = ({
-	agentData,
-	setResponseDetails,
-	showOrgChangeRoleView,
-}) => {
+const PromoteSellerToDistributor = ({ agentData, showOrgChangeRoleView }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
+	const toast = useToast();
+	const [isSuccess, setIsSuccess] = useState(false);
 
 	const router = useRouter();
 
@@ -55,6 +44,7 @@ const PromoteSellerToDistributor = ({
 		control,
 		register,
 		setValue,
+		reset,
 	} = useForm({
 		defaultValues: {
 			retailer_type: "3",
@@ -87,10 +77,25 @@ const PromoteSellerToDistributor = ({
 			});
 	}, [default_agent_mobile, watcher.retailer_type]);
 
+	const retailer_type_list = [
+		{
+			value: AGENT_TYPE.INDEPENDENT_RETAILER,
+			label: `${getUserTypeLabel(UserType.MERCHANT)}s (${getUserTypeLabel(
+				UserType.MERCHANT
+			)}s not mapped to any ${getUserTypeLabel(UserType.DISTRIBUTOR)})`,
+		},
+		{
+			value: AGENT_TYPE.RETAILER,
+			label: `${getUserTypeLabel(
+				UserType.MERCHANT
+			)}s already mapped to a ${getUserTypeLabel(UserType.DISTRIBUTOR)}`,
+		},
+	];
+
 	const promote_retailer_parameter_list = [
 		{
 			name: "retailer_type",
-			label: `Select Retailer Type to Search`,
+			label: `Select ${getUserTypeLabel(UserType.MERCHANT)} Type to Search`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: retailer_type_list,
 			is_inactive: !showOrgChangeRoleView && default_agent_mobile,
@@ -99,7 +104,7 @@ const PromoteSellerToDistributor = ({
 		},
 		{
 			name: "retailer",
-			label: `Select ${UserTypeLabel[watcher.retailer_type]}`, //TODO: add an/a
+			label: `Select ${getUserTypeLabel(watcher.retailer_type)}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
 			renderer: renderer,
@@ -115,24 +120,56 @@ const PromoteSellerToDistributor = ({
 	const onSubmit = (data) => {
 		delete data.retailer_type;
 		const { retailer } = data || {};
-		if (!retailer) {
+		if (!retailer && !default_agent_mobile) {
 			console.error("Retailer is required.");
 			return;
 		}
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/changeRole/promotecsps",
-				"tf-req-method": "PUT",
-			},
-			body: {
-				operation_type: 1,
-				agent_mobile: default_agent_mobile ?? retailer[renderer.value],
-			},
-			token: accessToken,
-		}).then((res) => {
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		return fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri":
+						"/network/agents/profile/changeRole/promotecsps",
+					"tf-req-method": "PUT",
+				},
+				body: {
+					operation_type: 1,
+					agent_mobile:
+						default_agent_mobile ?? retailer[renderer.value],
+				},
+				token: accessToken,
+			}
+		)
+			.then((res) => {
+				// Success Response Type ID for promotecsps is 1967
+				if (res.response_type_id === 1967) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					reset(data);
+					setIsSuccess(true);
+					return;
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const buttonConfigList = [
@@ -141,8 +178,7 @@ const PromoteSellerToDistributor = ({
 			size: "lg",
 			label: "Promote",
 			loading: isSubmitting,
-			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			disabled: showOrgChangeRoleView ? !isValid || !isDirty : isSuccess,
 		},
 		{
 			variant: "link",

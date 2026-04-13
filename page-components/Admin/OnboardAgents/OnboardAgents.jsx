@@ -1,9 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
-import { useSession } from "contexts";
-import { useUserTypes } from "hooks";
+import { useOrgDetailContext, useSession } from "contexts";
+import { useFeatureFlag, useUserTypes } from "hooks";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
+import OnboardDemoViaForm from "./OnBoardDemoViaForm/OnBoardDemoViaForm";
 import { getOnboardingPermissions } from "./OnboardingPermissions";
 
 // API needs this mapping for applicant_type to work
@@ -25,11 +26,16 @@ const agentTypeValueToApi = {
 const OnboardAgents = () => {
 	const { isAdmin, userType } = useSession();
 	const { getUserTypeLabel } = useUserTypes();
+	const [isDemoOnBoardEnabled] = useFeatureFlag("DEMO_ACCOUNT");
+
+	// Get org metadata for filtering agent types
+	const { orgDetail } = useOrgDetailContext();
+	const userTypesMetadata = orgDetail?.metadata?.user_type;
 
 	// Get permissions based on user role - determines which agent types the user can onboard
 	const permissions = useMemo(() => {
-		return getOnboardingPermissions(isAdmin, userType);
-	}, [isAdmin, userType]);
+		return getOnboardingPermissions(isAdmin, userType, userTypesMetadata);
+	}, [isAdmin, userType, userTypesMetadata]);
 
 	// Dynamically generate page title based on allowed agent types
 	// If multiple agent types are allowed, title is generic "Onboard Agents"
@@ -69,6 +75,20 @@ const OnboardAgents = () => {
 			),
 		}, // Multiple agent onboarding via file upload
 	];
+
+	if (isDemoOnBoardEnabled) {
+		tabList.push({
+			label: "Add Demo Account",
+			comp: (
+				<OnboardDemoViaForm
+					permissions={permissions}
+					agentTypeList={agentTypeList}
+					agentTypeValueToApi={agentTypeValueToApi}
+				/>
+			),
+			// Individual Demo User onboarding via form
+		});
+	}
 	return (
 		<>
 			<PageTitle title={onboardingTitle} hideBackIcon />

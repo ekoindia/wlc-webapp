@@ -2,9 +2,12 @@ import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
 import { UserType } from "constants";
 import { useOrgDetailContext, useSession } from "contexts";
+import { getNameStyle } from "helpers";
 import { useUserTypes } from "hooks";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { NetworkCard } from "..";
+import { NetworkMenu } from "../NetworkMenu/NetworkMenu";
 
 const commission_types = {
 	1: "Monthly",
@@ -12,9 +15,9 @@ const commission_types = {
 };
 
 /**
- * Returns the commission type based on the provided value.
- * @param {string} commission_type - The commission type value.
- * @returns {string} The corresponding commission type.
+ * Returns the commission type based on the provided value
+ * @param {string | number | undefined} commission_type - The commission type value (1=Monthly, 2=Daily)
+ * @returns {string} - The corresponding commission type label
  */
 const getCommissionType = (commission_type) => {
 	if (commission_type === undefined) return "Instant";
@@ -22,10 +25,14 @@ const getCommissionType = (commission_type) => {
 };
 
 /**
- * Custom hook to generate a list of columns for the Network Table with dynamic labels and conditional columns
- * @returns {Array} Table parameter (columns) list
+ * Custom hook to generate column configuration for the Network Table with dynamic labels and conditional columns.
+ * Includes user-specific labels and conditional Employee ID column based on org settings.
+ * @param {object} handlers - Event handlers to inject into Custom Component columns
+ * @param {Function} handlers.onStatusUpdate - Status update callback
+ * @param {Function} handlers.onDeleteDemoUser - Demo user delete callback
+ * @returns {Array<object>} - Array of column configuration objects with name, label, sorting, and visibility properties
  */
-export const useNetworkTableParameterList = () => {
+export const useNetworkTableParameterList = (handlers = {}) => {
 	const { getUserCodeLabel } = useUserTypes();
 	const { userType } = useSession();
 	const userCodeLabel = getUserCodeLabel(
@@ -43,12 +50,18 @@ export const useNetworkTableParameterList = () => {
 		{
 			name: "agent_name",
 			label: "Name",
-			show: "Avatar",
 			sorting: true,
 			visible_in_table: true,
+			render: (row) =>
+				getNameStyle(
+					row.agent_name,
+					undefined,
+					undefined,
+					row.account_status_id
+				),
 		},
 		{
-			name: "agent_type",
+			name: "user_type_label",
 			label: "Type",
 			sorting: true,
 			visible_in_table: true,
@@ -77,6 +90,14 @@ export const useNetworkTableParameterList = () => {
 		{
 			name: "eko_code",
 			label: userCodeLabel,
+			sorting: true,
+			visible_in_table: true,
+			hide_by_default: true,
+		},
+		{
+			name: "agent_balance",
+			label: "Agent\nBalance",
+			show: "Amount",
 			sorting: true,
 			visible_in_table: true,
 			hide_by_default: true,
@@ -112,7 +133,27 @@ export const useNetworkTableParameterList = () => {
 			visible_in_table: true,
 			hide_by_default: true,
 		},
-		{ name: "", label: "", show: "Modal", visible_in_table: true },
+		{
+			name: "actions",
+			label: "",
+			visible_in_table: true,
+			render: (item) => (
+				<NetworkMenu
+					mobile_number={item?.agent_mobile}
+					eko_code={
+						item?.profile?.eko_code?.[0] || item?.profile?.eko_code
+					}
+					account_status_id={item?.account_status_id}
+					user_type_id={item?.user_type_id}
+					onStatusUpdate={
+						handlers?.onStatusUpdate || item?._onStatusUpdate
+					}
+					onDeleteDemoUser={
+						handlers?.onDeleteDemoUser || item?._onDeleteDemoUser
+					}
+				/>
+			),
+		},
 		{ name: "", label: "", show: "Arrow", visible_in_table: true },
 	];
 
@@ -131,16 +172,18 @@ export const useNetworkTableParameterList = () => {
 };
 
 /**
- * A NetworkTable page-component which will redirect to Retailer details on row click
- * @param {object} prop - Properties passed to the component
- * @param {boolean} prop.isLoading - Loading state
- * @param {number} prop.pageNumber - Current page number
- * @param {number} prop.totalRecords - Total number of records
- * @param {Array} prop.agentDetails - Array of agent data
- * @param {Function} prop.setPageNumber - Function to set page number
- * @param {Array} [prop.visibleColumns] - Optional array of visible columns
- * @returns {JSX.Element} The rendered NetworkTable component
- * @example	`<NetworkTable></NetworkTable>`
+ * NetworkTable page-component that displays agent network data in a table or card layout.
+ * Redirects to agent profile on row click. Supports pagination, column visibility, and status updates.
+ * @param {object} props - Component properties
+ * @param {boolean} props.isLoading - Loading state indicator
+ * @param {number} props.pageNumber - Current page number for pagination
+ * @param {number} props.totalRecords - Total number of agent records
+ * @param {Array<object>} props.agentDetails - Array of agent data objects
+ * @param {Function} props.setPageNumber - Callback to update current page number
+ * @param {Array<object>} [props.visibleColumns] - Optional array of visible column configurations
+ * @param {Function} [props.onStatusUpdate] - Optional callback triggered on agent status update
+ * @param {Function} [props.onDeleteDemoUser] - Optional callback triggered on demo user deletion
+ * @returns {JSX.Element} - Rendered NetworkTable component or empty state
  */
 const NetworkTable = ({
 	isLoading,
@@ -149,31 +192,45 @@ const NetworkTable = ({
 	agentDetails,
 	setPageNumber,
 	visibleColumns,
+	onStatusUpdate,
+	onDeleteDemoUser,
 }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
+	const { getUserTypeLabel } = useUserTypes();
 
-	agentDetails?.forEach((agent) => {
-		const commission_type = agent?.commission_duration;
-		agent.commission_type = getCommissionType(commission_type);
-	});
+	const memoizedAgentDetails = useMemo(() => {
+		return (agentDetails || []).map((agent) => {
+			const commission_type = agent?.commission_duration;
+			const agent_balance = agent?.profile?.wallet_balance || 0;
+			const user_type_label = getUserTypeLabel(agent?.user_type_id);
+			return {
+				...agent,
+				commission_type: getCommissionType(commission_type),
+				agent_balance,
+				user_type_label,
+			};
+		});
+	}, [agentDetails, getUserTypeLabel]);
 
-	const networkTableDataSize = agentDetails?.length ?? 0;
+	const networkTableDataSize = memoizedAgentDetails?.length ?? 0;
 
 	// Use visible columns if provided, otherwise use dynamically generated list
-	const defaultColumns = useNetworkTableParameterList();
+	const defaultColumns = useNetworkTableParameterList({
+		onStatusUpdate,
+		onDeleteDemoUser,
+	});
 	const columnsToRender = visibleColumns || defaultColumns;
 
 	/**
-	 * Table row click handler
-	 * @param {object} rowData - Row data object
+	 * Table row click handler that navigates to agent profile page
+	 * @param {object} rowData - Agent data object from table row
+	 * @param {string} rowData.agent_mobile - Agent mobile number used for routing
+	 * @returns {void}
 	 */
 	const onRowClick = (rowData) => {
 		const mobile = rowData?.agent_mobile;
-		localStorage.setItem(
-			"oth_last_selected_agent",
-			JSON.stringify(rowData)
-		);
+		const currentPage = router.query.page;
 
 		let _pathname = isAdmin
 			? `/admin/my-network/profile`
@@ -181,7 +238,7 @@ const NetworkTable = ({
 
 		router.push({
 			pathname: _pathname,
-			query: { mobile },
+			query: { ...(currentPage && { page: currentPage }), mobile },
 		});
 	};
 
@@ -201,7 +258,7 @@ const NetworkTable = ({
 				pageNumber,
 				totalRecords,
 				setPageNumber,
-				data: agentDetails,
+				data: memoizedAgentDetails,
 				ResponsiveCard: NetworkCard,
 				variant: "stripedActionRedirect",
 				renderer: columnsToRender,

@@ -3,6 +3,7 @@ import {
 	CopyButton,
 	Dropzone,
 	Input,
+	JsonViewer,
 	Markdown,
 	MicInput,
 	Select,
@@ -18,7 +19,8 @@ import {
 } from "hooks";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Value } from "tf-components";
+import { useForm } from "react-hook-form";
+import { Form, Pintwin, UidaiFingerprintScanner, Value } from "tf-components";
 
 /**
  * A '/test' page-component
@@ -764,6 +766,96 @@ const VoiceCaptureTest = () => {
 };
 
 /**
+ * Test Pintwin component
+ * MARK: PintwinTest
+ */
+const PintwinTest = () => {
+	const [directPin, setDirectPin] = useState("");
+	const [directEncodedPin, setDirectEncodedPin] = useState("");
+
+	const {
+		register,
+		control,
+		watch,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			form_pin: "",
+		},
+	});
+
+	const formValues = watch();
+	const PIN_LENGTH = 6;
+
+	// Parameter list for the Form component
+	const pintwinFormParams = [
+		{
+			name: "form_pin",
+			label: "PIN (via Form)",
+			parameter_type_id: ParamType.PINTWIN,
+			required: true,
+			helperText: `Enter a ${PIN_LENGTH}-digit PIN using the Form component`,
+			length: PIN_LENGTH,
+		},
+	];
+
+	return (
+		<>
+			{/* Direct Pintwin Usage */}
+			<Flex direction="column" gap={2}>
+				<Text fontWeight="bold" fontSize="md">
+					Direct Pintwin Usage:
+				</Text>
+				<Pintwin
+					label="PIN (Direct)"
+					length={PIN_LENGTH}
+					onPinChange={(pin) => {
+						setDirectPin(pin);
+						setDirectEncodedPin("");
+					}}
+					onPinComplete={(pin, encodedPin) => {
+						setDirectPin(pin);
+						setDirectEncodedPin(encodedPin);
+					}}
+				/>
+				<Text fontSize="xs" color="gray.500">
+					PIN Length: {directPin.length} / {PIN_LENGTH}
+				</Text>
+				<Text fontSize="xs" color="gray.500">
+					Raw PIN: {directPin || "-"}
+				</Text>
+				{directPin.length === PIN_LENGTH && directEncodedPin ? (
+					<Text fontSize="xs" color="success">
+						Encoded PIN: {directEncodedPin.substring(0, 20)}...
+					</Text>
+				) : null}
+			</Flex>
+
+			{/* Pintwin via Form Component */}
+			<Flex direction="column" gap={2}>
+				<Text fontWeight="bold" fontSize="md">
+					Pintwin via Form Component:
+				</Text>
+				<Form
+					parameter_list={pintwinFormParams}
+					register={register}
+					control={control}
+					errors={errors}
+					formValues={formValues}
+					size="md"
+				/>
+				{formValues.form_pin && (
+					<Text fontSize="xs" color="success">
+						Form PIN Value: {formValues.form_pin.substring(0, 20)}
+						...
+					</Text>
+				)}
+			</Flex>
+		</>
+	);
+};
+
+/**
  * Test CopyButton component
  * MARK: CopyButtonTest
  */
@@ -771,6 +863,121 @@ const CopyButtonTest = () => {
 	return (
 		<Flex>
 			<CopyButton text="Copy this text" />
+		</Flex>
+	);
+};
+
+/**
+ * Test JsonViewer component
+ * MARK: JsonViewerTest
+ */
+const JsonViewerTest = () => {
+	const JsonViewerVariant = {
+		PLAIN: "plain",
+		JSON: "json",
+	};
+
+	const [variant, setVariant] = useState(JsonViewerVariant.JSON);
+
+	// Sample data matching KYC verification response structure
+	const sampleData = {
+		user: {
+			id: 12345,
+			name: "Jane Smith",
+			email: "jane.smith@example.com",
+			isActive: true,
+			roles: ["admin", "editor", "viewer"],
+			metadata: {
+				createdAt: "2024-01-15T10:30:00Z",
+				lastLogin: "2024-12-30T08:45:00Z",
+				preferences: {
+					theme: "dark",
+					notifications: {
+						email: true,
+						push: false,
+						sms: null,
+					},
+				},
+			},
+		},
+		verification: {
+			status: "success",
+			documents: [
+				{ type: "PAN", verified: true, number: "ABCDE1234F" },
+				{ type: "Aadhaar", verified: true, lastFour: "1234" },
+			],
+		},
+		statistics: {
+			totalUsers: 1523,
+			activeToday: 847,
+			revenue: 125430.5,
+		},
+		emptyObject: {},
+		emptyArray: [],
+		nullValue: null,
+	};
+
+	return (
+		<Flex direction="column" gap={4}>
+			<Flex gap={2} direction="row">
+				<Button
+					variant={
+						variant === JsonViewerVariant.PLAIN
+							? "primary"
+							: "secondary"
+					}
+					onClick={() => setVariant(JsonViewerVariant.PLAIN)}
+				>
+					Plain
+				</Button>
+				<Button
+					variant={
+						variant === JsonViewerVariant.JSON
+							? "primary"
+							: "secondary"
+					}
+					onClick={() => setVariant(JsonViewerVariant.JSON)}
+				>
+					Json
+				</Button>
+			</Flex>
+			<JsonViewer
+				data={sampleData}
+				collapseAfterLevel={2}
+				variant={variant}
+			/>
+		</Flex>
+	);
+};
+
+/**
+ * Test UidaiFingerprintScanner component
+ * MARK: FingerprintScannerTest
+ */
+const FingerprintScannerTest = () => {
+	const [capturedValue, setCapturedValue] = useState("");
+	const [isValid, setIsValid] = useState(false);
+
+	return (
+		<Flex direction="column" gap={4}>
+			<UidaiFingerprintScanner
+				label="Fingerprint"
+				required
+				onChange={(value, decorated) => {
+					console.log("[TestPage] Fingerprint captured:", decorated);
+					console.log("[TestPage] value", value);
+					setCapturedValue(decorated);
+				}}
+				onValidation={setIsValid}
+			/>
+			<Text fontSize="xs" color="gray.500">
+				Valid: {isValid ? "Yes" : "No"}
+			</Text>
+			{capturedValue ? (
+				<Text fontSize="xs" color="success">
+					{capturedValue}
+				</Text>
+			) : null}
 		</Flex>
 	);
 };
@@ -829,6 +1036,18 @@ const TestComponents = [
 	{
 		title: "Copy Button Test",
 		component: CopyButtonTest,
+	},
+	{
+		title: "Pintwin",
+		component: PintwinTest,
+	},
+	{
+		title: "JSON Viewer",
+		component: JsonViewerTest,
+	},
+	{
+		title: "Fingerprint Scanner",
+		component: FingerprintScannerTest,
 	},
 ];
 

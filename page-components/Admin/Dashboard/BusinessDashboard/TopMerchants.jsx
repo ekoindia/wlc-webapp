@@ -1,12 +1,13 @@
 import { Flex, Select, Text } from "@chakra-ui/react";
-import { Table } from "components";
+import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { LuTrophy } from "react-icons/lu";
 import { TopMerchantsChart, TopMerchantsTable } from ".";
 import { useDashboard } from "..";
+import { filterAvailableProducts } from "./EarningOverview";
 
 /**
  * Process top merchants data for the dashboard
@@ -14,8 +15,9 @@ import { useDashboard } from "..";
  * MARK: Process
  * @param {Array} merchants - Array of merchant objects
  * @param {number} totalGtv - Total GTV for all merchants
- * @param totalCount
- * @param {0|1|2} decimalPrecision - Decimal precision for percentage calculations. 0 by default.
+ * @param {number} totalCount - Total count of merchants
+ * @param {0|1|2} [decimalPrecision] - Decimal precision for percentage calculations. 0 by default.
+ * @returns {Array} Processed array of merchant data
  */
 const processTopMerchantsData = (
 	merchants,
@@ -57,46 +59,6 @@ const processTopMerchantsData = (
 	return processedData;
 };
 
-// TODO: Redundant. used only for the old generic table
-const topMerchantsTableParameterList = [
-	{ label: "#", show: "#" },
-	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
-	{ name: "usercode", label: "Agent's\nCode", sorting: true },
-	{
-		name: "gtv",
-		label: "GTV",
-		sorting: true,
-		show: "Amount",
-	},
-	{
-		name: "totalTransactions",
-		label: "Transaction\nCount",
-		sorting: true,
-	},
-	{
-		name: "status",
-		label: "Status",
-		show: "Tag",
-		sorting: true,
-	},
-	{
-		name: "raCases",
-		label: "Pending\nTransactions",
-		sorting: true,
-	},
-	{
-		name: "onboardingDate",
-		label: "Onboarding\nDate",
-		sorting: true,
-		show: "Date",
-	},
-	{
-		name: "distributorMapped",
-		label: "Distributor\nMapped",
-		sorting: true,
-	},
-];
-
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
 	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
@@ -109,6 +71,8 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
  * @param {object} props.totalBusiness - Total business data (total GTV, Transaction count, etc).
+ * @param {boolean} [props.isDraggable] - Whether the component is draggable in the grid.
+ * @returns {JSX.Element} The rendered top merchants component
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -119,60 +83,130 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
 const TopMerchants = ({
 	dateFrom,
 	dateTo,
-	productFilterList,
+	productFilterList: masterProductList,
 	totalBusiness,
+	isDraggable,
 }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]); // Actual/cached list of top merchants
-	const [processedMerchantData, setProcessedMerchantData] = useState([]); // Processed list of top-merchants with pre-calculated cumulative sum. percentage, etc
+	const [filteredProductList, setFilteredProductList] = useState([
+		{ label: "All Products", value: "" },
+	]);
+	const [cachedFullProductList, setCachedFullProductList] = useState(null);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
-	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
 	/**
-	 * Prepare the topMerchantData for dashboard...
+	 * Process top merchants data with cumulative calculations
 	 */
-	useEffect(() => {
+	const processedMerchantData = useMemo(() => {
 		if (!topMerchantsData || topMerchantsData.length === 0) {
-			setProcessedMerchantData([]);
-			return;
+			return [];
 		}
 
-		setProcessedMerchantData(
-			processTopMerchantsData(
-				topMerchantsData,
-				totalBusiness?.gtv?.amount ?? 0,
-				totalBusiness?.transactions?.transactions ?? 0
-			)
+		return processTopMerchantsData(
+			topMerchantsData,
+			totalBusiness?.gtv?.amount ?? 0,
+			totalBusiness?.transactions?.transactions ?? 0
 		);
 	}, [topMerchantsData, totalBusiness]);
 
+	/**
+	 * Filter product list based on available products from earning overview cache.
+	 * TODO: Improve/refactor this logic. This part seems duplicate which is being repeated in multiple components where we are showing product filter. Seems too much code to produce a cached list of products to filter from.
+	 */
+	useEffect(() => {
+		if (!dateFrom || !dateTo) return;
+
+		// Get the earning overview data from cache to extract product breakdown
+		const earningCacheKey = getCacheKey("", dateFrom, dateTo); // Always use "all products" cache
+		const earningOverviewData =
+			businessDashboardData?.earningOverviewCache?.[earningCacheKey];
+
+		let typeBreakdown = earningOverviewData?.gtv?.typeBreakdown;
+
+		try {
+			if (typeof typeBreakdown === "string") {
+				typeBreakdown = JSON.parse(typeBreakdown);
+			}
+		} catch (error) {
+			console.error("Error parsing product-wise data:", error);
+			// Keep the cached filter list if available, don't reset it
+			if (!cachedFullProductList) {
+				setFilteredProductList([{ label: "All Products", value: "" }]);
+			}
+			return;
+		}
+
+		if (typeBreakdown && Object.keys(typeBreakdown).length > 0) {
+			// USE UTIL: Match product master prop list against current breakdown
+			const matchedOptions = filterAvailableProducts(
+				masterProductList,
+				typeBreakdown
+			);
+
+			// Mirror EarningOverview: cache full list when showing "All Products"
+			if (!productFilter && matchedOptions.length > 0) {
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
+				setCachedFullProductList(fullList);
+			} else if (cachedFullProductList) {
+				// Always use cached full list when available (regardless of current breakdown)
+				setFilteredProductList(cachedFullProductList);
+			} else if (matchedOptions.length > 0) {
+				// Fallback: create filter list from current options if no cache exists
+				const fullList = [
+					{ label: "All Products", value: "" },
+					...matchedOptions,
+				];
+				setFilteredProductList(fullList);
+			}
+		} else {
+			// Only reset filter list if we don't have cached data
+			if (cachedFullProductList) {
+				// Keep using cached full list
+				setFilteredProductList(cachedFullProductList);
+			} else {
+				// Only fall back to "All Products" if no cache exists
+				setFilteredProductList([{ label: "All Products", value: "" }]);
+			}
+		}
+	}, [totalBusiness, masterProductList, productFilter]);
+
 	// Fetching Top Merchants Data
+	const handleApiSuccess = useCallback(
+		(res) => {
+			const _data = res?.data?.dashboard_object?.gtv_top_merchants || [];
+
+			const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+			// Prevent unnecessary re-renders by checking existing data
+			setBusinessDashboardData((prev) => {
+				if (prev.topMerchantsCache?.[cacheKey]) {
+					return prev; // Skip update if already cached
+				}
+				return {
+					...prev,
+					topMerchantsCache: {
+						...(prev.topMerchantsCache || {}),
+						[cacheKey]: _data,
+					},
+				};
+			});
+
+			setTopMerchantsData(_data);
+		},
+		[productFilter, dateFrom, dateTo, setBusinessDashboardData]
+	);
+
 	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
-			onSuccess: (res) => {
-				const _data =
-					res?.data?.dashboard_object?.gtv_top_merchants || [];
-
-				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
-
-				// Prevent unnecessary re-renders by checking existing data
-				setBusinessDashboardData((prev) => {
-					if (prev.topMerchantsCache?.[cacheKey]) {
-						return prev; // Skip update if already cached
-					}
-					return {
-						...prev,
-						topMerchantsCache: {
-							...(prev.topMerchantsCache || {}),
-							[cacheKey]: _data,
-						},
-					};
-				});
-
-				setTopMerchantsData(_data);
-			},
+			onSuccess: handleApiSuccess,
 		}
 	);
 
@@ -199,18 +233,26 @@ const TopMerchants = ({
 					gtv_top_merchants: {
 						datefrom: dateFrom,
 						dateto: dateTo,
+						...(isEkoShieldEnabled && { is_aggregated: true }),
 						..._typeid,
 					},
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, totalBusiness]);
+	}, [
+		dateFrom,
+		dateTo,
+		productFilter,
+		isEkoShieldEnabled,
+		businessDashboardData.topMerchantsCache,
+	]);
 
 	const router = useRouter();
 
 	/**
 	 * Open a user's profile by using their registered mobile number
-	 * @param mobile
+	 * @param {string} mobile - The mobile number of the user
+	 * @returns {void}
 	 */
 	const onViewProfile = (mobile) => {
 		router.push(`/admin/my-network/profile?mobile=${mobile}`);
@@ -222,40 +264,84 @@ const TopMerchants = ({
 			direction="column"
 			p="20px"
 			w="100%"
+			h="100%"
 			bg="white"
 			borderRadius="10"
 			border="basic"
 			gap="4"
 		>
-			<Flex
-				direction={{ base: "column", md: "row" }}
-				justify="space-between"
-				gap={{ base: "2", md: "4" }}
-				w="100%"
-			>
+			<Flex direction="column" gap={{ base: "2", md: "0" }} w="100%">
+				{/* Desktop: All in one row */}
 				<Flex
-					fontSize="lg"
-					fontWeight="semibold"
+					display={{ base: "none", md: "flex" }}
+					justify="space-between"
 					align="center"
-					gap="0.4em"
+					gap="4"
 				>
-					<LuTrophy color="#e27c7c" />
-					GTV Leaderboard
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+							flex="1"
+						>
+							<LuTrophy color="#e27c7c" />
+							Network Leaderboard
+						</Flex>
+						{/* Product Filter */}
+						{filteredProductList.length > 1 && (
+							<Select
+								variant="filled"
+								value={productFilter}
+								onChange={(e) =>
+									setProductFilter(e.target.value)
+								}
+								size="xs"
+								w="auto"
+							>
+								{filteredProductList.map(({ label, value }) => (
+									<option key={value} value={value}>
+										{label}
+									</option>
+								))}
+							</Select>
+						)}
+					</DragHandle>
 				</Flex>
 
-				<Flex w={{ base: "100%", md: "auto" }}>
-					<Select
-						variant="filled"
-						value={productFilter}
-						onChange={(e) => setProductFilter(e.target.value)}
-						size="xs"
-					>
-						{productFilterList.map(({ label, value }) => (
-							<option key={value} value={value}>
-								{label}
-							</option>
-						))}
-					</Select>
+				{/* Mobile: Title + grip on first row, Select on second row */}
+				<Flex
+					display={{ base: "flex", md: "none" }}
+					direction="column"
+					gap="2"
+				>
+					<DragHandle isDraggable={isDraggable}>
+						<Flex
+							fontSize="lg"
+							fontWeight="semibold"
+							align="center"
+							gap="0.4em"
+						>
+							<LuTrophy color="#e27c7c" />
+							Network Leaderboard
+						</Flex>
+					</DragHandle>
+					{filteredProductList.length > 1 && (
+						<Select
+							variant="filled"
+							value={productFilter}
+							onChange={(e) => setProductFilter(e.target.value)}
+							size="xs"
+							w="100%"
+						>
+							{filteredProductList.map(({ label, value }) => (
+								<option key={value} value={value}>
+									{label}
+								</option>
+							))}
+						</Select>
+					)}
 				</Flex>
 			</Flex>
 			{/* <Divider /> */}
@@ -264,34 +350,22 @@ const TopMerchants = ({
 
 			<Flex direction="column" align="center" gap="4">
 				{processedMerchantData?.length > 0 ? (
-					showNewDashboard ? (
-						// New table with graphs & enhanced UI
-						<>
-							<TopMerchantsChart
-								agentList={processedMerchantData}
-								onViewProfile={onViewProfile}
-							/>
-							<TopMerchantsTable
-								data={processedMerchantData}
-								totalGtv={+totalBusiness?.gtv?.amount ?? 0}
-								totalTransactions={
-									+totalBusiness?.transactions
-										?.transactions ?? 0
-								}
-								isLoading={isLoading}
-								onViewProfile={onViewProfile}
-							/>
-						</>
-					) : (
-						// Old generic table
-						<Table
-							data={topMerchantsData}
-							renderer={topMerchantsTableParameterList}
-							isLoading={isLoading}
-							width="100%"
-							maxWidth="100%"
+					<>
+						<TopMerchantsChart
+							agentList={processedMerchantData}
+							onViewProfile={onViewProfile}
 						/>
-					)
+						<TopMerchantsTable
+							data={processedMerchantData}
+							totalGtv={+totalBusiness?.gtv?.amount ?? 0}
+							totalRevenue={+totalBusiness?.gtv?.revenue ?? 0}
+							totalTransactions={
+								+totalBusiness?.transactions?.transactions ?? 0
+							}
+							isLoading={isLoading}
+							onViewProfile={onViewProfile}
+						/>
+					</>
 				) : (
 					<Text
 						color="gray.500"

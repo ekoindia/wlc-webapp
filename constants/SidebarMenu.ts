@@ -139,6 +139,17 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Set up and manage dynamic pricing rules and commission structures for your products. This includes defining pricing tiers, setting commission rates for different user roles, etc.",
 	},
+	{
+		id: 35,
+		label: "KYC Verification",
+		icon: "verified-user",
+		link: "/admin/products/kyc-verification",
+		summary: "Verify KYC documents for customers",
+		fullDescription:
+			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
+		beta: true,
+		featureFlag: "KYC_VERIFICATION",
+	},
 	// {
 	// 	id: 30,
 	// 	label: "Company Profile",
@@ -184,6 +195,29 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		label: "Configurations",
 		icon: "manage",
 		link: "/admin/configurations",
+	},
+
+	{
+		id: 217,
+		label: "My Digi Khata Wallet",
+		icon: "wallet",
+		link: "/admin/products/digikhata",
+		summary:
+			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
+		fullDescription:
+			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
+		beta: true,
+	},
+
+	// TODO: DEMO: TSP Bank Features
+	{
+		id: 600,
+		label: "Payments",
+		icon: "cash",
+		link: "/admin/transaction/996",
+		trxn_id: 996,
+		summary: "Make payments from your Bank account.",
+		featureFlag: "TSP_BANK",
 	},
 
 	// UAT Options
@@ -246,6 +280,17 @@ export const sidebarMenu: sidebarMenuType[] = [
 		featureFlag: "ASSISTED_FULL_ONBOARDING",
 	},
 	{
+		id: 36,
+		label: "KYC Verification",
+		icon: "verified-user",
+		link: "/products/kyc-verification",
+		summary: "Verify KYC documents for customers",
+		fullDescription:
+			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
+		beta: true,
+		featureFlag: "KYC_VERIFICATION",
+	},
+	{
 		id: 215,
 		label: "Product Catalogue",
 		icon: "shopping-cart",
@@ -255,12 +300,23 @@ export const sidebarMenu: sidebarMenuType[] = [
 		beta: true,
 	},
 	{
-		id: 215,
+		id: 216,
 		label: "Manage Inventory",
 		icon: "shopping-cart",
 		link: "/products/inventory/manage",
 		summary: "Manage inventory for your agents",
 		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 217,
+		label: "My Digi Khata Wallet",
+		icon: "wallet",
+		link: "/products/digikhata",
+		summary:
+			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
+		fullDescription:
+			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
 		beta: true,
 	},
 	// {

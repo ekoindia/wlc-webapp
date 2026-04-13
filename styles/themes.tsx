@@ -1,11 +1,14 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { globalStyles } from "./globals";
 import {
+	badgeTheme,
 	buttonTheme,
 	checkboxTheme,
 	radioTheme,
+	switchTheme,
 	tableTheme,
 	tabsTheme,
+	menuTheme,
 } from "./theme_system/theme/components";
 
 export const light = extendTheme({
@@ -50,11 +53,14 @@ export const light = extendTheme({
 		overlayBg: "#e9edf1b3",
 	},
 	components: {
+		Badge: badgeTheme,
 		Button: buttonTheme,
 		Checkbox: checkboxTheme,
 		Radio: radioTheme,
+		Switch: switchTheme,
 		Table: tableTheme,
 		Tabs: tabsTheme,
+		Menu: menuTheme,
 		Skeleton: {
 			baseStyle: {
 				borderRadius: "4px",

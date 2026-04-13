@@ -1,10 +1,12 @@
 import { Box, Divider, Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
-import { Endpoints, ParamType, TransactionIds } from "constants";
+import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useCountryStates } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -33,69 +35,24 @@ const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
  * @example	`<UpdateSellerAddress></UpdateSellerAddress>`
  */
 const UpdateSellerAddress = () => {
-	const [agentData, setAgentData] = useState();
-	const [statesList, setStatesList] = useState([]);
-	// const [isPermanentAddress, setIsPermanentAddress] = useState(true);
 	const { accessToken } = useSession();
 	const toast = useToast();
-
+	const { states: statesList } = useCountryStates();
 	const {
 		handleSubmit,
 		register,
 		formState: { errors, isSubmitting, isDirty, isValid },
 		control,
 		reset,
-	} = useForm();
+	} = useForm({ mode: "onChange" });
 
 	const watcher = useWatch({ control });
 
 	const router = useRouter();
+	const { mobile } = router.query;
 
-	const fetchStatesList = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: TransactionIds.STATE_TYPE,
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				if (res.status === 0) {
-					setStatesList(res?.param_attributes.list_elements);
-				}
-			})
-			.catch((err) => {
-				console.error("err", err);
-			});
-	};
-
-	const fetchAgentDataViaCellNumber = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				setAgentData(res?.data?.agent_details[0]);
-			})
-			.catch((error) => {
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
-			});
-	};
-
-	useEffect(() => {
-		fetchStatesList();
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent")
-		);
-		if (storedData !== undefined) {
-			setAgentData(storedData);
-		} else {
-			fetchAgentDataViaCellNumber();
-		}
-	}, []);
+	// Use the agent details hook with session caching
+	const { agent: agentData } = useAgentDetails(mobile);
 
 	useEffect(() => {
 		let defaultValues = {};
@@ -150,7 +107,12 @@ const UpdateSellerAddress = () => {
 					"tf-req-uri": "/network/agents/profile/address/update",
 					"tf-req-method": "POST",
 				},
-				body: { ...finalData, merchant_code: agentData?.eko_code },
+				body: {
+					...finalData,
+					merchant_code: agentData?.eko_code,
+					intent_id: 17,
+					address_type_id: 3,
+				},
 				token: accessToken,
 			}
 		)
@@ -178,6 +140,9 @@ const UpdateSellerAddress = () => {
 		{
 			name: "address_line1",
 			label: "Address Line 1",
+			validations: {
+				required: true,
+			},
 		},
 		{
 			name: "address_line2",
@@ -186,14 +151,37 @@ const UpdateSellerAddress = () => {
 		},
 		{
 			name: "pincode",
-			label: "Postel Code",
+			label: "Postal Code",
 			parameter_type_id: ParamType.NUMERIC,
 			step: "1",
 			maxLength: 6,
+			max: 999999,
+			validations: {
+				required: "Postal code is required",
+				pattern: {
+					value: /^[1-9][0-9]{5}$/,
+					message: "Enter a valid 6-digit postal code",
+				},
+				minLength: {
+					value: 6,
+					message: "Postal code must be 6 digits",
+				},
+				maxLength: {
+					value: 6,
+					message: "Postal code must be 6 digits",
+				},
+			},
 		},
 		{
 			name: "city",
 			label: "City",
+			validations: {
+				required: "City is required",
+				pattern: {
+					value: /^[a-zA-Z\s]+$/,
+					message: "City name can only contain letters and spaces",
+				},
+			},
 		},
 		{
 			name: "country_state",
@@ -221,7 +209,6 @@ const UpdateSellerAddress = () => {
 			label: "Save",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
@@ -331,6 +318,7 @@ const UpdateSellerAddress = () => {
 										base: "100%",
 										lg: "90%",
 									},
+									size: "md",
 								}}
 							/>
 

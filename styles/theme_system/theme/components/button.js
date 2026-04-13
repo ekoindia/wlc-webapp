@@ -42,7 +42,9 @@ const ghost = defineStyle({
 	bg: "white",
 	color: "dark",
 	boxShadow: "sh-button",
-	_hover: "none",
+	_hover: {
+		bg: "gray.100",
+	},
 });
 
 const link = defineStyle({

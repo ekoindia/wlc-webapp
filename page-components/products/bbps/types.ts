@@ -1,6 +1,7 @@
 // page-components/products/bbps/types.ts
 
 import { ParamType } from "constants/trxnFramework";
+import { FieldValidations } from "tf-components/Form/Form.d";
 
 /**
  * Field definition for the dynamic search form
@@ -12,17 +13,7 @@ export interface SearchFieldDef {
 	label: string;
 	parameter_type_id: ParamType;
 	required?: boolean;
-	validations?: {
-		min?: number;
-		max?: number;
-		minLength?: number;
-		maxLength?: number;
-		pattern?: {
-			value: RegExp;
-			message: string;
-		};
-		message?: string;
-	};
+	validations?: FieldValidations;
 	value?: string;
 	list_elements?: Array<{ value: string; label: string }>;
 	onChange?: (_value: string) => void;

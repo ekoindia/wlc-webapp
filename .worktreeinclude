@@ -1,0 +1,3 @@
+# This file specifies gitignored files to be copied to new Claude worktrees.
+
+.env.local

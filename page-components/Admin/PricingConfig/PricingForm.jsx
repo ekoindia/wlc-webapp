@@ -1,17 +1,18 @@
-import { Flex, useToast } from "@chakra-ui/react";
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, TransactionTypes } from "constants";
-import { useSession } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useRefreshToken } from "hooks";
+import { useFeatureFlag, useRefreshToken, useUserTypes } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 import { capitalize, formatCurrency } from "utils";
 import {
 	AGENT_TYPES,
 	formatSlabs,
+	getFilteredOperationTypeOptions,
 	getPricingTypeString,
 	getStatus,
 	OPERATION,
@@ -97,6 +98,14 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
 
+	// TODO
+	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
+
+	// State for storing pricing message from API
+	const [pricingMessage, setPricingMessage] = useState("");
+	const [isFetchingPricingMessage, setIsFetchingPricingMessage] =
+		useState(false);
+
 	const {
 		handleSubmit,
 		register,
@@ -126,6 +135,17 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const { allAgentList, distributorList } = usePricingConfig();
+	const { orgDetail } = useOrgDetailContext();
+	const { userTypeLabels } = useUserTypes();
+
+	// Get filtered operation type options based on org metadata
+	const filteredOperationTypeOptions = useMemo(() => {
+		const userTypeMetadata = orgDetail?.metadata?.user_type || {};
+		return getFilteredOperationTypeOptions(
+			userTypeMetadata,
+			userTypeLabels
+		);
+	}, [orgDetail?.metadata?.user_type, userTypeLabels]);
 
 	const min = state.pricingValidation?.min;
 	const max = state.pricingValidation?.max;
@@ -164,7 +184,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					name: "operation_type",
 					label: `Set ${pricingTypeLabel} for`,
 					parameter_type_id: ParamType.LIST,
-					list_elements: OPERATION_TYPE_OPTIONS,
+					list_elements: filteredOperationTypeOptions,
 				},
 				{
 					name: "CspList",
@@ -235,7 +255,26 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 			},
 			{
 				name: "actual_pricing",
-				label: `Define ${pricingTypeLabel} (GST Inclusive)`,
+				label: (
+					<Flex
+						align="center"
+						justify="space-between"
+						gap={2}
+						w="100%"
+					>
+						<Text>{`Define ${pricingTypeLabel} (GST Inclusive)`}</Text>
+						{isEkoShieldEnabled && pricingMessage && (
+							<Text
+								fontSize="sm"
+								color="primary.DEFAULT"
+								fontWeight="medium"
+								whiteSpace="nowrap"
+							>
+								{`Current Pricing: ${pricingMessage}`}
+							</Text>
+						)}
+					</Flex>
+				),
 				parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 				helperText: helperText,
 				validations: {
@@ -261,6 +300,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	}, [
 		agentType,
 		pricingType,
+		filteredOperationTypeOptions,
 		state.multiSelectLabel,
 		state.multiSelectOptions,
 		state.paymentModeOptions,
@@ -270,6 +310,150 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 		state.pricingValidation,
 		watcher.pricing_type,
 		helperText,
+		pricingMessage,
+		isFetchingPricingMessage,
+		watcher,
+	]);
+
+	/**
+	 * Check if all form fields are filled except actual_pricing
+	 * @returns {boolean} - True if all required fields are filled
+	 */
+	const isDataAvailableToFetchCurrentPricing = useMemo(() => {
+		// Check operation_type for RETAILERS
+		if (agentType === AGENT_TYPES.RETAILERS) {
+			if (!watcher.operation_type) return false;
+			// Check CspList if operation_type is 1 or 2
+			if (
+				(watcher.operation_type === "1" ||
+					watcher.operation_type === "2") &&
+				(!watcher.CspList || watcher.CspList.length === 0)
+			) {
+				return false;
+			}
+		} else if (agentType === AGENT_TYPES.DISTRIBUTOR) {
+			// For DISTRIBUTOR, check CspList
+			if (!watcher.CspList || watcher.CspList.length === 0) return false;
+		}
+
+		// Check payment_mode if it exists
+		if (state?.paymentModeOptions?.length > 0 && !watcher.payment_mode) {
+			return false;
+		}
+
+		// Check category if it exists
+		if (state?.categoryListOptions?.length > 0 && !watcher.category) {
+			return false;
+		}
+
+		// Check select (slab) if it exists
+		if (state?.slabOptions?.length > 0 && !watcher.select) {
+			return false;
+		}
+
+		return true;
+	}, [
+		agentType,
+		watcher.operation_type,
+		watcher.CspList,
+		watcher.payment_mode,
+		watcher.category,
+		watcher.select,
+		state?.paymentModeOptions,
+		state?.categoryListOptions,
+		state?.slabOptions,
+	]);
+
+	/**
+	 * Fetch current pricing message from API
+	 * @returns {Promise<void>}
+	 */
+	const fetchCurrentPricing = useCallback(
+		async (slabData = {}) => {
+			if (!state.productId) {
+				console.warn(
+					"Product ID is missing. Cannot fetch current pricing."
+				);
+				return;
+			}
+
+			setIsFetchingPricingMessage(true);
+			setPricingMessage("");
+
+			try {
+				const requestBody = {
+					interaction_type_id: TransactionTypes.GET_CURRENT_PRICING,
+					operation_type: watcher.operation_type,
+					min_slab_amount: slabData?.min_slab_amount,
+					max_slab_amount: slabData?.max_slab_amount,
+					...(watcher.operation_type === "1" ||
+					watcher.operation_type === "2"
+						? {
+								CspList: watcher?.CspList?.map(
+									(item) => item[_multiselectRenderer.value]
+								),
+							}
+						: {}),
+
+					product_id: state?.productId,
+				};
+
+				const response = await fetcher(
+					process.env.NEXT_PUBLIC_API_BASE_URL +
+						Endpoints.TRANSACTION,
+					{
+						body: requestBody,
+						token: accessToken,
+						generateNewToken,
+					}
+				);
+
+				if (
+					response?.status === 0 &&
+					response?.param_attributes !== null
+				) {
+					const { type, value } = response?.param_attributes ?? {};
+					const formattedValue =
+						type === PRICING_TYPES.FIXED
+							? formatCurrency(value)
+							: `${value}%`;
+
+					setPricingMessage(formattedValue);
+				} else {
+					setPricingMessage("");
+				}
+			} catch (error) {
+				console.error("Error fetching current pricing:", error);
+				setPricingMessage("");
+			} finally {
+				setIsFetchingPricingMessage(false);
+			}
+		},
+		[
+			accessToken,
+			generateNewToken,
+			watcher.operation_type,
+			watcher.CspList,
+			state?.productId,
+		]
+	);
+
+	// Effect to fetch pricing message when all fields are filled
+	useEffect(() => {
+		if (isDataAvailableToFetchCurrentPricing) {
+			const slabData = state?.slabOptions?.[watcher?.select?.value];
+			fetchCurrentPricing(slabData);
+		} else {
+			setPricingMessage("");
+		}
+	}, [
+		isDataAvailableToFetchCurrentPricing,
+		watcher?.select?.value,
+		state?.slabOptions,
+		watcher?.payment_mode?.value,
+		watcher?.category?.value,
+		watcher?.operation_type,
+		state?.productId,
 	]);
 
 	/**
@@ -712,6 +896,15 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 					duration: 6000,
 					isClosable: true,
 				});
+
+				// update pricing message after setting new pricing, to reflect the change immediately in the UI
+				const PriceType = data.pricing_type;
+				const _PricingMessage =
+					PriceType === PRICING_TYPES.FIXED
+						? formatCurrency(data.actual_pricing)
+						: `${data.actual_pricing}%`;
+				setPricingMessage(_PricingMessage);
+
 				// handleReset();
 			})
 			.catch((error) => {
@@ -727,7 +920,6 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 			label: "Save",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

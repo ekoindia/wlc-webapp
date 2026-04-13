@@ -1,7 +1,12 @@
-import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Icon, PageTitle } from "components";
+import { Flex, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
+import { Button, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
-import { useSession } from "contexts";
+import {
+	useAppSource,
+	useNetworkUsers,
+	useOrgDetailContext,
+	useSession,
+} from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag, useUserTypes } from "hooks";
 import { useColumnVisibility } from "hooks/useColumnVisibility";
@@ -10,6 +15,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { ANDROID_ACTION, doAndroidAction, saveDataToFile } from "utils";
 import { NetworkTable, NetworkToggleColumns, NetworkToolbar } from ".";
 import { useNetworkTableParameterList } from "./NetworkTable/NetworkTable";
 
@@ -20,29 +26,34 @@ const NetworkTreeView = dynamic(
 	}
 );
 
+/** Earliest allowed calendar date for the onboarding range filters. */
 const calendar_min_date = "2023-01-01";
 
+/** Number of agent rows fetched per page. */
 const PAGE_LIMIT = 10;
 
+/**
+ * Numeric identifiers for each action modal shown in the toolbar.
+ * Used as a discriminated value for `openModalId`.
+ */
 const action = {
 	FILTER: 0,
-	// EXPORT: 1,
+	EXPORT: 1,
 	TOGGLE_COLUMNS: 2,
 };
 
-const operation_type_list = [
-	{ label: "Distributor", value: "1" },
-	{ label: "Field Agent", value: "4" },
-	{ label: "Retailer", value: "2" },
-	{ label: "Independent Retailer", value: "3" },
-];
-
+/** Options for the "Account Status" filter dropdown. */
 const status_list = [
 	{ label: "Active", value: "Active" },
-	{ label: "Inactive", value: "Inactive" },
-	// { label: "Closed", value: "closed" },
+	{ label: "In Progress", value: "InProgress" },
+	{ label: "Inactive", value: "InActive" },
 ];
 
+/**
+ * Serialises a plain key/value object into a URL query-string.
+ * @param {Record<string, string|number>} params - The parameters to encode.
+ * @returns {string} A URL-encoded query string (without the leading `?`).
+ */
 const generateQueryParams = (params) => {
 	return Object.keys(params)
 		.map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
@@ -50,10 +61,28 @@ const generateQueryParams = (params) => {
 };
 
 /**
- * A My Network page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Network></Network>`
+ * **Network** — Admin / Agent "My Network" page component.
+ *
+ * Manages the full lifecycle of the network agent list:
+ * - Fetches paginated agent data via the transaction proxy endpoint.
+ * - Supports client-side **search** (type-ahead navigation to agent profiles)
+ * and API-based **filter** (by user type, account status, onboarding date range).
+ * - Supports **export** (XLSX download) of filtered/all network data.
+ * - Provides an optional **Tree View** when the `NETWORK_TREE_VIEW` feature
+ * flag is enabled.
+ * - Manages **column visibility** persisted in `localStorage` via
+ * `useColumnVisibility`.
+ * - Performs **optimistic UI updates** for status changes and demo-user
+ * deletion so the table reflects changes immediately without a re-fetch.
+ *
+ * All toolbar state (`openModalId`, filter/export form instances, etc.) is
+ * owned here and passed down to `NetworkToolbar` and `NetworkTable`.
+ * @returns {JSX.Element}
+ * @example
+ * // pages/admin/my-network.jsx
+ * export default function MyNetworkPage() {
+ *   return <Network />;
+ * }
  */
 const Network = () => {
 	const formElements = {
@@ -63,22 +92,49 @@ const Network = () => {
 		onBoardingDateTo: "",
 	};
 	const router = useRouter();
-	const { accessToken, isAdmin, userType } = useSession();
+	const { accessToken, isAdmin, userType, userId } = useSession();
+	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
 	const { getUserTypeLabel } = useUserTypes();
+	const toast = useToast();
 
-	const [pageNumber, setPageNumber] = useState(1);
+	const { networkUsersList, refreshUserList, userTypeIdList, loading } =
+		useNetworkUsers();
+
+	const operation_type_list = useMemo(() => {
+		return userTypeIdList.map((typeId) => ({
+			label: getUserTypeLabel(typeId),
+			value: String(typeId),
+		}));
+	}, [userTypeIdList, getUserTypeLabel, loading]);
+
+	const [pageNumber, setPageNumber] = useState(() => {
+		if (router.isReady && router.query.page) {
+			const page = parseInt(router.query.page, 10);
+			return !isNaN(page) && page > 0 ? page : 1;
+		}
+		return 1;
+	});
 	const [isLoading, setIsLoading] = useState(true);
 	const [networkData, setNetworkData] = useState([]);
 	const [isFiltered, setIsFiltered] = useState(false);
-	const [isSearched, setIsSearched] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
-	const [prevSearch, setPrevSearch] = useState("");
 	const [queryParam, setQueryParam] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
+	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
 	const [finalFormState, setFinalFormState] = useState({});
 	const [today] = useState(() => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
+	});
+	const [firstDateOfMonth] = useState(() => {
+		const _currentDate = new Date();
+		const _firstDateOfMonth = new Date(
+			_currentDate.getFullYear(),
+			_currentDate.getMonth(),
+			1
+		);
+		return formatDate(_firstDateOfMonth, "yyyy-MM-dd");
 	});
 	const [viewType, setViewType] = useState("list"); // List or Tree view
 
@@ -90,14 +146,6 @@ const Network = () => {
 	});
 
 	const {
-		handleSubmit: handleSubmitSearch,
-		register: registerSearch,
-		control: controlSearch,
-		formState: { errors: errorsSearch },
-		reset: resetSearch,
-	} = useForm({ mode: "onChange" });
-
-	const {
 		handleSubmit: handleSubmitFilter,
 		register: registerFilter,
 		control: controlFilter,
@@ -105,12 +153,26 @@ const Network = () => {
 		reset: resetFilter,
 	} = useForm({ mode: "onChange" });
 
-	const watcherSearch = useWatch({
-		control: controlSearch,
+	const {
+		handleSubmit: handleSubmitExport,
+		register: registerExport,
+		control: controlExport,
+		formState: { errors: errorsExport, isSubmitting: isSubmittingExport },
+		reset: resetExport,
+	} = useForm({
+		defaultValues: {
+			reporttype: "pdf",
+			onBoardingDateFrom: firstDateOfMonth,
+			onBoardingDateTo: today,
+		},
 	});
 
 	const watcherFilter = useWatch({
 		control: controlFilter,
+	});
+
+	const watcherExport = useWatch({
+		control: controlExport,
 	});
 
 	// Column visibility management
@@ -166,32 +228,6 @@ const Network = () => {
 		};
 	};
 
-	const onSearchSubmit = (data) => {
-		const { search_value } = data ?? {};
-
-		const _validSearch = search_value && search_value != prevSearch;
-		if (_validSearch) {
-			setPrevSearch(search_value);
-			setIsSearched(true);
-			setIsFiltered(false);
-			resetFilter({ ...formElements });
-			let search_params = generateQueryParams({
-				search_value,
-			});
-			setPageNumber(1);
-			setQueryParam(search_params);
-			setFinalFormState({ search_value });
-		}
-	};
-
-	const clearSearch = () => {
-		setIsSearched(false);
-		setPrevSearch("");
-		resetSearch({ search_value: "" });
-		setQueryParam(null);
-		setFinalFormState({});
-	};
-
 	const onFilterSubmit = (data) => {
 		const filteredData = Object.entries(data)?.reduce(
 			(acc, [key, value]) => {
@@ -216,17 +252,104 @@ const Network = () => {
 		setQueryParam(filter_params);
 		setOpenModalId(null);
 		setIsFiltered(true);
-		setIsSearched(false);
-		setPrevSearch("");
-		resetSearch({ search_value: "" });
 		setFinalFormState(filteredData);
+
+		resetExport({
+			...data,
+			onBoardingDateFrom:
+				watcherFilter.onBoardingDateFrom ??
+				watcherExport.onBoardingDateFrom,
+			onBoardingDateTo:
+				watcherFilter.onBoardingDateTo ??
+				watcherExport.onBoardingDateTo,
+			reporttype: watcherExport.reporttype,
+		});
 	};
 
 	const clearFilter = () => {
 		setIsFiltered(false);
 		setQueryParam(null);
 		resetFilter({ ...formElements });
+		resetExport({
+			reporttype: "pdf",
+			onBoardingDateFrom: firstDateOfMonth,
+			onBoardingDateTo: today,
+		});
 		setFinalFormState({});
+	};
+
+	const onReportDownload = (data) => {
+		setOpenModalId(null);
+
+		const filteredData = Object.entries(data)?.reduce(
+			(acc, [key, value]) => {
+				if (value) {
+					acc[key] =
+						typeof value === "object" && value?.value !== undefined
+							? value.value
+							: value;
+				}
+				return acc;
+			},
+			{}
+		);
+
+		const download_params = generateQueryParams({
+			initiator_id: userId,
+			org_id: orgDetail?.org_id,
+			...filteredData,
+		});
+
+		const reportUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/reports/agent-subnetwork?${download_params}`;
+
+		fetch(reportUrl, {
+			method: "POST",
+		})
+			.then((res) => {
+				if (!res.ok) {
+					throw new Error(
+						`Download failed with status ${res.status}`
+					);
+				}
+				return res.blob();
+			})
+			.then((blob) => {
+				const prefix = (
+					orgDetail?.org_name ||
+					orgDetail?.app_name ||
+					"agent"
+				)
+					.replace(/\s+/g, "_")
+					.toLowerCase();
+				const _filename = `${prefix}_network.xlsx`;
+				const _type =
+					blob.type ||
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+				if (isAndroid) {
+					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
+						blob,
+						name: _filename,
+					});
+				} else {
+					saveDataToFile(blob, _filename, _type);
+				}
+				toast({
+					title: "Report downloaded successfully",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+			})
+			.catch((err) => {
+				console.error("[Network] export error: ", err);
+				toast({
+					title: "Failed to download report",
+					description: "Please try again",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const network_filter_parameter_list = [
@@ -287,61 +410,24 @@ const Network = () => {
 			name: "onBoardingDateFrom",
 			label: "From",
 			parameter_type_id: ParamType.FROM_DATE,
-			required: false,
+			required: openModalId == action.EXPORT ? true : false,
 			minDate: calendar_min_date,
 			maxDate: today,
-			// validations: {
-			// 	required:
-			// 		openModalId == action.EXPORT
-			// 			? watcherExport.tid
-			// 				? false
-			// 				: true
-			// 			: false,
-			// },
 		},
 		{
 			name: "onBoardingDateTo",
 			label: "To",
 			parameter_type_id: ParamType.TO_DATE,
-			required: false,
-
+			required: openModalId == action.EXPORT ? true : false,
 			minDate:
 				openModalId == action.FILTER
 					? minDateFilter
-					: // : openModalId == action.EXPORT
-						// ? minDateExport
-						null,
+					: openModalId == action.EXPORT
+						? minDateExport
+						: null,
 			maxDate: today,
-			// validations: {
-			// 	required:
-			// 		openModalId == action.EXPORT
-			// 			? watcherExport.tid
-			// 				? false
-			// 				: true
-			// 			: false,
-			// },
 		},
 	];
-
-	const network_search_parameter_list = [
-		{
-			name: "search_value",
-			parameter_type_id: ParamType.NUMERIC,
-			placeholder: "Search by Mobile Number",
-			inputLeftElement: <Icon name="search" size="sm" color="light" />,
-			onEnter: handleSubmitSearch(onSearchSubmit),
-			required: false,
-			w: { base: "auto", md: "400px" },
-		},
-	];
-
-	const searchBarConfig = {
-		register: registerSearch,
-		control: controlSearch,
-		errors: errorsSearch,
-		formValues: watcherSearch,
-		parameter_list: network_search_parameter_list,
-	};
 
 	const actionBtnConfig = [
 		{
@@ -376,6 +462,22 @@ const Network = () => {
 				: null,
 		},
 		{
+			id: action.EXPORT,
+			label: "Export",
+			icon: "file-download",
+			parameter_list: network_filter_parameter_list,
+			handleSubmit: handleSubmitExport,
+			register: registerExport,
+			control: controlExport,
+			errors: errorsExport,
+			isSubmitting: isSubmittingExport,
+			formValues: watcherExport,
+			handleFormSubmit: onReportDownload,
+			submitButtonText: "Download",
+			secondaryButtonText: "Cancel",
+			secondaryButtonAction: () => setOpenModalId(null),
+		},
+		{
 			id: action.TOGGLE_COLUMNS,
 			label: "Columns",
 			icon: "visibility",
@@ -388,6 +490,11 @@ const Network = () => {
 		},
 	];
 
+	// Fetch Network User List for the UserTypeList when the component mounts for the UserType Filter
+	useEffect(() => {
+		refreshUserList();
+	}, []);
+
 	useEffect(() => {
 		if (openModalId == action.FILTER) {
 			const _fromDateFilter = watcherFilter.onBoardingDateFrom;
@@ -399,54 +506,117 @@ const Network = () => {
 			}
 
 			if (_fromDateFilter > _txDateFilter) {
-				// reset filter form tx_date to from_date
 				resetFilter({
 					..._valuesFilter,
 					onBoardingDateTo: _fromDateFilter,
 				});
 			}
 		}
-	}, [watcherFilter.onBoardingDateFrom, watcherFilter.onBoardingDateTo]);
+
+		if (openModalId == action.EXPORT) {
+			const _fromDateExport = watcherExport.onBoardingDateFrom;
+			const _txDateExport = watcherExport.onBoardingDateTo;
+			const _valuesExport = watcherExport;
+
+			if (_fromDateExport) {
+				setMinDateExport(_fromDateExport);
+			}
+
+			if (_fromDateExport > _txDateExport) {
+				resetExport({
+					..._valuesExport,
+					onBoardingDateTo: _fromDateExport,
+				});
+			}
+		}
+	}, [
+		watcherFilter.onBoardingDateFrom,
+		watcherFilter.onBoardingDateTo,
+		watcherExport.onBoardingDateFrom,
+		watcherExport.onBoardingDateTo,
+	]);
 
 	const filteredItemLabels = useMemo(() => {
 		const _labels = [];
 		const labelsToReplace = {
 			From: "Date",
 			To: "Date",
-			search_value: "Mobile Number",
 		};
 
-		const _parameterList = isFiltered
-			? network_filter_parameter_list
-			: isSearched
-				? network_search_parameter_list
-				: [];
+		if (!isFiltered) return _labels;
 
 		Object.keys(finalFormState).forEach((key) => {
-			const matchedItem = _parameterList.find(
+			const matchedItem = network_filter_parameter_list.find(
 				(item) => item.name === key
 			);
 
-			if (matchedItem && isFiltered) {
+			if (matchedItem) {
 				const labelToAdd =
 					labelsToReplace[matchedItem.label] || matchedItem.label;
 				_labels.push(labelToAdd);
-			}
-			if (matchedItem && isSearched) {
-				_labels.push(
-					labelsToReplace[matchedItem.name] || matchedItem.name
-				);
 			}
 		});
 		return [...new Set(_labels)];
 	}, [finalFormState]);
 
 	useEffect(() => {
-		hitQuery();
-	}, [pageNumber, queryParam]);
+		if (router.isReady) {
+			hitQuery();
+		}
+	}, [router.isReady, pageNumber, queryParam]);
 
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
+
+	/**
+	 * Callback to update agent status in the local state (for optimistic UI updates)
+	 * @param {string} ekoCode - The eko_code of the agent to update
+	 * @param {number} newStatusId - The new status ID
+	 */
+	const handleStatusUpdate = (ekoCode, newStatusId) => {
+		const statusLabels = {
+			13: "Pending Approval",
+			16: "Active",
+			18: "Inactive",
+		};
+
+		setNetworkData((prevData) => {
+			if (!prevData?.agent_details) return prevData;
+
+			return {
+				...prevData,
+				agent_details: prevData.agent_details.map((agent) => {
+					if (agent.eko_code === ekoCode) {
+						return {
+							...agent,
+							account_status_id: newStatusId,
+							account_status:
+								statusLabels[newStatusId] ||
+								agent.account_status,
+						};
+					}
+					return agent;
+				}),
+			};
+		});
+	};
+
+	/**
+	 * Callback to handle demo user deletion (for optimistic UI updates)
+	 * @param {string} ekoCode - The eko_code of the demo user to delete
+	 */
+	const handleDeleteDemoUser = (ekoCode) => {
+		setNetworkData((prevData) => {
+			if (!prevData?.agent_details) return prevData;
+
+			return {
+				...prevData,
+				agent_details: prevData.agent_details.filter(
+					(agent) => agent.eko_code !== ekoCode
+				),
+			};
+		});
+	};
 
 	// MARK: JSX
 	return (
@@ -457,7 +627,9 @@ const Network = () => {
 				toolComponent={
 					isAdmin ? (
 						<Button
-							size={{ base: "sm", md: "md" }}
+							size="sm"
+							icon="person"
+							iconStyle={{ size: "xs" }}
 							onClick={() =>
 								router.push(
 									"/admin/my-network/profile/change-role"
@@ -472,23 +644,29 @@ const Network = () => {
 			<Flex
 				direction="column"
 				gap="4"
-				mx={{ base: "4", md: "0" }}
+				p={{ base: "4", md: "0" }}
 				// align="center"
 			>
 				<NetworkToolbar
 					{...{
-						isSearched,
-						clearSearch,
 						isFiltered,
 						clearFilter,
 						openModalId,
 						setOpenModalId,
-						searchBarConfig,
 						actionBtnConfig,
 						viewType,
 						setViewType,
 						hideFilter: viewType === "tree",
 						hideSearch: viewType === "tree",
+						networkUsersList,
+						onItemSelect: (item) => {
+							router.push({
+								pathname: isAdmin
+									? "/admin/my-network/profile"
+									: "/my-network/profile",
+								query: { mobile: item.mobile },
+							});
+						},
 					}}
 				/>
 
@@ -501,6 +679,8 @@ const Network = () => {
 							pageNumber,
 							setPageNumber,
 							visibleColumns,
+							onStatusUpdate: handleStatusUpdate,
+							onDeleteDemoUser: handleDeleteDemoUser,
 						}}
 					/>
 				) : null}
@@ -509,63 +689,53 @@ const Network = () => {
 					<NetworkTreeView />
 				) : null}
 
-				<Flex
-					display={isFiltered || isSearched ? "flex" : "none"}
-					alignSelf="center"
-					align="center"
-					gap="2"
-					sx={{
-						"@media print": {
-							display: "none !important",
-						},
-					}}
-				>
-					<Flex color="light" fontSize="xs">
-						{isFiltered
-							? "Filtering by"
-							: isSearched
-								? "Searching by"
-								: null}
-						&nbsp;
-						{filteredItemLabels
-							?.slice(0, filterItemLimit)
-							.map((val, index) => (
-								<Text
-									key={index}
-									color="dark"
-									fontWeight="semibold"
-									whiteSpace="nowrap"
-								>
-									{`${val}${
-										index !== filteredItemLabels.length - 1
-											? ",\u{2009}"
-											: ""
-									}`}
-								</Text>
-							))}
-						{(filteredItemLabels?.length || 0) - filterItemLimit >
-							0 && (
-							<Text color="dark" fontWeight="semibold">
-								{`and ${
-									(filteredItemLabels?.length || 0) -
-									filterItemLimit
-								} more`}
-							</Text>
-						)}
-					</Flex>
-					<Button
-						size="xs"
-						onClick={() => {
-							isFiltered
-								? clearFilter()
-								: isSearched
-									? clearSearch()
-									: null;
+				{viewType === "list" ? (
+					<Flex
+						display={isFiltered ? "flex" : "none"}
+						alignSelf="center"
+						align="center"
+						gap="2"
+						sx={{
+							"@media print": {
+								display: "none !important",
+							},
 						}}
 					>
-						Show All
-					</Button>
-				</Flex>
+						<Flex color="light" fontSize="xs">
+							Filtering by &nbsp;
+							{filteredItemLabels
+								?.slice(0, filterItemLimit)
+								.map((val, index) => (
+									<Text
+										key={index}
+										color="dark"
+										fontWeight="semibold"
+										whiteSpace="nowrap"
+									>
+										{`${val}${
+											index !==
+											filteredItemLabels.length - 1
+												? ",\u{2009}"
+												: ""
+										}`}
+									</Text>
+								))}
+							{(filteredItemLabels?.length || 0) -
+								filterItemLimit >
+								0 && (
+								<Text color="dark" fontWeight="semibold">
+									{`and ${
+										(filteredItemLabels?.length || 0) -
+										filterItemLimit
+									} more`}
+								</Text>
+							)}
+						</Flex>
+						<Button size="xs" onClick={clearFilter}>
+							Show All
+						</Button>
+					</Flex>
+				) : null}
 			</Flex>
 		</>
 	);

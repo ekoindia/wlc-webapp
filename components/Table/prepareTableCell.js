@@ -7,23 +7,20 @@ import {
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
-	getModalStyle,
-	getNameStyle,
-	getPaymentStyle,
 	getShareMobileButton,
 	getStatusStyle,
 } from "helpers";
 import { formatMobile } from "utils";
 
 /**
- *
- * @param {*} item
- * @param {*} column
+ * Prepares the content for a table cell based on the column configuration.
+ * @param {object} item - The data item for the current row
+ * @param {object} column - The column configuration object
  * @param {number} index - Table row index
- * @param {number} serialNo
- * @param {string} tableName
- * @param expandedRow
- * @returns
+ * @param {number} serialNo - The serial number for the row
+ * @param {string} tableName - The name of the table
+ * @param {number} expandedRow - The index of the currently expanded row
+ * @returns {React.ReactNode} The formatted React node for the cell
  */
 export const prepareTableCell = (
 	item,
@@ -33,38 +30,26 @@ export const prepareTableCell = (
 	tableName,
 	expandedRow
 ) => {
-	const agent_type = item?.agent_type;
-	const account_status_id = item?.account_status_id;
-	const mobile_number = item?.agent_mobile;
-	const eko_code = item?.profile?.eko_code ?? [];
-	const trx_type = item?.debit_credit || item?.trx_type;
+	// Delegate custom rendering directly to the column definition
+	if (typeof column?.render === "function") {
+		return column.render(item, column, index, serialNo, expandedRow);
+	}
 
 	switch (column?.show) {
 		case "#":
 			return serialNo;
 		case "Tag":
 			return getStatusStyle(item[column.name], tableName);
-		case "Modal":
-			return getModalStyle(
-				mobile_number,
-				eko_code,
-				account_status_id,
-				agent_type
-			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
 		case "Address":
 			return getAddressWithTooltip(item[column.name]);
 		case "Location":
 			return getLocationStyle(item[column.name]);
-		case "Avatar":
-			return getNameStyle(item[column.name]);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
 			return getAmountStyle(item[column.name]);
-		case "Payment":
-			return getPaymentStyle(item[column.name], trx_type);
 		case "Mobile":
 			return formatMobile(item[column.name]);
 		case "Description":

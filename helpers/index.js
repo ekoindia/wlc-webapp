@@ -5,7 +5,7 @@ export {
 	/* dummyOrgDetails,  */ fetchOrgDetails,
 } from "./fetchOrgDetailsHelper";
 export { localStorageProvider } from "./localStorageProvider";
-export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
+export { sendOtpRequest } from "./loginHelper";
 export {
 	filterTransactionLists,
 	processTransactionData,
@@ -20,7 +20,6 @@ export {
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
-	getModalStyle,
 	getNameStyle,
 	getPaymentStyle,
 	getShareMobileButton,

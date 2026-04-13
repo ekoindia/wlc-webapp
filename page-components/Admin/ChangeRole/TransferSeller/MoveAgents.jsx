@@ -6,11 +6,13 @@ import {
 	Flex,
 	Text,
 	useBreakpointValue,
+	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useUserTypes } from "hooks/useUserTypes";
 import { useEffect, useState } from "react";
 
 const renderer = {
@@ -30,8 +32,8 @@ const selectAllObj = { value: "*", label: "Select All" };
  * @param prop.transferAgentsFrom
  * @param prop.transferAgentsTo
  * @param prop.selectedAgentsToTransfer
- * @param prop.setResponseDetails
  * @param prop.onChange
+ * @param prop.targetUserType
  * @example	`<MoveAgents></MoveAgents>`
  */
 const MoveAgents = ({
@@ -41,9 +43,10 @@ const MoveAgents = ({
 	transferAgentsFrom,
 	transferAgentsTo,
 	selectedAgentsToTransfer,
-	setResponseDetails,
 	onChange = () => {},
+	targetUserType = 2,
 }) => {
+	const { getUserTypeLabel } = useUserTypes();
 	const isSmallScreen = useBreakpointValue(
 		{ base: true, md: false },
 		{ ssr: false }
@@ -51,7 +54,9 @@ const MoveAgents = ({
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [optionsValueList, setOptionsValueList] = useState([]);
+	const [isSuccess, setIsSuccess] = useState(false);
 	const { accessToken } = useSession();
+	const toast = useToast();
 
 	useEffect(() => {
 		let _optionsValueList = [];
@@ -64,6 +69,7 @@ const MoveAgents = ({
 
 	useEffect(() => {
 		onChange(selectedOptions);
+		if (isSuccess) setIsSuccess(false);
 	}, [selectedOptions]);
 
 	/* handle when user click on option */
@@ -128,10 +134,35 @@ const MoveAgents = ({
 			},
 			body: body,
 			token: accessToken,
-		}).then((res) => {
-			setShowSelectAgent(false);
-			setResponseDetails({ status: res.status, message: res.message });
-		});
+		})
+			.then((res) => {
+				// Success Response Type ID for transfer csps is 1872
+				if (res.response_type_id === 1872) {
+					toast({
+						title: res.message,
+						status: "success",
+						duration: 3000,
+						isClosable: true,
+					});
+					setIsSuccess(true);
+					setShowSelectAgent(false);
+				} else {
+					toast({
+						title: res.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			})
+			.catch((err) => {
+				toast({
+					title: err?.message || "Something went wrong",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			});
 	};
 
 	const buttonConfigList = [
@@ -140,8 +171,7 @@ const MoveAgents = ({
 			size: "lg",
 			label: "Move",
 			onClick: () => handleMoveAgent(),
-			disabled: !selectedAgentsToTransfer?.length > 0,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			disabled: !selectedAgentsToTransfer?.length > 0 || isSuccess,
 		},
 		{
 			variant: "link",
@@ -162,8 +192,8 @@ const MoveAgents = ({
 			<Flex align="center" gap="8">
 				<Flex
 					direction="column"
-					w={{ base: "100vw", md: "500px" }}
-					h={{ base: "100vh", md: "auto" }}
+					w={{ base: "100%", md: "500px" }}
+					h={{ base: "73vh", md: "auto" }}
 					top={{ base: "0", md: "initial" }}
 					left={{ base: "0", md: "initial" }}
 					position={{ base: "absolute", md: "initial" }}
@@ -177,7 +207,8 @@ const MoveAgents = ({
 						display={{ base: "none", md: "flex" }}
 					>
 						<Text color="light">
-							Move Retailers From: &thinsp;
+							Move {getUserTypeLabel(targetUserType)}s From:
+							&thinsp;
 							<Text as="span" color="dark">
 								{transferAgentsFrom[renderer.label]}
 							</Text>
@@ -277,7 +308,9 @@ const MoveAgents = ({
 						/>
 					</Circle>
 				)}
-				<TransferAgentsToBox {...{ agentList, transferAgentsTo }} />
+				<TransferAgentsToBox
+					{...{ agentList, transferAgentsTo, targetUserType }}
+				/>
 			</Flex>
 
 			{isSmallScreen ? (
@@ -289,7 +322,12 @@ const MoveAgents = ({
 
 export default MoveAgents;
 
-const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
+const TransferAgentsToBox = ({
+	agentList,
+	transferAgentsTo,
+	targetUserType,
+}) => {
+	const { getUserTypeLabel } = useUserTypes();
 	return (
 		<Flex
 			display={{ base: "none", md: "flex" }}
@@ -299,7 +337,7 @@ const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
 		>
 			<Flex fontWeight="semibold" gap="1">
 				<Text color="light">
-					Move Retailers To: &thinsp;
+					Move {getUserTypeLabel(targetUserType)}s To: &thinsp;
 					<Text as="span" color="dark">
 						{transferAgentsTo[renderer.label]}
 					</Text>

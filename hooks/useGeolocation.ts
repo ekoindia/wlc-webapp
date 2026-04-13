@@ -1,156 +1,94 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
+import { isAndroidApp } from "utils";
+import useAndroidGeolocation from "./useAndroidGeolocation";
+import useWebGeolocation from "./useWebGeolocation";
 
-interface UseGeolocationOptions {
+// ---- Shared Types ----
+
+export interface UseGeolocationOptions {
 	highAccuracy?: boolean;
 	maximumAge?: number;
 	timeout?: number;
 	watchPosition?: boolean;
-	positionWatchTimeBuffer?: number;
 	decimalPlaces?: number;
 	maxWatchUpdates?: number;
+	autoRequest?: boolean;
 }
 
-interface GeolocationResult {
+export type PermissionStateType =
+	| "granted"
+	| "prompt"
+	| "denied"
+	| "unsupported";
+
+/** Common state returned by both platform hooks */
+export interface GeolocationState {
 	latitude: number | null;
 	longitude: number | null;
 	accuracy: number | null;
+	timestamp: number | null;
 	error: string | null;
+	permissionState: PermissionStateType;
+	isLoading: boolean;
+	requestLocation: () => void;
 }
 
-const DEFAULT_OPTIONS: Required<UseGeolocationOptions> = {
-	highAccuracy: false,
-	maximumAge: 60000,
-	timeout: Infinity,
-	watchPosition: false,
-	positionWatchTimeBuffer: 6000,
-	decimalPlaces: 6,
-	maxWatchUpdates: 0,
-};
+/** Web-specific result — includes stopWatching (browser watchPosition) */
+export interface WebGeolocationResult extends GeolocationState {
+	stopWatching: () => void;
+}
+
+/** Android-specific result — includes requestAndroidPermission (native) */
+export interface AndroidGeolocationResult extends GeolocationState {
+	requestAndroidPermission: () => void;
+}
+
+/** Full result exposed to consumers — union of both platform methods */
+export interface GeolocationResult extends GeolocationState {
+	stopWatching: () => void;
+	/** Request native Android location permission (no-op on web) */
+	requestAndroidPermission: () => void;
+}
+
+// ---- No-op stubs ----
+const noop = () => {};
+
+// ---- Orchestrator ----
 
 /**
- * Custom hook to get the user's geolocation.
- * @param {UseGeolocationOptions} options - Options for geolocation.
- * @param {boolean} options.highAccuracy - Whether to use high accuracy (default: false).
- * @param {number} options.maximumAge - Maximum age of a cached position (default: 60000ms).
- * @param {number} options.timeout - Timeout for geolocation request (default: Infinity).
- * @param {boolean} options.watchPosition - Whether to watch the position (default: false).
- * @param {number} options.positionWatchTimeBuffer - Time buffer for watching position (default: 6000ms).
- * @param {number} options.decimalPlaces - Number of decimal places for latitude and longitude (default: 6).
- * @param {number} options.maxWatchUpdates - Maximum number of watch updates (default: 0).
- * @returns {GeolocationResult} - Geolocation result containing latitude, longitude, accuracy, and error message.
+ * Platform-aware geolocation hook.
+ *
+ * On Android, delegates to native location services via PubSub.
+ * On web, uses the browser Permissions API + navigator.geolocation.
+ *
+ * Both paths return the same `GeolocationResult` interface so consumers
+ * don't need to care about the platform. Platform-specific methods that
+ * don't apply are provided as no-ops.
+ * @param options
  */
 const useGeolocation = (
 	options: UseGeolocationOptions = {}
 ): GeolocationResult => {
-	const {
-		highAccuracy,
-		maximumAge,
-		timeout,
-		watchPosition,
-		positionWatchTimeBuffer,
-		decimalPlaces,
-		maxWatchUpdates,
-	} = { ...DEFAULT_OPTIONS, ...options };
-	const [position, setPosition] = useState<GeolocationResult>({
-		latitude: null,
-		longitude: null,
-		accuracy: null,
-		error: null,
-	});
-	const [updateCount, setUpdateCount] = useState<number>(0);
+	const isAndroid = isAndroidApp();
 
-	useEffect(() => {
-		let watchId: number | null = null;
-		let interval: any = null;
+	// Both hooks always run (React rules of hooks), but only the active
+	// platform's hook enables its effects via the `enabled` flag.
+	const androidResult = useAndroidGeolocation(options, isAndroid);
+	const webResult = useWebGeolocation(options, !isAndroid);
 
-		const successHandler = (pos) => {
-			const {
-				coords: { latitude, longitude, accuracy },
-			} = pos;
+	const noopStable = useCallback(noop, []);
 
-			setPosition({
-				latitude: parseFloat(latitude.toFixed(decimalPlaces)),
-				longitude: parseFloat(longitude.toFixed(decimalPlaces)),
-				accuracy,
-				error: null,
-			});
-
-			setUpdateCount((prevCount) => prevCount + 1);
+	if (isAndroid) {
+		return {
+			...androidResult,
+			stopWatching: noopStable, // no browser watch on Android
 		};
+	}
 
-		const errorHandler = (error) => {
-			setPosition({
-				latitude: null,
-				longitude: null,
-				accuracy: null,
-				error: error.message,
-			});
-		};
-
-		const options = {
-			enableHighAccuracy: highAccuracy,
-			maximumAge,
-			timeout,
-		};
-
-		const stopWatching = () => {
-			if (watchId !== null) {
-				navigator.geolocation.clearWatch(watchId);
-				watchId = null;
-			}
-			if (interval !== null) {
-				clearInterval(interval);
-				interval = null;
-			}
-		};
-
-		if (watchPosition) {
-			watchId = navigator.geolocation.watchPosition(
-				successHandler,
-				errorHandler,
-				options
-			);
-
-			interval = setInterval(() => {
-				if (watchId !== null) {
-					navigator.geolocation.clearWatch(watchId);
-					watchId = navigator.geolocation.watchPosition(
-						successHandler,
-						errorHandler,
-						options
-					);
-				}
-			}, positionWatchTimeBuffer);
-
-			return () => {
-				stopWatching();
-			};
-		} else {
-			navigator.geolocation.getCurrentPosition(
-				successHandler,
-				errorHandler,
-				options
-			);
-		}
-
-		if (maxWatchUpdates > 0 && updateCount >= maxWatchUpdates) {
-			stopWatching();
-		}
-
-		return () => {
-			stopWatching();
-		};
-	}, [
-		highAccuracy,
-		maximumAge,
-		timeout,
-		watchPosition,
-		positionWatchTimeBuffer,
-		decimalPlaces,
-		maxWatchUpdates,
-	]);
-
-	return position;
+	return {
+		...webResult,
+		requestAndroidPermission: noopStable, // no native permission on web
+	};
 };
 
 export default useGeolocation;

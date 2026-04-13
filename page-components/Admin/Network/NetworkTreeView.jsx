@@ -1,4 +1,5 @@
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Icon } from "components/Icon";
 import { UserType } from "constants";
 import { useNetworkUsers } from "contexts";
 import useHslColor from "hooks/useHslColor";
@@ -15,11 +16,14 @@ import { MdFolderShared } from "react-icons/md";
 import { RiEBike2Fill } from "react-icons/ri";
 import { formatMobile } from "utils";
 import { getInitials } from "utils/textFormat";
-import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
-// import { useSet } from "hooks";
+import { NetworkMenu } from "./NetworkMenu/NetworkMenu";
+
+// Refresh throttling constants
+const REFRESH_THROTTLE = 2 * 60 * 1000; // 2 minutes
 
 /**
  * Show network users in an expandable tree view.
+ * @returns {JSX.Element} The tree view component
  * TODO: Add caching mechanism for the network users data in the NetworkUserContext.
  * TODO: Move logic for list to tree conversion from NetworkUsersContext to here so that data filtering can be done effectively, and the tree can be updated on the fly.
  */
@@ -39,10 +43,28 @@ const NetworkTreeView = () => {
 
 	// Fetch Network User List as a tree when tree-view is visible
 	useEffect(() => {
-		if (fetchedAt === null && !loading) {
-			refreshUserList();
-		}
-	}, [fetchedAt]);
+		refreshUserList();
+	}, [refreshUserList]);
+
+	const [now, setNow] = useState(Date.now());
+
+	// Update 'now' every 30 seconds to trigger re-renders for the timer
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setNow(Date.now());
+		}, 30 * 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	const timeSinceLastUpdate = fetchedAt
+		? now - new Date(fetchedAt).getTime()
+		: Infinity;
+	const showRefresh = timeSinceLastUpdate >= REFRESH_THROTTLE;
+
+	const handleRefresh = () => {
+		if (loading) return;
+		refreshUserList(true);
+	};
 
 	// Prepare the Tree View Data for react-complex-tree component
 	const dataProvider = useMemo(
@@ -86,7 +108,6 @@ const NetworkTreeView = () => {
 				w="100%"
 				gap={5}
 			>
-				{/* MARK: Tree Box */}
 				<Box
 					flex="3"
 					maxW="100%"
@@ -144,7 +165,7 @@ const NetworkTreeView = () => {
 						direction="column"
 						gap={3}
 						position={{ lg: "fixed" }}
-						top={{ lg: "268px" }}
+						// top={{ lg: "268px" }}
 					>
 						{/* MARK: Filters */}
 						{/* <Box
@@ -182,9 +203,9 @@ const NetworkTreeView = () => {
 						{/* MARK: Info */}
 						<Box
 							w={{ base: "100%", lg: "unset" }}
-							minW="280px"
+							minW="320px"
 							bg="white"
-							p={{ base: 3, md: 6 }}
+							p={{ base: 3, md: 5 }}
 							borderRadius={6}
 							shadow="md"
 						>
@@ -211,7 +232,7 @@ const NetworkTreeView = () => {
 											</Text>
 											{selectedItem?.meta?.mobile &&
 											selectedItem?.meta?.user_code ? (
-												<NetworkMenuWrapper
+												<NetworkMenu
 													mobile_number={
 														selectedItem?.meta
 															?.mobile
@@ -220,11 +241,14 @@ const NetworkTreeView = () => {
 														selectedItem?.meta
 															?.user_code
 													}
-													// account_status_id
-													agent_type={
+													account_status_id={
 														selectedItem?.meta
-															?.user_type
-													} // TODO: use user-type-id in NetworkMenuWrapper
+															?.account_status_id
+													}
+													user_type_id={
+														selectedItem?.meta
+															?.user_type_id
+													}
 												/>
 											) : null}
 										</Flex>
@@ -241,6 +265,17 @@ const NetworkTreeView = () => {
 												selectedItem?.meta?.mobile
 											)}
 										</Box>
+										{selectedItem?.meta?.account_status ? (
+											<Box>
+												<strong>
+													Account Status:{" "}
+												</strong>
+												{
+													selectedItem.meta
+														.account_status
+												}
+											</Box>
+										) : null}
 										{/* <Box>
 											<strong>User Code: </strong>
 											{selectedItem?.meta?.user_code}
@@ -262,16 +297,20 @@ const NetworkTreeView = () => {
 				</Box>
 			</Flex>
 
-			<Text
-				fontSize="xxs"
-				color="light"
-				mt="2em"
-				width="100%"
-				textAlign="center"
-			>
-				<strong>Last Updated:</strong>{" "}
-				{new Date(fetchedAt).toLocaleString()}
-			</Text>
+			<Flex justify="center" w="100%" gap={2} mt="2em">
+				<Text fontSize="xxs" color="light">
+					<strong>Last Updated:</strong>{" "}
+					{new Date(fetchedAt).toLocaleString()}
+				</Text>
+				{showRefresh ? (
+					<Icon
+						name="refresh"
+						size="xs"
+						onClick={handleRefresh}
+						_hover={{ cursor: "pointer" }}
+					/>
+				) : null}
+			</Flex>
 		</>
 	);
 };
@@ -280,12 +319,12 @@ const NetworkTreeView = () => {
  * Network Tree Item (Title) component
  * MARK: Tree Item
  * @param {object} props
- * @param {object} props.user User object (tree item)
- * @param props.data
- * @param props.count
- * @param props.isFolder
- * @param props.rootCategory
- * @param props.meta
+ * @param {*} props.data
+ * @param {number} props.count
+ * @param {boolean} props.isFolder
+ * @param {boolean} props.rootCategory
+ * @param {object} props.meta
+ * @returns {JSX.Element | null}
  */
 const NetworkTreeItem = ({
 	data,
@@ -323,7 +362,8 @@ const NetworkTreeItem = ({
 /**
  * Tag component to show user-type, user count, etc
  * @param {object} props - Props for the Tag component
- * @param {ReactNode} props.children - Child elements to be displayed inside the tag
+ * @param {React.ReactNode} props.children - Child elements to be displayed inside the tag
+ * @returns {JSX.Element}
  */
 const Tag = ({ children, ...rest }) => {
 	return (
@@ -347,10 +387,11 @@ const Tag = ({ children, ...rest }) => {
 /**
  * Tree item logo: show a folder icon for root folders or an avatar based on the user-type
  * MARK: Type Icon
- * @param {object} props
+ * @param {object} props - Properties
  * @param {boolean} props.rootCategory - Whether the item is a root category folder
  * @param {string} props.user_type - Type of the user
  * @param {number} props.user_type_id - ID of the user type
+ * @returns {JSX.Element}
  */
 function UserTypeIcon({ rootCategory, user_type, user_type_id }) {
 	const { h } = useHslColor(user_type);

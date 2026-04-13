@@ -58,8 +58,18 @@ export const fadeSlideInBottom50 = keyframes`
 	to { opacity: 1; transform: translateY(0); }
 `;
 
+export const fadeSlideInBottom12 = keyframes`
+	from { opacity: 0; transform: translateY(12px); }
+	to { opacity: 1; transform: translateY(0); }
+`;
+
 export const fadeSlideInTop100 = keyframes`
 	from { opacity: 0; transform: translateY(-100%); }
+	to { opacity: 1; transform: translateY(0); }
+`;
+
+export const fadeSlideInTop12 = keyframes`
+	from { opacity: 0; transform: translateY(-12px); }
 	to { opacity: 1; transform: translateY(0); }
 `;
 

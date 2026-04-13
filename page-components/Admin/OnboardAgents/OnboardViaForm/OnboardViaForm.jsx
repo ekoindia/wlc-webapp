@@ -119,7 +119,7 @@ const OnboardViaForm = ({
 		{
 			name: "agent_mobile",
 			label: "Mobile Number",
-			parameter_type_id: ParamType.TEXT,
+			parameter_type_id: ParamType.MOBILE,
 			validations: {
 				pattern: {
 					value: /^[6-9]{1}[0-9]{9}$/,
@@ -227,7 +227,6 @@ const OnboardViaForm = ({
 			label: "Save",
 			loading: isSubmitting,
 			disabled: !isValid || !isDirty,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",

@@ -24,9 +24,11 @@ import { Cell, Label, Pie, PieChart, Tooltip } from "recharts";
  */
 const TopPanel = ({ panelDataList }) => {
 	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
-	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
-	if (!isAiChatBotAllowed && !panelDataList?.length) return null;
+	const validPanelData =
+		panelDataList?.filter(
+			(item) => item && item.value !== null && item.value !== undefined
+		) || [];
 
 	return (
 		<XScrollArrow pos="center" mb="10px" ml="-30px" w="calc(100% + 60px)">
@@ -48,17 +50,11 @@ const TopPanel = ({ panelDataList }) => {
 				// }}
 			>
 				{/* AI Chat Bot Trigger – Ask AI */}
-				<AskAiCard />
+				{isAiChatBotAllowed ? <AskAiCard /> : null}
 
 				{/* Other Panel Data Items */}
-				{panelDataList
-					?.filter(
-						(item) =>
-							item &&
-							item.value !== null &&
-							item.value !== undefined
-					)
-					.map((item) => (
+				{validPanelData.length > 0 ? (
+					validPanelData.map((item) => (
 						<Flex
 							key={item.key}
 							bg="white"
@@ -140,74 +136,70 @@ const TopPanel = ({ panelDataList }) => {
 							</Flex>
 							<Flex align="center" position="relative">
 								{item.key === "activeOverall" ? (
-									showNewDashboard ? (
-										<PieChart
-											accessibilityLayer={false}
-											width={65}
-											height={65}
-											margin={{
-												top: 0,
-												right: 0,
-												bottom: 0,
-												left: 0,
-											}}
+									<PieChart
+										accessibilityLayer={false}
+										width={65}
+										height={65}
+										margin={{
+											top: 0,
+											right: 0,
+											bottom: 0,
+											left: 0,
+										}}
+										style={{ outline: "none" }}
+									>
+										<Pie
+											data={[
+												{
+													name: "Active Users",
+													value: item.value,
+												},
+												{
+													name: "Inactive Users",
+													value:
+														item.total - item.value,
+												},
+											]}
+											// cx="50%"
+											// cy="50%"
+											// radius={35}
+											// startAngle={360}
+											// endAngle={0}
+											outerRadius="100%"
+											innerRadius="70%" //{22}
+											cornerRadius={99}
+											paddingAngle={6}
+											minAngle={1}
+											dataKey="value"
+											nameKey="name"
+											tabIndex={-1}
 											style={{ outline: "none" }}
 										>
-											<Pie
-												data={[
-													{
-														name: "Active Users",
-														value: item.value,
-													},
-													{
-														name: "Inactive Users",
-														value:
-															item.total -
-															item.value,
-													},
-												]}
-												// cx="50%"
-												// cy="50%"
-												// radius={35}
-												// startAngle={360}
-												// endAngle={0}
-												outerRadius="100%"
-												innerRadius="70%" //{22}
-												cornerRadius={99}
-												paddingAngle={6}
-												minAngle={1}
-												dataKey="value"
-												nameKey="name"
-												tabIndex={-1}
-												style={{ outline: "none" }}
-											>
-												{item.value > 0 && (
-													<Cell fill="#4ECDC4" />
-												)}
-												{item.total - item.value >
-													0 && (
-													<Cell fill="#FF6B6B" />
-												)}
-											</Pie>
-											{/* Show a label at the center of the piechart */}
-											<Label
-												position="center"
-												fontSize="0.7em"
-												fontWeight="700"
-											>
-												{`${(
-													(item.value / item.total) *
-													100
-												).toFixed(0)}%`}
-											</Label>
-											<Tooltip
-												contentStyle={{
-													fontSize: "0.6em",
-													padding: "0 8px",
-												}}
-											/>
-										</PieChart>
-									) : null
+											{item.value > 0 && (
+												<Cell fill="#4ECDC4" />
+											)}
+											{item.total - item.value > 0 && (
+												<Cell fill="#FF6B6B" />
+											)}
+										</Pie>
+										{/* Show a label at the center of the piechart */}
+										<Label
+											position="center"
+											fontSize="0.7em"
+											fontWeight="700"
+										>
+											{`${(
+												(item.value / item.total) *
+												100
+											).toFixed(0)}%`}
+										</Label>
+										<Tooltip
+											contentStyle={{
+												fontSize: "0.6em",
+												padding: "0 8px",
+											}}
+										/>
+									</PieChart>
 								) : (
 									<IcoButton
 										size="md"
@@ -219,7 +211,10 @@ const TopPanel = ({ panelDataList }) => {
 								)}
 							</Flex>
 						</Flex>
-					))}
+					))
+				) : (
+					<NoDataCard />
+				)}
 			</Grid>
 		</XScrollArrow>
 	);
@@ -269,6 +264,30 @@ const AskAiCard = () => {
 					BETA
 				</Text>
 			</Flex>
+		</Flex>
+	);
+};
+
+const NoDataCard = () => {
+	return (
+		<Flex
+			bg="white"
+			direction="column"
+			justify="center"
+			align="center"
+			p="12px 48px"
+			border="basic"
+			borderRadius="10px"
+			minW="250px"
+			minH="82px"
+			h="100%"
+		>
+			<Text fontSize="sm" fontWeight="bold" color="gray.600">
+				No data found for this time range
+			</Text>
+			<Text fontSize="sm" color="gray.500">
+				Try choosing a different date range
+			</Text>
 		</Flex>
 	);
 };

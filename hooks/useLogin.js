@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useAppSource, useUser } from "contexts";
+import { useAppSource, useOrgDetailContext, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 import { parseEnvBoolean } from "utils/envUtils";
@@ -10,12 +10,23 @@ import { parseEnvBoolean } from "utils/envUtils";
  * @param {Function} login - The login function to call
  * @param {Function} setStep - Function to set the current step in the login process
  * @param {Function} setEmail - Function to set the email address for social login
+ * @param {Function} setCachedSocialResponse - Function to set the cached social login response (used for mobile verification in social login)
+ * @returns {[boolean, Function]} - Array containing busy state and submitLogin function
  */
-function useLogin(login, setStep, setEmail) {
+function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
+
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail || {};
+	const { disable_self_onboarding } = metadata || {};
+
+	const isSelfOnboardingDisabled =
+		disable_self_onboarding?.value ||
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
+		false;
 
 	/**
 	 * Login the user by fetching user profile & tokens.
@@ -25,6 +36,7 @@ function useLogin(login, setStep, setEmail) {
 	 * @param {string} data.id_token The login id token for validation (OTP or Gmail token)
 	 * @param {string} data.mobile The user's mobile number (for Mobile login)
 	 * @param {string} data.org_id The organization ID
+	 * @param {string} data.org_token A JWT token with org details (including org_id)
 	 * @param {string} data.google_token_type The type of Google token ("credential" or "code")
 	 */
 	function submitLogin(data) {
@@ -50,7 +62,11 @@ function useLogin(login, setStep, setEmail) {
 			}
 		)
 			.then((responseData) => {
-				console.log("LOGIN RESPONSE >>>> ", responseData);
+				console.log("[useLogin] LOGIN RESPONSE >>>> ", {
+					responseData,
+					data,
+				});
+				console.log("LOGIN RESPONSE >>>> ", { data, responseData });
 
 				if (
 					!(
@@ -59,12 +75,17 @@ function useLogin(login, setStep, setEmail) {
 							responseData.details &&
 							responseData.access_token
 						) // &&
+						// responseData.loggedIn === true
+						// &&
 						// responseData.details.code &&
 						// responseData.details.mobile &&
 						// responseData.details.mobile.toString().length > 6
 					)
 				) {
+					console.log("[useLogin] access_token not found.");
+
 					if (responseData.otpFailed) {
+						console.log("[useLogin] Wrong OTP.");
 						toast({
 							title: "Wrong OTP. Please try again.",
 							status: "error",
@@ -74,6 +95,7 @@ function useLogin(login, setStep, setEmail) {
 					}
 
 					if (responseData.accountInactive) {
+						console.log("[useLogin] Account is inactive.");
 						toast({
 							title: "Your account has been temporarily blocked.",
 							description: "Please contact support.",
@@ -84,24 +106,18 @@ function useLogin(login, setStep, setEmail) {
 						return;
 					}
 
-					if (
-						responseData?.details?.user_type === -1 &&
-						data?.id_type === "Google"
-					) {
-						console.log("Setting states");
-
-						setStep("SOCIAL_VERIFY");
-						setEmail(responseData.details.email);
-						return;
-					}
-
 					// if (responseData.details.mobile === "1") {
 					// 	processLoginResponse(responseData);
 					// 	router.push("/signup");
 					// 	return;
 					// }
 					// TODO: Start Onboarding Process
+					console.log("[useLogin] Login Failed → Back to Login");
+
 					// Login Failed
+					console.log(
+						"[useLogin] Verification Failed. Go Back to Login."
+					);
 					toast({
 						title: "Login failed.",
 						status: "error",
@@ -111,28 +127,66 @@ function useLogin(login, setStep, setEmail) {
 					return;
 				}
 
+				if (
+					responseData?.details?.onboarding == 1 &&
+					responseData?.details?.user_type === -1 &&
+					data?.id_type === "Google"
+				) {
+					console.log(
+						"[useLogin] Social Login: Need to verify mobile"
+					);
+					setStep("SOCIAL_VERIFY");
+					setEmail(responseData.details.email);
+					setCachedSocialResponse(responseData);
+					return;
+				}
+
 				// Disable onboarding if Self-Onboarding is not allowed
 				if (
 					responseData?.details?.onboarding == 1 &&
 					!responseData?.details?.code &&
-					parseEnvBoolean(
-						process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING
-					)
+					isSelfOnboardingDisabled
 				) {
+					console.log(
+						"[useLogin] Self-Onboarding Disabled → User Not Found → Back to Login"
+					);
 					toast({
 						title: "User not found!",
 						status: "error",
 						duration: 6000,
 					});
 					setStep("LOGIN");
+					console.log(
+						"[useLogin] Verification Failed. Self-Onboarding is disabled"
+					);
 					return;
 				}
 
-				// Login Success
+				// Social Signup → Verify mobile number before starting signup process
+				// MARK: New Gmail
+				if (
+					responseData?.details?.user_type === -1 &&
+					data?.id_type === "Google" &&
+					responseData?.details?.email
+				) {
+					console.log(
+						"[useLogin] Google Login → Social Verify (mobile number verification)."
+					);
+					setStep("SOCIAL_VERIFY");
+					setEmail(responseData.details.email);
+					setCachedSocialResponse(responseData);
+					return;
+				}
+
+				// Login Success (or, signup of new user)
+				// MARK: Success
+				console.log(
+					"[useLogin] Login Successful → Processing Login Response (dispatch `LOGIN` to UserReducer)"
+				);
 				processLoginResponse(responseData);
 			})
 			.catch((e) => {
-				console.error("Login Error:", e);
+				console.error("[useLogin] Login Error:", e);
 				// TODO: Show toast message with server error (<Err object>.body.message - parse `body` from string to JSON)
 				toast({
 					title: "Login failed. Try again or contact support.",

@@ -11,10 +11,11 @@ import { Endpoints, ParamType } from "constants";
 import { nameValidation, shopNameValidation } from "constants/validation";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useLocalStorage, useShopTypes } from "hooks";
+import { useShopTypes } from "hooks";
 import { formatDate } from "libs";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -86,9 +87,6 @@ thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
 const UpdatePersonalInfo = () => {
-	const [agentData, setAgentData] = useLocalStorage(
-		"oth_last_selected_agent"
-	);
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
@@ -99,6 +97,10 @@ const UpdatePersonalInfo = () => {
 	const router = useRouter();
 	const { query } = router;
 	const mobile = query.mobile;
+
+	// Use the agent details hook with session caching
+	const { agent: agentData, refetch: refetchAgentData } =
+		useAgentDetails(mobile);
 
 	const {
 		handleSubmit,
@@ -119,30 +121,6 @@ const UpdatePersonalInfo = () => {
 		watcher?.shop_type?.dependent_params?.find(
 			(param) => param.name === "shop_name"
 		)?.is_visible === 1;
-
-	const fetchAgentDataViaCellNumber = useCallback(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=1&search_value=${encodeURIComponent(mobile)}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				setAgentData(res?.data?.agent_details[0]);
-			})
-			.catch((error) => {
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
-			});
-	}, [accessToken, mobile, setAgentData]);
-
-	useEffect(() => {
-		// if agentData is not available, fetch it using the cell number
-		if (!agentData) {
-			fetchAgentDataViaCellNumber();
-		}
-	}, [agentData, fetchAgentDataViaCellNumber]);
 
 	useEffect(() => {
 		if (agentData !== undefined) {
@@ -232,26 +210,9 @@ const UpdatePersonalInfo = () => {
 					isClosable: true,
 				});
 
-				let storedData = JSON.parse(
-					localStorage.getItem("oth_last_selected_agent")
-				);
-
-				let personal_info = {
-					...storedData.personal_information,
-				};
-
-				Object.entries(finalData).map(([key, value]) => {
-					personal_info[key] = value;
-				});
-
-				storedData.personal_information = personal_info;
-
-				localStorage.setItem(
-					"oth_last_selected_agent",
-					JSON.stringify({ ...storedData })
-				);
-
 				if (response?.status == 0) {
+					// Refetch agent data to get fresh updates
+					refetchAgentData();
 					router.push(
 						"/admin/my-network/profile?mobile=" +
 							agentData.agent_mobile
@@ -351,13 +312,6 @@ const UpdatePersonalInfo = () => {
 			type: "submit",
 			size: "lg",
 			label: "Preview",
-			styles: {
-				h: "64px",
-				w: {
-					base: "100%",
-					md: "200px",
-				},
-			},
 		},
 		{
 			variant: "link",
@@ -391,7 +345,6 @@ const UpdatePersonalInfo = () => {
 			label: "Save",
 			onClick: () => handleFormSubmit(),
 			loading: isSubmitting,
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
 			variant: "link",
