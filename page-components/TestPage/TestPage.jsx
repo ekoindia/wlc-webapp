@@ -20,7 +20,7 @@ import {
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Form, Pintwin, Value } from "tf-components";
+import { Form, Pintwin, UidaiFingerprintScanner, Value } from "tf-components";
 
 /**
  * A '/test' page-component
@@ -950,6 +950,38 @@ const JsonViewerTest = () => {
 	);
 };
 
+/**
+ * Test UidaiFingerprintScanner component
+ * MARK: FingerprintScannerTest
+ */
+const FingerprintScannerTest = () => {
+	const [capturedValue, setCapturedValue] = useState("");
+	const [isValid, setIsValid] = useState(false);
+
+	return (
+		<Flex direction="column" gap={4}>
+			<UidaiFingerprintScanner
+				label="Fingerprint"
+				required
+				onChange={(value, decorated) => {
+					console.log("[TestPage] Fingerprint captured:", decorated);
+					console.log("[TestPage] value", value);
+					setCapturedValue(decorated);
+				}}
+				onValidation={setIsValid}
+			/>
+			<Text fontSize="xs" color="gray.500">
+				Valid: {isValid ? "Yes" : "No"}
+			</Text>
+			{capturedValue ? (
+				<Text fontSize="xs" color="success">
+					{capturedValue}
+				</Text>
+			) : null}
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -1012,6 +1044,10 @@ const TestComponents = [
 	{
 		title: "JSON Viewer",
 		component: JsonViewerTest,
+	},
+	{
+		title: "Fingerprint Scanner",
+		component: FingerprintScannerTest,
 	},
 ];
 

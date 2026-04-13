@@ -38,6 +38,7 @@ const JsonNode = memo(function JsonNode({
 	variant,
 	keyOverrides,
 	valueTransforms,
+	rootCollapsible = false,
 }: JsonNodeProps & { onCopyRoot?: (_jsonString: string) => void }) {
 	// Determine initial expanded state based on level
 	const shouldStartExpanded = level < collapseAfterLevel;
@@ -47,6 +48,7 @@ const JsonNode = memo(function JsonNode({
 	const isExpandable = valueType === "object" || valueType === "array";
 	const isCircular = isExpandable && isCircularReference(value, ancestors);
 	const isRoot = level === 0;
+	const isRootToggleable = !isRoot || rootCollapsible;
 
 	// Calculate updated ancestors for children (add current value if it's an object/array)
 	const childAncestors = useMemo(() => {
@@ -152,7 +154,7 @@ const JsonNode = memo(function JsonNode({
 		fontSize: "13px",
 		lineHeight: "1.6",
 		// Tree line
-		...(hasTreeLine && level > 0
+		...(hasTreeLine && level > 0 && variant !== "plain"
 			? {
 					_before: {
 						content: '""',
@@ -215,6 +217,7 @@ const JsonNode = memo(function JsonNode({
 	const openBracket = showBrackets ? (isArray ? "[" : "{") : "";
 	const closeBracket = showBrackets ? (isArray ? "]" : "}") : "";
 	const isEmpty = children.length === 0;
+	const isInteractive = !isEmpty && isRootToggleable;
 	const collectionInfo = getCollectionInfo(value as object);
 
 	return (
@@ -223,16 +226,16 @@ const JsonNode = memo(function JsonNode({
 			<Flex
 				{...getRowStyles(!isRoot)}
 				align="center"
-				cursor={isEmpty ? "default" : "pointer"}
-				onClick={isEmpty ? undefined : handleToggle}
-				onKeyDown={isEmpty ? undefined : handleKeyDown}
-				tabIndex={isEmpty ? -1 : 0}
+				cursor={isInteractive ? "pointer" : "default"}
+				onClick={isInteractive ? handleToggle : undefined}
+				onKeyDown={isInteractive ? handleKeyDown : undefined}
+				tabIndex={isInteractive ? 0 : -1}
 				borderRadius="sm"
-				_hover={isEmpty ? {} : { bg: "blackAlpha.50" }}
+				_hover={isInteractive ? { bg: "blackAlpha.50" } : {}}
 				_focus={{ outline: "none" }}
 			>
 				{/* Chevron icon */}
-				{!isEmpty && (
+				{isInteractive && (
 					<Box
 						as="span"
 						mr="4px"
@@ -293,7 +296,7 @@ const JsonNode = memo(function JsonNode({
 						position="relative"
 						// Vertical line for children
 						_before={
-							level >= 0
+							level >= 0 && variant !== "plain"
 								? {
 										content: '""',
 										position: "absolute",
@@ -321,6 +324,7 @@ const JsonNode = memo(function JsonNode({
 									variant={variant}
 									keyOverrides={keyOverrides}
 									valueTransforms={valueTransforms}
+									rootCollapsible={rootCollapsible}
 								/>
 							))}
 					</Box>

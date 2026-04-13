@@ -59,6 +59,14 @@ export const ANDROID_ACTION = {
 	RDSERVICE_DISCOVERY_FAILED: "rdservice_discovery_failed",
 	RDSERVICE_INFO: "rdservice_info",
 	CAPTURE_RDSERVICE: "capture_rdservice",
+
+	// Iris Authentication
+	DISCOVER_IRIS_RDSERVICE: "discover_iris_rdservice",
+	CAPTURE_IRIS_RDSERVICE: "capture_iris_rdservice",
+
+	// Face Authentication
+	CAPTURE_FACE_RDSERVICE: "capture_face_rdservice",
+
 	RDSERVICE_RESP: "rdservice_resp",
 
 	FCM_PUSH_REGISTER_TOKEN: "fcm_push_token",

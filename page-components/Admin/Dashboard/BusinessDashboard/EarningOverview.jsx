@@ -10,8 +10,9 @@ import {
 import { Currency, WaffleChart } from "components";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants";
-import { useApiFetch, useFeatureFlag } from "hooks";
-import { useEffect, useRef, useState } from "react";
+import { isToday } from "date-fns";
+import { useApiFetch, useDailyCacheState, useFeatureFlag } from "hooks";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
 // Product Chart Colors
@@ -27,9 +28,11 @@ const COLORS = [
 	"#fd7f6f",
 ];
 
+const earningOverviewLocalCacheKey = "inf-dashboard-business-overview";
+
 // Helper function to generate cache key
-const getCacheKey = (productFilter, dateFrom, dateTo) => {
-	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
+const getCacheKey = (prefix, dateFrom, dateTo, productFilter) => {
+	return `${prefix}-${dateFrom.substring(0, 10)}-${dateTo.substring(0, 10)}-${productFilter || "all"}`;
 };
 
 /**
@@ -101,7 +104,43 @@ const EarningOverview = ({
 
 	const [isEkoShieldEnabled] = useFeatureFlag("EKO_SHIELD");
 
+	const [earningOverviewCache, setEarningOverviewCache, isCacheValid] =
+		useDailyCacheState(earningOverviewLocalCacheKey, {});
+
+	const isTodayRange = isToday(dateFrom) && isToday(dateTo);
+
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
+	const cacheKey = useMemo(
+		() =>
+			getCacheKey(
+				earningOverviewLocalCacheKey,
+				dateFrom,
+				dateTo,
+				productFilter
+			),
+		[productFilter, dateFrom, dateTo]
+	);
+
+	const updateEarningOverviewCache = (_data) => {
+		const updatedCache = {
+			...(earningOverviewCache || {}),
+			data: {
+				...(earningOverviewCache?.data || {}),
+				[cacheKey]: _data,
+			},
+		};
+
+		setEarningOverviewCache(updatedCache);
+
+		setBusinessDashboardData((prev) => ({
+			...prev,
+			earningOverviewCache: {
+				...(prev?.earningOverviewCache || {}),
+				[cacheKey]: _data,
+			},
+		}));
+	};
 
 	// MARK: API Handler
 	const [fetchEarningOverviewData, isLoading] = useApiFetch(
@@ -111,16 +150,7 @@ const EarningOverview = ({
 				const _data =
 					res?.data?.dashboard_object?.products_overview || [];
 
-				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
-
-				// Cache data for future use
-				setBusinessDashboardData((prev) => ({
-					...prev,
-					earningOverviewCache: {
-						...(prev.earningOverviewCache || {}),
-						[cacheKey]: _data,
-					},
-				}));
+				updateEarningOverviewCache(_data);
 
 				setEarningOverviewData(_data);
 
@@ -223,23 +253,49 @@ const EarningOverview = ({
 			prevDateRef.current = { dateFrom, dateTo };
 		}
 
-		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+		const _typeid = productFilter ? { typeid: productFilter } : {};
 
-		// Use cached data if available
+		if (isTodayRange) {
+			// For today's data, always fetch fresh data and skip cache
+			fetchEarningOverviewData({
+				body: {
+					interaction_type_id: 682,
+					requestPayload: {
+						products_overview: {
+							datefrom: dateFrom,
+							dateto: dateTo,
+							..._typeid,
+						},
+					},
+				},
+			});
+
+			return;
+		}
+
+		// Step 1: in-memory context cache (fastest)
 		const cachedData =
 			businessDashboardData?.earningOverviewCache?.[cacheKey];
-		if (cachedData) {
+		if (cachedData !== undefined) {
+			// Cache exists, even if empty
 			setEarningOverviewData(cachedData);
-			// Inform parent component
 			if (!productFilter) {
 				setTotalBusiness(cachedData);
 			}
 			return;
 		}
 
-		const _typeid = productFilter ? { typeid: productFilter } : {};
+		// Step 2: localStorage cache check
+		if (isCacheValid && earningOverviewCache?.data?.[cacheKey]) {
+			updateEarningOverviewCache(earningOverviewCache.data[cacheKey]);
+			setEarningOverviewData(earningOverviewCache.data[cacheKey]);
+			if (!productFilter) {
+				setTotalBusiness(earningOverviewCache.data[cacheKey]);
+			}
+			return;
+		}
 
-		// Fetch data only when not cached
+		// Step 3: Fetch fresh data from API
 		fetchEarningOverviewData({
 			body: {
 				interaction_type_id: 682,
@@ -252,12 +308,7 @@ const EarningOverview = ({
 				},
 			},
 		});
-	}, [
-		dateFrom,
-		dateTo,
-		productFilter,
-		businessDashboardData?.earningOverviewCache,
-	]);
+	}, [dateFrom, dateTo, cacheKey, isTodayRange]);
 
 	const earningOverviewList = [
 		{
