@@ -8,9 +8,6 @@ import {
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
-	getModalStyle,
-	getNameStyle,
-	getPaymentStyle,
 	getStatusStyle,
 	getTrxnSummaryStyle,
 } from "helpers";
@@ -18,8 +15,8 @@ import {
 /**
  * Returns the default view component for a given parameter type id.
  * TODO: Remove "view" components in favor of <Value> component that directly uses the parameter-type-id. Allow custom value-renderer components to be passed to <Value> component (or, prefix/postfix components).
- * @param {number} parameter_type_id
- * @returns
+ * @param {number} parameter_type_id - The ID of the parameter type
+ * @returns {string|null} The view component string or null
  */
 const getViewComponent = (parameter_type_id) => {
 	switch (parameter_type_id) {
@@ -38,15 +35,15 @@ const getViewComponent = (parameter_type_id) => {
 };
 
 /**
- *
- * @param {*} item
- * @param {*} column
+ * Prepares the content for a history table cell.
+ * @param {object} item - The data item for the current row
+ * @param {object} column - The column configuration object
  * @param {number} index - Table row index
- * @param {number} serialNo
- * @param expandedRow
- * @param icon
- * @param hue
- * @returns
+ * @param {number} serialNo - The serial number for the row
+ * @param {number} expandedRow - The index of the currently expanded row
+ * @param {string} icon - The icon to display
+ * @param {number} hue - The hue for color styling
+ * @returns {React.ReactNode} The formatted React node for the cell
  */
 export const prepareTableCell = (
 	item,
@@ -57,10 +54,6 @@ export const prepareTableCell = (
 	icon,
 	hue
 ) => {
-	const account_status = item?.account_status;
-	const eko_code = item?.profile?.eko_code ?? [];
-	const trx_type = item?.debit_credit || item?.trx_type;
-
 	let value = "";
 
 	if (!(item && column)) {
@@ -69,6 +62,19 @@ export const prepareTableCell = (
 
 	if (column.name) {
 		value = item[column.name] || "";
+	}
+
+	// Delegate custom rendering directly to the column definition
+	if (typeof column?.render === "function") {
+		return column.render(
+			item,
+			column,
+			index,
+			serialNo,
+			expandedRow,
+			icon,
+			hue
+		);
 	}
 
 	// If a component to render the value is not provided, use the component based on the parameter type
@@ -84,8 +90,6 @@ export const prepareTableCell = (
 			return getTrxnSummaryStyle(item, icon, hue);
 		case "Tag":
 			return getStatusStyle(value, "History");
-		case "Modal":
-			return getModalStyle(eko_code, account_status);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index, column.center);
 		case "IconButton":
@@ -94,15 +98,10 @@ export const prepareTableCell = (
 				item?.address_details?.lattitude,
 				item?.address_details?.longitude
 			);
-		case "Avatar":
-			// Name with avatar
-			return getNameStyle(value, icon, hue);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
 			return getAmountStyle(value);
-		case "Payment":
-			return getPaymentStyle(value, trx_type);
 		case "Description":
 			return getDescriptionStyle(value);
 		case "Date":
@@ -116,8 +115,8 @@ export const prepareTableCell = (
 
 /**
  * Show the column on screen?
- * @param {number} display_media_id
- * @returns
+ * @param {number} display_media_id - The ID indicating display media type
+ * @returns {boolean} Whether to show on screen
  */
 export const showOnScreen = (display_media_id) => {
 	display_media_id = display_media_id ?? DisplayMedia.BOTH;
@@ -129,8 +128,8 @@ export const showOnScreen = (display_media_id) => {
 
 /**
  * Show the column in print?
- * @param {number} display_media_id
- * @returns
+ * @param {number} display_media_id - The ID indicating display media type
+ * @returns {boolean} Whether to show in print
  */
 export const showInPrint = (display_media_id) => {
 	display_media_id = display_media_id ?? DisplayMedia.BOTH;
@@ -142,8 +141,8 @@ export const showInPrint = (display_media_id) => {
 
 /**
  * Convert a history row into sharable text message
- * @param {Array} extraColumns
- * @param {object} item	The current history row name/value pairs
+ * @param {Array<object>} extraColumns - Array of column configurations to include
+ * @param {object} item	- The current history row name/value pairs
  * @returns {string} The sharable text message
  */
 export const generateShareMessage = (extraColumns, item) => {

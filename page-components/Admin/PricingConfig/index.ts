@@ -7,6 +7,7 @@ export {
 } from "./PricingConfigContext";
 export {
 	AGENT_TYPES,
+	getFilteredOperationTypeOptions,
 	OPERATION,
 	OPERATION_TYPE_OPTIONS,
 	PRICING_TYPE_OPTIONS,

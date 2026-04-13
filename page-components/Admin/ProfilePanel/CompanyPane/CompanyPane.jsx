@@ -260,6 +260,7 @@ const CompanyPane = ({ data }) => {
 		plan_name,
 		wallet_balance,
 		account_status,
+		demo_account_expiry_date,
 		docs,
 	} = data ?? {};
 
@@ -308,6 +309,11 @@ const CompanyPane = ({ data }) => {
 		{ id: 1, label: "Account Status", value: account_status },
 		{ id: 2, label: "Type", value: userTypeLabel },
 		{ id: 3, label: "Plan", value: plan_name },
+		{
+			id: 4,
+			label: "Valid Till",
+			value: demo_account_expiry_date,
+		},
 	];
 
 	if (isMobileMappedUserId) {

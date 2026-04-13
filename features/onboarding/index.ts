@@ -7,6 +7,9 @@
  * - Role selection and step configuration
  */
 
+// Contracts (service interface for dependency injection)
+export type { OnboardingServices } from "./contracts";
+
 // Components
 export { OnboardingSteps, OnboardingWidget, RoleSelection } from "./components";
 

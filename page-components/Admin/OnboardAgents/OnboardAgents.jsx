@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
-import { useSession } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { useFeatureFlag, useUserTypes } from "hooks";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
@@ -28,10 +28,14 @@ const OnboardAgents = () => {
 	const { getUserTypeLabel } = useUserTypes();
 	const [isDemoOnBoardEnabled] = useFeatureFlag("DEMO_ACCOUNT");
 
+	// Get org metadata for filtering agent types
+	const { orgDetail } = useOrgDetailContext();
+	const userTypesMetadata = orgDetail?.metadata?.user_type;
+
 	// Get permissions based on user role - determines which agent types the user can onboard
 	const permissions = useMemo(() => {
-		return getOnboardingPermissions(isAdmin, userType);
-	}, [isAdmin, userType]);
+		return getOnboardingPermissions(isAdmin, userType, userTypesMetadata);
+	}, [isAdmin, userType, userTypesMetadata]);
 
 	// Dynamically generate page title based on allowed agent types
 	// If multiple agent types are allowed, title is generic "Onboard Agents"

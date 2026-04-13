@@ -197,6 +197,18 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/configurations",
 	},
 
+	{
+		id: 217,
+		label: "My Digi Khata Wallet",
+		icon: "wallet",
+		link: "/admin/products/digikhata",
+		summary:
+			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
+		fullDescription:
+			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
+		beta: true,
+	},
+
 	// TODO: DEMO: TSP Bank Features
 	{
 		id: 600,
@@ -294,6 +306,17 @@ export const sidebarMenu: sidebarMenuType[] = [
 		link: "/products/inventory/manage",
 		summary: "Manage inventory for your agents",
 		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 217,
+		label: "My Digi Khata Wallet",
+		icon: "wallet",
+		link: "/products/digikhata",
+		summary:
+			"Manage your Digi Khata wallet — instant and secure transfers to any bank account in India.",
+		fullDescription:
+			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
 		beta: true,
 	},
 	// {

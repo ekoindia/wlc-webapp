@@ -5,6 +5,7 @@ import { Button } from "components/Button";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
+import type { OnboardingServices } from "../contracts";
 import { getOnboardingStepsFromData, getUserTypeFromData } from "../utils";
 import OnboardingSkeleton from "./OnboardingSkeleton";
 import OnboardingSteps from "./OnboardingSteps";
@@ -27,6 +28,12 @@ interface OnboardingWidgetProps {
 	agentMobile?: string;
 	allowedMerchantTypes?: number[];
 	refreshAgentProfile: () => Promise<void>;
+	/** Injected services from the host app */
+	services: OnboardingServices;
+	/** Org metadata for onboarding config (disabled steps, skippable steps, etc.) */
+	orgMetadataOnboarding?: any;
+	/** Whether self-onboarding is disabled */
+	isSelfOnboardingDisabled?: boolean;
 }
 
 /**
@@ -56,8 +63,16 @@ const OnboardingWidget = ({
 	agentMobile,
 	allowedMerchantTypes,
 	refreshAgentProfile,
+	services,
+	orgMetadataOnboarding,
+	isSelfOnboardingDisabled: isSelfOnboardingDisabledProp = false,
 }: OnboardingWidgetProps): JSX.Element => {
 	const [_selectedRole, setSelectedRole] = useState<string>("");
+
+	const isSelfOnboardingDisabled =
+		isSelfOnboardingDisabledProp ||
+		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING) ||
+		false;
 
 	// Fetch geolocation early on widget mount
 	const { latitude, longitude, accuracy } = useGeolocation({
@@ -89,6 +104,12 @@ const OnboardingWidget = ({
 		? assistedAgentDetails
 		: userData;
 
+	// Get user type from user data
+	const userType = useMemo(
+		() => getUserTypeFromData(onboardingUserDetails),
+		[onboardingUserDetails]
+	);
+
 	// React to userData changes after refresh to determine correct step
 	useEffect(() => {
 		// Get onboarding steps from user data
@@ -96,14 +117,12 @@ const OnboardingWidget = ({
 			onboardingUserDetails
 		);
 
-		const userType = getUserTypeFromData(onboardingUserDetails);
-
-		console.log("[OnboardingWidget] Step determination:", {
-			onboardingSteps,
-			onboardingUserDetails,
-			isAssistedOnboarding,
-			userType,
-		});
+		// console.log("[OnboardingWidget] Step determination:", {
+		// 	onboardingSteps,
+		// 	onboardingUserDetails,
+		// 	isAssistedOnboarding,
+		// 	userType,
+		// });
 
 		// Determine which step to show based on data
 		if (onboardingSteps?.length > 0) {
@@ -124,7 +143,8 @@ const OnboardingWidget = ({
 
 	if (
 		isAssistedOnboarding !== true &&
-		parseEnvBoolean(process.env.NEXT_PUBLIC_DISABLE_SELF_ONBOARDING)
+		userType === -1 && // Role not selected
+		isSelfOnboardingDisabled
 	) {
 		// Self-onboarding is disabled for this app instance.
 		return (
@@ -160,6 +180,8 @@ const OnboardingWidget = ({
 						agentMobile={agentMobile}
 						allowedMerchantTypes={allowedMerchantTypes}
 						refreshAgentProfile={refreshAgentProfile}
+						accessToken={services.accessToken}
+						generateNewToken={services.generateNewToken}
 					/>
 				);
 			case "KYC_FLOW":
@@ -170,6 +192,8 @@ const OnboardingWidget = ({
 						assistedAgentDetails={assistedAgentDetails}
 						refreshAgentProfile={refreshAgentProfile}
 						initialLatLong={initialLatLong}
+						services={services}
+						orgMetadataOnboarding={orgMetadataOnboarding}
 					/>
 				);
 			default:

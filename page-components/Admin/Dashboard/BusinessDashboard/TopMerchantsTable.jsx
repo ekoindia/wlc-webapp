@@ -303,7 +303,7 @@ const MerchantRow = ({
 				<HorizontalBarChart
 					value={merchantRevenue}
 					total={totalRevenue}
-					label="Revenue"
+					label="Revenue/Charges"
 					isCurrency
 					color="#e27c7c"
 					flex="2"

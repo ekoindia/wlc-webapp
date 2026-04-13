@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
-import { NetworkMenuWrapper } from "..";
+import { NetworkMenu } from "../NetworkMenu/NetworkMenu";
 
 /**
  * A <NetworkCard> component
@@ -38,7 +38,7 @@ const NetworkCard = ({ item }) => {
 						account_status_id
 					)}
 				</Box>
-				<NetworkMenuWrapper
+				<NetworkMenu
 					{...{
 						mobile_number,
 						eko_code,

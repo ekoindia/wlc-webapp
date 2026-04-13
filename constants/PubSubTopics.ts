@@ -21,4 +21,11 @@ export const PubSubTopics = {
 	 * Show "Raise Issue" dialog.
 	 */
 	SHOW_RAISE_ISSUE: "show.raise.issue",
+
+	/**
+	 * Signal all mounted Pintwin components to refresh their encryption keys.
+	 * Publish this topic when a transaction containing a Pintwin field fails,
+	 * as the server invalidates the key after each attempt.
+	 */
+	REFRESH_PINTWIN: "refresh.pintwin",
 };
