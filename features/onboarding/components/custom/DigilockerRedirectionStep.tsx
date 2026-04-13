@@ -68,6 +68,7 @@ const DigilockerRedirectionStep = ({
 				"tf-req-method": "POST",
 				"tf-req-uri": "/karza/digilocker-redirection-url",
 				"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
+				"x-forwarded-proto": "http",
 			},
 		});
 
