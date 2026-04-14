@@ -15,7 +15,7 @@ import {
 	useState,
 } from "react";
 
-const MAX_FETCH_FAILURES = 5;
+const MAX_FETCH_FAILURES = 1;
 const FETCH_COOLDOWN_MS = 5 * 60 * 1000;
 
 /**
