@@ -3,7 +3,7 @@ import {
 	Alert,
 	AlertIcon,
 	Box,
-	Button,
+	Divider,
 	Flex,
 	NumberInput,
 	NumberInputField,
@@ -12,10 +12,16 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { Icon, JsonViewer } from "components";
+import { Button, Icon, JsonViewer, PrintReceipt, Share } from "components";
 import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
+import { historyParametersMetadata } from "page-components/History/HistoryTable/historyParametersMetadata";
+import {
+	showInPrint,
+	showOnScreen,
+} from "page-components/History/HistoryTable/historyUtils";
 import { useState } from "react";
 import { Pintwin } from "tf-components/Pintwin";
+import { printPage } from "utils";
 import { OtpModal } from "../../components/OtpModal";
 import { StepHeader } from "../../components/StepHeader";
 import { ANIMATION, OTP_MODAL_TITLES } from "../../constants";
@@ -30,7 +36,7 @@ interface FundTransferStepProps {
 type TransferStatus = "idle" | "pending" | "success" | "failed";
 
 const MIN_AMOUNT = 100;
-const MAX_AMOUNT = 200000;
+const MAX_AMOUNT = 49800;
 
 interface TransferStatusCardProps {
 	status: Exclude<TransferStatus, "idle">;
@@ -48,17 +54,17 @@ const TransferStatusCard = ({
 	const isSuccess = status === "success";
 	const isPending = status === "pending";
 
-	const borderColor = isSuccess
-		? "rgba(0, 195, 65, 0.4)"
-		: isPending
-			? "blue.200"
-			: "rgba(255, 64, 129, 0.4)";
-
-	const bg = isSuccess
+	const headerBg = isSuccess
 		? "linear-gradient(rgba(0, 195, 65, 0.15), rgba(0, 195, 65, 0.15)), white"
 		: isPending
 			? "blue.50"
 			: "linear-gradient(rgba(255, 64, 129, 0.15), rgba(255, 64, 129, 0.15)), white";
+
+	const headerBorderColor = isSuccess
+		? "rgba(0, 195, 65, 0.4)"
+		: isPending
+			? "blue.200"
+			: "rgba(255, 64, 129, 0.4)";
 
 	const iconName = isSuccess ? "check-circle" : "warning";
 	const iconColor = isSuccess ? "success" : "error";
@@ -69,10 +75,63 @@ const TransferStatusCard = ({
 			? "Processing Transfer…"
 			: "Transfer Failed";
 
-	const displayData: Record<string, unknown> = {
+	const subtitle = isSuccess
+		? "Your funds have been transferred successfully."
+		: isPending
+			? "Your transfer is being processed. Please wait."
+			: "The transfer could not be completed. Please try again.";
+
+	// Build a merged row for metadata lookups
+	const row: Record<string, unknown> = {
 		...(txnRef ? { transaction_id: txnRef } : {}),
 		...(txnData ?? {}),
 	};
+
+	// Filter metadata to expanded/detail entries only (not table columns)
+	const expandedMeta = historyParametersMetadata.filter(
+		(col) => !col.visible_in_table
+	);
+
+	interface MetaField {
+		label: string;
+		value: unknown;
+		display_media_id: number | undefined;
+	}
+
+	const matchedFields: MetaField[] = expandedMeta.reduce<MetaField[]>(
+		(acc, col) => {
+			const raw = row[col.name];
+			if (raw === null || raw === undefined || raw === "") return acc;
+			const value = col.compute ? col.compute(raw, row, 0) : raw;
+			if (value === null || value === undefined || value === "")
+				return acc;
+			acc.push({
+				label: col.label,
+				value,
+				display_media_id: col.display_media_id,
+			});
+			return acc;
+		},
+		[]
+	);
+
+	const screenFields = matchedFields.filter((f) =>
+		showOnScreen(f.display_media_id)
+	);
+	const printFields = matchedFields.filter((f) =>
+		showInPrint(f.display_media_id)
+	);
+
+	const screenData = Object.fromEntries(
+		screenFields.map((f) => [f.label, f.value])
+	);
+	const keyOverrides = Object.fromEntries(
+		screenFields.map((f) => [f.label, f.label])
+	);
+
+	const shareText = printFields
+		.map((f) => `${f.label}: ${f.value}`)
+		.join("\n");
 
 	return (
 		<Flex
@@ -82,56 +141,130 @@ const TransferStatusCard = ({
 				animation: `${fadeSlideInBottom12} 0.2s ${ANIMATION.EASING} both`,
 			}}
 		>
+			{/* Status header */}
 			<Box
+				p={6}
+				bg={headerBg}
 				border="1px solid"
-				borderColor={borderColor}
-				bg={bg}
+				borderColor={headerBorderColor}
 				borderRadius="12"
-				overflow="hidden"
+				textAlign="center"
+				sx={{ "@media print": { display: "none" } }}
 			>
-				{/* Header */}
-				<Flex p={4} align="center" gap={3}>
-					{isPending ? (
-						<Spinner size="sm" color="blue.500" />
-					) : (
-						<Icon name={iconName} size="sm" color={iconColor} />
-					)}
-					<Box flex={1}>
-						<Text fontWeight="bold" fontSize="md" color="dark">
-							{title}
-						</Text>
-						{txnRef ? (
-							<Text fontSize="xs" color="light">
-								Ref: {txnRef}
-							</Text>
-						) : null}
-					</Box>
-				</Flex>
-
-				{/* Transaction details */}
-				{Object.keys(displayData).length > 0 ? (
-					<Box
-						px={4}
-						pb={4}
-						pt={2}
-						borderTop="1px"
-						borderColor="gray.100"
-						bg="white"
-					>
-						<JsonViewer data={displayData} collapseAfterLevel={2} />
-					</Box>
+				{isPending ? (
+					<Flex justify="center" mb={3}>
+						<Spinner size="lg" color="blue.500" />
+					</Flex>
+				) : (
+					<Flex justify="center" mb={3}>
+						<Icon name={iconName} size="xl" color={iconColor} />
+					</Flex>
+				)}
+				<Text fontWeight="bold" fontSize="lg" color="dark">
+					{title}
+				</Text>
+				<Text fontSize="sm" color="light" mt={1}>
+					{subtitle}
+				</Text>
+				{txnRef ? (
+					<Text fontSize="xs" color="light" mt={2}>
+						Ref: {txnRef}
+					</Text>
 				) : null}
 			</Box>
 
-			{isPending ? null : (
-				<Button
-					w="full"
-					variant="outline"
-					borderRadius="10"
-					onClick={onBack}
+			{/* Transaction details */}
+			{screenFields.length > 0 ? (
+				<Box
+					border="1px solid"
+					borderColor="divider"
+					borderRadius="12"
+					bg="white"
+					p={4}
+					sx={{ "@media print": { display: "none" } }}
 				>
-					Back to Dashboard
-				</Button>
+					<Text
+						fontSize="xs"
+						fontWeight="semibold"
+						color="light"
+						textTransform="uppercase"
+						letterSpacing="wide"
+						mb={3}
+					>
+						Transaction Details
+					</Text>
+					<JsonViewer
+						data={screenData}
+						keyOverrides={keyOverrides}
+						collapseAfterLevel={2}
+					/>
+				</Box>
+			) : null}
+
+			{/* Print receipt (print-only) */}
+			<PrintReceipt heading="Transaction Receipt" receiptTnc={undefined}>
+				{printFields.map((f) => (
+					<Flex
+						key={String(f.label)}
+						justify="space-between"
+						sx={{
+							display: "none",
+							"@media print": { display: "flex" },
+						}}
+					>
+						<Text fontSize="sm" color="light">
+							{String(f.label)}
+						</Text>
+						<Text fontSize="sm" fontWeight="medium" color="dark">
+							{String(f.value)}
+						</Text>
+					</Flex>
+				))}
+			</PrintReceipt>
+
+			{/* Actions + Back button */}
+			{isPending ? null : (
+				<>
+					<Divider />
+					<Flex
+						direction="row"
+						align="center"
+						justify="flex-end"
+						gap={4}
+						sx={{
+							"@media print": { display: "none !important" },
+						}}
+					>
+						<Button
+							variant="link"
+							fontSize="xs"
+							size="md"
+							icon="print"
+							// color="accent.DEFAULT"
+							onClick={() => printPage("DigiKhata Receipt")}
+						>
+							Print
+						</Button>
+						<Share
+							title="DigiKhata Transaction Receipt"
+							text={shareText}
+							variant="link"
+							size="md"
+							labelProps={{ fontSize: "xs" }}
+						/>
+					</Flex>
+					<Button
+						w="full"
+						variant="outline"
+						borderRadius="10"
+						onClick={onBack}
+						sx={{
+							"@media print": { display: "none !important" },
+						}}
+					>
+						Back to Dashboard
+					</Button>
+				</>
 			)}
 		</Flex>
 	);
@@ -271,6 +404,7 @@ export const FundTransferStep = ({
 		} else {
 			toast({
 				title: res?.data?.message ?? "Failed to send OTP",
+				description: res?.data?.data?.description ?? "",
 				status: "error",
 				duration: 4000,
 				isClosable: true,

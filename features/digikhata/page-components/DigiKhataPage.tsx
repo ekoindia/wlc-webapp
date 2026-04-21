@@ -248,6 +248,7 @@ const DigiKhataInner = ({ mode }: DigiKhataInnerProps): JSX.Element => {
 					w={{ base: "full", lg: "800px" }}
 					sx={{
 						animation: `${fadeSlideInTop12} ${ANIMATION.WALLET_CARD_IN} ${ANIMATION.EASING} both`,
+						"@media print": { display: "none !important" },
 					}}
 				>
 					<WalletCard
