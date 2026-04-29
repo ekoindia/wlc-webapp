@@ -19,6 +19,10 @@ import time
 import requests
 import pathlib
 
+# Allow importing sibling scripts regardless of cwd
+sys.path.insert(0, str(pathlib.Path(__file__).parent))
+from ai_models import MODELS  # noqa: E402
+
 # ── Config ────────────────────────────────────────────────────────────────────
 
 API_KEY      = os.environ.get("OPENROUTER_API_KEY", "")
@@ -27,16 +31,6 @@ ISSUE_TITLE  = os.environ.get("ISSUE_TITLE", "")
 ISSUE_BODY   = os.environ.get("ISSUE_BODY", "")
 REPO_NAME    = os.environ.get("REPO_NAME", "")
 BASE_URL     = "https://openrouter.ai/api/v1/chat/completions"
-
-# Ordered list of free models — will try each in sequence on failure / rate-limit
-MODELS = [
-    "google/gemini-2.0-flash-exp:free",
-    "nvidia/nemotron-3-super:free",
-    "minimax/minimax-m2.5:free",
-    "openai/gpt-oss-120b:free",
-    "z-ai/glm-4.5-air:free",
-    "tencent/hy3-preview:free",
-]
 
 # File extensions to include when scanning the repo
 CODE_EXTENSIONS = {
