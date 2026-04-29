@@ -326,7 +326,7 @@ except Exception as e:
     # Write an empty changes file so apply_changes.py / downstream steps don't explode
     with open("ai_file_changes.json", "w") as f:
         json.dump({"explanation": "Parse failed — no changes applied.", "files": [], "confidence": "low", "notes": str(e)}, f)
-    sys.exit(0)
+    sys.exit(1)
 
 # ── Step 4: Write output files ────────────────────────────────────────────────
 
