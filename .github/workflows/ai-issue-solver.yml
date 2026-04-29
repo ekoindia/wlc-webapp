@@ -44,14 +44,25 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      # ── 3. Comment on the issue that AI is working on it ──────────────────
+      # ── 3. Resolve issue number safely ─────────────────────────────────────
+      - name: Set issue number
+        id: issue
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ github.event.inputs.issue_number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 4. Comment on the issue that AI is working on it ──────────────────
       - name: Post "Working on it" comment
         uses: actions/github-script@v7
+        env:
+          ISSUE_NUM: ${{ steps.issue.outputs.number }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = context.payload.issue?.number
-              || ${{ github.event.inputs.issue_number || 0 }};
+            const issueNumber = parseInt(process.env.ISSUE_NUM, 10);
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -59,22 +70,23 @@ jobs:
               body: `## 🤖 AI is working on this issue...\n\nI've picked up this issue and am analyzing the codebase to generate a fix. A Pull Request will be raised shortly for human review.\n\n_Powered by [OpenRouter](https://openrouter.ai)_`
             });
 
-      # ── 4. Run the AI fix script ──────────────────────────────────────────
+      # ── 5. Run the AI fix script ──────────────────────────────────────────
       - name: Run AI Fix Script
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN:       ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER:       ${{ github.event.issue.number || github.event.inputs.issue_number }}
+          ISSUE_NUMBER:       ${{ steps.issue.outputs.number }}
           ISSUE_TITLE:        ${{ github.event.issue.title }}
           ISSUE_BODY:         ${{ github.event.issue.body }}
           REPO_NAME:          ${{ github.repository }}
         run: python scripts/ai_issue_solver.py
 
-      # ── 5. Create branch, apply fix, raise PR ────────────────────────────
+      # ── 6. Create branch, apply fix, raise PR ────────────────────────────
       - name: Create branch and raise PR
+        if: success()
         env:
           GH_TOKEN:     ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number || github.event.inputs.issue_number }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
           ISSUE_TITLE:  ${{ github.event.issue.title }}
         run: |
           BRANCH="ai/fix-issue-${ISSUE_NUMBER}"
@@ -104,18 +116,15 @@ jobs:
             exit 0
           fi
 
-          git commit -m "🤖 AI fix for issue #${ISSUE_NUMBER}: ${ISSUE_TITLE}"
+          # Safe commit message — sanitize title to avoid shell injection
+          SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr -dc '[:print:]' | head -c 100)
+          git commit -m "🤖 AI fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}"
           git push origin "$BRANCH"
 
-          # Raise the PR
+          # Raise the PR against dev branch
           gh pr create \
-            --base main \
+            --base dev \
             --head "$BRANCH" \
-            --title "🤖 Fix for issue #${ISSUE_NUMBER}: ${ISSUE_TITLE}" \
+            --title "🤖 Fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" \
             --body "$(cat ai_pr_description.md)" \
-            --label "ai-generated" || \
-          gh pr create \
-            --base master \
-            --head "$BRANCH" \
-            --title "🤖 Fix for issue #${ISSUE_NUMBER}: ${ISSUE_TITLE}" \
-            --body "$(cat ai_pr_description.md)"
+            --label "ai-generated"

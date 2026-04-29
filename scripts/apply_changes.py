@@ -3,6 +3,7 @@ apply_changes.py
 ────────────────
 Reads ai_file_changes.json and applies the file operations
 (modify / create / delete) to the working directory.
+Includes a path traversal guard to prevent writes outside the repo root.
 """
 
 import json
@@ -11,6 +12,8 @@ import pathlib
 import sys
 
 print("🔧 Applying AI-generated file changes...")
+
+REPO_ROOT = pathlib.Path.cwd().resolve()
 
 try:
     with open("ai_file_changes.json") as f:
@@ -36,15 +39,21 @@ for item in files_to_change:
 
     file_path = pathlib.Path(path)
 
+    # Path traversal guard — ensure resolved path stays within repo root
+    resolved = (REPO_ROOT / file_path).resolve()
+    if not str(resolved).startswith(str(REPO_ROOT)):
+        print(f"   ⚠️  Skipping path outside repo: {path}")
+        continue
+
     if action in ("modify", "create"):
         # Create parent directories if they don't exist
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_text(content, encoding="utf-8")
+        resolved.parent.mkdir(parents=True, exist_ok=True)
+        resolved.write_text(content, encoding="utf-8")
         print(f"   ✅ {action.upper()}: {path}")
 
     elif action == "delete":
-        if file_path.exists():
-            file_path.unlink()
+        if resolved.exists():
+            resolved.unlink()
             print(f"   🗑️  DELETE: {path}")
         else:
             print(f"   ⚠️  DELETE: {path} (file not found, skipping)")
