@@ -1,0 +1,90 @@
+name: 🔍 AI PR Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review-pr:
+    name: Review PR with AI
+    runs-on: ubuntu-latest
+
+    # Only run on PRs labelled "ai-generated"
+    if: contains(github.event.pull_request.labels.*.name, 'ai-generated')
+
+    steps:
+      # ── 1. Checkout ───────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ── 2. Python setup ───────────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      # ── 3. Fetch the PR diff ──────────────────────────────────────────────
+      - name: Fetch PR diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr diff ${{ github.event.pull_request.number }} > pr.diff
+          echo "Diff size: $(wc -c < pr.diff) bytes"
+
+      # ── 4. Run AI reviewer ────────────────────────────────────────────────
+      - name: Run AI Review Script
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GITHUB_TOKEN:       ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER:          ${{ github.event.pull_request.number }}
+          PR_TITLE:           ${{ github.event.pull_request.title }}
+          PR_BODY:            ${{ github.event.pull_request.body }}
+          REPO_NAME:          ${{ github.repository }}
+        run: python scripts/ai_pr_reviewer.py
+
+      # ── 5. Post the review ────────────────────────────────────────────────
+      - name: Post AI Review to PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            // Post overall review summary as a PR review
+            const reviewBody = fs.readFileSync('ai_review_summary.md', 'utf8');
+            const verdict = fs.readFileSync('ai_review_verdict.txt', 'utf8').trim();
+
+            // Map verdict to GitHub review event
+            const eventMap = {
+              'APPROVE':          'APPROVE',
+              'REQUEST_CHANGES':  'REQUEST_CHANGES',
+              'COMMENT':          'COMMENT',
+            };
+            const reviewEvent = eventMap[verdict] || 'COMMENT';
+
+            // Load inline comments if any
+            let comments = [];
+            if (fs.existsSync('ai_review_comments.json')) {
+              comments = JSON.parse(fs.readFileSync('ai_review_comments.json', 'utf8'));
+            }
+
+            await github.rest.pulls.createReview({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              pull_number: ${{ github.event.pull_request.number }},
+              commit_id:   '${{ github.event.pull_request.head.sha }}',
+              body:        reviewBody,
+              event:       reviewEvent,
+              comments:    comments,
+            });
+
+            console.log(`Review posted with verdict: ${reviewEvent}`);
