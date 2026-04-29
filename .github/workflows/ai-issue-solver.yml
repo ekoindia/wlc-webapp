@@ -55,10 +55,6 @@ jobs:
       - name: Install Python dependencies
         run: pip install requests
 
-      # ── 4. Install Node dependencies ──────────────────────────────────────
-      - name: Install Node dependencies
-        run: npm ci
-
       # ── 5. Resolve issue number safely ────────────────────────────────────
       - name: Set issue number
         id: issue
@@ -96,7 +92,12 @@ jobs:
           REPO_NAME:          ${{ github.repository }}
         run: python scripts/ai_issue_solver.py
 
-      # ── 8. Apply the AI-generated file changes ────────────────────────────
+      # ── 8. Install Node dependencies (only needed for lint/build) ────────
+      - name: Install Node dependencies
+        if: success()
+        run: npm ci
+
+      # ── 9. Apply the AI-generated file changes ────────────────────────────
       - name: Apply file changes
         if: success()
         run: |
@@ -107,14 +108,14 @@ jobs:
             exit 0
           fi
 
-      # ── 9. Auto-fix lint issues ───────────────────────────────────────────
+      # ── 10. Auto-fix lint issues ──────────────────────────────────────────
       - name: Run lint fix
         if: success()
         run: |
           echo "🔍 Running ESLint auto-fix..."
           npm run lint-fix || true   # auto-fix what it can; don't fail the build here
 
-      # ── 10. Run build and capture any errors ──────────────────────────────
+      # ── 11. Run build and capture any errors ──────────────────────────────
       - name: Run build
         if: success()
         id: build
@@ -128,7 +129,7 @@ jobs:
             echo "❌ Build failed — will attempt AI error fix."
           fi
 
-      # ── 11. If build failed: ask AI to fix the errors, then re-check ──────
+      # ── 12. If build failed: ask AI to fix the errors, then re-check ──────
       - name: AI fix for build errors
         if: success() && steps.build.outputs.status == 'failed'
         env:
@@ -146,7 +147,7 @@ jobs:
           npm run build 2>&1 | tee build_output_retry.txt \
             || echo "⚠️ Build still failing after AI retry — PR will include build log."
 
-      # ── 12. Create branch, commit everything, raise PR ────────────────────
+      # ── 13. Create branch, commit everything, raise PR ────────────────────
       - name: Create branch and raise PR
         if: success()
         env:

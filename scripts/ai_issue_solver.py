@@ -119,12 +119,22 @@ def read_guidelines():
     return guidelines
 
 
-def strip_markdown_fences(text):
-    """Remove markdown code fences from LLM response."""
+def extract_json(text):
+    """Extract a JSON object from an LLM response that may contain leading/trailing prose."""
     text = text.strip()
+    # Strip markdown code fences
     text = re.sub(r'^```\w*\n?', '', text)
     text = re.sub(r'\n?```$', '', text)
-    return text.strip()
+    text = text.strip()
+    # If the response starts with non-JSON prose, find the first { or [
+    first_brace = text.find('{')
+    first_bracket = text.find('[')
+    candidates = [i for i in (first_brace, first_bracket) if i != -1]
+    if candidates:
+        start = min(candidates)
+        if start > 0:
+            text = text[start:]
+    return text
 
 
 def call_llm(messages, retries_per_model=2):
@@ -221,7 +231,7 @@ try:
     relevant_files_raw, _ = call_llm([
         {"role": "user", "content": RELEVANCE_PROMPT}
     ])
-    relevant_files_raw = strip_markdown_fences(relevant_files_raw)
+    relevant_files_raw = extract_json(relevant_files_raw)
     relevant_files = json.loads(relevant_files_raw)
     print(f"   Relevant files identified: {relevant_files}")
 except Exception as e:
@@ -304,7 +314,7 @@ try:
         {"role": "user",   "content": FIX_USER_PROMPT}
     ])
 
-    fix_raw = strip_markdown_fences(fix_raw)
+    fix_raw = extract_json(fix_raw)
     fix_data = json.loads(fix_raw)
     print(f"✅ Fix generated. Confidence: {fix_data.get('confidence', 'unknown')}")
     print(f"   Files to change: {[f['path'] for f in fix_data.get('files', [])]}")
@@ -313,7 +323,10 @@ except Exception as e:
     print(f"❌ Failed to parse LLM fix response: {e}")
     print(f"Raw response:\n{fix_raw[:500]}")
     write_fallback_pr_description(str(e))
-    sys.exit(1)
+    # Write an empty changes file so apply_changes.py / downstream steps don't explode
+    with open("ai_file_changes.json", "w") as f:
+        json.dump({"explanation": "Parse failed — no changes applied.", "files": [], "confidence": "low", "notes": str(e)}, f)
+    sys.exit(0)
 
 # ── Step 4: Write output files ────────────────────────────────────────────────
 
