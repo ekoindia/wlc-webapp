@@ -109,4 +109,4 @@ for project in PROJECTS:
             print("  CREATE #" + sentry_id + " -> " + result["html_url"])
             created += 1
 
-print("\nDone. Created: " + str(created) + " | Skipped: " + str(skipped))
+print("\nDone. Created:: " + str(created) + " | Skipped: " + str(skipped))
