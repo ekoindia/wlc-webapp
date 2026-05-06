@@ -218,7 +218,7 @@ export const NetworkUsersProvider = ({
 			fetchUsers({
 				headers: {
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": "/network/agent-lists", // correct api call is agent-lists, but due to some issue in the backend, we are using agent-list for now. This needs to be fixed in the backend and then we can switch back to agent-lists.
+					"tf-req-uri": "/network/agent-list",
 					"tf-req-method": "GET",
 				},
 			});

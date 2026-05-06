@@ -140,9 +140,7 @@ export const useNetworkTableParameterList = (handlers = {}) => {
 			render: (item) => (
 				<NetworkMenu
 					mobile_number={item?.agent_mobile}
-					eko_code={
-						item?.profile?.eko_code?.[0] || item?.profile?.eko_code
-					}
+					eko_code={item?.profile?.eko_code}
 					account_status_id={item?.account_status_id}
 					user_type_id={item?.user_type_id}
 					onStatusUpdate={
