@@ -175,8 +175,65 @@ const Network = () => {
 		control: controlExport,
 	});
 
+	/**
+	 * Callback to update agent status in the local state (for optimistic UI updates)
+	 * @param {string} ekoCode - The eko_code of the agent to update
+	 * @param {number} newStatusId - The new status ID
+	 */
+	const handleStatusUpdate = (ekoCode, newStatusId) => {
+		const statusLabels = {
+			13: "Pending Approval",
+			16: "Active",
+			18: "Inactive",
+		};
+
+		setNetworkData((prevData) => {
+			if (!prevData?.agent_details) return prevData;
+
+			return {
+				...prevData,
+				agent_details: prevData.agent_details.map((agent) => {
+					if (agent.eko_code === ekoCode) {
+						return {
+							...agent,
+							account_status_id: newStatusId,
+							account_status:
+								statusLabels[newStatusId] ||
+								agent.account_status,
+						};
+					}
+					return agent;
+				}),
+			};
+		});
+	};
+
+	/**
+	 * Callback to handle demo user deletion (for optimistic UI updates)
+	 * @param {string} ekoCode - The eko_code of the demo user to delete
+	 */
+	const handleDeleteDemoUser = (ekoCode) => {
+		setNetworkData((prevData) => {
+			if (!prevData?.agent_details) return prevData;
+
+			return {
+				...prevData,
+				agent_details: prevData.agent_details.filter(
+					(agent) => agent.eko_code !== ekoCode
+				),
+			};
+		});
+	};
+
 	// Column visibility management
-	const networkTableParameterList = useNetworkTableParameterList();
+	// NOTE: handlers are passed here so that getVisibleColumns() returns action-column
+	// render functions that already carry the correct callbacks. Without them the
+	// actions column rendered with onStatusUpdate=undefined because visibleColumns
+	// closed over a stale column list built before the handlers existed.
+	const networkTableParameterList = useNetworkTableParameterList({
+		onStatusUpdate: handleStatusUpdate,
+		onDeleteDemoUser: handleDeleteDemoUser,
+	});
 	const {
 		hiddenColumns,
 		toggleColumnVisibility,
@@ -187,9 +244,11 @@ const Network = () => {
 		columns: networkTableParameterList,
 	});
 
-	// Recalculate visible columns when hiddenColumns changes
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const visibleColumns = useMemo(() => getVisibleColumns(), [hiddenColumns]);
+	// Recalculate visible columns when hiddenColumns OR the column list itself changes
+	const visibleColumns = useMemo(
+		() => getVisibleColumns(),
+		[getVisibleColumns]
+	);
 
 	const hitQuery = () => {
 		let tf_req_uri = queryParam
@@ -568,55 +627,8 @@ const Network = () => {
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
 
-	/**
-	 * Callback to update agent status in the local state (for optimistic UI updates)
-	 * @param {string} ekoCode - The eko_code of the agent to update
-	 * @param {number} newStatusId - The new status ID
-	 */
-	const handleStatusUpdate = (ekoCode, newStatusId) => {
-		const statusLabels = {
-			13: "Pending Approval",
-			16: "Active",
-			18: "Inactive",
-		};
-
-		setNetworkData((prevData) => {
-			if (!prevData?.agent_details) return prevData;
-
-			return {
-				...prevData,
-				agent_details: prevData.agent_details.map((agent) => {
-					if (agent.eko_code === ekoCode) {
-						return {
-							...agent,
-							account_status_id: newStatusId,
-							account_status:
-								statusLabels[newStatusId] ||
-								agent.account_status,
-						};
-					}
-					return agent;
-				}),
-			};
-		});
-	};
-
-	/**
-	 * Callback to handle demo user deletion (for optimistic UI updates)
-	 * @param {string} ekoCode - The eko_code of the demo user to delete
-	 */
-	const handleDeleteDemoUser = (ekoCode) => {
-		setNetworkData((prevData) => {
-			if (!prevData?.agent_details) return prevData;
-
-			return {
-				...prevData,
-				agent_details: prevData.agent_details.filter(
-					(agent) => agent.eko_code !== ekoCode
-				),
-			};
-		});
-	};
+	// handleStatusUpdate and handleDeleteDemoUser have been moved above the
+	// column visibility block so they can be passed into useNetworkTableParameterList.
 
 	// MARK: JSX
 	return (
