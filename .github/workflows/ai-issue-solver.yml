@@ -82,8 +82,7 @@ jobs:
             });
 
       # ── 7. Run the AI fix script ──────────────────────────────────────────
-      - name: Run AI Fix Script
-        env:
+      - name: Run AI Fix Script        continue-on-error: true        env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN:       ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER:       ${{ steps.issue.outputs.number }}
@@ -94,12 +93,12 @@ jobs:
 
       # ── 8. Install Node dependencies (only needed for lint/build) ────────
       - name: Install Node dependencies
-        if: success()
+        if: always()
         run: npm ci
 
       # ── 9. Apply the AI-generated file changes ────────────────────────────
       - name: Apply file changes
-        if: success()
+        if: always()
         run: |
           if [ -f "ai_file_changes.json" ]; then
             python scripts/apply_changes.py
@@ -110,15 +109,17 @@ jobs:
 
       # ── 10. Auto-fix lint issues ──────────────────────────────────────────
       - name: Run lint fix
-        if: success()
+        if: always()
+        continue-on-error: true
         run: |
           echo "🔍 Running ESLint auto-fix..."
           npm run lint-fix || true   # auto-fix what it can; don't fail the build here
 
       # ── 11. Run build and capture any errors ──────────────────────────────
       - name: Run build
-        if: success()
+        if: always()
         id: build
+        continue-on-error: true
         run: |
           echo "🏗️ Running build..."
           if npm run build 2>&1 | tee build_output.txt; then
@@ -131,7 +132,8 @@ jobs:
 
       # ── 12. If build failed: ask AI to fix the errors, then re-check ──────
       - name: AI fix for build errors
-        if: success() && steps.build.outputs.status == 'failed'
+        if: always() && steps.build.outputs.status == 'failed'
+        continue-on-error: true
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           ISSUE_NUMBER:       ${{ steps.issue.outputs.number }}
@@ -149,7 +151,8 @@ jobs:
 
       # ── 13. Create branch, commit everything, raise PR ────────────────────
       - name: Create branch and raise PR
-        if: success()
+        if: always()
+        continue-on-error: true
         env:
           GH_TOKEN:     ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
@@ -170,14 +173,13 @@ jobs:
 
           git add -A
           if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
+            echo "ℹ️ No changes to commit. PR will still be created with workflow status."
           fi
 
           # Safe commit message — sanitize title to avoid shell injection
           SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr -dc '[:print:]' | head -c 100)
-          git commit -m "🤖 AI fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}"
-          git push origin "$BRANCH"
+          git commit -m "🤖 AI fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" || true
+          git push origin "$BRANCH" || true
 
           # Append build failure log to PR description if build still broken after retry
           if [ -f "build_output_retry.txt" ]; then
@@ -192,10 +194,18 @@ jobs:
             } >> ai_pr_description.md
           fi
 
+          # Ensure PR description exists
+          if [ ! -f "ai_pr_description.md" ]; then
+            echo "## 🤖 AI Fix for Issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" > ai_pr_description.md
+            echo "" >> ai_pr_description.md
+            echo "The AI workflow was triggered but no detailed description was generated." >> ai_pr_description.md
+            echo "Please review the changes and build logs manually." >> ai_pr_description.md
+          fi
+
           # Raise the PR against dev branch
           gh pr create \
             --base dev \
             --head "$BRANCH" \
             --title "🤖 Fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" \
             --body "$(cat ai_pr_description.md)" \
-            --label "ai-generated"
+            --label "ai-generated" || echo "⚠️ PR creation failed or PR already exists"
