@@ -82,13 +82,15 @@ jobs:
             });
 
       # ── 7. Run the AI fix script ──────────────────────────────────────────
-      - name: Run AI Fix Script        continue-on-error: true        env:
+      - name: Run AI Fix Script
+        continue-on-error: true
+        env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          GITHUB_TOKEN:       ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER:       ${{ steps.issue.outputs.number }}
-          ISSUE_TITLE:        ${{ github.event.issue.title }}
-          ISSUE_BODY:         ${{ github.event.issue.body }}
-          REPO_NAME:          ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO_NAME: ${{ github.repository }}
         run: python scripts/ai_issue_solver.py
 
       # ── 8. Install Node dependencies (only needed for lint/build) ────────
