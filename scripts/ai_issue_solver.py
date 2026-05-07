@@ -73,8 +73,12 @@ if pathlib.Path("issue_body.txt").exists():
 
 def extract_json(text):
     text = text.strip()
-    text = re.sub(r"^```[\w]*\n?", "", text, flags=re.MULTILINE)
-    text = re.sub(r"\n?```$", "", text, flags=re.MULTILINE)
+    # Strip any leading/trailing markdown code fences (```json ... ``` or ``` ... ```)
+    text = re.sub(r"^```[^\n]*\n", "", text)
+    text = re.sub(r"\n```\s*$", "", text)
+    text = re.sub(r"^```", "", text)
+    text = re.sub(r"```$", "", text)
+    # Find the first { to skip any preamble text
     first = text.find("{")
     if first != -1:
         text = text[first:]
@@ -332,7 +336,8 @@ print("🔍 Parsing AI response...")
 raw = extract_json(response_text)
 
 try:
-    fix_data = json.loads(raw)
+    # strict=False allows literal control characters (newlines/tabs) inside strings
+    fix_data = json.JSONDecoder(strict=False).decode(raw)
 except json.JSONDecodeError as e:
     print(f"❌ JSON parse error: {e}")
     print("Raw response (first 2000 chars):")
