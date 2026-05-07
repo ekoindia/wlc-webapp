@@ -219,10 +219,15 @@ jobs:
           git checkout -b "$BRANCH"
 
           # Stage only the files the AI changed — never git add -A
-          python scripts/stage_ai_files.py
+          if [ -f "ai_file_changes.json" ]; then
+            python scripts/stage_ai_files.py
+          else
+            echo "No ai_file_changes.json — AI generated no fixes."
+            exit 0
+          fi
 
           if git diff --cached --quiet; then
-            echo "No changes generated."
+            echo "No changes staged — nothing to commit."
             exit 0
           fi
 
@@ -232,9 +237,22 @@ jobs:
 
           git push origin "$BRANCH"
 
-          gh pr create \
-            --base dev \
-            --head "$BRANCH" \
-            --title "🤖 AI Fix: ${SAFE_TITLE}" \
-            --body-file ai_pr_description.md \
-            --label ai-generated
+          # Ensure the label exists before using it
+          gh label create "ai-generated" --color "0075ca" --description "AI generated fix" 2>/dev/null || true
+
+          # Use body file if available, fallback to inline body
+          if [ -f "ai_pr_description.md" ]; then
+            gh pr create \
+              --base dev \
+              --head "$BRANCH" \
+              --title "🤖 AI Fix: ${SAFE_TITLE}" \
+              --body-file ai_pr_description.md \
+              --label "ai-generated"
+          else
+            gh pr create \
+              --base dev \
+              --head "$BRANCH" \
+              --title "🤖 AI Fix: ${SAFE_TITLE}" \
+              --body "🤖 AI-generated fix for issue #${ISSUE_NUMBER}. Please review before merging." \
+              --label "ai-generated"
+          fi
