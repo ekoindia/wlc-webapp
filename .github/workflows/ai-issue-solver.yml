@@ -4,7 +4,6 @@ on:
   issues:
     types: [opened, labeled]
 
-  # Allow manual trigger from the Actions tab (useful for testing)
   workflow_dispatch:
     inputs:
       issue_number:
@@ -17,7 +16,6 @@ permissions:
   issues: write
 
 env:
-  # Opt into Node.js 24 for all actions (avoids Node 20 deprecation warnings)
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -25,28 +23,34 @@ jobs:
     name: Solve Issue with AI
     runs-on: ubuntu-latest
 
-    # Only run if:
-    #   - Issue has the "ai-fix" label (so not every issue triggers this)
-    #   - OR it was manually triggered
     if: |
       github.event_name == 'workflow_dispatch' ||
       contains(github.event.issue.labels.*.name, 'ai-fix')
 
     steps:
-      # ── 1. Checkout full repo ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────────────────
+      # Checkout
+      # ─────────────────────────────────────────────────────────────
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ── 2. Set up Node.js 22 (matches project) ───────────────────────────
+      # ─────────────────────────────────────────────────────────────
+      # Setup Node
+      # ─────────────────────────────────────────────────────────────
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
 
-      # ── 3. Set up Python ──────────────────────────────────────────────────
+      # ─────────────────────────────────────────────────────────────
+      # Setup Python
+      # ─────────────────────────────────────────────────────────────
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -55,7 +59,10 @@ jobs:
       - name: Install Python dependencies
         run: pip install requests
 
-      # ── 5. Resolve issue number safely ────────────────────────────────────
+      # ─────────────────────────────────────────────────────────────
+      # Resolve issue number
+      # ─────────────────────────────────────────────────────────────
+
       - name: Set issue number
         id: issue
         run: |
@@ -65,8 +72,11 @@ jobs:
             echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
           fi
 
-      # ── 6. Comment on the issue that AI is working on it ──────────────────
-      - name: Post "Working on it" comment
+      # ─────────────────────────────────────────────────────────────
+      # Comment on issue
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Post working comment
         uses: actions/github-script@v7
         env:
           ISSUE_NUM: ${{ steps.issue.outputs.number }}
@@ -74,14 +84,62 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issueNumber = parseInt(process.env.ISSUE_NUM, 10);
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
-              body: `## 🤖 AI is working on this issue...\n\nI've picked up this issue and am analyzing the codebase to generate a fix. A Pull Request will be raised shortly for human review.\n\n_Powered by [OpenRouter](https://openrouter.ai)_`
+              body: `## 🤖 AI is analyzing this issue
+
+              Running:
+              - dependency install
+              - lint checks
+              - build validation
+              - stack trace analysis
+              - automated fix generation
+
+              A PR will be created automatically if a fix is generated.`
             });
 
-      # ── 7. Run the AI fix script ──────────────────────────────────────────
+      # ─────────────────────────────────────────────────────────────
+      # Install Dependencies FIRST
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ─────────────────────────────────────────────────────────────
+      # Run lint and capture logs
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run lint
+        continue-on-error: true
+        run: |
+          npm run lint > lint_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Run TypeScript checks
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run TypeScript check
+        continue-on-error: true
+        run: |
+          npx tsc --noEmit > ts_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Run build BEFORE AI
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run build
+        id: build
+        continue-on-error: true
+        run: |
+          npm run build > build_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Run AI Solver AFTER logs exist
+      # ─────────────────────────────────────────────────────────────
+
       - name: Run AI Fix Script
         continue-on-error: true
         env:
@@ -91,123 +149,72 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           REPO_NAME: ${{ github.repository }}
-        run: python scripts/ai_issue_solver.py
+        run: |
+          python scripts/ai_issue_solver.py
 
-      # ── 8. Install Node dependencies (only needed for lint/build) ────────
-      - name: Install Node dependencies
-        if: always()
-        run: npm ci
+      # ─────────────────────────────────────────────────────────────
+      # Apply AI changes
+      # ─────────────────────────────────────────────────────────────
 
-      # ── 9. Apply the AI-generated file changes ────────────────────────────
-      - name: Apply file changes
-        if: always()
+      - name: Apply AI changes
         run: |
           if [ -f "ai_file_changes.json" ]; then
             python scripts/apply_changes.py
           else
-            echo "⚠️ No file changes generated — skipping."
-            exit 0
+            echo "No changes generated"
           fi
 
-      # ── 10. Auto-fix lint issues ──────────────────────────────────────────
-      - name: Run lint fix
-        if: always()
+      # ─────────────────────────────────────────────────────────────
+      # Re-run lint
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Re-run lint
         continue-on-error: true
         run: |
-          echo "🔍 Running ESLint auto-fix..."
-          npm run lint-fix || true   # auto-fix what it can; don't fail the build here
+          npm run lint > lint_retry_output.txt 2>&1 || true
 
-      # ── 11. Run build and capture any errors ──────────────────────────────
-      - name: Run build
-        if: always()
-        id: build
+      # ─────────────────────────────────────────────────────────────
+      # Re-run build
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Re-run build
         continue-on-error: true
         run: |
-          echo "🏗️ Running build..."
-          if npm run build 2>&1 | tee build_output.txt; then
-            echo "status=success" >> "$GITHUB_OUTPUT"
-            echo "✅ Build passed."
-          else
-            echo "status=failed" >> "$GITHUB_OUTPUT"
-            echo "❌ Build failed — will attempt AI error fix."
-          fi
+          npm run build > build_retry_output.txt 2>&1 || true
 
-      # ── 12. If build failed: ask AI to fix the errors, then re-check ──────
-      - name: AI fix for build errors
-        if: always() && steps.build.outputs.status == 'failed'
-        continue-on-error: true
+      # ─────────────────────────────────────────────────────────────
+      # Create PR
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Create Pull Request
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          ISSUE_NUMBER:       ${{ steps.issue.outputs.number }}
-          ISSUE_TITLE:        ${{ github.event.issue.title }}
-          ISSUE_BODY:         ${{ github.event.issue.body }}
-        run: |
-          echo "🤖 Asking AI to fix build errors..."
-          python scripts/ai_fix_errors.py
-          python scripts/apply_changes.py
-          echo "🔍 Re-running lint fix after error fix..."
-          npm run lint-fix || true
-          echo "🏗️ Re-running build after error fix..."
-          npm run build 2>&1 | tee build_output_retry.txt \
-            || echo "⚠️ Build still failing after AI retry — PR will include build log."
-
-      # ── 13. Create branch, commit everything, raise PR ────────────────────
-      - name: Create branch and raise PR
-        if: always()
-        continue-on-error: true
-        env:
-          GH_TOKEN:     ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
-          ISSUE_TITLE:  ${{ github.event.issue.title }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           BRANCH="ai/fix-issue-${ISSUE_NUMBER}"
 
-          git config user.name  "AI Fix Bot"
+          git config user.name "AI Fix Bot"
           git config user.email "ai-bot@users.noreply.github.com"
-
-          # Check if branch already exists
-          if git ls-remote --exit-code --heads origin "$BRANCH"; then
-            echo "Branch $BRANCH already exists — deleting and recreating"
-            git push origin --delete "$BRANCH" || true
-          fi
 
           git checkout -b "$BRANCH"
 
           git add -A
+
           if git diff --cached --quiet; then
-            echo "ℹ️ No changes to commit. PR will still be created with workflow status."
+            echo "No changes generated."
+            exit 0
           fi
 
-          # Safe commit message — sanitize title to avoid shell injection
           SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr -dc '[:print:]' | head -c 100)
-          git commit -m "🤖 AI fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" || true
-          git push origin "$BRANCH" || true
 
-          # Append build failure log to PR description if build still broken after retry
-          if [ -f "build_output_retry.txt" ]; then
-            {
-              echo ""
-              echo "---"
-              echo "### ⚠️ Build Warning"
-              echo "The build was still failing after AI retry. Please check before merging."
-              echo '```'
-              tail -50 build_output_retry.txt
-              echo '```'
-            } >> ai_pr_description.md
-          fi
+          git commit -m "fix: AI fix for issue #${ISSUE_NUMBER}" || true
 
-          # Ensure PR description exists
-          if [ ! -f "ai_pr_description.md" ]; then
-            echo "## 🤖 AI Fix for Issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" > ai_pr_description.md
-            echo "" >> ai_pr_description.md
-            echo "The AI workflow was triggered but no detailed description was generated." >> ai_pr_description.md
-            echo "Please review the changes and build logs manually." >> ai_pr_description.md
-          fi
+          git push origin "$BRANCH"
 
-          # Raise the PR against dev branch
           gh pr create \
             --base dev \
             --head "$BRANCH" \
-            --title "🤖 Fix for issue #${ISSUE_NUMBER}: ${SAFE_TITLE}" \
-            --body "$(cat ai_pr_description.md)" \
-            --label "ai-generated" || echo "⚠️ PR creation failed or PR already exists"
+            --title "🤖 AI Fix: ${SAFE_TITLE}" \
+            --body-file ai_pr_description.md \
+            --label ai-generated
