@@ -155,10 +155,12 @@ const ScreenshotTest = () => {
 	};
 
 	const stopCapture = () => {
-		let tracks = videoRef.current.srcObject.getTracks();
-
-		tracks.forEach((track) => track.stop());
-		videoRef.current.srcObject = null;
+		const video = videoRef.current;
+		if (video?.srcObject) {
+			let tracks = video.srcObject.getTracks();
+			tracks.forEach((track) => track.stop());
+			video.srcObject = null;
+		}
 	};
 
 	const captureFrame = () => {
@@ -169,6 +171,7 @@ const ScreenshotTest = () => {
 	const captureFrameDbc = () => {
 		const video = videoRef.current;
 		const canvas = canvasRef.current;
+		if (!video || !canvas) return;
 		const context = canvas.getContext("2d");
 
 		canvas.width = video.videoWidth;
