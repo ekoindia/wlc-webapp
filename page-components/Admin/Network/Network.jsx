@@ -359,7 +359,7 @@ const Network = () => {
 			...filteredData,
 		});
 
-		const reportUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/reports/agent-subnetwork?${download_params}`;
+		const reportUrl = `/_reports/agent-subnetwork?${download_params}`;
 
 		fetch(reportUrl, {
 			method: "POST",
