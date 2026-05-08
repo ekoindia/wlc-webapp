@@ -239,14 +239,20 @@ jobs:
 
           git commit -m "fix: AI fix for issue #${ISSUE_NUMBER}"
 
-          git push origin "$BRANCH"
+          # Force-push so re-runs don't fail on an existing branch
+          git push origin "$BRANCH" --force
 
           gh label create "ai-generated" \
             --color "0075ca" \
             --description "AI generated fix" \
             2>/dev/null || true
 
-          if [ -f "ai_pr_description.md" ]; then
+          # Create PR — skip gracefully if one already exists for this branch
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #${EXISTING_PR} already exists for ${BRANCH} — skipping creation."
+          elif [ -f "ai_pr_description.md" ]; then
             gh pr create \
               --base dev \
               --head "$BRANCH" \
