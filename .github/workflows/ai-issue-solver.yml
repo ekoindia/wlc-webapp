@@ -57,7 +57,8 @@ jobs:
           python-version: "3.11"
 
       - name: Install Python dependencies
-        run: pip install requests
+        run: |
+          pip install requests
 
       # ─────────────────────────────────────────────────────────────
       # Resolve issue number
@@ -73,7 +74,7 @@ jobs:
           fi
 
       # ─────────────────────────────────────────────────────────────
-      # Fetch issue title + body (works for both triggers)
+      # Fetch issue details
       # ─────────────────────────────────────────────────────────────
 
       - name: Fetch issue details
@@ -84,12 +85,15 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issueNumber = parseInt(process.env.ISSUE_NUM, 10);
+
             const { data } = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
             });
+
             const fs = require('fs');
+
             fs.writeFileSync('issue_title.txt', data.title || '');
             fs.writeFileSync('issue_body.txt', data.body || '');
 
@@ -123,14 +127,15 @@ jobs:
             });
 
       # ─────────────────────────────────────────────────────────────
-      # Install Dependencies FIRST
+      # Install Dependencies
       # ─────────────────────────────────────────────────────────────
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
 
       # ─────────────────────────────────────────────────────────────
-      # Run lint and capture logs
+      # Run lint
       # ─────────────────────────────────────────────────────────────
 
       - name: Run lint
@@ -139,7 +144,7 @@ jobs:
           npm run lint > lint_output.txt 2>&1 || true
 
       # ─────────────────────────────────────────────────────────────
-      # Run TypeScript checks
+      # Run TypeScript check
       # ─────────────────────────────────────────────────────────────
 
       - name: Run TypeScript check
@@ -148,21 +153,19 @@ jobs:
           npx tsc --noEmit > ts_output.txt 2>&1 || true
 
       # ─────────────────────────────────────────────────────────────
-      # Run build BEFORE AI
+      # Run build
       # ─────────────────────────────────────────────────────────────
 
       - name: Run build
-        id: build
         continue-on-error: true
         run: |
           npm run build > build_output.txt 2>&1 || true
 
       # ─────────────────────────────────────────────────────────────
-      # Run AI Solver AFTER logs exist
+      # Run AI Solver
       # ─────────────────────────────────────────────────────────────
 
       - name: Run AI Fix Script
-        continue-on-error: true
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,6 +184,7 @@ jobs:
             python scripts/apply_changes.py
           else
             echo "No changes generated"
+            exit 0
           fi
 
       # ─────────────────────────────────────────────────────────────
@@ -202,10 +206,11 @@ jobs:
           npm run build > build_retry_output.txt 2>&1 || true
 
       # ─────────────────────────────────────────────────────────────
-      # Create PR
+      # Create Pull Request
       # ─────────────────────────────────────────────────────────────
 
       - name: Create Pull Request
+        if: success()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
@@ -218,16 +223,15 @@ jobs:
 
           git checkout -b "$BRANCH"
 
-          # Stage only the files the AI changed — never git add -A
-          if [ -f "ai_file_changes.json" ]; then
-            python scripts/stage_ai_files.py
-          else
-            echo "No ai_file_changes.json — AI generated no fixes."
+          if [ ! -f "ai_file_changes.json" ]; then
+            echo "No AI changes found"
             exit 0
           fi
 
+          python scripts/stage_ai_files.py
+
           if git diff --cached --quiet; then
-            echo "No changes staged — nothing to commit."
+            echo "No changes staged"
             exit 0
           fi
 
@@ -237,10 +241,11 @@ jobs:
 
           git push origin "$BRANCH"
 
-          # Ensure the label exists before using it
-          gh label create "ai-generated" --color "0075ca" --description "AI generated fix" 2>/dev/null || true
+          gh label create "ai-generated" \
+            --color "0075ca" \
+            --description "AI generated fix" \
+            2>/dev/null || true
 
-          # Use body file if available, fallback to inline body
           if [ -f "ai_pr_description.md" ]; then
             gh pr create \
               --base dev \
