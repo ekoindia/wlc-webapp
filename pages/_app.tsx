@@ -24,7 +24,7 @@ import { Layout } from "layout-components";
 import App from "next/app";
 
 Sentry.init({
-	dsn: "https://6e3a511940e440969f3a2f1e1f9917f9@o4511307593809920.ingest.us.sentry.io/4511330872131584",
+	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 	sendDefaultPii: true,
 });
 // import { Inter } from "next/font/google";
