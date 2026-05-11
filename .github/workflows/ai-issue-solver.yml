@@ -221,7 +221,7 @@ jobs:
           git config user.name "AI Fix Bot"
           git config user.email "ai-bot@users.noreply.github.com"
 
-          git checkout -b "$BRANCH"
+          git checkout -b "$BRANCH" origin/dev
 
           if [ ! -f "ai_file_changes.json" ]; then
             echo "No AI changes found"
