@@ -493,6 +493,7 @@ const DropZoneTest = () => {
 					labelStyle={{ mb: 0, fontSize: "10px" }}
 					value={options.maxLength}
 					onChange={(e) =>
+						e?.target &&
 						changeSingleOption("maxLength", e.target.value)
 					}
 				/>
@@ -504,6 +505,7 @@ const DropZoneTest = () => {
 					labelStyle={{ mb: 0, fontSize: "10px" }}
 					value={options.aspectRatio}
 					onChange={(e) =>
+						e?.target &&
 						changeSingleOption("aspectRatio", e.target.value)
 					}
 				/>
@@ -515,6 +517,7 @@ const DropZoneTest = () => {
 					labelStyle={{ mb: 0, fontSize: "10px" }}
 					value={options.minFaceCount}
 					onChange={(e) =>
+						e?.target &&
 						changeSingleOption("minFaceCount", e.target.value)
 					}
 				/>
@@ -526,6 +529,7 @@ const DropZoneTest = () => {
 					labelStyle={{ mb: 0, fontSize: "10px" }}
 					value={options.maxFaceCount}
 					onChange={(e) =>
+						e?.target &&
 						changeSingleOption("maxFaceCount", e.target.value)
 					}
 				/>
