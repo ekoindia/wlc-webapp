@@ -58,7 +58,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install requests
+          pip install anthropic
 
       # ─────────────────────────────────────────────────────────────
       # Resolve issue number
@@ -167,7 +167,7 @@ jobs:
 
       - name: Run AI Fix Script
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
           REPO_NAME: ${{ github.repository }}

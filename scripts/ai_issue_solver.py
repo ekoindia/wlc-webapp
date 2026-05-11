@@ -14,8 +14,8 @@ import re
 import sys
 import json
 import time
-import requests
 import pathlib
+import anthropic
 
 # Allow importing sibling scripts regardless of cwd
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -23,10 +23,11 @@ from ai_models import MODELS  # noqa: E402
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 ISSUE_NUMBER = os.environ.get("ISSUE_NUMBER", "?")
 REPO_NAME = os.environ.get("REPO_NAME", "")
-BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+_client = anthropic.Anthropic(api_key=API_KEY)
 
 CODE_EXTENSIONS = {
     ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".go",
@@ -93,12 +94,10 @@ def extract_json(text):
 
 
 def call_llm(messages, retries=2):
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://github.com",
-        "X-Title": "GitHub AI Issue Solver"
-    }
+    system_prompt = next(
+        (m["content"] for m in messages if m["role"] == "system"), ""
+    )
+    user_messages = [m for m in messages if m["role"] != "system"]
 
     last_error = None
 
@@ -107,37 +106,27 @@ def call_llm(messages, retries=2):
             try:
                 print(f"🔄 Trying model: {model}")
 
-                payload = {
+                kwargs = {
                     "model": model,
-                    "messages": messages,
-                    "temperature": 0.1
+                    "max_tokens": 4096,
+                    "temperature": 0.1,
+                    "messages": user_messages,
                 }
+                if system_prompt:
+                    kwargs["system"] = system_prompt
 
-                response = requests.post(
-                    BASE_URL,
-                    headers=headers,
-                    json=payload,
-                    timeout=180
-                )
+                response = _client.messages.create(**kwargs)
+                return response.content[0].text, model
 
-                if response.status_code == 429:
-                    wait = 5 * (attempt + 1)
-
-                    print(f"⏳ Rate limited. Waiting {wait}s")
-
-                    time.sleep(wait)
-
-                    continue
-
-                response.raise_for_status()
-
-                result = response.json()
-
-                return result["choices"][0]["message"]["content"], model
+            except anthropic.RateLimitError:
+                wait = 5 * (attempt + 1)
+                print(f"⏳ Rate limited. Waiting {wait}s")
+                time.sleep(wait)
 
             except Exception as e:
                 last_error = e
                 print(f"⚠️ {model} failed: {e}")
+                break
 
     raise Exception(f"All models failed: {last_error}")
 
