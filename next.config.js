@@ -292,6 +292,13 @@ const nextConfig = {
 				destination: "https://files.eko.co.in/:path*",
 			},
 
+			{
+				// Proxy report downloads to the API server to avoid CORS issues
+				// when the browser fetches binary files (Excel) directly.
+				source: "/_reports/:path*",
+				destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/reports/:path*`,
+			},
+
 			// URL Rewrites to fix Connect Widget bug of invalid partial paths (Eg: 'images/brands/...')
 			{
 				source: "/transaction/images/brands/:path*", // :path* is a catch-all

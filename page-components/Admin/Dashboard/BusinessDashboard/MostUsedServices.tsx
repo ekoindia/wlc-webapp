@@ -1,7 +1,9 @@
 import { Divider, Flex, Skeleton, Text } from "@chakra-ui/react";
 import { DragHandle } from "components/DraggableGrid";
 import { Endpoints } from "constants/EndPoints";
-import { useApiFetch } from "hooks";
+import { isToday } from "date-fns";
+import { useApiFetch, useDailyCacheState } from "hooks";
+import { useDashboard } from "page-components/Admin/Dashboard/DashboardContext";
 import { useEffect, useMemo, useState } from "react";
 import { LuTrendingUp } from "react-icons/lu";
 import {
@@ -14,6 +16,10 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { formatCurrency } from "utils/numberFormat";
+import { getCacheKey } from "./utils";
+
+const mostUsedServicesLocalCacheKey = "inf-dashboard-most-used-services";
 
 /** Chart colors - matching project color scheme */
 const CHART_COLORS = [
@@ -92,6 +98,12 @@ const CustomTooltip = ({
 }: CustomTooltipProps): JSX.Element | null => {
 	if (active && payload && payload.length) {
 		const { totalCount, name, totalRevenue } = payload[0].payload;
+		const formattedRevenue = formatCurrency(
+			totalRevenue,
+			"INR",
+			false,
+			true
+		);
 
 		return (
 			<Flex
@@ -113,9 +125,9 @@ const CustomTooltip = ({
 					</Text>
 				</Text>
 				<Text fontSize="xs" color="gray.600">
-					Revenue (₹):{" "}
+					Revenue/Charges:{" "}
 					<Text as="span" fontWeight="600" color="primary.DEFAULT">
-						{totalRevenue?.toLocaleString()}
+						{formattedRevenue}
 					</Text>
 				</Text>
 			</Flex>
@@ -145,6 +157,38 @@ const MostUsedServices = ({
 }: MostUsedServicesProps): JSX.Element => {
 	const [mostUsedServicesData, setMostUsedServicesData] =
 		useState<MostUsedServicesData>({});
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+	const [mostUsedServicesCache, setMostUsedServicesCache, isCacheValid] =
+		useDailyCacheState(mostUsedServicesLocalCacheKey, {});
+	const isTodayRange = isToday(dateFrom) && isToday(dateTo);
+
+	const cacheKey = useMemo(
+		() => getCacheKey(mostUsedServicesLocalCacheKey, dateFrom, dateTo),
+		[dateFrom, dateTo]
+	);
+
+	const cachedMostUsedServices =
+		businessDashboardData?.mostUsedServicesCache?.[cacheKey];
+
+	const updateMostUsedServicesCache = (payload: MostUsedServicesData) => {
+		const updatedCache = {
+			...(mostUsedServicesCache || {}),
+			data: {
+				...(mostUsedServicesCache?.data || {}),
+				[cacheKey]: payload || {},
+			},
+		};
+
+		setMostUsedServicesCache(updatedCache);
+
+		setBusinessDashboardData((prev) => ({
+			...prev,
+			mostUsedServicesCache: {
+				...(prev?.mostUsedServicesCache || {}),
+				[cacheKey]: payload || {},
+			},
+		}));
+	};
 
 	// MARK: API Handler
 	const [fetchMostUsedServices, isLoading] = useApiFetch(
@@ -160,6 +204,7 @@ const MostUsedServices = ({
 				const _data =
 					res?.data?.dashboard_object?.mostUsedServices ?? {};
 				setMostUsedServicesData(_data);
+				updateMostUsedServicesCache(_data);
 			},
 		}
 	);
@@ -168,8 +213,37 @@ const MostUsedServices = ({
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
-		const _typeid = productFilter ? { typeid: productFilter } : {};
+		if (isTodayRange) {
+			const _typeid = productFilter ? { typeid: productFilter } : {};
+			fetchMostUsedServices({
+				body: {
+					interaction_type_id: 682,
+					requestPayload: {
+						most_used_services: {
+							datefrom: dateFrom,
+							dateto: dateTo,
+							..._typeid,
+						},
+					},
+				},
+			});
 
+			return;
+		}
+
+		if (cachedMostUsedServices !== undefined) {
+			setMostUsedServicesData(cachedMostUsedServices);
+			return;
+		}
+
+		if (isCacheValid && mostUsedServicesCache?.data?.[cacheKey]) {
+			const cached = mostUsedServicesCache.data[cacheKey];
+			updateMostUsedServicesCache(cached);
+			setMostUsedServicesData(cached);
+			return;
+		}
+
+		const _typeid = productFilter ? { typeid: productFilter } : {};
 		fetchMostUsedServices({
 			body: {
 				interaction_type_id: 682,
@@ -182,7 +256,7 @@ const MostUsedServices = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter]);
+	}, [dateFrom, dateTo, productFilter, cacheKey, isTodayRange]);
 
 	// Transform API data to display format with labels from productFilterList
 	const servicesDisplayData = useMemo((): ServiceDisplayItem[] => {

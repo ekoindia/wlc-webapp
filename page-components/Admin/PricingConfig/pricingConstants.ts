@@ -89,37 +89,41 @@ export const getFilteredOperationTypeOptions = (
 	// Start with the base operation type options
 	let filteredOptions = [...OPERATION_TYPE_OPTIONS];
 
-	// Check if user types 2 or 3 have disable_partial_account_creation set to true
-	const hasDisablePartialCreation = ["2", "3"].some((typeId) => {
+	// Check if user types have MERCHANT and I_MERCHANT partial creation disabled
+	const isPartialAccountCreationDisabled = [
+		UserType.MERCHANT,
+		UserType.I_MERCHANT,
+	].some((typeId) => {
 		const typeMetadata = userTypeMetadata[typeId];
 		return typeMetadata?.disable_partial_account_creation === true;
 	});
 
 	// Remove "Individual Distributor/Retailer" (value "1") if partial account creation is disabled
-	if (hasDisablePartialCreation) {
+	if (isPartialAccountCreationDisabled) {
 		filteredOptions = filteredOptions.filter(
 			(option) => option.value !== "1"
 		);
 	}
 
-	// Check if user type 1 has disable_partial_account_creation set to true
-	const userType1HasDisablePartialCreation =
-		userTypeMetadata["1"]?.disable_partial_account_creation === true;
+	// Check if user type distributor has disable_partial_account_creation set to true
+	const isDistributorPartialCreationDisabled =
+		userTypeMetadata[UserType.DISTRIBUTOR]
+			?.disable_partial_account_creation === true;
 
-	// Remove "Distributor's Network" (value "2") if user type 1 has disable_partial_account_creation
-	if (userType1HasDisablePartialCreation) {
+	// Remove "Distributor's Network" (value "2") if user type distributor has disable_partial_account_creation
+	if (isDistributorPartialCreationDisabled) {
 		filteredOptions = filteredOptions.filter(
 			(option) => option.value !== "2"
 		);
 	}
 
-	// Update the label for "Distributor's Network" to use user type 1 label if available
-	const userType1Label = userTypeLabels[UserType.DISTRIBUTOR];
+	// Update the label for "Distributor's Network" to use the distributor label if available
+	const userTypeLabel = userTypeLabels[UserType.DISTRIBUTOR];
 	filteredOptions = filteredOptions.map((option) => {
-		if (option.value === "2" && userType1Label) {
+		if (option.value === "2" && userTypeLabel) {
 			return {
 				...option,
-				label: `${userType1Label} Network`,
+				label: `${userTypeLabel} Network`,
 			};
 		}
 		return option;

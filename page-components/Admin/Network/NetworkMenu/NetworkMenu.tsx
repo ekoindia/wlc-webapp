@@ -8,14 +8,14 @@ import {
 	MenuList,
 	Portal,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Button, Icon } from "components";
 import { Endpoints, TransactionTypes } from "constants/index";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
 import React, { Fragment, useState } from "react";
-import dynamic from "next/dynamic";
 
 const DeleteDemoUserModal = dynamic(
 	() =>
@@ -53,7 +53,7 @@ const statusLabels: Record<number, string> = {
  */
 const generateMenuList = (
 	list: any[],
-	statusId: number,
+	statusId: number | string,
 	extra: any,
 	includeExtra: boolean,
 	other: any[]
@@ -89,8 +89,9 @@ const generateMenuList = (
 interface NetworkMenuProps {
 	mobile_number: string;
 	eko_code: string;
-	account_status_id: number;
-	user_type_id: number;
+	account_status_id: number | string;
+	user_type_id: number | string;
+	label?: string;
 	variant?:
 		| "primary"
 		| "accent"
@@ -109,6 +110,7 @@ interface NetworkMenuProps {
  * @param {string} props.eko_code - The Eko code of the user.
  * @param {number} props.account_status_id - The current account status ID of the user.
  * @param {number} props.user_type_id - The type ID of the user.
+ * @param {string} [props.label] - The label for the menu button.
  * @param {"primary" | "accent" | "primary_outline" | "accent_outline" | "ghost" | "link"} [props.variant] - The visual variant of the menu button.
  * @param {Function} [props.onStatusUpdate] - Callback function triggered upon a successful status update.
  * @param {Function} [props.onDeleteDemoUser] - Callback function triggered upon a successful demo user deletion.
@@ -119,6 +121,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 	eko_code,
 	account_status_id,
 	user_type_id,
+	label,
 	variant = "primary",
 	onStatusUpdate,
 	onDeleteDemoUser,
@@ -190,7 +193,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 		},
 		{
 			label: "Download Agreement",
-			visible: account_status_id === status.ACTIVE,
+			visible: +account_status_id === status.ACTIVE,
 			onClick: () => {
 				downloadAgreement();
 			},
@@ -226,15 +229,27 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 		<>
 			<Box onClick={(e: any) => e.stopPropagation()}>
 				<Menu autoSelect={false} isLazy variant={variant}>
-					<MenuButton
-						cursor="pointer"
-						as={IconButton}
-						rounded="8px"
-						size="sm"
-						variant={variant}
-						colorScheme="gray"
-						icon={<Icon name="more-vert" />}
-					/>
+					{label ? (
+						<MenuButton
+							as={Button}
+							size="sm"
+							variant={variant}
+							rightIcon={<Icon name="caret-down" size="xs" />}
+						>
+							{label}
+						</MenuButton>
+					) : (
+						<MenuButton
+							cursor="pointer"
+							as={IconButton}
+							rounded="8px"
+							size="sm"
+							variant={variant}
+							colorScheme="gray"
+							icon={<Icon name="more-vert" />}
+							aria-label="Options"
+						/>
+					)}
 					<Portal>
 						<MenuList>
 							{_finalMenuList.map((item, index) => (
@@ -248,7 +263,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 										{item.label}
 									</MenuItem>
 									{index !== _finalMenuList.length - 1 && (
-										<MenuDivider margin="auto" w="90%" />
+										<MenuDivider margin="auto" />
 									)}
 								</Fragment>
 							))}
@@ -260,7 +275,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
 				accountStatusId={accountStatusId}
-				currentStatusId={account_status_id}
+				currentStatusId={Number(account_status_id)}
 				eko_code={eko_code}
 				accessToken={accessToken}
 				statusLabels={statusLabels}

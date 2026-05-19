@@ -252,18 +252,16 @@ export const VerificationResultList = ({
 						<Text color="gray.500">No results to display</Text>
 					</Box>
 				) : (
-					filteredResults.map((result, displayIndex) => {
+					filteredResults.map((result) => {
 						const originalIndex = getOriginalIndex(result);
 						const isRetrying =
 							retryingIndices?.includes(originalIndex);
-						// Only first result is expanded by default
-						const isFirstResult = displayIndex === 0;
 
 						return (
 							<VerificationResultCard
 								key={result.serviceCode}
 								result={result}
-								defaultExpanded={isFirstResult}
+								defaultExpanded={true}
 								isRetrying={isRetrying}
 							/>
 						);

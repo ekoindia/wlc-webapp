@@ -6,10 +6,9 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
 	list: {
-		py: "0px",
-		minW: "fit-content",
+		minW: "180px",
 		border: "none",
-		boxShadow: "sh-card",
+		boxShadow: "sh-button",
 		zIndex: 100,
 	},
 	item: {

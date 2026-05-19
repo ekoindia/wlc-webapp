@@ -1,0 +1,269 @@
+name: 🤖 AI Issue Solver
+
+on:
+  issues:
+    types: [opened, labeled]
+
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to solve"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  solve-issue:
+    name: Solve Issue with AI
+    runs-on: ubuntu-latest
+
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.issue.labels.*.name, 'ai-fix')
+
+    steps:
+      # ─────────────────────────────────────────────────────────────
+      # Checkout
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # ─────────────────────────────────────────────────────────────
+      # Setup Node
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # ─────────────────────────────────────────────────────────────
+      # Setup Python
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          pip install anthropic
+
+      # ─────────────────────────────────────────────────────────────
+      # Resolve issue number
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Set issue number
+        id: issue
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ github.event.inputs.issue_number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ─────────────────────────────────────────────────────────────
+      # Fetch issue details
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Fetch issue details
+        uses: actions/github-script@v8
+        env:
+          ISSUE_NUM: ${{ steps.issue.outputs.number }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = parseInt(process.env.ISSUE_NUM, 10);
+
+            const { data } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+            });
+
+            const fs = require('fs');
+
+            fs.writeFileSync('issue_title.txt', data.title || '');
+            fs.writeFileSync('issue_body.txt', data.body || '');
+
+      # ─────────────────────────────────────────────────────────────
+      # Comment on issue
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Post working comment
+        uses: actions/github-script@v8
+        env:
+          ISSUE_NUM: ${{ steps.issue.outputs.number }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = parseInt(process.env.ISSUE_NUM, 10);
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `## 🤖 AI is analyzing this issue
+
+              Running:
+              - dependency install
+              - lint checks
+              - build validation
+              - stack trace analysis
+              - automated fix generation
+
+              A PR will be created automatically if a fix is generated.`
+            });
+
+      # ─────────────────────────────────────────────────────────────
+      # Install Dependencies
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      # ─────────────────────────────────────────────────────────────
+      # Run lint
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run lint
+        continue-on-error: true
+        run: |
+          npm run lint > lint_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Run TypeScript check
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run TypeScript check
+        continue-on-error: true
+        run: |
+          npx tsc --noEmit > ts_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Run build
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run build
+        continue-on-error: true
+        run: |
+          npm run build > build_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Run AI Solver
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Run AI Fix Script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          python scripts/ai_issue_solver.py
+
+      # ─────────────────────────────────────────────────────────────
+      # Apply AI changes
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Apply AI changes
+        run: |
+          if [ -f "ai_file_changes.json" ]; then
+            python scripts/apply_changes.py
+          else
+            echo "No changes generated"
+            exit 0
+          fi
+
+      # ─────────────────────────────────────────────────────────────
+      # Re-run lint
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Re-run lint
+        continue-on-error: true
+        run: |
+          npm run lint > lint_retry_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Re-run build
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Re-run build
+        continue-on-error: true
+        run: |
+          npm run build > build_retry_output.txt 2>&1 || true
+
+      # ─────────────────────────────────────────────────────────────
+      # Create Pull Request
+      # ─────────────────────────────────────────────────────────────
+
+      - name: Create Pull Request
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          BRANCH="ai/fix-issue-${ISSUE_NUMBER}"
+          ISSUE_TITLE=$(cat issue_title.txt 2>/dev/null || echo "Issue #${ISSUE_NUMBER}")
+
+          git config user.name "AI Fix Bot"
+          git config user.email "ai-bot@users.noreply.github.com"
+
+          git checkout -b "$BRANCH" origin/dev
+
+          if [ ! -f "ai_file_changes.json" ]; then
+            echo "No AI changes found"
+            exit 0
+          fi
+
+          python scripts/stage_ai_files.py
+
+          if git diff --cached --quiet; then
+            echo "No changes staged"
+            exit 0
+          fi
+
+          SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr -dc '[:print:]' | head -c 100)
+
+          git commit -m "fix: AI fix for issue #${ISSUE_NUMBER}"
+
+          # Force-push so re-runs don't fail on an existing branch
+          git push origin "$BRANCH" --force
+
+          gh label create "ai-generated" \
+            --color "0075ca" \
+            --description "AI generated fix" \
+            2>/dev/null || true
+
+          # Create PR — skip gracefully if one already exists for this branch
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #${EXISTING_PR} already exists for ${BRANCH} — skipping creation."
+          elif [ -f "ai_pr_description.md" ]; then
+            gh pr create \
+              --base dev \
+              --head "$BRANCH" \
+              --title "🤖 AI Fix: ${SAFE_TITLE}" \
+              --body-file ai_pr_description.md \
+              --label "ai-generated"
+          else
+            gh pr create \
+              --base dev \
+              --head "$BRANCH" \
+              --title "🤖 AI Fix: ${SAFE_TITLE}" \
+              --body "🤖 AI-generated fix for issue #${ISSUE_NUMBER}. Please review before merging." \
+              --label "ai-generated"
+          fi

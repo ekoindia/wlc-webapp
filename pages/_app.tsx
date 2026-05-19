@@ -1,5 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleTagManager } from "@next/third-parties/google";
+import * as Sentry from "@sentry/react";
 import { ErrorBoundary, RouteProtecter } from "components";
 import { KBarLazyProvider } from "components/CommandBar";
 import {
@@ -21,6 +22,11 @@ import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
+
+Sentry.init({
+	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+	sendDefaultPii: true,
+});
 // import { Inter } from "next/font/google";
 import { MockAdminUser, MockUser } from "__tests__/fixtures/session";
 import { CopilotProvider } from "libs";

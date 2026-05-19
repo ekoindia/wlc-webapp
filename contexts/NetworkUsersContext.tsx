@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { UserType, UserTypeOrder } from "constants/UserTypes";
 import { useUser } from "contexts/UserContext";
@@ -10,8 +11,12 @@ import {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
+
+const MAX_FETCH_FAILURES = 1;
+const FETCH_COOLDOWN_MS = 5 * 60 * 1000;
 
 /**
  * Interface for a single network user.
@@ -34,6 +39,7 @@ interface NetworkUsersContextValue {
 	userTypeIdList: number[];
 	fetchedAt: string | null;
 	loading: boolean;
+	fetchBlocked: boolean;
 	refreshUserList: (_force?: boolean) => void;
 }
 
@@ -97,6 +103,9 @@ export const NetworkUsersProvider = ({
 	const [activeUserTypeCount, setActiveUserTypeCount] = useState<
 		Record<number, number>
 	>({});
+	const [_fetchFailureCount, setFetchFailureCount] = useState<number>(0);
+	const [fetchBlocked, setFetchBlocked] = useState<boolean>(false);
+	const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId, userData } =
 		useUser();
@@ -104,6 +113,7 @@ export const NetworkUsersProvider = ({
 	const { code } = userDetails ?? {};
 
 	const { userTypeLabels } = useUserTypes();
+	const toast = useToast();
 
 	// MARK: Fetch Users
 	const [fetchUsers, loading] = useApiFetch(Endpoints.TRANSACTION, {
@@ -114,12 +124,30 @@ export const NetworkUsersProvider = ({
 					asof: Date.now(),
 					userId,
 				});
+				// Reset failure tracking on success
+				setFetchFailureCount(0);
+				setFetchBlocked(false);
 			}
 		},
 		onError: ({ errorObject, request }) => {
 			console.error("Error fetching network users:", {
 				error: errorObject,
 				request,
+			});
+			setFetchFailureCount((prev) => {
+				const next = prev + 1;
+				if (next === MAX_FETCH_FAILURES) {
+					setFetchBlocked(true);
+					toast({
+						title: "Unable to load network users",
+						description:
+							"Too many failed attempts. Please try again in a few minutes.",
+						status: "error",
+						duration: 8000,
+						isClosable: true,
+					});
+				}
+				return next;
 			});
 		},
 	});
@@ -142,12 +170,33 @@ export const NetworkUsersProvider = ({
 	}, [networkUsers.networkUsersList, userTypeLabels, code]);
 
 	/**
+	 * Auto-unblock after cooldown when fetch is blocked due to repeated failures.
+	 * Timer is started exactly once on the 5th failure and does not reset on blocked calls.
+	 */
+	useEffect(() => {
+		if (!fetchBlocked) return;
+		if (cooldownTimerRef.current) return; // Timer already running
+		cooldownTimerRef.current = setTimeout(() => {
+			setFetchBlocked(false);
+			setFetchFailureCount(0);
+			cooldownTimerRef.current = null;
+		}, FETCH_COOLDOWN_MS);
+		return () => {
+			if (cooldownTimerRef.current) {
+				clearTimeout(cooldownTimerRef.current);
+				cooldownTimerRef.current = null;
+			}
+		};
+	}, [fetchBlocked]);
+
+	/**
 	 * Fetch the network users data from the server.
 	 */
 	const refreshUserList = useCallback(
 		(force: boolean = false) => {
 			if (!isLoggedIn || !accessToken || isOnboarding) return;
 			if (loading) return;
+			if (fetchBlocked) return;
 
 			// If force is true, we bypass the cache check (isValid)
 			// But we still want to throttle requests to prevent spamming
@@ -180,6 +229,7 @@ export const NetworkUsersProvider = ({
 			isOnboarding,
 			isAdmin,
 			loading,
+			fetchBlocked,
 			isValid,
 			userId,
 			networkUsers,
@@ -253,6 +303,7 @@ export const NetworkUsersProvider = ({
 			activeUserTypeCount,
 			fetchedAt: networkUsers.asof,
 			loading,
+			fetchBlocked,
 			refreshUserList,
 			getParents,
 		}),
@@ -263,6 +314,7 @@ export const NetworkUsersProvider = ({
 			userTypeIdList,
 			activeUserTypeCount,
 			loading,
+			fetchBlocked,
 			refreshUserList,
 			getParents,
 		]

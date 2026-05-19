@@ -15,7 +15,7 @@ import { NetworkMenu } from "page-components/Admin/Network/NetworkMenu/NetworkMe
 import { lazy, Suspense, useEffect, useState } from "react";
 
 // Utility: Check if all values in an object are null/blank/empty
-const isAllFieldsEmpty = (obj, fields) => {
+const areAllFieldsEmpty = (obj, fields) => {
 	if (!obj) return true;
 	return fields.every((key) => {
 		const val = obj[key];
@@ -177,7 +177,7 @@ const ProfilePanel = () => {
 		),
 	});
 	// AddressPane: only if any field present
-	if (!isAllFieldsEmpty(addressData, addressFields)) {
+	if (!areAllFieldsEmpty(addressData, addressFields)) {
 		panes.push({
 			id: 2,
 			comp: <AddressPane data={addressData} />,
@@ -186,7 +186,7 @@ const ProfilePanel = () => {
 	// DocPane
 	panes.push({ id: 3, comp: <DocPane documentData={agentDocuments} /> });
 	// PersonalPane: only if any field present
-	if (!isAllFieldsEmpty(personalData, personalFields)) {
+	if (!areAllFieldsEmpty(personalData, personalFields)) {
 		panes.push({
 			id: 4,
 			comp: <PersonalPane data={personalData} />,
@@ -214,6 +214,7 @@ const ProfilePanel = () => {
 					<Flex gap="2" align="center">
 						{agentData ? (
 							<NetworkMenu
+								label="Options"
 								variant={menuVariant}
 								mobile_number={mobile}
 								eko_code={
