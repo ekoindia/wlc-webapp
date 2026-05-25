@@ -1,14 +1,13 @@
 import { Flex } from "@chakra-ui/react";
-import { PageTitle } from "components/PageTitle";
 import { Endpoints } from "constants/EndPoints";
-import { useNetworkUsers, usePubSub, useSession } from "contexts";
+import { useNetworkUsers, usePubSub, useUser } from "contexts";
 import { useAppSource } from "contexts/AppSourceContext";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import dynamic from "next/dynamic";
+import LoginWidget from "page-components/LoginPanel/LoginWidget/LoginWidget";
 import React, { useCallback, useMemo, useState } from "react";
-import { OnboardingGatewayLogin, OnboardingGatewayVerifyOtp } from ".";
 import { OnboardingProvider } from "../../context";
 import type { OnboardingServices } from "../../contracts";
 import {
@@ -30,20 +29,9 @@ export const ONBOARDING_GATEWAY_STEPS = {
 	ADD_AGENT: "ADD_AGENT",
 	AGENT_STATUS_CHECK: "AGENT_STATUS_CHECK",
 	AGENT_ALREADY_EXISTS: "AGENT_ALREADY_EXISTS",
-	OTP_VERIFICATION: "OTP_VERIFICATION",
 	ONBOARDING_WIDGET: "ONBOARDING_WIDGET",
 	ONBOARDING_COMPLETED: "ONBOARDING_COMPLETED",
 } as const;
-
-const stepBasedTitleMap: Record<keyof typeof ONBOARDING_GATEWAY_STEPS, string> =
-	{
-		ADD_AGENT: "Add Agent",
-		AGENT_STATUS_CHECK: "Checking Agent Status",
-		AGENT_ALREADY_EXISTS: "Agent Already Exists",
-		OTP_VERIFICATION: "Verify OTP",
-		ONBOARDING_WIDGET: "Agent Onboarding",
-		ONBOARDING_COMPLETED: "Onboarding Completed",
-	};
 
 /**
  * API Response type IDs for different scenarios
@@ -98,30 +86,26 @@ export interface OnboardingGatewayProps {
  * @param root0.role
  * @returns {JSX.Element} The rendered AssistedOnboarding component
  */
-const OnboardingGateway = ({
-	token,
-	role,
-}: OnboardingGatewayProps): JSX.Element => {
-	const { accessToken } = useSession();
+const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
+	const { accessToken, userData } = useUser();
 	const { generateNewToken } = useRefreshToken();
 	const { refreshUserList } = useNetworkUsers();
 	const { orgDetail } = useOrgDetailContext();
 	const { isAndroid } = useAppSource();
 	const pubsub = usePubSub();
 
-	const [gatewayAccessToken, setGatewayAccessToken] = useState<string>(
-		token || ""
-	);
+	console.log("[OnboardingGateway] orgDetail", orgDetail);
+	console.log("[OnboardingGateway] accessToken", accessToken);
+	console.log("[OnboardingGateway] userData", userData);
 
-	// Build the services object for the onboarding feature
 	const services: OnboardingServices = useMemo(
 		() => ({
-			accessToken: gatewayAccessToken || accessToken,
+			accessToken,
 			generateNewToken,
 			isAndroid,
 			pubsub,
 		}),
-		[accessToken, gatewayAccessToken, generateNewToken, isAndroid, pubsub]
+		[accessToken, generateNewToken, isAndroid, pubsub]
 	);
 
 	const [step, setStep] = useState<keyof typeof ONBOARDING_GATEWAY_STEPS>(
@@ -157,7 +141,7 @@ const OnboardingGateway = ({
 					body: {
 						csp_id: mobile,
 					},
-					token: gatewayAccessToken || accessToken,
+					token: accessToken,
 				}
 			);
 
@@ -208,9 +192,6 @@ const OnboardingGateway = ({
 				const details = await fetchAgentDetails(agentMobile);
 				if (details) {
 					setAgentDetails(details);
-					if (details.access_token) {
-						setGatewayAccessToken(details.access_token);
-					}
 				}
 			} catch (error) {
 				// Expected for new agents — profile doesn't exist until partial account is created
@@ -221,7 +202,7 @@ const OnboardingGateway = ({
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [agentMobile, gatewayAccessToken]);
+	}, [agentMobile, accessToken]);
 
 	// MARK: Compute provider props from agentDetails
 	// These will be empty/undefined until agentDetails is fetched, which is fine —
@@ -238,42 +219,49 @@ const OnboardingGateway = ({
 		switch (step) {
 			case ONBOARDING_GATEWAY_STEPS.ADD_AGENT:
 				return (
-					<OnboardingGatewayLogin
-						setStep={setStep}
-						setAgentMobile={setAgentMobile}
-						setAgentDetails={setAgentDetails}
+					<LoginWidget
+						mode="embedded"
+						hideLogo={true}
+						onLoginSuccess={(response: any) => {
+							if (response?.access_token && response?.details) {
+								setAgentMobile(
+									response.details.mobile ||
+										response.details.csp_id
+								);
+								setAgentDetails({
+									...response,
+									userDetails: response.details,
+									onboarding_steps:
+										response.details.onboarding_steps,
+									role_list: response.details.role_list,
+								});
+								setStep(
+									ONBOARDING_GATEWAY_STEPS.ONBOARDING_WIDGET
+								);
+							}
+						}}
 					/>
 				);
 
 			case ONBOARDING_GATEWAY_STEPS.AGENT_STATUS_CHECK:
 				return (
 					<AgentStatusCheck
-						setStep={setStep}
+						setStep={setStep as any}
 						onAgentDetailsFetched={setAgentDetails}
 						fetchAgentDetails={fetchAgentDetails}
 					/>
 				);
 
 			case ONBOARDING_GATEWAY_STEPS.AGENT_ALREADY_EXISTS:
-				return <AgentAlreadyExistsScreen setStep={setStep} />;
-
-			case ONBOARDING_GATEWAY_STEPS.OTP_VERIFICATION:
-				return (
-					<OnboardingGatewayVerifyOtp
-						setStep={setStep}
-						setGatewayAccessToken={setGatewayAccessToken}
-						setAgentDetails={setAgentDetails}
-					/>
-				);
+				return <AgentAlreadyExistsScreen setStep={setStep as any} />;
 
 			case ONBOARDING_GATEWAY_STEPS.ONBOARDING_WIDGET:
 				return (
 					<OnboardingWidget
-						userData={agentDetails}
+						userData={userData}
 						updateUserInfo={() => {}}
 						isAssistedOnboarding={false}
-						assistedAgentDetails={agentDetails}
-						allowedMerchantTypes={role.split(",").map(Number)}
+						allowedMerchantTypes={role?.split(",").map(Number)}
 						agentMobile={agentMobile}
 						refreshAgentProfile={refreshAgentProfile}
 						services={services}
@@ -284,7 +272,7 @@ const OnboardingGateway = ({
 			case ONBOARDING_GATEWAY_STEPS.ONBOARDING_COMPLETED:
 				return (
 					<OnboardingCompleted
-						setStep={setStep}
+						setStep={setStep as any}
 						resetAgentState={resetAgentState}
 					/>
 				);
@@ -294,69 +282,27 @@ const OnboardingGateway = ({
 		}
 	};
 
-	/**
-	 * Handle back navigation based on current step
-	 * ADD_AGENT → Navigate to home/admin (exit flow)
-	 * OTP_VERIFICATION → ADD_AGENT (re-enter mobile)
-	 * All other steps → ADD_AGENT (start fresh)
-	 */
-	const handleBackNavigation = (): void => {
-		switch (step) {
-			// case ONBOARDING_GATEWAY_STEPS.ADD_AGENT:
-			// 	// From Add Agent step, navigate to home or admin based on user type
-			// 	router.push(isAdmin ? "/admin" : "/home");
-			// 	break;
-
-			case ONBOARDING_GATEWAY_STEPS.OTP_VERIFICATION:
-				// From OTP, go back to add agent to re-enter mobile
-				resetAgentState();
-				setStep(ONBOARDING_GATEWAY_STEPS.ADD_AGENT);
-				break;
-
-			case ONBOARDING_GATEWAY_STEPS.AGENT_ALREADY_EXISTS:
-			case ONBOARDING_GATEWAY_STEPS.ONBOARDING_WIDGET:
-			case ONBOARDING_GATEWAY_STEPS.ONBOARDING_COMPLETED:
-				// From any other step, go back to start (doesn't make sense to go to intermediate steps)
-				resetAgentState();
-				setStep(ONBOARDING_GATEWAY_STEPS.ADD_AGENT);
-				break;
-
-			default:
-				// Fallback to ADD_AGENT
-				resetAgentState();
-				setStep(ONBOARDING_GATEWAY_STEPS.ADD_AGENT);
-		}
-	};
-
 	// MARK: JSX
 	return (
-		<>
-			{/* Back button navigates based on current step - exits flow from Add Agent, goes to previous step otherwise */}
-			<PageTitle
-				title={stepBasedTitleMap[step]}
-				hideBackIcon={step === ONBOARDING_GATEWAY_STEPS.ADD_AGENT}
-				onBack={handleBackNavigation}
-			/>
-			<Flex direction="column" align="center" px={{ base: 4, md: 0 }}>
-				{/* OnboardingProvider wraps ALL assisted onboarding steps so
+		<Flex direction="column" align="center" px={{ base: 4, md: 0 }}>
+			{/* OnboardingProvider wraps ALL assisted onboarding steps so
                     every step can access shared data (mobile, userName, etc.)
                     via useOnboardingContext(). */}
-				<OnboardingProvider
-					key={agentMobile || "no-agent"}
-					services={services}
-					mobile={agentMobile}
-					userName={String(userName || "")}
-					agreementId={String(agreementId || "")}
-					onboardingSteps={onboardingSteps}
-					roleList={roleList}
-					userType={userType}
-					orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
-					refreshAgentProfile={refreshAgentProfile}
-				>
-					{renderCurrentStep()}
-				</OnboardingProvider>
-			</Flex>
-		</>
+			<OnboardingProvider
+				key={agentMobile || "no-agent"}
+				services={services}
+				mobile={agentMobile}
+				userName={String(userName || "")}
+				agreementId={String(agreementId || "")}
+				onboardingSteps={onboardingSteps}
+				roleList={roleList}
+				userType={userType}
+				orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
+				refreshAgentProfile={refreshAgentProfile}
+			>
+				{renderCurrentStep()}
+			</OnboardingProvider>
+		</Flex>
 	);
 };
 
