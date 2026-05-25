@@ -81,12 +81,17 @@ export interface OnboardingGatewayProps {
  * This component wraps the entire assisted flow in an OnboardingProvider so that
  * every step (pre-KYC and KYC) has access to shared data (mobile, userName, etc.)
  * via useOnboardingContext().
- * @param root0
- * @param root0.token
- * @param root0.role
- * @returns {JSX.Element} The rendered AssistedOnboarding component
+ * @param {OnboardingGatewayProps} props - Component props
+ * @param {string} [props.token] - Gateway auth token
+ * @param {string} [props.role] - Comma-separated merchant type IDs to restrict onboarding
+ * @returns {JSX.Element} The rendered OnboardingGateway component
  */
 const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
+	// Capture role at mount so it remains stable even if router.query changes
+	// during the session (e.g. after login triggers a re-render in GatewayWidget).
+	const [capturedRole] = useState<string | undefined>(role);
+	console.log("[Onboarding] capturedRole", capturedRole);
+
 	const { accessToken, userData } = useUser();
 	const { generateNewToken } = useRefreshToken();
 	const { refreshUserList } = useNetworkUsers();
@@ -94,9 +99,10 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 	const { isAndroid } = useAppSource();
 	const pubsub = usePubSub();
 
-	console.log("[OnboardingGateway] orgDetail", orgDetail);
-	console.log("[OnboardingGateway] accessToken", accessToken);
-	console.log("[OnboardingGateway] userData", userData);
+	console.log("[Onboarding] orgDetail", orgDetail);
+	console.log("[Onboarding] accessToken", accessToken);
+	console.log("[Onboarding] userData", userData);
+	console.log("[Onboarding] role", role);
 
 	const services: OnboardingServices = useMemo(
 		() => ({
@@ -113,6 +119,18 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 	);
 	const [agentMobile, setAgentMobile] = useState<string>("");
 	const [agentDetails, setAgentDetails] = useState<any>(null);
+
+	// agentServices overrides accessToken with the agent's token (from the login
+	// response stored in agentDetails). All agent-side API calls — role selection,
+	// KYC steps, agreement signing — must use this token, not the admin's.
+	// Falls back to the admin token before the agent has logged in.
+	const agentServices: OnboardingServices = useMemo(
+		() => ({
+			...services,
+			accessToken: agentDetails?.access_token ?? accessToken,
+		}),
+		[services, agentDetails, accessToken]
+	);
 
 	/**
 	 * Resets agent-specific state when starting a new onboarding flow.
@@ -133,6 +151,8 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 	 * @returns {Promise<any>} The agent details response
 	 */
 	const fetchAgentDetails = async (mobile: string): Promise<any> => {
+		// Use the agent's own token after login; fall back to admin token before login.
+		const token = agentDetails?.access_token ?? accessToken;
 		try {
 			const response = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -141,7 +161,7 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 					body: {
 						csp_id: mobile,
 					},
-					token: accessToken,
+					token,
 				}
 			);
 
@@ -202,7 +222,7 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [agentMobile, accessToken]);
+	}, [agentMobile, accessToken, agentDetails]);
 
 	// MARK: Compute provider props from agentDetails
 	// These will be empty/undefined until agentDetails is fetched, which is fine —
@@ -214,6 +234,13 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 	const userName = getUserNameFromData(agentDetails);
 	const agreementId = getAgreementIdFromData(agentDetails);
 
+	const _allowedMerchantTypes = capturedRole
+		?.split(",")
+		.map((s) => Number(s.trim()))
+		.filter((n) => !isNaN(n));
+
+	console.log("[Onboarding] _allowedMerchantTypes", _allowedMerchantTypes);
+
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {
 		switch (step) {
@@ -222,11 +249,13 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 					<LoginWidget
 						mode="embedded"
 						hideLogo={true}
-						onLoginSuccess={(response: any) => {
+						onLoginSuccess={(response: any, mobile?: string) => {
 							if (response?.access_token && response?.details) {
 								setAgentMobile(
-									response.details.mobile ||
-										response.details.csp_id
+									mobile ||
+										response.details.mobile ||
+										response.details.signup_mobile ||
+										""
 								);
 								setAgentDetails({
 									...response,
@@ -258,14 +287,13 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 			case ONBOARDING_GATEWAY_STEPS.ONBOARDING_WIDGET:
 				return (
 					<OnboardingWidget
-						userData={userData}
+						userData={agentDetails}
 						updateUserInfo={() => {}}
 						isAssistedOnboarding={false}
-						allowedMerchantTypes={role?.split(",").map(Number)}
+						allowedMerchantTypes={_allowedMerchantTypes}
 						agentMobile={agentMobile}
 						refreshAgentProfile={refreshAgentProfile}
-						services={services}
-						orgMetadataOnboarding={orgDetail?.metadata?.onboarding}
+						services={agentServices}
 					/>
 				);
 
@@ -290,7 +318,7 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
                     via useOnboardingContext(). */}
 			<OnboardingProvider
 				key={agentMobile || "no-agent"}
-				services={services}
+				services={agentServices}
 				mobile={agentMobile}
 				userName={String(userName || "")}
 				agreementId={String(agreementId || "")}

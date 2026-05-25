@@ -192,6 +192,14 @@ const RoleSelection = ({
 		assistedAgentDetails?.userDetails?.mobile ||
 		userData?.userDetails?.signup_mobile;
 
+	console.log("[Onboarding] RoleSelection mobile:", mobile);
+	console.log(
+		"[Onboarding] RoleSelection assistedAgentDetails:",
+		assistedAgentDetails
+	);
+	console.log("[Onboarding] RoleSelection userData:", userData);
+	console.log("[Onboarding] RoleSelection mobile:", mobile);
+
 	const { state, actions } = useOnboardingState();
 
 	/**

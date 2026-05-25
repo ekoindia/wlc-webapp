@@ -16,12 +16,17 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
 	const router = useRouter();
 	const role = (router.query.role as string) || undefined;
 
-	console.log("[GatewayWidget] role", role);
+	console.log("[Onboarding] gatewayWidget role", role);
 
-	if (!isGatewayAllowed || !id?.length) return null;
+	// router.query is empty on the first render in Next.js pages router.
+	// Wait until it's hydrated so components that capture query params at
+	// mount (e.g. capturedRole via useState) receive the real values.
+	if (!router.isReady || !isGatewayAllowed || !id?.length) return null;
 
 	const productKey = id[0];
-	console.log("productKey", productKey);
+
+	console.log("[Onboarding] productKey", productKey);
+
 	const productConfig = GATEWAY_PRODUCT_REGISTRY[productKey];
 
 	if (!productConfig) return null;
@@ -29,9 +34,13 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
 	// Custom Component Flow (bypass everything except layout)
 	if (productConfig.type === "custom") {
 		const Component = productConfig.component;
+		const componentProps = {
+			token,
+			...(productConfig.passRole ? { role } : {}),
+		};
 		return (
 			<GatewayLayout orgDetail={orgDetail}>
-				<Component token={token} role={role} />
+				<Component {...componentProps} />
 			</GatewayLayout>
 		);
 	}

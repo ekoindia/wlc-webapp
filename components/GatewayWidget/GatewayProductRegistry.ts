@@ -8,6 +8,8 @@ type GatewayProductConfig =
 	| {
 			type: "custom";
 			component: React.ComponentType<{ token?: string; role?: string }>;
+			/** Pass the URL `role` query param to the component as a prop. Defaults to false. */
+			passRole?: boolean;
 	  };
 
 export const GATEWAY_PRODUCT_REGISTRY: Record<string, GatewayProductConfig> = {
@@ -18,5 +20,6 @@ export const GATEWAY_PRODUCT_REGISTRY: Record<string, GatewayProductConfig> = {
 	onboarding: {
 		type: "custom",
 		component: OnboardingGateway,
+		passRole: true,
 	},
 };
