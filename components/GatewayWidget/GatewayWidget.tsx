@@ -15,6 +15,7 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
 	const [isGatewayAllowed] = useFeatureFlag("ELOKA_GATEWAY");
 	const router = useRouter();
 	const role = (router.query.role as string) || undefined;
+	const mobile = (router.query.mobile as string) || undefined;
 
 	console.log("[Onboarding] gatewayWidget role", role);
 
@@ -37,6 +38,7 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
 		const componentProps = {
 			token,
 			...(productConfig.passRole ? { role } : {}),
+			...(productConfig.passMobile ? { mobile } : {}),
 		};
 		return (
 			<GatewayLayout orgDetail={orgDetail}>

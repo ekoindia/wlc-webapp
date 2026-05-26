@@ -7,9 +7,15 @@ type GatewayProductConfig =
 	  }
 	| {
 			type: "custom";
-			component: React.ComponentType<{ token?: string; role?: string }>;
+			component: React.ComponentType<{
+				token?: string;
+				role?: string;
+				mobile?: string;
+			}>;
 			/** Pass the URL `role` query param to the component as a prop. Defaults to false. */
 			passRole?: boolean;
+			/** Pass the URL `mobile` query param to the component as a prop. Defaults to false. */
+			passMobile?: boolean;
 	  };
 
 export const GATEWAY_PRODUCT_REGISTRY: Record<string, GatewayProductConfig> = {
@@ -21,5 +27,6 @@ export const GATEWAY_PRODUCT_REGISTRY: Record<string, GatewayProductConfig> = {
 		type: "custom",
 		component: OnboardingGateway,
 		passRole: true,
+		passMobile: true,
 	},
 };

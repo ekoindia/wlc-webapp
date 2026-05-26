@@ -73,6 +73,11 @@ const OnboardingCompleted = dynamic(
 export interface OnboardingGatewayProps {
 	token?: string;
 	role?: string;
+	/**
+	 * Pre-fill the mobile number input from the URL query param. When set,
+	 *  the cached last-login number is intentionally bypassed.
+	 */
+	mobile?: string;
 }
 
 /**
@@ -86,11 +91,15 @@ export interface OnboardingGatewayProps {
  * @param {string} [props.role] - Comma-separated merchant type IDs to restrict onboarding
  * @returns {JSX.Element} The rendered OnboardingGateway component
  */
-const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
+const OnboardingGateway = ({
+	role,
+	mobile,
+}: OnboardingGatewayProps): JSX.Element => {
 	// Capture role at mount so it remains stable even if router.query changes
 	// during the session (e.g. after login triggers a re-render in GatewayWidget).
 	const [capturedRole] = useState<string | undefined>(role);
-	console.log("[Onboarding] capturedRole", capturedRole);
+	// console.log("[Onboarding] capturedRole", capturedRole);
+	// console.log("[Onboarding] prefill mobile", mobile);
 
 	const { accessToken, userData } = useUser();
 	const { generateNewToken } = useRefreshToken();
@@ -249,6 +258,11 @@ const OnboardingGateway = ({ role }: OnboardingGatewayProps): JSX.Element => {
 					<LoginWidget
 						mode="embedded"
 						hideLogo={true}
+						{...(mobile
+							? {
+									initialMobile: mobile,
+								}
+							: {})}
 						onLoginSuccess={(response: any, mobile?: string) => {
 							if (response?.access_token && response?.details) {
 								setAgentMobile(
