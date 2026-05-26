@@ -28,6 +28,12 @@ const SocialVerify = dynamic(
 // Declare the props interface
 interface LoginWidgetProps {
 	previewMode?: boolean;
+	/**
+	 * Optional mobile number to pre-fill from a URL query param.
+	 *  When provided, the cached last-login number is bypassed automatically
+	 *  because useRestoreLastLoginOrRoute skips when number.formatted is non-empty.
+	 */
+	initialMobile?: string;
 	[key: string]: any;
 }
 
@@ -44,6 +50,7 @@ interface LoginWidgetProps {
  * @param {boolean} [prop.hideLogo] - Hide the logo in the login widget
  * @param prop.mode
  * @param prop.onLoginSuccess
+ * @param prop.initialMobile
  * @param {...*} rest - Rest of the props
  * @example	`<LoginWidget></LoginWidget>` TODO: Fix example
  */
@@ -52,14 +59,15 @@ const LoginWidget = ({
 	hideLogo = false,
 	mode,
 	onLoginSuccess,
+	initialMobile,
 	...rest
 }: LoginWidgetProps) => {
 	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
 	const [cachedSocialResponse, setCachedSocialResponse] = useState(null); // Used to temporarily cache the social login (Google SSO) response until the mobile verification step of social login flow is done.
 	const [number, setNumber] = useState({
-		original: "",
-		formatted: "",
+		original: initialMobile ?? "",
+		formatted: initialMobile ?? "",
 	});
 	const [loginType, setLoginType] = useState("Mobile");
 	const [lastMobileFormatted, setLastMobileFormatted] = useState("");
