@@ -42,12 +42,16 @@ interface LoginWidgetProps {
  * @param {object} prop - Properties passed to the component
  * @param {boolean} [prop.previewMode] - Show login widget as a preview. Do not allow submitting the form. Used in CMS Editor as a preview of the Login widget.
  * @param {boolean} [prop.hideLogo] - Hide the logo in the login widget
+ * @param prop.mode
+ * @param prop.onLoginSuccess
  * @param {...*} rest - Rest of the props
  * @example	`<LoginWidget></LoginWidget>` TODO: Fix example
  */
 const LoginWidget = ({
 	previewMode = false,
 	hideLogo = false,
+	mode,
+	onLoginSuccess,
 	...rest
 }: LoginWidgetProps) => {
 	const [step, setStep] = useState("LOGIN");
@@ -137,6 +141,8 @@ const LoginWidget = ({
 							loginType,
 							setStep,
 							previewMode,
+							mode,
+							onLoginSuccess,
 						}}
 					/>
 				</SlideFade>
@@ -151,6 +157,8 @@ const LoginWidget = ({
 							setStep,
 							setLoginType,
 							previewMode,
+							mode,
+							onLoginSuccess,
 						}}
 					/>
 				</SlideFade>

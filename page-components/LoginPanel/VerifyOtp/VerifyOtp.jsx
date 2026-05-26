@@ -20,6 +20,8 @@ const RESEND_OTP_COUNTDOWN_SECONDS = 30;
  * @param {object} props.cachedSocialResponse - Cached social login response. When OTP verification is successful, the cached response can be used to partially login the user (prep for onboarding)
  * @param {boolean} props.previewMode - Flag to check if the component is in preview mode
  * @param {Function} props.setStep - Function to set the step
+ * @param {string} [props.mode] - Render mode; pass `"embedded"` to use `onLoginSuccess` instead of global login
+ * @param {Function} [props.onLoginSuccess] - Callback invoked on successful login when `mode="embedded"`
  * @returns {JSX.Element} The VerifyOtp component
  */
 const VerifyOtp = ({
@@ -29,9 +31,17 @@ const VerifyOtp = ({
 	cachedSocialResponse,
 	previewMode,
 	setStep,
+	mode,
+	onLoginSuccess,
 }) => {
 	const { login } = useUser();
-	const [loading, submitLogin] = useLogin(login, setStep);
+	// In embedded mode, wrap onLoginSuccess to also forward the mobile number
+	// the user typed — it may not be present in the API response for new accounts.
+	const loginAction =
+		mode === "embedded"
+			? (data) => onLoginSuccess?.(data, number?.original)
+			: login;
+	const [loading, submitLogin] = useLogin(loginAction, setStep);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
 	const { orgDetail } = useOrgDetailContext();
