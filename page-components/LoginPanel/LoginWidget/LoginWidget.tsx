@@ -87,8 +87,10 @@ const LoginWidget = ({
 
 	// Cache current OTP-Verification step in local storage,
 	// so that OTP Verification can be continued when app is closed on mobile.
+	// Skip in embedded mode: the widget is verifying an agent, not the logged-in
+	// admin, so we must not overwrite the admin's last-route cache.
 	useEffect(() => {
-		if (step === "VERIFY_OTP") {
+		if (step === "VERIFY_OTP" && mode !== "embedded") {
 			localStorage.setItem(
 				"inf-last-route",
 				JSON.stringify({
