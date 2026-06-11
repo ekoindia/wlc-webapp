@@ -228,7 +228,7 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 				+account_status_id === status.ACTIVE &&
 				isUpdateBankDetailsAllowed,
 			onClick: () => {
-				console.log("Update Bank Details clicked");
+				// console.log("Update Bank Details clicked");
 				setUpdateBankModalOpen(true);
 			},
 		},
