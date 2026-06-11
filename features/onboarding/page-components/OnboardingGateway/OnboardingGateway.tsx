@@ -72,7 +72,6 @@ const OnboardingCompleted = dynamic(
 
 export interface OnboardingGatewayProps {
 	token?: string;
-	role?: string;
 	/**
 	 * Pre-fill the mobile number input from the URL query param. When set,
 	 *  the cached last-login number is intentionally bypassed.
@@ -88,17 +87,9 @@ export interface OnboardingGatewayProps {
  * via useOnboardingContext().
  * @param {OnboardingGatewayProps} props - Component props
  * @param {string} [props.token] - Gateway auth token
- * @param {string} [props.role] - Comma-separated merchant type IDs to restrict onboarding
  * @returns {JSX.Element} The rendered OnboardingGateway component
  */
-const OnboardingGateway = ({
-	role,
-	mobile,
-}: OnboardingGatewayProps): JSX.Element => {
-	// Capture role at mount so it remains stable even if router.query changes
-	// during the session (e.g. after login triggers a re-render in GatewayWidget).
-	const [capturedRole] = useState<string | undefined>(role);
-	// console.log("[Onboarding] capturedRole", capturedRole);
+const OnboardingGateway = ({ mobile }: OnboardingGatewayProps): JSX.Element => {
 	// console.log("[Onboarding] prefill mobile", mobile);
 
 	const { accessToken, userData } = useUser();
@@ -111,7 +102,6 @@ const OnboardingGateway = ({
 	console.log("[Onboarding] orgDetail", orgDetail);
 	console.log("[Onboarding] accessToken", accessToken);
 	console.log("[Onboarding] userData", userData);
-	console.log("[Onboarding] role", role);
 
 	const services: OnboardingServices = useMemo(
 		() => ({
@@ -243,13 +233,6 @@ const OnboardingGateway = ({
 	const userName = getUserNameFromData(agentDetails);
 	const agreementId = getAgreementIdFromData(agentDetails);
 
-	const _allowedMerchantTypes = capturedRole
-		?.split(",")
-		.map((s) => Number(s.trim()))
-		.filter((n) => !isNaN(n));
-
-	console.log("[Onboarding] _allowedMerchantTypes", _allowedMerchantTypes);
-
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {
 		switch (step) {
@@ -304,7 +287,6 @@ const OnboardingGateway = ({
 						userData={agentDetails}
 						updateUserInfo={() => {}}
 						isAssistedOnboarding={false}
-						allowedMerchantTypes={_allowedMerchantTypes}
 						agentMobile={agentMobile}
 						refreshAgentProfile={refreshAgentProfile}
 						services={agentServices}
