@@ -39,7 +39,8 @@ const DigilockerRedirectionStep = ({
 }: CustomComponentProps): JSX.Element => {
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
-	const { pipelineResults, setPipelineResult } = useOnboardingContext();
+	const { pipelineResults, setPipelineResult, services } =
+		useOnboardingContext();
 	const toast = useToast();
 
 	// Local state for Digilocker data
@@ -64,6 +65,7 @@ const DigilockerRedirectionStep = ({
 		if (digilockerLink || isDigilockerLoading) return;
 
 		const result = await fetchApiData({
+			token: services.accessToken,
 			headers: {
 				"tf-req-method": "POST",
 				"tf-req-uri": "/karza/digilocker-redirection-url",
@@ -104,7 +106,13 @@ const DigilockerRedirectionStep = ({
 			status: "error",
 			duration: 2000,
 		});
-	}, [digilockerLink, fetchApiData, isDigilockerLoading, toast]);
+	}, [
+		digilockerLink,
+		fetchApiData,
+		isDigilockerLoading,
+		toast,
+		services.accessToken,
+	]);
 
 	useEffect(() => {
 		if (!hasFetchedRef.current) {

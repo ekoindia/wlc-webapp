@@ -47,7 +47,7 @@ const Render = dynamic(
  * @param {string} props.cmsType Type of CMS to render. Renders the default WelcomeCard if not provided. If "image", the custom image provided in cmsData is rendered.
  * @param {object} props.cmsData Custom CMS data to render. If cmsType is "image", this object should contain the image URL.
  */
-const LoginPanel = ({ cmsType, cmsData }) => {
+const LoginPanel = ({ cmsType, cmsData, initialMobile }) => {
 	const [number, setNumber] = useState({
 		original: "",
 		formatted: "",
@@ -158,6 +158,7 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 						}}
 						flex={1}
 						minH="450px"
+						initialMobile={initialMobile}
 					/>
 				</Flex>
 			</Flex>

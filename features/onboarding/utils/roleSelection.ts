@@ -7,6 +7,17 @@ import {
 } from "../constants";
 
 /**
+ * Role ids used by the role-selection UI and the `role` URL query param.
+ * Sequential and intuitive — distinct from APPLICANT_TYPES (the OaaS
+ * applicant_type sent to the API) and from EPS user-type ids.
+ */
+export const ROLE_IDS = {
+	RETAILER: 1,
+	DISTRIBUTOR: 2,
+	ENTERPRISE: 3,
+} as const;
+
+/**
  * Role interface representing different user types in the onboarding process
  */
 export interface Role {
@@ -30,7 +41,7 @@ export interface Role {
  * Configuration for generating role data
  */
 export interface RoleConfig {
-	/** Whether to show/hide specific merchant types */
+	/** Role `id`s to show (1: Retailer, 2: Distributor, 3: Enterprise) */
 	visibleAgentTypes?: number[];
 	/** Custom labels for roles (optional override) */
 	labelMap?: Partial<Record<number, string>>;
@@ -40,10 +51,12 @@ export interface RoleConfig {
 	userTypeLabel?: Record<number, string>;
 }
 
-// Configuration for which user types are visible in different onboarding contexts
+// Configuration for which roles are visible in different onboarding contexts.
+// Values are role `id`s (see ROLE_IDS) — the same sequential scheme accepted by
+// the `role` URL query param — NOT applicant_type.
 export const visibleAgentTypes = {
-	assistedOnboarding: [APPLICANT_TYPES.RETAILER],
-	selfOnboarding: [APPLICANT_TYPES.RETAILER, APPLICANT_TYPES.DISTRIBUTOR],
+	assistedOnboarding: [ROLE_IDS.RETAILER],
+	selfOnboarding: [ROLE_IDS.RETAILER, ROLE_IDS.DISTRIBUTOR],
 };
 
 /**
@@ -55,7 +68,7 @@ const getBaseRoleData = (
 	userTypeLabel: Record<number, string> = UserTypeLabel
 ): Role[] => [
 	{
-		id: 1,
+		id: ROLE_IDS.RETAILER,
 		applicant_type: APPLICANT_TYPES.RETAILER,
 		label: `I'm a ${userTypeLabel[2] || "Retailer"}`,
 		description: "",
@@ -68,7 +81,7 @@ const getBaseRoleData = (
 		],
 	},
 	{
-		id: 2,
+		id: ROLE_IDS.DISTRIBUTOR,
 		applicant_type: APPLICANT_TYPES.DISTRIBUTOR,
 		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
 		description: `I have a network of ${userTypeLabel[2] || "Retailer"} and I want to serve them`,
@@ -77,7 +90,7 @@ const getBaseRoleData = (
 		user_type: [{ key: 1, name: "Distributor" }],
 	},
 	{
-		id: 3,
+		id: ROLE_IDS.ENTERPRISE,
 		applicant_type: APPLICANT_TYPES.ENTERPRISE,
 		label: `I'm an ${userTypeLabel[23] || "Enterprise Partner"}`,
 		description:
@@ -101,8 +114,11 @@ export const generateRoleData = (config: RoleConfig = {}): Role[] => {
 
 	return baseRoleData
 		.filter((role) => {
+			// Filter by role `id` (1: Retailer, 2: Distributor, 3: Enterprise),
+			// the intuitive sequential scheme. applicant_type is NOT used here —
+			// its values (0, 2, 3) are non-sequential and only relevant at submit.
 			if (visibleAgentTypes && visibleAgentTypes.length > 0) {
-				return visibleAgentTypes.includes(role.applicant_type);
+				return visibleAgentTypes.includes(role.id);
 			}
 			return role.isVisible;
 		})

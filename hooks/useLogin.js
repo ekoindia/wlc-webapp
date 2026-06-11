@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useAppSource, useOrgDetailContext, useUser } from "contexts";
+import { useAppSource, useOrgDetailContext } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 import { parseEnvBoolean } from "utils/envUtils";
@@ -14,7 +14,6 @@ import { parseEnvBoolean } from "utils/envUtils";
  * @returns {[boolean, Function]} - Array containing busy state and submitLogin function
  */
 function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
-	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
@@ -183,7 +182,7 @@ function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 				console.log(
 					"[useLogin] Login Successful → Processing Login Response (dispatch `LOGIN` to UserReducer)"
 				);
-				processLoginResponse(responseData);
+				login(responseData);
 			})
 			.catch((e) => {
 				console.error("[useLogin] Login Error:", e);

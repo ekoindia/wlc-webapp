@@ -15,7 +15,7 @@ import sys
 import json
 import time
 import pathlib
-import requests
+import anthropic
 
 # Allow importing sibling scripts regardless of cwd
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -23,11 +23,12 @@ from ai_models import MODELS  # noqa: E402
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-API_KEY      = os.environ.get("OPENROUTER_API_KEY", "")
+API_KEY      = os.environ.get("ANTHROPIC_API_KEY", "")
 ISSUE_NUMBER = os.environ.get("ISSUE_NUMBER", "?")
 ISSUE_TITLE  = os.environ.get("ISSUE_TITLE", "")
 ISSUE_BODY   = os.environ.get("ISSUE_BODY", "")
-BASE_URL     = "https://openrouter.ai/api/v1/chat/completions"
+
+_client = anthropic.Anthropic(api_key=API_KEY)
 
 MAX_BUILD_LOG_CHARS  = 8_000
 MAX_FILE_CHARS       = 6_000
@@ -42,32 +43,36 @@ def strip_markdown_fences(text):
 
 
 def call_llm(messages, retries_per_model=2):
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type":  "application/json",
-        "HTTP-Referer":  "https://github.com",
-        "X-Title":       "GitHub AI Error Fixer"
-    }
+    system_prompt = next(
+        (m["content"] for m in messages if m["role"] == "system"), ""
+    )
+    user_messages = [m for m in messages if m["role"] != "system"]
+
     last_error = None
     for model in MODELS:
         for attempt in range(retries_per_model):
             try:
-                payload = {"model": model, "messages": messages, "temperature": 0.1}
                 print(f"   🔄 Trying {model} (attempt {attempt + 1})...")
-                resp = requests.post(BASE_URL, headers=headers, json=payload, timeout=120)
-                if resp.status_code == 429:
-                    wait = 2 ** attempt * 5
-                    print(f"   ⏳ Rate limited, waiting {wait}s...")
-                    time.sleep(wait)
-                    continue
-                resp.raise_for_status()
-                result = resp.json()["choices"][0]["message"]["content"]
+                kwargs = {
+                    "model": model,
+                    "max_tokens": 4096,
+                    "temperature": 0.1,
+                    "messages": user_messages,
+                }
+                if system_prompt:
+                    kwargs["system"] = system_prompt
+                response = _client.messages.create(**kwargs)
+                result = response.content[0].text
                 print(f"   ✅ Got response from {model}")
                 return result, model
+            except anthropic.RateLimitError:
+                wait = 2 ** attempt * 5
+                print(f"   ⏳ Rate limited, waiting {wait}s...")
+                time.sleep(wait)
             except Exception as e:
                 last_error = e
                 print(f"   ⚠️  {model} failed: {e}")
-                continue
+                break
         print(f"   ❌ All retries exhausted for {model}, trying next...")
     raise Exception(f"All models failed. Last error: {last_error}")
 
