@@ -2,6 +2,7 @@ import { useFeatureFlag } from "hooks";
 import { cmsConfig } from "libs/cms";
 import { useOrgDetailContext } from "contexts";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import { LoginPanel } from "page-components";
 import { useEffect, useState } from "react";
 
@@ -26,6 +27,13 @@ const LandingPanel = () => {
 	const [cmsMeta, setCmsMeta] = useState({} as any);
 	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
 	const [isImageThemeEnabled] = useFeatureFlag("CMS_IMAGE_THEME");
+	const router = useRouter();
+	// router.query values are string | string[] — a duplicated ?mobile param
+	// arrives as an array; take the first entry so downstream gets a string.
+	const mobileQuery = router.query.mobile;
+	const initialMobile =
+		(Array.isArray(mobileQuery) ? mobileQuery[0] : mobileQuery) ||
+		undefined;
 
 	/*
 		org_details: {
@@ -105,7 +113,13 @@ const LandingPanel = () => {
 		return <Render config={cmsConfig} data={cmsData} />;
 	} else {
 		// Render the in-built login panel
-		return <LoginPanel cmsType={cmsMeta?.type} cmsData={cmsData} />;
+		return (
+			<LoginPanel
+				cmsType={cmsMeta?.type}
+				cmsData={cmsData}
+				initialMobile={initialMobile}
+			/>
+		);
 	}
 };
 
