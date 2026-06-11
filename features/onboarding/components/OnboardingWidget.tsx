@@ -101,9 +101,12 @@ const OnboardingWidget = ({
 	// client-side hydration completes, so reading it before isReady gives undefined.
 	const allowedMerchantTypes = useMemo((): number[] | undefined => {
 		if (!router.isReady) return undefined;
-		const raw = router.query.role as string | undefined;
+		const raw = router.query.role;
 		if (!raw) return undefined;
-		const parsed = raw
+		// router.query values are string | string[] — a duplicated param
+		// (?role=1&role=2) arrives as an array; normalize both to a CSV string.
+		const roleStr = Array.isArray(raw) ? raw.join(",") : raw;
+		const parsed = roleStr
 			.split(",")
 			.map((s) => Number(s.trim()))
 			.filter((n) => !isNaN(n));

@@ -28,7 +28,12 @@ const LandingPanel = () => {
 	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
 	const [isImageThemeEnabled] = useFeatureFlag("CMS_IMAGE_THEME");
 	const router = useRouter();
-	const initialMobile = (router.query.mobile as string) || undefined;
+	// router.query values are string | string[] — a duplicated ?mobile param
+	// arrives as an array; take the first entry so downstream gets a string.
+	const mobileQuery = router.query.mobile;
+	const initialMobile =
+		(Array.isArray(mobileQuery) ? mobileQuery[0] : mobileQuery) ||
+		undefined;
 
 	/*
 		org_details: {

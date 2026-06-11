@@ -130,9 +130,10 @@ const RouteProtecter = ({ router, pageMeta, children }) => {
 					// onboarding flow can filter merchant types via the URL —
 					// the single source of truth shared with the embedded flow.
 					const roleParam = router.query?.role;
-					router.replace(
-						roleParam ? `/signup?role=${roleParam}` : "/signup"
-					);
+					router.replace({
+						pathname: "/signup",
+						...(roleParam ? { query: { role: roleParam } } : {}),
+					});
 					return;
 				}
 				setLoading(false);
