@@ -1,4 +1,5 @@
 import { parseEnvBoolean, parseOrgIds } from "utils/envUtils";
+import { UserType } from "./UserTypes";
 
 // Few pre-defined org-ids for configuring feature flags on production
 // NOTE: The production org-ids must be read from environment variables
@@ -92,6 +93,19 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		forUserType: [1], // 7 = SuperDistributor
 		forEnv: ["development"],
+	},
+
+	// Pending bank requests list feature
+	PENDING_BANK_REQUESTS_LIST: {
+		enabled: true,
+		forUserType: [1], // 1 = BM
+		forEnv: ["development"],
+	},
+
+	// Update Bank Details menu should only be available to logged-in FOS users.
+	UPDATE_BANK_DETAILS_MENU: {
+		enabled: true,
+		forUserType: [UserType.FOS], // 4 = FOS
 	},
 
 	// Custom theme support (paid tier)
