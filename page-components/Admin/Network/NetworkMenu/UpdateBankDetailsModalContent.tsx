@@ -276,7 +276,7 @@ const UpdateBankDetailsModalContent = ({
 			console.log("Received response from fetcher");
 			// console.log("Full response:", JSON.stringify(response, null, 2));
 
-			if (response.status === 0) {
+			if (response && response.status === 0) {
 				toast({
 					title:
 						response.message ||
