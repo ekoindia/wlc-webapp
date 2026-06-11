@@ -81,6 +81,8 @@ const OnboardingWidget = ({
 		maximumAge: 60000,
 	});
 
+	console.log("[Onboarding] allowedMerchantTypes", allowedMerchantTypes);
+
 	/**
 	 * Format geolocation as "lat,long,accuracy" string for API consumption.
 	 * Falls back to default coordinates if geolocation is unavailable.

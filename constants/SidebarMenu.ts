@@ -319,6 +319,14 @@ export const sidebarMenu: sidebarMenuType[] = [
 			"Digi Khata is a prepaid wallet product for agents. Agents can complete KYC (Aadhaar + PAN) to open the wallet account, check balance, load funds via UPI/Virtual-Account/E-value, manage recipients, and initiate fund transfers.",
 		beta: true,
 	},
+	{
+		id: 46,
+		label: "Pending Bank Requests",
+		icon: "description",
+		link: "/pending-bank-requests",
+		summary: "View pending bank account update requests.",
+		featureFlag: "PENDING_BANK_REQUESTS_LIST",
+	},
 	// {
 	// 	id: 220,
 	// 	label: "Select Plan",
