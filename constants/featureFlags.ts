@@ -116,6 +116,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	UPDATE_BANK_DETAILS_MENU: {
 		enabled: true,
 		forUserType: [UserType.FOS], // 4 = FOS
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [3],
+			},
+		},
 	},
 
 	// Custom theme support (paid tier)
