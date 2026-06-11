@@ -67,7 +67,7 @@ const usePendingBankRequest = (
 				generateNewToken
 			);
 
-			if (response.status === 0) {
+			if (response && response.status === 0) {
 				const request = response?.data?.agent_details?.[0] || null;
 				setPendingRequest(request);
 			} else {

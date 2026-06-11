@@ -200,7 +200,7 @@ const PendingBankRequests = () => {
 				generateNewToken
 			);
 
-			if (response.status === 0) {
+			if (response && response.status === 0) {
 				const raw =
 					response?.data?.agent_details ?? response?.data ?? [];
 				setRequests(Array.isArray(raw) ? raw : []);
@@ -267,7 +267,7 @@ const PendingBankRequests = () => {
 				generateNewToken
 			);
 
-			if (response.status === 0) {
+			if (response && response.status === 0) {
 				const statusValue = intentId
 					? parseInt(intentId as any)
 					: undefined;
