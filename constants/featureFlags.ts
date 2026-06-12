@@ -99,6 +99,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	PENDING_BANK_REQUESTS_LIST: {
 		enabled: true,
 		forUserType: [1], // 1 = Distributor/BM
+		hideInAdminAgentMode: true,
 		envConstraints: {
 			development: {
 				forOrgId: [3],
@@ -415,6 +416,13 @@ export type FeatureFlagType = {
 	 * Default: false
 	 */
 	forAdminOnly?: boolean;
+
+	/**
+	 * Whether to hide the feature when an admin is in agent mode.
+	 * If true, the feature will not be available when isAdminAgentMode is active.
+	 * Default: false
+	 */
+	hideInAdminAgentMode?: boolean;
 
 	/**
 	 * Specific constraints for each environment.

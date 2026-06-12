@@ -11,7 +11,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const useFeatureFlag = (
 	featureName: string
 ): [boolean, (_featureName: string) => boolean] => {
-	const { isAdmin, userId, userType, isLoggedIn } = useSession();
+	const { isAdmin, isAdminAgentMode, userId, userType, isLoggedIn } =
+		useSession();
 	const { orgDetail } = useOrgDetailContext();
 	const { org_id } = orgDetail ?? {};
 	const [allowed, setAllowed] = useState<boolean>(false);
@@ -20,8 +21,8 @@ const useFeatureFlag = (
 	// It is used to cache the results of feature flag checks in memory, so that repeated checks are faster (for circular dependencies, etc.)
 	const cacheKey = useMemo(
 		() =>
-			`${isAdmin}-${userId}-${userType}-${isLoggedIn}-${org_id}-${process.env.NEXT_PUBLIC_ENV}`,
-		[isAdmin, userId, userType, isLoggedIn, org_id]
+			`${isAdmin}-${isAdminAgentMode}-${userId}-${userType}-${isLoggedIn}-${org_id}-${process.env.NEXT_PUBLIC_ENV}`,
+		[isAdmin, isAdminAgentMode, userId, userType, isLoggedIn, org_id]
 	);
 
 	/**
@@ -74,6 +75,12 @@ const useFeatureFlag = (
 			// If the feature is disabled, return false.
 			if (feature.enabled !== true) {
 				console.log("Feature disabled:", customFeatureName);
+				cache.set(cacheKeyForFeature, false);
+				return false;
+			}
+
+			// Check if the feature should be hidden when admin is in agent mode
+			if (feature.hideInAdminAgentMode && isAdminAgentMode) {
 				cache.set(cacheKeyForFeature, false);
 				return false;
 			}
@@ -181,7 +188,15 @@ const useFeatureFlag = (
 
 			return true;
 		},
-		[cacheKey, isAdmin, userId, userType, isLoggedIn, org_id]
+		[
+			cacheKey,
+			isAdmin,
+			isAdminAgentMode,
+			userId,
+			userType,
+			isLoggedIn,
+			org_id,
+		]
 	);
 
 	/**
