@@ -316,7 +316,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// This is used for making payments from bank accounts using UPI and other payment methods,
 	// directly from the user's own bank account instead of their e-wallet).
 	TSP_BANK: {
-		enabled: true,
+		enabled: false,
 	},
 
 	// ------------------------------------------------------------------------
