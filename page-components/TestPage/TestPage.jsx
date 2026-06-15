@@ -950,6 +950,131 @@ const JsonViewerTest = () => {
 	);
 };
 
+const ThrowErrorTest = () => {
+	return (
+		<Flex direction="column" gap={4}>
+			{/* 1. Null access error */}
+			<Button
+				onClick={() => {
+					const obj = null;
+					console.log(obj.name); // ❌ Cannot read properties of null
+				}}
+			>
+				Null Access Error
+			</Button>
+
+			{/* 2. Undefined function */}
+			<Button
+				onClick={() => {
+					notDefinedFunction(); // ❌ not defined
+				}}
+			>
+				Undefined Function Error
+			</Button>
+
+			{/* 3. setTimeout error */}
+			<Button
+				onClick={() => {
+					setTimeout(() => {
+						const data = undefined;
+						console.log(data.value); // ❌ Cannot read properties of undefined
+					}, 1000);
+				}}
+			>
+				Error in setTimeout
+			</Button>
+
+			{/* 4. requestAnimationFrame error */}
+			<Button
+				onClick={() => {
+					requestAnimationFrame(() => {
+						const num = 10;
+						num(); // ❌ num is not a function
+					});
+				}}
+			>
+				Error in requestAnimationFrame
+			</Button>
+
+			{/* 5. Microtask (Promise.then) */}
+			<Button
+				onClick={() => {
+					Promise.resolve().then(() => {
+						const arr = null;
+						return arr.map((x) => x); // ❌ Cannot read properties of null
+					});
+				}}
+			>
+				Error in Microtask
+			</Button>
+
+			{/* 6. Event handler error */}
+			<Button
+				onClick={() => {
+					const button = document.createElement("button");
+					button.addEventListener("click", () => {
+						const user = undefined;
+						console.log(user.id); // ❌ Cannot read properties of undefined
+					});
+					button.click();
+				}}
+			>
+				Error in Event Handler
+			</Button>
+
+			{/* 7. Web Worker error */}
+			<Button
+				onClick={() => {
+					if (window.Worker) {
+						const worker = new Worker(
+							URL.createObjectURL(
+								new Blob(
+									[
+										`
+				const obj = null;
+				console.log(obj.test); // ❌ worker error
+			`,
+									],
+									{ type: "application/javascript" }
+								)
+							)
+						);
+
+						worker.onerror = (e) => {
+							console.error("Worker Error:", e.message);
+						};
+					}
+				}}
+			>
+				Error in Web Worker
+			</Button>
+
+			{/* 8. Promise executor error */}
+			<Button
+				onClick={() => {
+					new Promise(() => {
+						const x = undefined;
+						console.log(x.y); // ❌ Cannot read properties of undefined
+					});
+				}}
+			>
+				Error in Promise Executor
+			</Button>
+
+			{/* 9. Unhandled Promise Rejection */}
+			<Button
+				onClick={() => {
+					Promise.reject(null).then((res) => {
+						console.log(res.value); // ❌ will never run, rejection happens
+					});
+				}}
+			>
+				Unhandled Promise Rejection
+			</Button>
+		</Flex>
+	);
+};
+
 /**
  * Test UidaiFingerprintScanner component
  * MARK: FingerprintScannerTest
@@ -1048,6 +1173,10 @@ const TestComponents = [
 	{
 		title: "Fingerprint Scanner",
 		component: FingerprintScannerTest,
+	},
+	{
+		title: "Throw Error",
+		component: ThrowErrorTest,
 	},
 ];
 
