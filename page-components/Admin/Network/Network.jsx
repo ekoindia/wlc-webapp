@@ -161,7 +161,7 @@ const Network = () => {
 		reset: resetExport,
 	} = useForm({
 		defaultValues: {
-			reporttype: "pdf",
+			// reporttype: "pdf",
 			onBoardingDateFrom: firstDateOfMonth,
 			onBoardingDateTo: today,
 		},
@@ -321,7 +321,7 @@ const Network = () => {
 			onBoardingDateTo:
 				watcherFilter.onBoardingDateTo ??
 				watcherExport.onBoardingDateTo,
-			reporttype: watcherExport.reporttype,
+			// reporttype: watcherExport.reporttype,
 		});
 	};
 
@@ -330,7 +330,7 @@ const Network = () => {
 		setQueryParam(null);
 		resetFilter({ ...formElements });
 		resetExport({
-			reporttype: "pdf",
+			// reporttype: "pdf",
 			onBoardingDateFrom: firstDateOfMonth,
 			onBoardingDateTo: today,
 		});
@@ -359,7 +359,7 @@ const Network = () => {
 			...filteredData,
 		});
 
-		const reportUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/reports/agent-subnetwork?${download_params}`;
+		const reportUrl = `/_reports/agent-subnetwork?${download_params}`;
 
 		fetch(reportUrl, {
 			method: "POST",

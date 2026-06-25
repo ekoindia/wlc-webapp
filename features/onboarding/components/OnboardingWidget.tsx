@@ -26,7 +26,6 @@ interface OnboardingWidgetProps {
 	isAssistedOnboarding?: boolean;
 	assistedAgentDetails?: any;
 	agentMobile?: string;
-	allowedMerchantTypes?: number[];
 	refreshAgentProfile: () => Promise<void>;
 	/** Injected services from the host app */
 	services: OnboardingServices;
@@ -57,7 +56,6 @@ const OnboardingWidget = ({
 	isAssistedOnboarding = false,
 	assistedAgentDetails,
 	agentMobile,
-	allowedMerchantTypes,
 	refreshAgentProfile,
 	services,
 	orgMetadataOnboarding,
@@ -94,6 +92,26 @@ const OnboardingWidget = ({
 	);
 
 	const router = useRouter();
+
+	// Parse `role` query param into allowed role ids (1: Retailer, 2: Distributor,
+	// 3: Enterprise). E.g. "1,2,3" shows all three; "1,2" shows Retailer + Distributor.
+	// Both normal login (/signup?role=xxx) and embedded (/gateway/onboarding?role=xxx)
+	// deliver role via URL, so this is the single source of truth for both flows.
+	// Guard on router.isReady: in Next.js pages router, router.query is empty until
+	// client-side hydration completes, so reading it before isReady gives undefined.
+	const allowedMerchantTypes = useMemo((): number[] | undefined => {
+		if (!router.isReady) return undefined;
+		const raw = router.query.role;
+		if (!raw) return undefined;
+		// router.query values are string | string[] — a duplicated param
+		// (?role=1&role=2) arrives as an array; normalize both to a CSV string.
+		const roleStr = Array.isArray(raw) ? raw.join(",") : raw;
+		const parsed = roleStr
+			.split(",")
+			.map((s) => Number(s.trim()))
+			.filter((n) => !isNaN(n));
+		return parsed.length > 0 ? parsed : undefined;
+	}, [router.isReady, router.query.role]);
 
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = isAssistedOnboarding
@@ -166,6 +184,10 @@ const OnboardingWidget = ({
 	const renderCurrentStep = () => {
 		switch (step) {
 			case "ROLE_SELECTION":
+				// Hold off until router.isReady so allowedMerchantTypes is derived
+				// from the fully-hydrated query and RoleSelection never flashes from
+				// all roles → filtered roles.
+				if (!router.isReady) return <OnboardingSkeleton />;
 				return (
 					<RoleSelection
 						setStep={setStep}

@@ -163,7 +163,7 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
  * @param {Function} props.setSelectedRole - Function to set the selected role
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
  * @param {string} [props.agentMobile] - Mobile number of the assisted agent
- * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
+ * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise). Eg: [1,2] for Retailer and Distributor only.
  * @param {Function} props.refreshAgentProfile - Function to refresh the agent profile data
  * @param props.accessToken
  * @param props.generateNewToken
@@ -187,9 +187,18 @@ const RoleSelection = ({
 
 	const toast = useToast();
 
-	const mobile = isAssistedOnboarding
-		? agentMobile || assistedAgentDetails?.userDetails?.mobile
-		: userData?.userDetails?.signup_mobile;
+	const mobile =
+		agentMobile ||
+		assistedAgentDetails?.userDetails?.mobile ||
+		userData?.userDetails?.signup_mobile;
+
+	console.log("[Onboarding] RoleSelection mobile:", mobile);
+	console.log(
+		"[Onboarding] RoleSelection assistedAgentDetails:",
+		assistedAgentDetails
+	);
+	console.log("[Onboarding] RoleSelection userData:", userData);
+	console.log("[Onboarding] RoleSelection mobile:", mobile);
 
 	const { state, actions } = useOnboardingState();
 

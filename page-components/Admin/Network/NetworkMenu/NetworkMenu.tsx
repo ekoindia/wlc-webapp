@@ -12,6 +12,7 @@ import { Button, Icon } from "components";
 import { Endpoints, TransactionTypes } from "constants/index";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useFeatureFlag } from "hooks";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import useChangeRoleOptions from "page-components/Admin/ChangeRole/useChangeRoleOptions";
@@ -25,6 +26,14 @@ const DeleteDemoUserModal = dynamic(
 
 const StatusUpdateModal = dynamic(
 	() => import("./StatusUpdateModal").then((mod) => mod.StatusUpdateModal),
+	{ ssr: false }
+);
+
+const UpdateBankDetailsModal = dynamic(
+	() =>
+		import("./UpdateBankDetailsModalContent").then(
+			(mod) => mod.UpdateBankDetailsModal
+		),
 	{ ssr: false }
 );
 
@@ -101,6 +110,7 @@ interface NetworkMenuProps {
 		| "link";
 	onStatusUpdate?: (_eko_code: string, _new_status_id: number) => void;
 	onDeleteDemoUser?: (_eko_code: string) => void;
+	onUpdateBankDetails?: (_eko_code: string, _bankData: any) => void;
 }
 
 /**
@@ -125,12 +135,17 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 	variant = "primary",
 	onStatusUpdate,
 	onDeleteDemoUser,
+	onUpdateBankDetails,
 }) => {
 	const { AGENT_VIEW_TABS } = useChangeRoleOptions();
 	const [isOpen, setOpen] = useState(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [isUpdateBankModalOpen, setUpdateBankModalOpen] = useState(false);
 	const [accountStatusId, setAccountStatusId] = useState<number>(0);
 	const { accessToken, isAdmin } = useSession();
+	const [isUpdateBankDetailsAllowed] = useFeatureFlag(
+		"UPDATE_BANK_DETAILS_MENU"
+	);
 	const router = useRouter();
 
 	const downloadAgreement = () => {
@@ -203,6 +218,18 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 			visible: +account_status_id === status.DEMO_USER,
 			onClick: () => {
 				setDeleteModalOpen(true);
+			},
+		},
+
+		// Update Bank Details menu item will only be visible if the user's account is active and the feature flag is enabled
+		{
+			label: "Update Bank Details",
+			visible:
+				+account_status_id === status.ACTIVE &&
+				isUpdateBankDetailsAllowed,
+			onClick: () => {
+				// console.log("Update Bank Details clicked");
+				setUpdateBankModalOpen(true);
 			},
 		},
 	];
@@ -287,6 +314,16 @@ export const NetworkMenu: React.FC<NetworkMenuProps> = ({
 				eko_code={eko_code}
 				accessToken={accessToken}
 				onDeleteDemoUser={onDeleteDemoUser}
+			/>
+
+			{/*  The UpdateBankDetailsModal will only be rendered if the feature flag is enabled, to avoid unnecessary rendering and API calls for fetching bank details when the modal is not accessible */}
+			<UpdateBankDetailsModal
+				isOpen={isUpdateBankModalOpen}
+				onClose={() => setUpdateBankModalOpen(false)}
+				eko_code={eko_code}
+				accessToken={accessToken}
+				agentMobile={mobile_number}
+				onUpdateBankDetails={onUpdateBankDetails}
 			/>
 		</>
 	);
