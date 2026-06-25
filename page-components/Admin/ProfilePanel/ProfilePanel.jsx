@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Icon, PageTitle } from "components";
 import { Endpoints } from "constants";
-import { useSession } from "contexts";
+import { usePubSub, useSession } from "contexts"; // MARK: useSession is used for accessToken and user info
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useAgentDetails } from "page-components/Admin/Network/hooks";
@@ -52,6 +52,11 @@ const PersonalPane = lazy(() =>
 	import(".").then((module) => ({ default: module.PersonalPane }))
 );
 
+// BankPane is a bit more complex due to the update functionality, so we will handle it separately with its own loading state
+const BankPane = lazy(() =>
+	import(".").then((module) => ({ default: module.BankPane }))
+);
+
 /**
  * Loading fallback component for lazy-loaded panes
  * @returns {JSX.Element} Loading spinner
@@ -76,6 +81,7 @@ const ProfilePanel = () => {
 
 	const { accessToken } = useSession();
 	const { mobile } = router.query;
+	const { subscribe, TOPICS } = usePubSub(); // MARK: usePubSub for subscribing to bank update events
 
 	// Use the agent details hook with session caching
 	const {
@@ -205,7 +211,69 @@ const ProfilePanel = () => {
 		),
 	});
 
+	// The API returns bank info as an array under profile.bank_details.
+	// Usually one entry — take the first.
+	const firstBank = agentData?.profile?.bank_details?.[0];
+
+	const bankData = {
+		bank_name:
+			agentData?.bank_name ||
+			agentData?.profile?.bank_name ||
+			firstBank?.bank_name || // not in current API, but harmless
+			undefined,
+		account:
+			firstBank?.account_number || // ← the real API field
+			agentData?.account ||
+			agentData?.bank_account ||
+			agentDocuments?.bank_account ||
+			undefined,
+		ifsc:
+			firstBank?.ifsc || // ← the real API field
+			agentData?.ifsc ||
+			agentDocuments?.ifsc ||
+			undefined,
+	};
+
+	if (+agentData?.account_status_id === 16) {
+		// 16 = ACTIVE
+		panes.push({
+			id: 1.5,
+			comp: (
+				<BankPane
+					data={bankData}
+					eko_code={
+						(Array.isArray(agentData?.profile?.eko_code)
+							? agentData?.profile?.eko_code[0]
+							: agentData?.profile?.eko_code) ?? agentData?.eko_code
+					}
+					mobile={mobile}
+					onUpdate={refetchAgentData}
+				/>
+			),
+		});
+	}
+	console.log("Agent data fields:", {
+		eko_code: agentData?.eko_code,
+		profile_eko_code: agentData?.profile?.eko_code,
+		user_id: agentData?.user_id,
+		user_type_id: agentData?.user_type_id,
+		agent_mobile: agentData?.agent_mobile,
+	});
+
 	// MARK: JSX
+
+	// Subscribe to bank-request updates so we refresh agent data when approvals happen elsewhere
+	useEffect(() => {
+		const unsubscribe = subscribe?.(
+			TOPICS.PENDING_BANK_REQUEST_UPDATED,
+			() => {
+				refetchAgentData?.();
+			}
+		);
+		return () => {
+			if (typeof unsubscribe === "function") unsubscribe();
+		};
+	}, [refetchAgentData, subscribe, TOPICS]);
 	return (
 		<>
 			<PageTitle

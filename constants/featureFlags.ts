@@ -1,4 +1,5 @@
 import { parseEnvBoolean, parseOrgIds } from "utils/envUtils";
+import { UserType } from "./UserTypes";
 
 // Few pre-defined org-ids for configuring feature flags on production
 // NOTE: The production org-ids must be read from environment variables
@@ -92,6 +93,41 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		forUserType: [1], // 7 = SuperDistributor
 		forEnv: ["development"],
+	},
+
+	// Pending bank requests list feature
+	PENDING_BANK_REQUESTS_LIST: {
+		enabled: true,
+		forUserType: [1], // 1 = Distributor/BM
+		hideInAdminAgentMode: true,
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [3],
+			},
+		},
+	},
+
+	// Update Bank Details menu should only be available to logged-in FOS users.
+	UPDATE_BANK_DETAILS_MENU: {
+		enabled: true,
+		forUserType: [UserType.FOS], // 4 = FOS
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [3],
+			},
+		},
 	},
 
 	// Custom theme support (paid tier)
@@ -281,7 +317,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// This is used for making payments from bank accounts using UPI and other payment methods,
 	// directly from the user's own bank account instead of their e-wallet).
 	TSP_BANK: {
-		enabled: true,
+		enabled: false,
 	},
 
 	// ------------------------------------------------------------------------
@@ -385,6 +421,13 @@ export type FeatureFlagType = {
 	 * Default: false
 	 */
 	forAdminOnly?: boolean;
+
+	/**
+	 * Whether to hide the feature when an admin is in agent mode.
+	 * If true, the feature will not be available when isAdminAgentMode is active.
+	 * Default: false
+	 */
+	hideInAdminAgentMode?: boolean;
 
 	/**
 	 * Specific constraints for each environment.

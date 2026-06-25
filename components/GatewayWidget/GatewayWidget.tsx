@@ -14,14 +14,10 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
 	const { orgDetail } = useOrgDetailContext();
 	const [isGatewayAllowed] = useFeatureFlag("ELOKA_GATEWAY");
 	const router = useRouter();
-	const role = (router.query.role as string) || undefined;
 	const mobile = (router.query.mobile as string) || undefined;
 
-	console.log("[Onboarding] gatewayWidget role", role);
-
 	// router.query is empty on the first render in Next.js pages router.
-	// Wait until it's hydrated so components that capture query params at
-	// mount (e.g. capturedRole via useState) receive the real values.
+	// Wait until it's hydrated before rendering so components can read query params.
 	if (!router.isReady || !isGatewayAllowed || !id?.length) return null;
 
 	const productKey = id[0];
@@ -37,7 +33,6 @@ const GatewayWidget = ({ id, token }: GatewayWidgetProps) => {
 		const Component = productConfig.component;
 		const componentProps = {
 			token,
-			...(productConfig.passRole ? { role } : {}),
 			...(productConfig.passMobile ? { mobile } : {}),
 		};
 		return (
