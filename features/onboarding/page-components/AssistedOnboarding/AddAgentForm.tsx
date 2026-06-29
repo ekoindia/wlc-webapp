@@ -106,7 +106,6 @@ const AddAgentForm = ({
 						interaction_type_id:
 							TransactionIds.ASSISTED_ONBOARDING_ADD_AGENT,
 						csp_id: _cspId,
-						merchant_type: "",
 					},
 					token: accessToken,
 				}

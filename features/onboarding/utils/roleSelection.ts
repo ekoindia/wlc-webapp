@@ -33,8 +33,6 @@ export interface Role {
 	icon: string;
 	/** Whether this role option is visible in the UI */
 	isVisible: boolean;
-	/** Optional array of user types associated with this role */
-	user_type?: Array<{ key: number; name: string }>;
 }
 
 /**
@@ -75,10 +73,6 @@ const getBaseRoleData = (
 		// description: "I serve customers from my shop",
 		icon: "../assets/icons/user_merchant.png",
 		isVisible: true,
-		user_type: [
-			{ key: 3, name: "I Merchant" },
-			{ key: 2, name: "Merchant" },
-		],
 	},
 	{
 		id: ROLE_IDS.DISTRIBUTOR,
@@ -87,7 +81,6 @@ const getBaseRoleData = (
 		description: `I have a network of ${userTypeLabel[2] || "Retailer"} and I want to serve them`,
 		icon: "../assets/icons/user_distributor.png",
 		isVisible: true,
-		user_type: [{ key: 1, name: "Distributor" }],
 	},
 	{
 		id: ROLE_IDS.ENTERPRISE,
@@ -97,7 +90,6 @@ const getBaseRoleData = (
 			"I want to use API and other solutions to make my own service",
 		icon: "../assets/icons/user_enterprise.png",
 		isVisible: true,
-		user_type: [{ key: 23, name: "Partner" }],
 	},
 ];
 

@@ -41,7 +41,7 @@ interface OnboardingWidgetProps {
  * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
  * @param {string} [props.agentMobile] - Mobile number of the assisted agent
- * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
+ * @param {number[]} [props.allowedRoleIds] - Optional list of allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise) for the onboarding process. Eg: [1,3] for Retailer and Enterprise only.
  * @param props.refreshAgentProfile
  * @param props.userData
  * @param props.updateUserInfo
@@ -99,7 +99,7 @@ const OnboardingWidget = ({
 	// deliver role via URL, so this is the single source of truth for both flows.
 	// Guard on router.isReady: in Next.js pages router, router.query is empty until
 	// client-side hydration completes, so reading it before isReady gives undefined.
-	const allowedMerchantTypes = useMemo((): number[] | undefined => {
+	const allowedRoleIds = useMemo((): number[] | undefined => {
 		if (!router.isReady) return undefined;
 		const raw = router.query.role;
 		if (!raw) return undefined;
@@ -184,7 +184,7 @@ const OnboardingWidget = ({
 	const renderCurrentStep = () => {
 		switch (step) {
 			case "ROLE_SELECTION":
-				// Hold off until router.isReady so allowedMerchantTypes is derived
+				// Hold off until router.isReady so allowedRoleIds is derived
 				// from the fully-hydrated query and RoleSelection never flashes from
 				// all roles → filtered roles.
 				if (!router.isReady) return <OnboardingSkeleton />;
@@ -196,7 +196,7 @@ const OnboardingWidget = ({
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
 						agentMobile={agentMobile}
-						allowedMerchantTypes={allowedMerchantTypes}
+						allowedRoleIds={allowedRoleIds}
 						refreshAgentProfile={refreshAgentProfile}
 						accessToken={services.accessToken}
 						generateNewToken={services.generateNewToken}

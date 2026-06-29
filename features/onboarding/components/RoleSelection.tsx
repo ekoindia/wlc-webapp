@@ -163,7 +163,7 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
  * @param {Function} props.setSelectedRole - Function to set the selected role
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
  * @param {string} [props.agentMobile] - Mobile number of the assisted agent
- * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise). Eg: [1,2] for Retailer and Distributor only.
+ * @param {number[]} [props.allowedRoleIds] - Optional list of allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise). Eg: [1,2] for Retailer and Distributor only.
  * @param {Function} props.refreshAgentProfile - Function to refresh the agent profile data
  * @param props.accessToken
  * @param props.generateNewToken
@@ -176,7 +176,7 @@ const RoleSelection = ({
 	setSelectedRole,
 	assistedAgentDetails,
 	agentMobile,
-	allowedMerchantTypes,
+	allowedRoleIds,
 	refreshAgentProfile,
 	accessToken,
 	generateNewToken,
@@ -216,8 +216,6 @@ const RoleSelection = ({
 						id: ROLE_SELECTION_STEP_CONFIG.id,
 						form_data: {
 							applicant_type: applicantType,
-							merchant_type:
-								APPLICANT_TO_USER_TYPE[applicantType],
 							csp_id: mobile,
 						},
 					},
@@ -293,7 +291,7 @@ const RoleSelection = ({
 
 	const forAgentTypes = isAssistedOnboarding
 		? visibleAgentTypes.assistedOnboarding
-		: allowedMerchantTypes || visibleAgentTypes.selfOnboarding;
+		: allowedRoleIds || visibleAgentTypes.selfOnboarding;
 
 	const onboardingRoleStep = createRoleSelectionStep(forAgentTypes, {
 		userTypeLabel: userTypeLabels,

@@ -88,6 +88,37 @@ Supporting constants in the same file:
 | `successResponseTypeIds` | Response ids that count as success (**default `[0]`**) |
 | `checkInvalidParams` | If true (**default**), a non-empty `invalid_params` fails the call |
 
+## User-type numbering schemes
+
+"What kind of user" appears in **two submitted schemes plus one backend-native scheme** that are easily confused. They are not interchangeable — values deliberately collide (e.g. a Distributor is `applicant_type 2` but EPS `user_type 1`), which is exactly why an explicit mapping exists.
+
+| Role | role id (UI / `?role`) | `applicant_type` (OaaS, submitted) | EPS `user_type` (backend identity) |
+|------|------|------|------|
+| Retailer | `1` | `0` | `2` (MERCHANT) |
+| Distributor | `2` | `2` | `1` (DISTRIBUTOR) |
+| Enterprise | `3` | `3` | `23` (ENTERPRISE_PARTNER_ADMIN) |
+
+| Scheme | What it is | Where defined |
+|--------|-----------|---------------|
+| **role id** | Sequential id used by the role-selection UI and the `?role` URL param (filters which role cards show) | `ROLE_IDS` — [roleSelection.ts](/features/onboarding/utils/roleSelection.ts) |
+| **`applicant_type`** | OaaS (onboarding widget) applicant code; carried on each role card and **submitted** at role selection | `APPLICANT_TYPES` — [constants.ts](/features/onboarding/constants.ts); assigned per role in `getBaseRoleData()` ([roleSelection.ts](/features/onboarding/utils/roleSelection.ts)) |
+| **EPS `user_type`** | The backend's canonical user-type id. **Read from the profile** (`userDetails.user_type`), never submitted from here. Keys the org-metadata config and the shared label/icon constants | values: `UserType` / `UserTypeLabel` / `UserTypeIcon` — [constants/UserTypes.js](/constants/UserTypes.js) |
+
+> **Note on `merchant_type`.** Earlier code also submitted a `merchant_type` field (the EPS `user_type`, derived via `APPLICANT_TO_USER_TYPE`) alongside `applicant_type`. That field is **no longer required by the APIs and has been removed** from all submissions (role selection, assisted add-agent, assisted OTP). The EPS `user_type` numbering itself remains — but only as a **backend-read** identity (profile + org-config + icons), not as a submitted parameter.
+
+**What is submitted now:** `submitRoleSelection()` ([RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx)) sends only `applicant_type` (+ `csp_id`) in the `CREATE_PARTIAL_ACCOUNT` transaction (`/transactions/do`):
+
+```js
+form_data: {
+  applicant_type: applicantType,   // OaaS code (0/2/3)
+  csp_id: mobile,
+}
+```
+
+The `APPLICANT_TO_USER_TYPE` map is **still used** — but only to drive the role-card icon (`getIconForApplicantType` → `UserTypeIcon`), not to submit anything.
+
+> When extending the flow, keep the schemes straight: `?role` and `visibleAgentTypes` use **role id**; what gets submitted at role selection is `applicant_type` only; the EPS `user_type` is backend-read (org-config keys + icons/labels); step filtering (`applicableRoles`) uses the separate **backend role codes** described above.
+
 ## Config-driven vs custom-coded
 
 [ContentRenderer](/features/onboarding/components/ContentRenderer.tsx) decides how the current step renders from `localRenderer.type`:
@@ -172,11 +203,32 @@ Per-org overrides come from `orgDetail.metadata.onboarding` (passed in as `orgMe
 metadata.onboarding[userType][stepKey] = { hide: 0|1, optional: 0|1, meta: { reason } }
 ```
 
+This lets an org tweak the flow **per user type** without code changes — keyed first by the (normalized) **EPS `user_type`** read from the profile (see [User-type numbering schemes](#user-type-numbering-schemes)), then by step. This key is the backend identity — **not** the removed `merchant_type` submit param — so it is entirely unaffected by that removal. Concrete example:
+
+```json
+{
+  "metadata": {
+    "onboarding": {
+      "2": {                              // Retailer/Merchant (type 3 normalizes to 2)
+        "VIDEO_KYC":   { "hide": 1, "meta": { "reason": "Video KYC not required for this partner" } },
+        "ADD_BANK_ACCONT": { "optional": 1, "meta": { "reason": "Bank details can be added later" } }
+      },
+      "1": {                              // Distributor
+        "AADHAAR_VERIFICATION": { "hide": 1 }
+      }
+    }
+  }
+}
+```
+
+Result for this org: Retailers skip Video KYC entirely and may skip the bank-account step; Distributors skip Aadhaar verification. Every other org keeps the default flow.
+
 `extractStepConfiguration()` ([stepGenerator.ts](/features/onboarding/utils/stepGenerator.ts)) reads it:
 
-- `userType` is **normalized** (`3 → 2`) before lookup.
-- `stepKey` is matched to a step by **name or id** via `createStepLookupMap`.
-- `hide: 1` disables the step (takes precedence); `optional: 1` makes it skippable. The optional `meta.reason` is logged.
+- `userType` is **normalized** (`3 → 2`) before lookup — config under key `"2"` also applies to type-3 users.
+- `stepKey` is matched to a step by **name or id** via `createStepLookupMap` (so `"VIDEO_KYC"` or `"11"` both resolve to the same step).
+- `hide: 1` disables the step (takes precedence); `optional: 1` marks it skippable (`isRequired: false`). The optional `meta.reason` is logged.
+- These feed stages 3 (disabled) and 4 (skippable) of the [resolution pipeline](#runtime-step-resolution--which-step-is-next) above. Note org config can only **hide/relax** steps the backend already returned in `onboarding_steps` — it cannot add a step the backend didn't send.
 
 ## URL parameter auto-fill
 
@@ -184,10 +236,10 @@ Two query params let a partner deep-link into a pre-filled flow.
 
 ### `?role` — pre-select / restrict the user type
 
-- Parsed in [OnboardingWidget.tsx](/features/onboarding/components/OnboardingWidget.tsx) (guarded on `router.isReady`) into `allowedMerchantTypes: number[]` of **role ids** (`1` Retailer, `2` Distributor, `3` Enterprise). `?role=1,2` or duplicated `?role=1&role=2` both work; invalid/empty → `undefined`.
-- Passed to [RoleSelection](/features/onboarding/components/RoleSelection.tsx) as `allowedMerchantTypes`, which sets the visible roles:
-  `forAgentTypes = isAssistedOnboarding ? visibleAgentTypes.assistedOnboarding : (allowedMerchantTypes || visibleAgentTypes.selfOnboarding)`.
-- It **filters** which role cards show; it does not blindly auto-select. **Auto-submit only happens when exactly one role remains** (`roles.length === 1`). Invalid/empty values fall back to the normal `visibleAgentTypes.selfOnboarding` choices.
+- Parsed in [OnboardingWidget.tsx](/features/onboarding/components/OnboardingWidget.tsx) (guarded on `router.isReady`) into `allowedRoleIds: number[]` of **role ids** (`1` Retailer, `2` Distributor, `3` Enterprise). `?role=1,2` or duplicated `?role=1&role=2` both work. The parser only drops non-numeric tokens (`isNaN`); empty/absent or all-non-numeric input → `undefined` (falls back to defaults). Note: numeric-but-unknown ids (e.g. `?role=999`) are **not** filtered out — they pass through and simply match no role card, so the role list comes back empty rather than falling back.
+- Passed to [RoleSelection](/features/onboarding/components/RoleSelection.tsx) as `allowedRoleIds`, which sets the visible roles:
+  `forAgentTypes = isAssistedOnboarding ? visibleAgentTypes.assistedOnboarding : (allowedRoleIds || visibleAgentTypes.selfOnboarding)`.
+- It **filters** which role cards show; it does not blindly auto-select. **Auto-submit only happens when exactly one role remains** (`roles.length === 1`). When `allowedRoleIds` is `undefined` (empty/non-numeric param) it falls back to the normal `visibleAgentTypes.selfOnboarding` choices.
 - `RouteProtecter` preserves `?role` when it force-redirects to `/signup`, so the param survives the login→onboarding hop. See [route-protection.md](./route-protection.md).
 
 ### `?mobile` — pre-fill the number
@@ -243,8 +295,8 @@ Step order is **API-driven** — `generateInitialSteps` orders by each step's po
 
 This spans config in several places, not just `applicableRoles`:
 
-1. **Role selection** ([roleSelection.ts](/features/onboarding/utils/roleSelection.ts)): add an entry to `ROLE_IDS`, extend `getBaseRoleData()` (label, icon, `applicant_type`, embedded `user_type`), and add the role id to the relevant `visibleAgentTypes` list (`selfOnboarding` / `assistedOnboarding`).
-2. **Applicant → user-type mapping**: extend `APPLICANT_TYPES` ([constants.ts](/features/onboarding/constants.ts)) and `APPLICANT_TO_USER_TYPE` ([RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx)) so the correct `merchant_type` is submitted and the correct icon resolves.
+1. **Role selection** ([roleSelection.ts](/features/onboarding/utils/roleSelection.ts)): add an entry to `ROLE_IDS`, extend `getBaseRoleData()` (label, icon, `applicant_type`), and add the role id to the relevant `visibleAgentTypes` list (`selfOnboarding` / `assistedOnboarding`).
+2. **Applicant → user-type mapping**: extend `APPLICANT_TYPES` ([constants.ts](/features/onboarding/constants.ts)) and `APPLICANT_TO_USER_TYPE` ([RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx)) so the correct role-card icon resolves (this map is icon-only now that `merchant_type` is no longer submitted). The org-metadata config for the new type is keyed by its **EPS `user_type`**.
 3. **Labels**: ensure the user-type label exists (`UserTypeLabel` / `useUserTypes`) so role cards read correctly.
 4. **Steps**: add the new type's role code(s) to the `applicableRoles` of every step it should see.
 5. **Backend**: have the API return the new type's steps (and their order/labels) in `onboarding_steps`, and pending roles in `role_list`.
