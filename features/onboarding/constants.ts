@@ -7,7 +7,7 @@ import type { Role } from "./utils/roleSelection";
 export const APPLICANT_TYPES = {
 	RETAILER: 0,
 	DISTRIBUTOR: 2,
-	ENTERPRISE: 3,
+	ENTERPRISE: 1,
 };
 
 /**
