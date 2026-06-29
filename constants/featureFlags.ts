@@ -303,6 +303,19 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// WhatsApp support button on the home page for SBI Kiosk users
+	WHATSAPP_WIDGET_SBIKIOSK: {
+		enabled: true,
+		envConstraints: {
+			development: {
+				forOrgId: [1, 3],
+			},
+			production: {
+				forOrgId: [ORG_ID.SBIKIOSK],
+			},
+		},
+	},
+
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,
