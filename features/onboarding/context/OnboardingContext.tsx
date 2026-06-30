@@ -172,11 +172,12 @@ export const OnboardingProvider = ({
 		// The raw metadata has shape: { [userType]: { [stepName]: { hide, optional } } }
 		// extractStepConfiguration parses this into numeric step ID arrays
 		const stepLookupMap = createStepLookupMap(baseStepData);
-		const { disabledSteps, skippableSteps } = extractStepConfiguration(
-			orgMetadataOnboarding,
-			userType,
-			stepLookupMap
-		);
+		const { disabledSteps, skippableSteps, stepOrgConfig } =
+			extractStepConfiguration(
+				orgMetadataOnboarding,
+				userType,
+				stepLookupMap
+			);
 
 		// Apply the complete filter chain into a single pure function
 		const initialSteps = generateInitialSteps({
@@ -185,6 +186,7 @@ export const OnboardingProvider = ({
 			roleList,
 			disabledSteps,
 			skippableSteps,
+			stepOrgConfig,
 		});
 
 		// Check if we found steps

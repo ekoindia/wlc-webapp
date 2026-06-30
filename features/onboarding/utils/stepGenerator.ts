@@ -9,7 +9,8 @@
  *   2. Role-based filter — keeps only steps matching the API-provided `onboardingSteps` roles
  *   3. Disabled filter — removes steps disabled by org metadata (`hide: 1`)
  *   4. Skippable marking — marks steps as optional per org metadata (`optional: 1`)
- *   5. Resume logic — sets COMPLETED/IN_PROGRESS/NOT_STARTED based on `roleList`
+ *   5. Custom config merge — attaches `orgConfig` (instruction/props) from org metadata `meta`
+ *   6. Resume logic — sets COMPLETED/IN_PROGRESS/NOT_STARTED based on `roleList`
  *
  * ## How to add a new filter stage:
  *   1. Create a pure function: `(steps: OnboardingStep[], ...args) => OnboardingStep[]`
@@ -29,15 +30,35 @@ import {
 } from "../constants";
 
 /**
+ * `meta` block of a per-step org config entry.
+ * - `reason`: developer-facing note, logged only.
+ * - `instruction`: user-facing text rendered as a banner above the step.
+ * - `props`: generic flag bag forwarded to the step component (each component
+ *   reads only the keys it whitelists).
+ */
+export interface StepMetadataConfig {
+	reason?: string;
+	instruction?: string;
+	props?: Record<string, unknown>;
+	[key: string]: unknown;
+}
+
+/**
  * Step configuration from metadata
  */
 interface StepConfig {
 	hide: 0 | 1;
 	optional: 0 | 1;
-	meta?: {
-		reason?: string;
-		[key: string]: any;
-	};
+	meta?: StepMetadataConfig;
+}
+
+/**
+ * Per-step custom config distilled from `meta` and merged onto the step object
+ * (surfaces as `OnboardingStep.orgConfig`).
+ */
+export interface StepOrgConfig {
+	instruction?: string;
+	props?: Record<string, unknown>;
 }
 
 /**
@@ -109,6 +130,8 @@ interface OnboardingMetadata {
 export interface ExtractedStepConfig {
 	disabledSteps: number[] | undefined;
 	skippableSteps: number[] | undefined;
+	/** Map of step ID → custom config (instruction/props) from `meta`. */
+	stepOrgConfig: Map<number, StepOrgConfig> | undefined;
 }
 
 /**
@@ -141,7 +164,11 @@ export const extractStepConfiguration = (
 ): ExtractedStepConfig => {
 	// Early return if no config or userType
 	if (!onboardingConfig || !userType) {
-		return { disabledSteps: undefined, skippableSteps: undefined };
+		return {
+			disabledSteps: undefined,
+			skippableSteps: undefined,
+			stepOrgConfig: undefined,
+		};
 	}
 
 	// Normalize user type: treat type 3 (Independent Retailer/Merchant & Retailer/Merchant during onboarding) as type 2
@@ -150,11 +177,16 @@ export const extractStepConfiguration = (
 	// Get config for current userType
 	const userTypeConfig = onboardingConfig[normalizedUserType.toString()];
 	if (!userTypeConfig) {
-		return { disabledSteps: undefined, skippableSteps: undefined };
+		return {
+			disabledSteps: undefined,
+			skippableSteps: undefined,
+			stepOrgConfig: undefined,
+		};
 	}
 
 	const disabled: number[] = [];
 	const skippable: number[] = [];
+	const orgConfigMap = new Map<number, StepOrgConfig>();
 
 	// Process each step configuration
 	Object.entries(userTypeConfig).forEach(([stepKey, config]) => {
@@ -182,11 +214,19 @@ export const extractStepConfiguration = (
 				`[StepConfiguration] Step skippable: ${matchingStep.name} (ID: ${matchingStep.id})${config.meta?.reason ? ` - ${config.meta.reason}` : ""}`
 			);
 		}
+
+		// Collect custom instruction/props (independent of hide/optional)
+		const instruction = config.meta?.instruction;
+		const props = config.meta?.props;
+		if (instruction !== undefined || props !== undefined) {
+			orgConfigMap.set(matchingStep.id, { instruction, props });
+		}
 	});
 
 	return {
 		disabledSteps: disabled.length > 0 ? disabled : undefined,
 		skippableSteps: skippable.length > 0 ? skippable : undefined,
+		stepOrgConfig: orgConfigMap.size > 0 ? orgConfigMap : undefined,
 	};
 };
 
@@ -240,6 +280,36 @@ export const applySkippableStepsHelper = (
 			return {
 				...step,
 				isRequired: false,
+			};
+		}
+		return step;
+	});
+};
+
+/**
+ * Merges per-step custom config (instruction/props from org metadata `meta`) onto
+ * matching steps as `step.orgConfig`. Adds a field only; never removes a step.
+ * @param {OnboardingStep[]} steps - Steps to process
+ * @param {Map<number, StepOrgConfig>} [stepOrgConfig] - Map of step ID → custom config
+ * @returns {OnboardingStep[]} Steps with `orgConfig` attached where configured
+ */
+export const applyStepOrgConfigHelper = (
+	steps: OnboardingStep[],
+	stepOrgConfig?: Map<number, StepOrgConfig>
+): OnboardingStep[] => {
+	if (!stepOrgConfig || stepOrgConfig.size === 0) {
+		return steps;
+	}
+
+	return steps.map((step) => {
+		const orgConfig = stepOrgConfig.get(step.id);
+		if (orgConfig) {
+			console.log(
+				`[StepConfiguration] Applying org config to step: ${step.name} (ID: ${step.id})`
+			);
+			return {
+				...step,
+				orgConfig,
 			};
 		}
 		return step;
@@ -316,6 +386,7 @@ export const calculateResumeState = (
  * @param {Array<number> | string} [args.roleList] - Pending roles from API (drives resume logic)
  * @param {number[]} [args.disabledSteps] - Step IDs to remove (from org metadata `hide: 1`)
  * @param {number[]} [args.skippableSteps] - Step IDs to mark optional (from org metadata `optional: 1`)
+ * @param {Map<number, StepOrgConfig>} [args.stepOrgConfig] - Step ID → custom config (instruction/props) from org metadata `meta`
  * @returns {OnboardingStep[]} Fully filtered and status-initialized steps, ready for rendering
  */
 export const generateInitialSteps = ({
@@ -324,12 +395,14 @@ export const generateInitialSteps = ({
 	roleList,
 	disabledSteps,
 	skippableSteps,
+	stepOrgConfig,
 }: {
 	baseStepData?: OnboardingStep[];
 	onboardingSteps: Array<{ role: number; label?: string }>;
 	roleList?: Array<number> | string;
 	disabledSteps?: number[];
 	skippableSteps?: number[];
+	stepOrgConfig?: Map<number, StepOrgConfig>;
 }): OnboardingStep[] => {
 	// Filter 1: Visibility filtering - Remove steps with isVisible=false (highest precedence)
 	let filteredSteps = baseStepData.filter((step) => {
@@ -354,7 +427,11 @@ export const generateInitialSteps = ({
 	// Filter 4: Skippable steps marking (org metadata-driven)
 	filteredSteps = applySkippableStepsHelper(filteredSteps, skippableSteps);
 
-	// Filter 5: Resume logic
+	// Filter 5: Custom config merge (org metadata-driven) — attach instruction/props.
+	// Runs before resume so later stages (which clone via spread) preserve `orgConfig`.
+	filteredSteps = applyStepOrgConfigHelper(filteredSteps, stepOrgConfig);
+
+	// Filter 6: Resume logic
 	filteredSteps = calculateResumeState(filteredSteps, roleList);
 
 	return filteredSteps;

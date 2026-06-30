@@ -138,6 +138,8 @@ flowchart TD
 | Simple field capture (text, file, select) | ✅ `localRenderer.type: "form"` + `formFields` | — |
 | API call(s) for a step | ✅ `api.pipeline[]` | — |
 | Per-org enable/disable/optional | ✅ org metadata (below) | — |
+| Per-org instruction text on a step | ✅ org metadata `meta.instruction` (rendered globally) | — |
+| Per-org component behavior flag (e.g. hide a field) | ✅ org metadata `meta.props` (component reads `stepConfig.orgConfig.props`) | component must whitelist the key |
 | Bespoke UI / device or 3rd-party SDK interaction | — | ✅ `localRenderer.type: "custom"` + a component |
 
 Custom steps are looked up by name in `CUSTOM_COMPONENT_REGISTRY`. Currently registered:
@@ -185,7 +187,8 @@ flowchart LR
     S1 --> S2["2. role match + order\n(applicableRoles ∩ onboarding_steps,\nordered by API position)"]
     S2 --> S3["3. disabled\n(org hide:1)"]
     S3 --> S4["4. skippable\n(org optional:1 -> isRequired:false)"]
-    S4 --> S5["5. resume status\n(from role_list)"]
+    S4 --> S4b["5. custom config\n(org meta -> step.orgConfig)"]
+    S4b --> S5["6. resume status\n(from role_list)"]
     S5 --> R["state.stepperData"]
 ```
 
@@ -193,7 +196,8 @@ flowchart LR
 2. **Role match + order** (`filterOnboardingStepsByRoles`) — keeps steps whose `applicableRoles` intersect the API `onboarding_steps` roles, **orders them by the API's position** (not the master-list order), and overrides each `label` with the API-provided label when present.
 3. **Disabled** (`filterDisabledStepsHelper`) — drops steps an org turned off (`hide: 1`).
 4. **Skippable** (`applySkippableStepsHelper`) — marks org-optional steps `isRequired: false`.
-5. **Resume** (`calculateResumeState`) — using `role_list` (pending roles), marks steps before the first pending one `COMPLETED`, the first pending one `IN_PROGRESS`, and the rest `NOT_STARTED`.
+5. **Custom config** (`applyStepOrgConfigHelper`) — attaches `step.orgConfig = { instruction, props }` from org metadata `meta`. Runs before resume so the cloning resume stage preserves it.
+6. **Resume** (`calculateResumeState`) — using `role_list` (pending roles), marks steps before the first pending one `COMPLETED`, the first pending one `IN_PROGRESS`, and the rest `NOT_STARTED`.
 
 This runs once when user data loads (via `OnboardingProvider.initializeSteps`) and the result is stored in `state.stepperData`.
 
@@ -202,7 +206,15 @@ This runs once when user data loads (via `OnboardingProvider.initializeSteps`) a
 Per-org overrides come from `orgDetail.metadata.onboarding` (passed in as `orgMetadataOnboarding`). Shape:
 
 ```
-metadata.onboarding[userType][stepKey] = { hide: 0|1, optional: 0|1, meta: { reason } }
+metadata.onboarding[userType][stepKey] = {
+  hide: 0|1,
+  optional: 0|1,
+  meta: {
+    reason,        // developer note — logged only
+    instruction,   // user-facing text shown as a banner above the step
+    props,         // generic flag bag forwarded to the step component
+  },
+}
 ```
 
 This lets an org tweak the flow **per user type** without code changes — keyed first by the (normalized) **EPS `user_type`** read from the profile (see [User-type numbering schemes](#user-type-numbering-schemes)), then by step. This key is the backend identity — **not** the removed `merchant_type` submit param — so it is entirely unaffected by that removal. Concrete example:
@@ -212,8 +224,20 @@ This lets an org tweak the flow **per user type** without code changes — keyed
   "metadata": {
     "onboarding": {
       "2": {                              // Retailer/Merchant (type 3 normalizes to 2)
-        "VIDEO_KYC":   { "hide": 1, "meta": { "reason": "Video KYC not required for this partner" } },
-        "ADD_BANK_ACCONT": { "optional": 1, "meta": { "reason": "Bank details can be added later" } }
+        "VIDEO_KYC": {                    // Step name
+          "hide": 1,
+          "meta": {
+            "reason": "Video KYC not required for this partner"
+          }
+        },
+        "ADD_BANK_ACCONT": {
+          "optional": 1,
+          "meta": {
+            "reason": "Bank details can be added later",              // dev log only
+            "instruction": "Bank account is needed for settlement.",  // user-facing instruction
+            "props": { "hidePassbook": true }                         // flags for the component
+          }
+        }
       },
       "1": {                              // Distributor
         "AADHAAR_VERIFICATION": { "hide": 1 }
@@ -230,7 +254,41 @@ Result for this org: Retailers skip Video KYC entirely and may skip the bank-acc
 - `userType` is **normalized** (`3 → 2`) before lookup — config under key `"2"` also applies to type-3 users.
 - `stepKey` is matched to a step by **name or id** via `createStepLookupMap` (so `"VIDEO_KYC"` or `"11"` both resolve to the same step).
 - `hide: 1` disables the step (takes precedence); `optional: 1` marks it skippable (`isRequired: false`). The optional `meta.reason` is logged.
-- These feed stages 3 (disabled) and 4 (skippable) of the [resolution pipeline](#runtime-step-resolution--which-step-is-next) above. Note org config can only **hide/relax** steps the backend already returned in `onboarding_steps` — it cannot add a step the backend didn't send.
+- `meta.instruction` and `meta.props` are collected **independently** of `hide`/`optional` (a step can carry them while neither hidden nor optional) and merged onto the step object as `step.orgConfig = { instruction, props }`. Because the whole step object is the `stepConfig` prop, this reaches the component with no extra wiring.
+- These feed stages 3 (disabled), 4 (skippable) and **5 (custom-config merge)** of the [resolution pipeline](#runtime-step-resolution--which-step-is-next) above. Note org config can only **hide/relax/annotate** steps the backend already returned in `onboarding_steps` — it cannot add a step the backend didn't send.
+
+### Passing custom props & instructions to a step
+
+Two channels ride on `meta`, both surfaced via `step.orgConfig`:
+
+- **`meta.instruction`** — rendered as a plain-text banner above **any** step (form or custom) by `StepInstruction` in [ContentRenderer.tsx](/features/onboarding/components/ContentRenderer.tsx). No per-component code needed; org-controlled text is never rendered as HTML.
+- **`meta.props`** — a generic `Record<string, unknown>` flag bag. The channel is generic; **each component owns and whitelists the keys it reads** (`stepConfig.orgConfig?.props`). `AddBankAccountStep` currently supports:
+
+  | prop | effect |
+  |------|--------|
+  | `hidePassbook: true` | removes the passbook upload field entirely; its upload pipeline step is skipped (the bank `upload` step sets `skipIfNoFiles: true`, so a fileless submit is a success, not a failure) |
+  | `passbookOptional: true` | keeps the passbook field but `required: false` |
+
+Example — Retailers see an instruction and skip the passbook upload, but still capture account details:
+
+```json
+{
+  "metadata": {
+    "onboarding": {
+      "2": {
+        "ADD_BANK_ACCONT": {
+          "meta": {
+            "instruction": "Add your bank account so we can send your payouts.",
+            "props": { "hidePassbook": true }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+To support a new flag on a component, read the key off `stepConfig.orgConfig?.props` inside that component (narrow to the expected type, e.g. `=== true`) — no type or pipeline change is required.
 
 ## URL parameter auto-fill
 
@@ -319,7 +377,15 @@ This spans config in several places, not just `applicableRoles`:
 5. **Backend**: have the API return the new type's steps (and their order/labels) in `onboarding_steps`, and pending roles in `role_list`.
 6. **Org metadata** (optional): add a block under the new (normalized) `userType` key to hide/relax steps for that type.
 
-### 7. Add a new filter stage or step-metadata field
+### 7. Pass a custom flag or instruction to a step (config only)
+
+No code change for the instruction; a one-line read for a new flag.
+
+1. **Instruction**: set `metadata.onboarding[userType][stepKey].meta.instruction = "…"`. It renders as a banner above that step automatically (form or custom).
+2. **Existing flag** (e.g. bank passbook): set `meta.props.hidePassbook = true` or `meta.props.passbookOptional = true`.
+3. **New flag for a component**: add `meta.props.<yourFlag>` in config, then in the target component read `stepConfig.orgConfig?.props?.<yourFlag>` (narrow the `unknown`, e.g. `=== true`). The component owns/whitelists its keys; the channel itself needs no type change. For a flag that should also drop an upload pipeline step, set `skipIfNoFiles: true` on that `upload` step so an empty submit is skipped, not failed.
+
+### 8. Add a new filter stage or step-metadata field
 
 [stepGenerator.ts](/features/onboarding/utils/stepGenerator.ts) documents its own extension points in the file header:
 

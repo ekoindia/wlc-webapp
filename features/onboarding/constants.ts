@@ -161,6 +161,13 @@ export interface ApiPipelineStep {
 	 * Example: { "selfie_image": "file1" }
 	 */
 	fileKeyMapping?: Record<string, string>;
+	/**
+	 * For 'upload' steps only: when true, the upload is SKIPPED (counted as success,
+	 * not failed) if zero files are present at submit time. Use for uploads an org can
+	 * hide/optionalize via metadata (e.g. bank passbook). Defaults to false so required
+	 * uploads (Aadhaar/PAN/selfie) still fail on an empty submission.
+	 */
+	skipIfNoFiles?: boolean;
 }
 
 /**
@@ -249,6 +256,19 @@ export interface OnboardingStep {
 	};
 	/** Optional success message to display when step is completed */
 	success_message?: string;
+
+	/**
+	 * Per-org overrides populated at runtime from
+	 * `metadata.onboarding[userType][stepKey].meta`. Reaches the step's component
+	 * untouched via the `stepConfig` prop.
+	 * - `instruction`: user-facing text rendered as a banner above the step.
+	 * - `props`: generic flag bag; each component reads only the keys it whitelists
+	 *   (e.g. AddBankAccountStep reads `hidePassbook` / `passbookOptional`).
+	 */
+	orgConfig?: {
+		instruction?: string;
+		props?: Record<string, unknown>;
+	};
 
 	// === Local Rendering Configuration ===
 	/** Configuration for local rendering */
@@ -617,6 +637,10 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.UPLOAD_PASSBOOK_IMAGE,
 					],
+					// Passbook can be hidden/optionalized per-org via
+					// metadata.props.hidePassbook / passbookOptional — skip the
+					// upload (success, not failure) when no file is submitted.
+					skipIfNoFiles: true,
 				},
 			],
 		},
