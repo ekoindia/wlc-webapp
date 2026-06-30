@@ -32,7 +32,7 @@ flowchart TD
     RS --> KYC
 ```
 
-- **ROLE_SELECTION** → [RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx). Shown only when no role is assigned yet (`userType === -1`) and there are no steps. The user picks Retailer / Distributor / Enterprise; selecting submits `CREATE_PARTIAL_ACCOUNT` and refreshes the profile, then advances to `KYC_FLOW`. If exactly one role is available it auto-submits. Role visibility and the `?role` URL param are detailed in [onboarding-configuration.md](./onboarding-configuration.md#role-selection).
+- **ROLE_SELECTION** → [RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx). Shown only when no role is assigned yet (`userType === -1`) and there are no steps. The user picks Retailer / Distributor / Enterprise; selecting submits `CREATE_PARTIAL_ACCOUNT` and refreshes the profile, then advances to `KYC_FLOW`. If exactly one role is available it auto-submits. A `?bv` (business vertical) URL param, when present, is also submitted here as `business_vertical`. Role visibility and the `?role` / `?bv` URL params are detailed in [onboarding-configuration.md](./onboarding-configuration.md#url-parameter-auto-fill).
 - **KYC_FLOW** → [OnboardingSteps](/features/onboarding/components/OnboardingSteps.tsx) renders the dynamically-resolved step list inside the [OnboardingLayout](/features/onboarding/components/OnboardingLayout.tsx) stepper.
 
 If self-onboarding is disabled for the org and the user has no role yet, `OnboardingWidget` shows a "User not found" screen with a Back button.

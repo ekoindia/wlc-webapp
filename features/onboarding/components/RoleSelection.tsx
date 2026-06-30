@@ -164,6 +164,7 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
  * @param {object} [props.assistedAgentDetails] - Details of the assisted agent (if any)
  * @param {string} [props.agentMobile] - Mobile number of the assisted agent
  * @param {number[]} [props.allowedRoleIds] - Optional list of allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise). Eg: [1,2] for Retailer and Distributor only.
+ * @param {string} [props.businessVertical] - Optional canonical business vertical ("EPS" | "Eloka" | "SBI Kiosk" | "Enterprise") from the `?bv` query param; submitted as `business_vertical` when present.
  * @param {Function} props.refreshAgentProfile - Function to refresh the agent profile data
  * @param props.accessToken
  * @param props.generateNewToken
@@ -177,6 +178,7 @@ const RoleSelection = ({
 	assistedAgentDetails,
 	agentMobile,
 	allowedRoleIds,
+	businessVertical,
 	refreshAgentProfile,
 	accessToken,
 	generateNewToken,
@@ -217,6 +219,11 @@ const RoleSelection = ({
 						form_data: {
 							applicant_type: applicantType,
 							csp_id: mobile,
+							// Only sent when the `?bv` query param resolved to a
+							// known vertical; omitted otherwise.
+							...(businessVertical
+								? { business_vertical: businessVertical }
+								: {}),
 						},
 					},
 					mobile: String(mobile || ""),
@@ -279,6 +286,7 @@ const RoleSelection = ({
 		[
 			actions,
 			mobile,
+			businessVertical,
 			accessToken,
 			generateNewToken,
 			state.latLong,

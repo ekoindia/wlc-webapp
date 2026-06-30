@@ -15,6 +15,7 @@ The onboarding flow is **customizable per user type** (out of the box: Retailer 
 | API pipeline executor | [features/onboarding/utils/executePipeline.ts](/features/onboarding/utils/executePipeline.ts) |
 | Module ↔ host boundary (services) | [features/onboarding/contracts.ts](/features/onboarding/contracts.ts) |
 | `?role` parsing | [features/onboarding/components/OnboardingWidget.tsx](/features/onboarding/components/OnboardingWidget.tsx) |
+| `?bv` (business vertical) code map + parser | [features/onboarding/constants.ts](/features/onboarding/constants.ts) (`BUSINESS_VERTICAL_BY_CODE`, `parseBusinessVertical`) |
 | `?mobile` prefill | [page-components/LandingPanel/LandingPanel.tsx](/page-components/LandingPanel/LandingPanel.tsx) |
 
 ## Step-definition anatomy
@@ -106,12 +107,13 @@ Supporting constants in the same file:
 
 > **Note on `merchant_type`.** Earlier code also submitted a `merchant_type` field (the EPS `user_type`, derived via `APPLICANT_TO_USER_TYPE`) alongside `applicant_type`. That field is **no longer required by the APIs and has been removed** from all submissions (role selection, assisted add-agent, assisted OTP). The EPS `user_type` numbering itself remains — but only as a **backend-read** identity (profile + org-config + icons), not as a submitted parameter.
 
-**What is submitted now:** `submitRoleSelection()` ([RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx)) sends only `applicant_type` (+ `csp_id`) in the `CREATE_PARTIAL_ACCOUNT` transaction (`/transactions/do`):
+**What is submitted now:** `submitRoleSelection()` ([RoleSelection.tsx](/features/onboarding/components/RoleSelection.tsx)) sends `applicant_type` (+ `csp_id`), plus `business_vertical` **only when** the `?bv` query param resolved to a known vertical (see [`?bv`](#bv--business-vertical) below), in the `CREATE_PARTIAL_ACCOUNT` transaction (`/transactions/do`):
 
 ```js
 form_data: {
   applicant_type: applicantType,   // OaaS code (0/2/3)
   csp_id: mobile,
+  business_vertical: "SBI Kiosk",  // optional — omitted when ?bv is absent/unknown
 }
 ```
 
@@ -232,7 +234,7 @@ Result for this org: Retailers skip Video KYC entirely and may skip the bank-acc
 
 ## URL parameter auto-fill
 
-Two query params let a partner deep-link into a pre-filled flow.
+Three query params let a partner deep-link into a pre-filled flow.
 
 ### `?role` — pre-select / restrict the user type
 
@@ -242,9 +244,24 @@ Two query params let a partner deep-link into a pre-filled flow.
 - It **filters** which role cards show; it does not blindly auto-select. **Auto-submit only happens when exactly one role remains** (`roles.length === 1`). When `allowedRoleIds` is `undefined` (empty/non-numeric param) it falls back to the normal `visibleAgentTypes.selfOnboarding` choices.
 - `RouteProtecter` preserves `?role` when it force-redirects to `/signup`, so the param survives the login→onboarding hop. See [route-protection.md](./route-protection.md).
 
+### `?bv` — business vertical
+
+- Declares which business line the signup belongs to. **Public param, so the URL uses clean lowercase codes**, not the raw backend strings (which contain spaces, e.g. `"SBI Kiosk"`):
+
+  | `?bv` code | Submitted `business_vertical` |
+  |-----------|-------------------------------|
+  | `eps` | `EPS` |
+  | `eloka` | `Eloka` |
+  | `sbi_kiosk` | `SBI Kiosk` |
+  | `enterprise` | `Enterprise` |
+
+- Parsed in [OnboardingWidget.tsx](/features/onboarding/components/OnboardingWidget.tsx) (guarded on `router.isReady`) via `parseBusinessVertical` ([constants.ts](/features/onboarding/constants.ts)), then passed to [RoleSelection](/features/onboarding/components/RoleSelection.tsx) as `businessVertical`. It rides on the **same entry URLs as `?role`** (`/signup`, `/gateway/onboarding`).
+- **Strict mapping** = whitelist validation: the value is `trim`+`lowercase`d and looked up in `BUSINESS_VERTICAL_BY_CODE`. Unknown / empty / missing codes resolve to `undefined`, and `business_vertical` is then **omitted** from the role-selection submission entirely. A duplicated `?bv=a&bv=b` arrives as an array — **first value wins** (same normalization as `?mobile`).
+- Submitted by `submitRoleSelection()` as `business_vertical` in the `CREATE_PARTIAL_ACCOUNT` payload (see [User-type numbering schemes](#user-type-numbering-schemes)). Unlike `?role` it does not filter role cards — it only annotates the submission.
+
 ### `?mobile` — pre-fill the number
 
-- Read in [LandingPanel.tsx](/page-components/LandingPanel/LandingPanel.tsx) (`router.query.mobile`, array-normalized) → passed to `LoginPanel` → `LoginWidget` as `initialMobile`. A non-empty `initialMobile` makes [useRestoreLastLoginOrRoute](/page-components/LoginPanel/useRestoreLastLoginOrRoute.ts) skip the cached number, so the URL wins.
+- Read in [LandingPanel.tsx](/page-components/LandingPanel/LandingPanel.tsx) (`router.query.mobile`, array-normalized) → **sanitized** by the local `sanitizeMobile` to a bare 10-digit string (strips non-digits and any `+91`/`91`/leading-`0` prefix via "keep last 10 digits"; empty → `undefined`) → passed to `LoginPanel` → `LoginWidget` as `initialMobile`. A non-empty `initialMobile` makes [useRestoreLastLoginOrRoute](/page-components/LoginPanel/useRestoreLastLoginOrRoute.ts) skip the cached number, so the URL wins.
 - In the embedded gateway, `GatewayWidget` forwards `?mobile` to `OnboardingGateway` (`passMobile: true`), which feeds it into the embedded `LoginWidget` as `initialMobile`.
 - The standard login page and the gateway login read `?mobile`; the admin assisted pages do **not** consume `?mobile`.
 

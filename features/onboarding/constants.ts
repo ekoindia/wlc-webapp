@@ -11,6 +11,43 @@ export const APPLICANT_TYPES = {
 };
 
 /**
+ * Public `?bv=` query-param code → backend `business_vertical` string.
+ * Acts as the whitelist of accepted codes: anything not listed here is ignored.
+ */
+export const BUSINESS_VERTICAL_BY_CODE = {
+	eps: "EPS",
+	eloka: "Eloka",
+	sbi_kiosk: "SBI Kiosk",
+	enterprise: "Enterprise",
+} as const;
+
+export type BusinessVerticalCode = keyof typeof BUSINESS_VERTICAL_BY_CODE;
+export type BusinessVertical =
+	(typeof BUSINESS_VERTICAL_BY_CODE)[BusinessVerticalCode];
+
+/**
+ * Map a raw `?bv` query value to a canonical `business_vertical` string.
+ *
+ * Strict by design — only `trim` + `toLowerCase`, then an exact lookup against the
+ * documented codes (`eps`, `eloka`, `sbi_kiosk`, `enterprise`). A duplicated
+ * `?bv=a&bv=b` arrives as an array; the first value wins (mirrors how `?mobile` is
+ * normalized in LandingPanel). Unknown / empty / missing input → `undefined`, in
+ * which case the caller omits `business_vertical` from the submission entirely.
+ * @param {string | string[] | undefined} raw - Raw `router.query.bv` value.
+ * @returns {BusinessVertical | undefined} Canonical vertical string, or `undefined`.
+ */
+export const parseBusinessVertical = (
+	raw: string | string[] | undefined
+): BusinessVertical | undefined => {
+	// Guard the extracted value, not `raw`: an empty array `[]` is truthy but yields
+	// `undefined` at [0], which would throw on `.trim()`.
+	const first = Array.isArray(raw) ? raw[0] : raw;
+	if (!first) return undefined;
+	const code = first.trim().toLowerCase();
+	return BUSINESS_VERTICAL_BY_CODE[code as BusinessVerticalCode];
+};
+
+/**
  * Response Type IDs for step success validation
  * Used by components to determine if a step should advance
  */

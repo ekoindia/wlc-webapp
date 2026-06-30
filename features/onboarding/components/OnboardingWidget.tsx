@@ -5,6 +5,7 @@ import { Button } from "components/Button";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
+import { parseBusinessVertical } from "../constants";
 import type { OnboardingServices } from "../contracts";
 import { getOnboardingStepsFromData, getUserTypeFromData } from "../utils";
 import OnboardingSkeleton from "./OnboardingSkeleton";
@@ -113,6 +114,16 @@ const OnboardingWidget = ({
 		return parsed.length > 0 ? parsed : undefined;
 	}, [router.isReady, router.query.role]);
 
+	// Parse the public `bv` (business vertical) query param into a canonical
+	// backend string (e.g. ?bv=sbi_kiosk → "SBI Kiosk"). Like `role`, it is
+	// delivered via URL on both /signup and /gateway/onboarding, and is guarded on
+	// router.isReady since router.query is empty until client-side hydration.
+	const businessVertical = useMemo(
+		(): string | undefined =>
+			router.isReady ? parseBusinessVertical(router.query.bv) : undefined,
+		[router.isReady, router.query.bv]
+	);
+
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = isAssistedOnboarding
 		? assistedAgentDetails
@@ -197,6 +208,7 @@ const OnboardingWidget = ({
 						assistedAgentDetails={assistedAgentDetails}
 						agentMobile={agentMobile}
 						allowedRoleIds={allowedRoleIds}
+						businessVertical={businessVertical}
 						refreshAgentProfile={refreshAgentProfile}
 						accessToken={services.accessToken}
 						generateNewToken={services.generateNewToken}
