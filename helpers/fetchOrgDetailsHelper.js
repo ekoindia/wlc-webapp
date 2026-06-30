@@ -29,6 +29,7 @@ const stripQuotes = (str) => (str ? str.replace(/^['"]|['"]$/g, "") : str);
 
 /**
  * Mock org details (used in development)
+ * MARK: Mock Org
  */
 export const MockOrgDetails = {
 	org_id: process.env.WLC_ORG_ID || 2,
