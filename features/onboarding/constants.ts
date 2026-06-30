@@ -321,6 +321,8 @@ export interface OnboardingStep {
  * Steps are filtered at runtime based on the API response (onboarding_steps).
  * Each step can have multiple applicable roles via the applicableRoles array.
  *
+ * MARK: ALL STEPS
+ *
  * Key concepts:
  * - `id`: Unique step identifier used for API routing logic (handlers check this)
  * - `role`: Primary role ID for backward compatibility
@@ -328,9 +330,7 @@ export interface OnboardingStep {
  * - `api.pipeline`: Configuration for the pipeline executor
  *
  * The filtering logic matches steps where ANY role in applicableRoles appears in the API response.
- */
-/**
- * Master list of KYC onboarding steps.
+ *
  * NOTE: Role selection is handled separately by the RoleSelection component.
  */
 export const masterOnboardingSteps: OnboardingStep[] = [
