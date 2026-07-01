@@ -9,7 +9,7 @@
  *   2. Role-based filter — keeps only steps matching the API-provided `onboardingSteps` roles
  *   3. Disabled filter — removes steps disabled by org metadata (`hide: 1`)
  *   4. Skippable marking — marks steps as optional per org metadata (`optional: 1`)
- *   5. Custom config merge — attaches `orgConfig` (instruction/props) from org metadata `meta`
+ *   5. Custom config merge — overrides `label`/`description` and attaches `orgConfig.props` from org metadata `meta`
  *   6. Resume logic — sets COMPLETED/IN_PROGRESS/NOT_STARTED based on `roleList`
  *
  * ## How to add a new filter stage:
@@ -32,13 +32,16 @@ import {
 /**
  * `meta` block of a per-step org config entry.
  * - `reason`: developer-facing note, logged only.
- * - `instruction`: user-facing text rendered as a banner above the step.
+ * - `label`: overrides the step's native `label` (title + stepper). Org wins over
+ *   the backend API label.
+ * - `description`: overrides the step's native `description` (shown under the title).
  * - `props`: generic flag bag forwarded to the step component (each component
  *   reads only the keys it whitelists).
  */
 export interface StepMetadataConfig {
 	reason?: string;
-	instruction?: string;
+	label?: string;
+	description?: string;
 	props?: Record<string, unknown>;
 	[key: string]: unknown;
 }
@@ -53,11 +56,12 @@ interface StepConfig {
 }
 
 /**
- * Per-step custom config distilled from `meta` and merged onto the step object
- * (surfaces as `OnboardingStep.orgConfig`).
+ * Per-step overrides distilled from `meta`. `label`/`description` override the step's
+ * top-level fields; `props` is attached as `OnboardingStep.orgConfig.props`.
  */
 export interface StepOrgConfig {
-	instruction?: string;
+	label?: string;
+	description?: string;
 	props?: Record<string, unknown>;
 }
 
@@ -130,7 +134,7 @@ interface OnboardingMetadata {
 export interface ExtractedStepConfig {
 	disabledSteps: number[] | undefined;
 	skippableSteps: number[] | undefined;
-	/** Map of step ID → custom config (instruction/props) from `meta`. */
+	/** Map of step ID → per-step overrides (label/description/props) from `meta`. */
 	stepOrgConfig: Map<number, StepOrgConfig> | undefined;
 }
 
@@ -215,11 +219,15 @@ export const extractStepConfiguration = (
 			);
 		}
 
-		// Collect custom instruction/props (independent of hide/optional)
-		const instruction = config.meta?.instruction;
-		const props = config.meta?.props;
-		if (instruction !== undefined || props !== undefined) {
-			orgConfigMap.set(matchingStep.id, { instruction, props });
+		// Collect per-step overrides (independent of hide/optional):
+		// label/description override the step's native fields; props is a flag bag.
+		const { label, description, props } = config.meta ?? {};
+		if (
+			label !== undefined ||
+			description !== undefined ||
+			props !== undefined
+		) {
+			orgConfigMap.set(matchingStep.id, { label, description, props });
 		}
 	});
 
@@ -287,11 +295,14 @@ export const applySkippableStepsHelper = (
 };
 
 /**
- * Merges per-step custom config (instruction/props from org metadata `meta`) onto
- * matching steps as `step.orgConfig`. Adds a field only; never removes a step.
+ * Applies per-step org overrides (from org metadata `meta`) onto matching steps:
+ * `label`/`description` override the step's top-level fields (uniformly picked up by every
+ * renderer and the stepper); `props` is attached as `step.orgConfig.props`. Never removes
+ * a step. `label`/`description` are applied only when a non-empty string, so a malformed
+ * config cannot blank the step title or stepper.
  * @param {OnboardingStep[]} steps - Steps to process
- * @param {Map<number, StepOrgConfig>} [stepOrgConfig] - Map of step ID → custom config
- * @returns {OnboardingStep[]} Steps with `orgConfig` attached where configured
+ * @param {Map<number, StepOrgConfig>} [stepOrgConfig] - Map of step ID → overrides
+ * @returns {OnboardingStep[]} Steps with label/description overridden and `orgConfig` attached where configured
  */
 export const applyStepOrgConfigHelper = (
 	steps: OnboardingStep[],
@@ -301,18 +312,26 @@ export const applyStepOrgConfigHelper = (
 		return steps;
 	}
 
+	const isNonEmptyString = (value: unknown): value is string =>
+		typeof value === "string" && value.trim() !== "";
+
 	return steps.map((step) => {
-		const orgConfig = stepOrgConfig.get(step.id);
-		if (orgConfig) {
-			console.log(
-				`[StepConfiguration] Applying org config to step: ${step.name} (ID: ${step.id})`
-			);
-			return {
-				...step,
-				orgConfig,
-			};
-		}
-		return step;
+		const override = stepOrgConfig.get(step.id);
+		if (!override) return step;
+
+		console.log(
+			`[StepConfiguration] Applying org overrides to step: ${step.name} (ID: ${step.id})`
+		);
+		const { label, description, props } = override;
+		return {
+			...step,
+			...(isNonEmptyString(label) ? { label } : {}),
+			...(isNonEmptyString(description) ? { description } : {}),
+			// Preserve any existing orgConfig keys while (re)setting props.
+			...(props !== undefined
+				? { orgConfig: { ...step.orgConfig, props } }
+				: {}),
+		};
 	});
 };
 
@@ -386,7 +405,7 @@ export const calculateResumeState = (
  * @param {Array<number> | string} [args.roleList] - Pending roles from API (drives resume logic)
  * @param {number[]} [args.disabledSteps] - Step IDs to remove (from org metadata `hide: 1`)
  * @param {number[]} [args.skippableSteps] - Step IDs to mark optional (from org metadata `optional: 1`)
- * @param {Map<number, StepOrgConfig>} [args.stepOrgConfig] - Step ID → custom config (instruction/props) from org metadata `meta`
+ * @param {Map<number, StepOrgConfig>} [args.stepOrgConfig] - Step ID → per-step overrides (label/description/props) from org metadata `meta`
  * @returns {OnboardingStep[]} Fully filtered and status-initialized steps, ready for rendering
  */
 export const generateInitialSteps = ({
@@ -427,8 +446,9 @@ export const generateInitialSteps = ({
 	// Filter 4: Skippable steps marking (org metadata-driven)
 	filteredSteps = applySkippableStepsHelper(filteredSteps, skippableSteps);
 
-	// Filter 5: Custom config merge (org metadata-driven) — attach instruction/props.
-	// Runs before resume so later stages (which clone via spread) preserve `orgConfig`.
+	// Filter 5: Custom config merge (org metadata-driven) — override label/description
+	// and attach orgConfig.props. Runs before resume so later stages (which clone via
+	// spread) preserve the overrides.
 	filteredSteps = applyStepOrgConfigHelper(filteredSteps, stepOrgConfig);
 
 	// Filter 6: Resume logic

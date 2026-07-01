@@ -80,32 +80,6 @@ const LoadingFallback = (): JSX.Element => (
 );
 
 /**
- * Renders an org-configured instruction message above a step.
- * Text is rendered as plain text (never HTML) since it comes from org config.
- * @param {object} props - Component props
- * @param {string} [props.text] - Instruction text from `stepConfig.orgConfig.instruction`
- * @returns {JSX.Element | null} The banner, or null when there is no instruction
- */
-const StepInstruction = ({ text }: { text?: string }): JSX.Element | null => {
-	if (!text) return null;
-	return (
-		<Box
-			mb={4}
-			p={3}
-			borderWidth="1px"
-			borderColor="blue.200"
-			bg="blue.50"
-			borderRadius="md"
-			role="note"
-		>
-			<Text fontSize="sm" color="blue.800">
-				{text}
-			</Text>
-		</Box>
-	);
-};
-
-/**
  * ContentRenderer - Handles conditional rendering of onboarding step content
  *
  * All steps are rendered locally via the stepConfig.localRenderer configuration.
@@ -182,16 +156,13 @@ const ContentRenderer = ({
 			// Render local form using LocalStepForm
 			if (!stepConfig) return <>{fallbackContent}</>;
 			return (
-				<>
-					<StepInstruction text={stepConfig.orgConfig?.instruction} />
-					<LocalStepForm
-						stepConfig={stepConfig}
-						onSubmit={onSubmit}
-						onAdvance={onAdvance}
-						onSkip={onSkip}
-						isLoading={isLoading}
-					/>
-				</>
+				<LocalStepForm
+					stepConfig={stepConfig}
+					onSubmit={onSubmit}
+					onAdvance={onAdvance}
+					onSkip={onSkip}
+					isLoading={isLoading}
+				/>
 			);
 
 		case "custom":
@@ -210,19 +181,16 @@ const ContentRenderer = ({
 				);
 			}
 			return (
-				<>
-					<StepInstruction text={stepConfig.orgConfig?.instruction} />
-					<Suspense fallback={<LoadingFallback />}>
-						<CustomComponent
-							stepConfig={stepConfig}
-							onSubmit={onSubmit}
-							onAdvance={onAdvance}
-							onSkip={onSkip}
-							isLoading={isLoading}
-							additionalData={additionalData}
-						/>
-					</Suspense>
-				</>
+				<Suspense fallback={<LoadingFallback />}>
+					<CustomComponent
+						stepConfig={stepConfig}
+						onSubmit={onSubmit}
+						onAdvance={onAdvance}
+						onSkip={onSkip}
+						isLoading={isLoading}
+						additionalData={additionalData}
+					/>
+				</Suspense>
 			);
 
 		case "fallback":

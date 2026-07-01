@@ -260,15 +260,16 @@ export interface OnboardingStep {
 	success_message?: string;
 
 	/**
-	 * Per-org overrides populated at runtime from
+	 * Per-org config populated at runtime from
 	 * `metadata.onboarding[userType][stepKey].meta`. Reaches the step's component
-	 * untouched via the `stepConfig` prop.
-	 * - `instruction`: user-facing text rendered as a banner above the step.
+	 * untouched via the `stepConfig` prop. (Org `meta.label` / `meta.description`
+	 * override the step's top-level `label` / `description` directly — they are not
+	 * carried here.)
 	 * - `props`: generic flag bag; each component reads only the keys it whitelists
-	 *   (e.g. AddBankAccountStep reads `hidePassbook` / `passbookOptional`).
+	 *   (e.g. AddBankAccountStep reads `hidePassbook` / `passbookOptional`;
+	 *   LocalStepForm reads `hideFields` / `optionalFields`).
 	 */
 	orgConfig?: {
-		instruction?: string;
 		props?: Record<string, unknown>;
 	};
 

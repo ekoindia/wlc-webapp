@@ -138,7 +138,7 @@ flowchart TD
 | Simple field capture (text, file, select) | ✅ `localRenderer.type: "form"` + `formFields` | — |
 | API call(s) for a step | ✅ `api.pipeline[]` | — |
 | Per-org enable/disable/optional | ✅ org metadata (below) | — |
-| Per-org instruction text on a step | ✅ org metadata `meta.instruction` (rendered globally) | — |
+| Per-org label / description override on a step | ✅ org metadata `meta.label` / `meta.description` (override the step's native fields) | — |
 | Per-org component behavior flag (e.g. hide a field) | ✅ org metadata `meta.props` (component reads `stepConfig.orgConfig.props`) | component must whitelist the key |
 | Bespoke UI / device or 3rd-party SDK interaction | — | ✅ `localRenderer.type: "custom"` + a component |
 
@@ -187,7 +187,7 @@ flowchart LR
     S1 --> S2["2. role match + order\n(applicableRoles ∩ onboarding_steps,\nordered by API position)"]
     S2 --> S3["3. disabled\n(org hide:1)"]
     S3 --> S4["4. skippable\n(org optional:1 -> isRequired:false)"]
-    S4 --> S4b["5. custom config\n(org meta -> step.orgConfig)"]
+    S4 --> S4b["5. custom config\n(org meta -> label/description\noverride + step.orgConfig.props)"]
     S4b --> S5["6. resume status\n(from role_list)"]
     S5 --> R["state.stepperData"]
 ```
@@ -196,7 +196,7 @@ flowchart LR
 2. **Role match + order** (`filterOnboardingStepsByRoles`) — keeps steps whose `applicableRoles` intersect the API `onboarding_steps` roles, **orders them by the API's position** (not the master-list order), and overrides each `label` with the API-provided label when present.
 3. **Disabled** (`filterDisabledStepsHelper`) — drops steps an org turned off (`hide: 1`).
 4. **Skippable** (`applySkippableStepsHelper`) — marks org-optional steps `isRequired: false`.
-5. **Custom config** (`applyStepOrgConfigHelper`) — attaches `step.orgConfig = { instruction, props }` from org metadata `meta`. Runs before resume so the cloning resume stage preserves it.
+5. **Custom config** (`applyStepOrgConfigHelper`) — overrides `step.label` / `step.description` from org metadata `meta` (a non-empty string only) and attaches `step.orgConfig = { props }`. Runs before resume so the cloning resume stage preserves it.
 6. **Resume** (`calculateResumeState`) — using `role_list` (pending roles), marks steps before the first pending one `COMPLETED`, the first pending one `IN_PROGRESS`, and the rest `NOT_STARTED`.
 
 This runs once when user data loads (via `OnboardingProvider.initializeSteps`) and the result is stored in `state.stepperData`.
@@ -211,7 +211,8 @@ metadata.onboarding[userType][stepKey] = {
   optional: 0|1,
   meta: {
     reason,        // developer note — logged only
-    instruction,   // user-facing text shown as a banner above the step
+    label,         // overrides the step's native label (title + stepper)
+    description,   // overrides the step's native description (under the title)
     props,         // generic flag bag forwarded to the step component
   },
 }
@@ -234,7 +235,7 @@ This lets an org tweak the flow **per user type** without code changes — keyed
           "optional": 1,
           "meta": {
             "reason": "Bank details can be added later",              // dev log only
-            "instruction": "Bank account is needed for settlement.",  // user-facing instruction
+            "description": "Bank account is needed for settlement.",  // overrides step description
             "props": { "hidePassbook": true }                         // flags for the component
           }
         }
@@ -254,15 +255,15 @@ Result for this org: Retailers skip Video KYC entirely and may skip the bank-acc
 - `userType` is **normalized** (`3 → 2`) before lookup — config under key `"2"` also applies to type-3 users.
 - `stepKey` is matched to a step by **name or id** via `createStepLookupMap` (so `"VIDEO_KYC"` or `"11"` both resolve to the same step).
 - `hide: 1` disables the step (takes precedence); `optional: 1` marks it skippable (`isRequired: false`). The optional `meta.reason` is logged.
-- `meta.instruction` and `meta.props` are collected **independently** of `hide`/`optional` (a step can carry them while neither hidden nor optional) and merged onto the step object as `step.orgConfig = { instruction, props }`. Because the whole step object is the `stepConfig` prop, this reaches the component with no extra wiring.
+- `meta.label`, `meta.description` and `meta.props` are collected **independently** of `hide`/`optional` (a step can carry them while neither hidden nor optional). `label`/`description` **override** the step's top-level `label`/`description` (applied only when a non-empty string, so a malformed config can't blank a title); `props` is attached as `step.orgConfig = { props }`. Because these ride the top-level fields (and `stepConfig` prop), they reach every renderer + the stepper with no extra wiring.
 - These feed stages 3 (disabled), 4 (skippable) and **5 (custom-config merge)** of the [resolution pipeline](#runtime-step-resolution--which-step-is-next) above. Note org config can only **hide/relax/annotate** steps the backend already returned in `onboarding_steps` — it cannot add a step the backend didn't send.
 
-### Passing custom props & instructions to a step
+### Overriding label / description & passing props to a step
 
-Two channels ride on `meta`, both surfaced via `step.orgConfig`:
+Two channels ride on `meta`:
 
-- **`meta.instruction`** — rendered as a plain-text banner above **any** step (form or custom) by `StepInstruction` in [ContentRenderer.tsx](/features/onboarding/components/ContentRenderer.tsx). No per-component code needed; org-controlled text is never rendered as HTML.
-- **`meta.props`** — a generic `Record<string, unknown>` flag bag. The channel is generic; **each component owns and whitelists the keys it reads** (`stepConfig.orgConfig?.props`). `AddBankAccountStep` currently supports:
+- **`meta.label` / `meta.description`** — **override** the step's native `label` and `description`. They replace the top-level `step.label` / `step.description`, so every renderer (form + all custom steps) **and** the stepper progress header pick them up with no per-component code. Applied only when a non-empty string (a blank/whitespace value is ignored, so a malformed config can't wipe a title). **Precedence:** `meta.label` wins over the backend API label (`onboarding_steps[].label`) — the org merge runs after the API-label stage. There is no separate callout banner; the old `meta.instruction` channel has been removed in favour of these overrides.
+- **`meta.props`** — a generic `Record<string, unknown>` flag bag surfaced via `step.orgConfig.props`. The channel is generic; **each component owns and whitelists the keys it reads** (`stepConfig.orgConfig?.props`). `AddBankAccountStep` currently supports:
 
   | prop | effect |
   |------|--------|
@@ -294,7 +295,7 @@ Two channels ride on `meta`, both surfaced via `step.orgConfig`:
         "2": {
           "PAN_VERIFICATION": {
             "meta": {
-              "instruction": "Enter your PAN number to continue.",
+              "description": "Enter your PAN number to continue.",
               "props": { "hideFields": ["pan_image"] }
             }
           }
@@ -304,7 +305,7 @@ Two channels ride on `meta`, both surfaced via `step.orgConfig`:
   }
   ```
 
-Example — Retailers see an instruction and skip the passbook upload, but still capture account details:
+Example — Retailers get an org-specific description and skip the passbook upload, but still capture account details:
 
 ```json
 {
@@ -313,7 +314,7 @@ Example — Retailers see an instruction and skip the passbook upload, but still
       "2": {
         "ADD_BANK_ACCONT": {
           "meta": {
-            "instruction": "Add your bank account so we can send your payouts.",
+            "description": "Add your bank account so we can send your payouts.",
             "props": { "hidePassbook": true }
           }
         }
@@ -389,7 +390,7 @@ Internal components read it via `useOnboardingContext().services`. This boundary
 
 ### 3. Edit a step
 
-Change `formFields` / validations / `description` / `primaryCTAText`, or the pipeline `fieldMapping` / `interactionTypeId`, in the step's object. To change a label per-org/per-user, supply the label from the backend (`onboarding_steps[].label` overrides the static `label`).
+Change `formFields` / validations / `description` / `primaryCTAText`, or the pipeline `fieldMapping` / `interactionTypeId`, in the step's object. To change a label/description per-user, supply the label from the backend (`onboarding_steps[].label` overrides the static `label`). To change them **per-org/per-user-type**, set `metadata.onboarding[userType][stepKey].meta.label` / `meta.description` — the org value overrides both the static default and the backend API label (see Recipe 7).
 
 ### 4. Delete or disable a step
 
@@ -412,11 +413,11 @@ This spans config in several places, not just `applicableRoles`:
 5. **Backend**: have the API return the new type's steps (and their order/labels) in `onboarding_steps`, and pending roles in `role_list`.
 6. **Org metadata** (optional): add a block under the new (normalized) `userType` key to hide/relax steps for that type.
 
-### 7. Pass a custom flag or instruction to a step (config only)
+### 7. Override a step's label/description or pass a custom flag (config only)
 
-No code change for the instruction; a one-line read for a new flag.
+No code change for label/description; a one-line read for a new flag.
 
-1. **Instruction**: set `metadata.onboarding[userType][stepKey].meta.instruction = "…"`. It renders as a banner above that step automatically (form or custom).
+1. **Label / description**: set `metadata.onboarding[userType][stepKey].meta.label = "…"` and/or `meta.description = "…"`. They override the step's native fields everywhere (title, body, stepper) for that org + user type, winning over the backend API label. A blank/whitespace value is ignored.
 2. **Existing flags**:
    - Custom bank step: `meta.props.hidePassbook = true` or `meta.props.passbookOptional = true`.
    - Any `type: "form"` step (via `LocalStepForm`): `meta.props.hideFields = ["<fieldName>"]` to drop a field, or `meta.props.optionalFields = ["<fieldName>"]` to relax its `required`. E.g. hide the PAN card image with `"hideFields": ["pan_image"]`. Ensure the pipeline/API still accepts the reduced submission (see the ⚠️ note above).
