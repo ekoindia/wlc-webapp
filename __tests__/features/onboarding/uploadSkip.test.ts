@@ -70,3 +70,73 @@ describe("executePipeline — upload with no files", () => {
 		expect(fetchSpy).toHaveBeenCalledTimes(1);
 	});
 });
+
+/**
+ * PAN's number (doc_id) and image ride the SAME upload call — there is no separate form
+ * step. When an org hides `pan_image` (via `hideFields`), the upload must still fire and
+ * submit `doc_id`; `skipIfNoFiles` must therefore NOT be set on PAN, or the number would
+ * be silently dropped.
+ */
+const panNumberOnlyStep = (): OnboardingStep =>
+	({
+		id: 8,
+		name: "PAN_VERIFICATION",
+		label: "PAN Verification",
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		primaryCTAText: "Proceed",
+		description: "",
+		form_data: {},
+		localRenderer: {
+			type: "form",
+			formFields: [
+				{ name: "doc_id", label: "PAN" },
+				{ name: "pan_image", label: "PAN Card Image" },
+			],
+		},
+		api: {
+			pipeline: [
+				{
+					id: "upload",
+					type: "upload",
+					docType: 2,
+					interactionTypeId: 1,
+					fieldMapping: { pan_image: "file1" },
+					successResponseTypeIds: [1569],
+					// intentionally NO skipIfNoFiles
+				},
+			],
+		},
+	}) as OnboardingStep;
+
+describe("executePipeline — PAN number-only (no skipIfNoFiles)", () => {
+	const fetchSpy = jest.fn();
+
+	beforeEach(() => {
+		fetchSpy.mockReset();
+		global.fetch = fetchSpy as unknown as typeof fetch;
+	});
+
+	it("still fires the upload and submits doc_id when no file is present", async () => {
+		fetchSpy.mockResolvedValue({
+			ok: true,
+			json: () => Promise.resolve({ response_type_id: 1569 }),
+		});
+
+		const result = await executePipeline({
+			stepConfig: panNumberOnlyStep(),
+			formData: { id: 8, form_data: { doc_id: "ABCDE1234F" } },
+			mobile: "9999999999",
+			accessToken: "token",
+			generateNewToken: jest.fn(),
+		});
+
+		expect(result.status).toBe("success");
+		expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+		// The PAN number must ride the upload call's url-encoded `formdata` field.
+		const body = fetchSpy.mock.calls[0][1].body as FormData;
+		expect(String(body.get("formdata"))).toContain("doc_id=ABCDE1234F");
+	});
+});

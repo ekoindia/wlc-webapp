@@ -269,6 +269,41 @@ Two channels ride on `meta`, both surfaced via `step.orgConfig`:
   | `hidePassbook: true` | removes the passbook upload field entirely; its upload pipeline step is skipped (the bank `upload` step sets `skipIfNoFiles: true`, so a fileless submit is a success, not a failure) |
   | `passbookOptional: true` | keeps the passbook field but `required: false` |
 
+  **Generic form-step props (read by `LocalStepForm`).** Every `localRenderer.type: "form"`
+  step is rendered by the shared `LocalStepForm`, which whitelists two generic keys and
+  matches them against field `name` — the form-step analog of the custom bank flags above:
+
+  | prop | effect |
+  |------|--------|
+  | `hideFields: string[]` | drops those fields from the rendered form; a hidden field captures no value, so nothing is submitted for it |
+  | `optionalFields: string[]` | sets `required: false` on those fields — **only** `required`; other validations (e.g. `pattern`, `minLength`) still apply |
+
+  > ⚠️ Hiding a field whose value the pipeline/API still expects can submit **incomplete
+  > data** — field hiding must match pipeline/API expectations. Example: the PAN step's
+  > number `doc_id` is submitted inside the *same* upload call as the image, so
+  > `hideFields: ["pan_image"]` sends a **number-only PAN** (no `file1`); the backend must
+  > accept that for docType 2. There is no separate form step, so `skipIfNoFiles` must
+  > **not** be added to PAN (it would skip the call and drop `doc_id`).
+
+  Example — an org that captures the PAN number but not the PAN card image:
+
+  ```json
+  {
+    "metadata": {
+      "onboarding": {
+        "2": {
+          "PAN_VERIFICATION": {
+            "meta": {
+              "instruction": "Enter your PAN number to continue.",
+              "props": { "hideFields": ["pan_image"] }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
 Example — Retailers see an instruction and skip the passbook upload, but still capture account details:
 
 ```json
@@ -382,8 +417,10 @@ This spans config in several places, not just `applicableRoles`:
 No code change for the instruction; a one-line read for a new flag.
 
 1. **Instruction**: set `metadata.onboarding[userType][stepKey].meta.instruction = "…"`. It renders as a banner above that step automatically (form or custom).
-2. **Existing flag** (e.g. bank passbook): set `meta.props.hidePassbook = true` or `meta.props.passbookOptional = true`.
-3. **New flag for a component**: add `meta.props.<yourFlag>` in config, then in the target component read `stepConfig.orgConfig?.props?.<yourFlag>` (narrow the `unknown`, e.g. `=== true`). The component owns/whitelists its keys; the channel itself needs no type change. For a flag that should also drop an upload pipeline step, set `skipIfNoFiles: true` on that `upload` step so an empty submit is skipped, not failed.
+2. **Existing flags**:
+   - Custom bank step: `meta.props.hidePassbook = true` or `meta.props.passbookOptional = true`.
+   - Any `type: "form"` step (via `LocalStepForm`): `meta.props.hideFields = ["<fieldName>"]` to drop a field, or `meta.props.optionalFields = ["<fieldName>"]` to relax its `required`. E.g. hide the PAN card image with `"hideFields": ["pan_image"]`. Ensure the pipeline/API still accepts the reduced submission (see the ⚠️ note above).
+3. **New flag for a component**: add `meta.props.<yourFlag>` in config, then in the target component read `stepConfig.orgConfig?.props?.<yourFlag>` (narrow the `unknown`, e.g. `=== true`). The component owns/whitelists its keys; the channel itself needs no type change. For a flag that should also drop an upload pipeline step, set `skipIfNoFiles: true` on that `upload` step so an empty submit is skipped, not failed — **but only when the essential data is submitted by a *different* pipeline step** (as with the bank `verify` form step); do not use it where the same call also carries required non-file fields.
 
 ### 8. Add a new filter stage or step-metadata field
 
