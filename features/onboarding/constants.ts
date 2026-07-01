@@ -85,9 +85,11 @@ export const RESPONSE_TYPE_IDS = {
 } as const;
 
 /**
- * Onboarding Step IDs
+ * Onboarding Step IDs.
  * These IDs match the step.id values from the backend API and are used
- * to identify specific steps in the onboarding flow
+ * to identify specific steps in the onboarding flow.
+ *
+ * MARK: STEP IDs
  */
 export const ONBOARDING_STEP_IDS = {
 	WELCOME: 1,
