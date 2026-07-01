@@ -76,6 +76,8 @@ Response-type ids used to branch (`RESPONSE_TYPE_IDS` in the same file):
 
 URL `/gateway/onboarding` ([pages/gateway/[...id].jsx](/pages/gateway/[...id].jsx)) → [GatewayWidget](/components/GatewayWidget/GatewayWidget.tsx). `GatewayWidget` is a generic dispatcher: it looks up the first path segment (`id[0]`) in `GATEWAY_PRODUCT_REGISTRY` ([GatewayProductRegistry.ts](/components/GatewayWidget/GatewayProductRegistry.ts)). The `onboarding` key maps to a **custom** product whose component is [OnboardingGateway](/features/onboarding/page-components/OnboardingGateway/OnboardingGateway.tsx) with `passMobile: true`. The whole gateway is gated by the `ELOKA_GATEWAY` feature flag, and the URL `?mobile=` param is forwarded to the component.
 
+> **Params arrive via the iframe `src` URL.** This route is the *receiving* side — an **external host** builds the iframe `src` (`/gateway/onboarding?mobile=…&bv=…&role=…`); nothing in this repo constructs it. Only `?mobile` is threaded as a prop (LoginWidget has no URL access and needs `initialMobile`). `?bv` and `?role` are **not** forwarded as props — `OnboardingWidget` reads them straight from `router.query` (see [onboarding-configuration.md §url-parameter-auto-fill](./onboarding-configuration.md#url-parameter-auto-fill)), so they work the moment the host appends them to the `src`.
+
 ```mermaid
 flowchart LR
     A["/gateway/onboarding"] --> B["GatewayWidget"]
