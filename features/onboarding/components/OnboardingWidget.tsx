@@ -8,6 +8,7 @@ import { parseEnvBoolean } from "utils/envUtils";
 import { parseBusinessVertical } from "../constants";
 import type { OnboardingServices } from "../contracts";
 import { getOnboardingStepsFromData, getUserTypeFromData } from "../utils";
+import { resolveAllowedRoleIds } from "../utils/roleSelection";
 import OnboardingSkeleton from "./OnboardingSkeleton";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
@@ -94,25 +95,20 @@ const OnboardingWidget = ({
 
 	const router = useRouter();
 
-	// Parse `role` query param into allowed role ids (1: Retailer, 2: Distributor,
-	// 3: Enterprise). E.g. "1,2,3" shows all three; "1,2" shows Retailer + Distributor.
-	// Both normal login (/signup?role=xxx) and embedded (/gateway/onboarding?role=xxx)
-	// deliver role via URL, so this is the single source of truth for both flows.
-	// Guard on router.isReady: in Next.js pages router, router.query is empty until
-	// client-side hydration completes, so reading it before isReady gives undefined.
-	const allowedRoleIds = useMemo((): number[] | undefined => {
-		if (!router.isReady) return undefined;
-		const raw = router.query.role;
-		if (!raw) return undefined;
-		// router.query values are string | string[] — a duplicated param
-		// (?role=1&role=2) arrives as an array; normalize both to a CSV string.
-		const roleStr = Array.isArray(raw) ? raw.join(",") : raw;
-		const parsed = roleStr
-			.split(",")
-			.map((s) => Number(s.trim()))
-			.filter((n) => !isNaN(n));
-		return parsed.length > 0 ? parsed : undefined;
-	}, [router.isReady, router.query.role]);
+	// Resolve allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise) from the
+	// `role` query param, falling back to Enterprise when only a valid `bv` is given.
+	// E.g. "1,2,3" shows all three; "1,2" shows Retailer + Distributor; ?bv=eps with no
+	// role → Enterprise only. Both normal login (/signup?role=xxx) and embedded
+	// (/gateway/onboarding?role=xxx) deliver these via URL, so this is the single source
+	// of truth for both flows. Guard on router.isReady: in Next.js pages router,
+	// router.query is empty until client-side hydration, so reading it early gives undefined.
+	const allowedRoleIds = useMemo(
+		(): number[] | undefined =>
+			router.isReady
+				? resolveAllowedRoleIds(router.query.role, router.query.bv)
+				: undefined,
+		[router.isReady, router.query.role, router.query.bv]
+	);
 
 	// Parse the public `bv` (business vertical) query param into a canonical
 	// backend string (e.g. ?bv=sbi_kiosk → "SBI Kiosk"). Like `role`, it is

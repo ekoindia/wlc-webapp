@@ -2,6 +2,7 @@ import { TransactionIds } from "constants/EpsTransactions";
 import { UserTypeLabel } from "constants/UserTypes";
 import {
 	APPLICANT_TYPES,
+	parseBusinessVertical,
 	RESPONSE_TYPE_IDS,
 	type OnboardingStep,
 } from "../constants";
@@ -16,6 +17,34 @@ export const ROLE_IDS = {
 	DISTRIBUTOR: 2,
 	ENTERPRISE: 3,
 } as const;
+
+/**
+ * Resolve the `allowedRoleIds` filter from the raw `role` and `bv` query values.
+ *
+ * - Explicit `role` always wins: a CSV of ids (`?role=1,2,3`) or a duplicated
+ *   param (`?role=1&role=2`, arriving as an array) is parsed to a numeric list;
+ *   non-numeric entries are dropped.
+ * - `role` absent BUT a valid `bv` (eloka/eps/sbi_kiosk/enterprise) present →
+ *   default to Enterprise (`ROLE_IDS.ENTERPRISE`).
+ * - Otherwise `undefined` (no role filter; RoleSelection uses its own defaults).
+ * @param {string | string[] | undefined} rawRole - Raw `router.query.role`.
+ * @param {string | string[] | undefined} rawBv - Raw `router.query.bv`.
+ * @returns {number[] | undefined} Allowed role ids, or `undefined` for no filter.
+ */
+export const resolveAllowedRoleIds = (
+	rawRole: string | string[] | undefined,
+	rawBv: string | string[] | undefined
+): number[] | undefined => {
+	if (!rawRole) {
+		return parseBusinessVertical(rawBv) ? [ROLE_IDS.ENTERPRISE] : undefined;
+	}
+	const roleStr = Array.isArray(rawRole) ? rawRole.join(",") : rawRole;
+	const parsed = roleStr
+		.split(",")
+		.map((s) => Number(s.trim()))
+		.filter((n) => !isNaN(n));
+	return parsed.length > 0 ? parsed : undefined;
+};
 
 /**
  * Role interface representing different user types in the onboarding process
