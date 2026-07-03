@@ -261,8 +261,15 @@ export const OnboardingProvider = ({
 				(step) => step.id === completedStepId
 			);
 
-			// Refresh user profile if configured (important for last step too)
-			if (stepConfig?.postSubmit?.refreshProfile && refreshAgentProfile) {
+			// Refresh user profile if configured. The last step ALWAYS refreshes
+			// regardless of the flag: otherwise a mis-set refreshProfile:false on the
+			// terminal step would leave the completion flag (onboarding 1→0) unobserved
+			// and strand the user on the final step until a manual reload.
+			const isLastStep = !nextStep;
+			if (
+				(stepConfig?.postSubmit?.refreshProfile || isLastStep) &&
+				refreshAgentProfile
+			) {
 				await refreshAgentProfile();
 			}
 

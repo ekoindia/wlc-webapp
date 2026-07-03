@@ -66,6 +66,27 @@ Every KYC step is one object in `masterOnboardingSteps` ([constants.ts](/feature
 }
 ```
 
+### When a step refreshes the profile
+
+`postSubmit.refreshProfile` governs one thing only — whether the profile is re-fetched
+(`POST /authentication/refresh-profile`) **after** a step submits successfully. It does not
+affect the step's API pipeline, validation, or visibility.
+
+- **Effectively all steps set `true`.** Refreshing after each success keeps the rendered
+  `stepperData` resume state and the `onboarding` completion flag in sync with the backend.
+- **`LOCATION_CAPTURE` is the sole `false`.** Refreshing after it is unnecessary — it does
+  not change onboarding status — and skips a wasteful round-trip. It still has a full API
+  pipeline and `applicableRoles`; only the post-submit re-fetch is suppressed.
+- **Compound steps refresh once for the whole step.** `VIDEO_KYC`, for example, submits a
+  location transaction *and* a selfie upload yet still refreshes, because the enclosing step
+  is `true`. A location *submission* inside another step is unrelated to `LOCATION_CAPTURE`.
+- **Safety net — the last step always refreshes.** Independent of the flag,
+  `advanceToNextStep` ([OnboardingContext.tsx](/features/onboarding/context/OnboardingContext.tsx))
+  forces a refresh when the completed step is the last incomplete applicable one (`nextStep`
+  is `undefined`). A mis-set `refreshProfile: false` on the terminal step therefore can
+  never strand the user — the completion flag is always observed. (If `LOCATION_CAPTURE`
+  happens to be the last remaining step, it too refreshes for this reason.)
+
 Supporting constants in the same file:
 
 | Constant | Use |

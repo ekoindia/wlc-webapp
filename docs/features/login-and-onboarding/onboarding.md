@@ -112,6 +112,6 @@ The full set of available steps, how they are filtered per user, and how to add 
 A user's progress is a single profile flag, `onboarding`:
 
 - `onboarding == 1` → in progress; `onboarding == 0` → complete.
-- The flag is refreshed via `POST /authentication/refresh-profile` after relevant steps.
+- The flag is refreshed via `POST /authentication/refresh-profile` after every step except `LOCATION_CAPTURE` (`postSubmit.refreshProfile`), **and always after the last step regardless of that flag** — so completion is never missed. See [When a step refreshes the profile](./onboarding-configuration.md#when-a-step-refreshes-the-profile).
 - It is consumed in two places: [UserContext.js](/contexts/UserContext.js) computes `isOnboarding = state?.onboarding == 1 || state?.userId == "1"`, and [RouteProtecter](/components/RouteProtecter/RouteProtecter.jsx) uses that (plus the `userId === "1"` sentinel) to force users into `/signup` until done. See [route-protection.md](./route-protection.md).
 - Self-onboarding exits to `/home` once a refresh shows `onboarding !== 1`; assisted/gateway move to their "completed" screens when the agent profile shows `onboarding === 0`.
