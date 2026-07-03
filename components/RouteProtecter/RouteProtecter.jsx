@@ -126,13 +126,17 @@ const RouteProtecter = ({ router, pageMeta, children }) => {
 				);
 				if (path !== "/signup" && path !== "/redirect") {
 					// Goto onboarding page if user is not on onboarding page.
-					// Preserve the `role` query param (from /?role=xxx) so the
+					// Preserve the `role` and `bv` query params (from /?role=xxx&bv=xxx) so the
 					// onboarding flow can filter merchant types via the URL —
 					// the single source of truth shared with the embedded flow.
-					const roleParam = router.query?.role;
+					const { role: roleParam, bv: bvParam } = router.query;
+					const query = {
+						...(roleParam ? { role: roleParam } : {}),
+						...(bvParam ? { bv: bvParam } : {}),
+					};
 					router.replace({
 						pathname: "/signup",
-						...(roleParam ? { query: { role: roleParam } } : {}),
+						...(Object.keys(query).length ? { query } : {}),
 					});
 					return;
 				}
