@@ -235,6 +235,16 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/test",
 		featureFlag: "TEST_PAGE",
 	},
+	{
+		id: 903,
+		label: "Transaction Builder",
+		icon: "calculator",
+		link: "/admin/products/transaction-builder",
+		summary:
+			"Test custom transaction cards by feeding interaction_config JSON to the Connect widget.",
+		beta: true,
+		featureFlag: "INTERACTION_FRAMEWORK_TEST",
+	},
 ];
 
 /**

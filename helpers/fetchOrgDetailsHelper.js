@@ -29,6 +29,7 @@ const stripQuotes = (str) => (str ? str.replace(/^['"]|['"]$/g, "") : str);
 
 /**
  * Mock org details (used in development)
+ * MARK: Mock Org
  */
 export const MockOrgDetails = {
 	org_id: process.env.WLC_ORG_ID || 2,
@@ -73,6 +74,21 @@ export const MockOrgDetails = {
 			mobile_mapped_user_id:
 				process.env.LOGIN_MOBILE_MAPPED_USER_ID === "1" ? 1 : 0,
 			user_id_label: process.env.LOGIN_USER_ID_LABEL || "User ID",
+		},
+		onboarding: {
+			23: {
+				PAN_VERIFICATION: {
+					meta: {
+						description: "Enter your PAN number to continue.",
+						props: { hideFields: ["pan_image"] },
+					},
+				},
+				ADD_BANK_ACCONT: {
+					meta: {
+						props: { hidePassbook: true },
+					},
+				},
+			},
 		},
 	},
 	login_types: {

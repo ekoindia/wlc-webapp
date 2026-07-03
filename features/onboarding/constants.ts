@@ -7,7 +7,44 @@ import type { Role } from "./utils/roleSelection";
 export const APPLICANT_TYPES = {
 	RETAILER: 0,
 	DISTRIBUTOR: 2,
-	ENTERPRISE: 3,
+	ENTERPRISE: 1,
+};
+
+/**
+ * Public `?bv=` query-param code → backend `business_vertical` string.
+ * Acts as the whitelist of accepted codes: anything not listed here is ignored.
+ */
+export const BUSINESS_VERTICAL_BY_CODE = {
+	eps: "EPS",
+	eloka: "Eloka",
+	sbi_kiosk: "SBI Kiosk",
+	enterprise: "Enterprise",
+} as const;
+
+export type BusinessVerticalCode = keyof typeof BUSINESS_VERTICAL_BY_CODE;
+export type BusinessVertical =
+	(typeof BUSINESS_VERTICAL_BY_CODE)[BusinessVerticalCode];
+
+/**
+ * Map a raw `?bv` query value to a canonical `business_vertical` string.
+ *
+ * Strict by design — only `trim` + `toLowerCase`, then an exact lookup against the
+ * documented codes (`eps`, `eloka`, `sbi_kiosk`, `enterprise`). A duplicated
+ * `?bv=a&bv=b` arrives as an array; the first value wins (mirrors how `?mobile` is
+ * normalized in LandingPanel). Unknown / empty / missing input → `undefined`, in
+ * which case the caller omits `business_vertical` from the submission entirely.
+ * @param {string | string[] | undefined} raw - Raw `router.query.bv` value.
+ * @returns {BusinessVertical | undefined} Canonical vertical string, or `undefined`.
+ */
+export const parseBusinessVertical = (
+	raw: string | string[] | undefined
+): BusinessVertical | undefined => {
+	// Guard the extracted value, not `raw`: an empty array `[]` is truthy but yields
+	// `undefined` at [0], which would throw on `.trim()`.
+	const first = Array.isArray(raw) ? raw[0] : raw;
+	if (!first) return undefined;
+	const code = first.trim().toLowerCase();
+	return BUSINESS_VERTICAL_BY_CODE[code as BusinessVerticalCode];
 };
 
 /**
@@ -48,9 +85,11 @@ export const RESPONSE_TYPE_IDS = {
 } as const;
 
 /**
- * Onboarding Step IDs
+ * Onboarding Step IDs.
  * These IDs match the step.id values from the backend API and are used
- * to identify specific steps in the onboarding flow
+ * to identify specific steps in the onboarding flow.
+ *
+ * MARK: STEP IDs
  */
 export const ONBOARDING_STEP_IDS = {
 	WELCOME: 1,
@@ -124,6 +163,13 @@ export interface ApiPipelineStep {
 	 * Example: { "selfie_image": "file1" }
 	 */
 	fileKeyMapping?: Record<string, string>;
+	/**
+	 * For 'upload' steps only: when true, the upload is SKIPPED (counted as success,
+	 * not failed) if zero files are present at submit time. Use for uploads an org can
+	 * hide/optionalize via metadata (e.g. bank passbook). Defaults to false so required
+	 * uploads (Aadhaar/PAN/selfie) still fail on an empty submission.
+	 */
+	skipIfNoFiles?: boolean;
 }
 
 /**
@@ -213,6 +259,20 @@ export interface OnboardingStep {
 	/** Optional success message to display when step is completed */
 	success_message?: string;
 
+	/**
+	 * Per-org config populated at runtime from
+	 * `metadata.onboarding[userType][stepKey].meta`. Reaches the step's component
+	 * untouched via the `stepConfig` prop. (Org `meta.label` / `meta.description`
+	 * override the step's top-level `label` / `description` directly — they are not
+	 * carried here.)
+	 * - `props`: generic flag bag; each component reads only the keys it whitelists
+	 *   (e.g. AddBankAccountStep reads `hidePassbook` / `passbookOptional`;
+	 *   LocalStepForm reads `hideFields` / `optionalFields`).
+	 */
+	orgConfig?: {
+		props?: Record<string, unknown>;
+	};
+
 	// === Local Rendering Configuration ===
 	/** Configuration for local rendering */
 	localRenderer?: LocalRendererConfig;
@@ -264,6 +324,8 @@ export interface OnboardingStep {
  * Steps are filtered at runtime based on the API response (onboarding_steps).
  * Each step can have multiple applicable roles via the applicableRoles array.
  *
+ * MARK: ALL STEPS
+ *
  * Key concepts:
  * - `id`: Unique step identifier used for API routing logic (handlers check this)
  * - `role`: Primary role ID for backward compatibility
@@ -271,9 +333,7 @@ export interface OnboardingStep {
  * - `api.pipeline`: Configuration for the pipeline executor
  *
  * The filtering logic matches steps where ANY role in applicableRoles appears in the API response.
- */
-/**
- * Master list of KYC onboarding steps.
+ *
  * NOTE: Role selection is handled separately by the RoleSelection component.
  */
 export const masterOnboardingSteps: OnboardingStep[] = [
@@ -580,6 +640,10 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 					successResponseTypeIds: [
 						RESPONSE_TYPE_IDS.UPLOAD_PASSBOOK_IMAGE,
 					],
+					// Passbook can be hidden/optionalized per-org via
+					// metadata.props.hidePassbook / passbookOptional — skip the
+					// upload (success, not failure) when no file is submitted.
+					skipIfNoFiles: true,
 				},
 			],
 		},

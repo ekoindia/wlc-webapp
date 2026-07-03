@@ -5,8 +5,10 @@ import { Button } from "components/Button";
 import useGeolocation from "hooks/useGeolocation";
 import { useRouter } from "next/router";
 import { parseEnvBoolean } from "utils/envUtils";
+import { parseBusinessVertical } from "../constants";
 import type { OnboardingServices } from "../contracts";
 import { getOnboardingStepsFromData, getUserTypeFromData } from "../utils";
+import { resolveAllowedRoleIds } from "../utils/roleSelection";
 import OnboardingSkeleton from "./OnboardingSkeleton";
 import OnboardingSteps from "./OnboardingSteps";
 import RoleSelection from "./RoleSelection";
@@ -41,7 +43,7 @@ interface OnboardingWidgetProps {
  * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
  * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
  * @param {string} [props.agentMobile] - Mobile number of the assisted agent
- * @param {number[]} [props.allowedMerchantTypes] - Optional list of allowed merchant types for the onboarding process. Eg: [1,3] for Retailer and Distributor only.
+ * @param {number[]} [props.allowedRoleIds] - Optional list of allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise) for the onboarding process. Eg: [1,3] for Retailer and Enterprise only.
  * @param props.refreshAgentProfile
  * @param props.userData
  * @param props.updateUserInfo
@@ -93,25 +95,30 @@ const OnboardingWidget = ({
 
 	const router = useRouter();
 
-	// Parse `role` query param into allowed role ids (1: Retailer, 2: Distributor,
-	// 3: Enterprise). E.g. "1,2,3" shows all three; "1,2" shows Retailer + Distributor.
-	// Both normal login (/signup?role=xxx) and embedded (/gateway/onboarding?role=xxx)
-	// deliver role via URL, so this is the single source of truth for both flows.
-	// Guard on router.isReady: in Next.js pages router, router.query is empty until
-	// client-side hydration completes, so reading it before isReady gives undefined.
-	const allowedMerchantTypes = useMemo((): number[] | undefined => {
-		if (!router.isReady) return undefined;
-		const raw = router.query.role;
-		if (!raw) return undefined;
-		// router.query values are string | string[] — a duplicated param
-		// (?role=1&role=2) arrives as an array; normalize both to a CSV string.
-		const roleStr = Array.isArray(raw) ? raw.join(",") : raw;
-		const parsed = roleStr
-			.split(",")
-			.map((s) => Number(s.trim()))
-			.filter((n) => !isNaN(n));
-		return parsed.length > 0 ? parsed : undefined;
-	}, [router.isReady, router.query.role]);
+	// Resolve allowed role ids (1: Retailer, 2: Distributor, 3: Enterprise) from the
+	// `role` query param, falling back to Enterprise when only a valid `bv` is given.
+	// E.g. "1,2,3" shows all three; "1,2" shows Retailer + Distributor; ?bv=eps with no
+	// role → Enterprise only. Both normal login (/signup?role=xxx) and embedded
+	// (/gateway/onboarding?role=xxx) deliver these via URL, so this is the single source
+	// of truth for both flows. Guard on router.isReady: in Next.js pages router,
+	// router.query is empty until client-side hydration, so reading it early gives undefined.
+	const allowedRoleIds = useMemo(
+		(): number[] | undefined =>
+			router.isReady
+				? resolveAllowedRoleIds(router.query.role, router.query.bv)
+				: undefined,
+		[router.isReady, router.query.role, router.query.bv]
+	);
+
+	// Parse the public `bv` (business vertical) query param into a canonical
+	// backend string (e.g. ?bv=sbi_kiosk → "SBI Kiosk"). Like `role`, it is
+	// delivered via URL on both /signup and /gateway/onboarding, and is guarded on
+	// router.isReady since router.query is empty until client-side hydration.
+	const businessVertical = useMemo(
+		(): string | undefined =>
+			router.isReady ? parseBusinessVertical(router.query.bv) : undefined,
+		[router.isReady, router.query.bv]
+	);
 
 	// Determine the user details to use for onboarding
 	const onboardingUserDetails = isAssistedOnboarding
@@ -184,7 +191,7 @@ const OnboardingWidget = ({
 	const renderCurrentStep = () => {
 		switch (step) {
 			case "ROLE_SELECTION":
-				// Hold off until router.isReady so allowedMerchantTypes is derived
+				// Hold off until router.isReady so allowedRoleIds is derived
 				// from the fully-hydrated query and RoleSelection never flashes from
 				// all roles → filtered roles.
 				if (!router.isReady) return <OnboardingSkeleton />;
@@ -196,7 +203,8 @@ const OnboardingWidget = ({
 						userData={userData}
 						assistedAgentDetails={assistedAgentDetails}
 						agentMobile={agentMobile}
-						allowedMerchantTypes={allowedMerchantTypes}
+						allowedRoleIds={allowedRoleIds}
+						businessVertical={businessVertical}
 						refreshAgentProfile={refreshAgentProfile}
 						accessToken={services.accessToken}
 						generateNewToken={services.generateNewToken}

@@ -92,6 +92,7 @@ Webapp for the Eloka white-labelled SaaS platform to run your business like agen
   - **[`dynamic-popup-module.md`](docs/features/dynamic-popup-module.md)**: How to use the dynamic popup module to show custom popups throughout the app?
   - **[`feature-flags.md`](docs/features/feature-flags.md)**: How to use feature flags to conditionally enable/disable features, or for a beta rollout?
   - **[`inventory-management.md`](docs/features/inventory-management.md)**: Inventory management feature documentation.
+  - **[`login-and-onboarding/`](docs/features/login-and-onboarding/README.md)**: How users log in (mobile OTP / Google), session & token handling, route protection, and the config-driven onboarding flows (self / assisted / gateway) — including how to add or modify onboarding steps and user types.
   - **[`pub-sub.md`](docs/features/pub-sub.md)**: How to enable cross-component communication using the Pub/Sub pattern?
   - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
 

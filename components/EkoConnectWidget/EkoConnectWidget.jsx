@@ -35,13 +35,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * - Toast notifications.
  * - Raise Query (ticket management).
  * @param {object} props Properties passed to the component
- * @param {string|integer} props.start_id The transaction id to load. Start of the path.
- * @param {Array<string>} props.paths The list of sub-paths to load.
+ * @param {string|integer} [props.start_id] The transaction id to load. Start of the path. Optional when `interaction_config` is supplied.
+ * @param {Array<string>} [props.paths] The list of sub-paths to load.
  * @param {string} [props.language] The language for localization (default: "en").
+ * @param {object} [props.interaction_config] A custom interaction-config object. When provided, it is
+ *   forwarded (JSON-stringified) to the widget so it can render a custom transaction card directly,
+ *   instead of loading the interaction from the server via `start_id`. Used by the Transaction Builder.
  * @param {...*} rest Rest of the props passed to this component.
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
-const EkoConnectWidget = ({ start_id, paths, language = "en", ...rest }) => {
+const EkoConnectWidget = ({
+	start_id,
+	paths,
+	language = "en",
+	interaction_config,
+	...rest
+}) => {
 	console.log("[EkoConnectWidget] Started: ", { start_id, paths, language });
 
 	const { openUrl, router } = useAppLink();
@@ -336,6 +345,12 @@ const EkoConnectWidget = ({ start_id, paths, language = "en", ...rest }) => {
 							trxntypeid: start_id,
 							subpath_list: paths,
 						})}
+						{...(interaction_config
+							? {
+									interaction_config:
+										JSON.stringify(interaction_config),
+								}
+							: {})}
 						logged_in={isLoggedIn}
 						user_id={userData.userId}
 						login_id={userData.userDetails.login_id}

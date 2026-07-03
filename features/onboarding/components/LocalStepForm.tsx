@@ -1,6 +1,6 @@
 import { Box, useToast, VStack } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components";
 import type { OnboardingStep } from "../constants";
@@ -53,8 +53,40 @@ const LocalStepForm = ({
 
 	const formValues = watch();
 
-	// Get form fields from localRenderer config
-	const formFields = stepConfig.localRenderer?.formFields ?? [];
+	/**
+	 * Form fields to render, after applying org-metadata overrides.
+	 *
+	 * `LocalStepForm` is the generic form-step renderer, so it whitelists two generic
+	 * keys off `stepConfig.orgConfig?.props` (the org-metadata "flag bag"), matched by
+	 * field `name` — the form-step analog of the custom bank step's `hidePassbook` /
+	 * `passbookOptional`:
+	 * - `hideFields: string[]` — drops those fields entirely (not rendered, so no value
+	 *   is captured or submitted for them).
+	 * - `optionalFields: string[]` — relaxes only `required` to `false`; other field
+	 *   validations (e.g. `pattern`) still apply.
+	 *
+	 * NOTE: hiding a field whose value the pipeline/API still expects can submit
+	 * incomplete data — hiding must match pipeline/API expectations (e.g. hiding PAN's
+	 * `pan_image` sends a number-only PAN, which the backend must accept).
+	 */
+	const formFields = useMemo(() => {
+		const fields = stepConfig.localRenderer?.formFields ?? [];
+		const orgProps = stepConfig.orgConfig?.props ?? {};
+		const hideFields = Array.isArray(orgProps.hideFields)
+			? orgProps.hideFields
+			: [];
+		const optionalFields = Array.isArray(orgProps.optionalFields)
+			? orgProps.optionalFields
+			: [];
+
+		return fields
+			.filter((field) => !hideFields.includes(field.name))
+			.map((field) =>
+				optionalFields.includes(field.name)
+					? { ...field, required: false }
+					: field
+			);
+	}, [stepConfig.localRenderer?.formFields, stepConfig.orgConfig?.props]);
 
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;

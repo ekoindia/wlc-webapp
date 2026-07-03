@@ -345,6 +345,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		forEnv: ["development"], // DO NOT CHANGE
 	},
+
+	INTERACTION_FRAMEWORK_TEST: {
+		enabled: true,
+		forEnv: ["development"],
+	},
 };
 
 // ------------------------------------------------------------------------
