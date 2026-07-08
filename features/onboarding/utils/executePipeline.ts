@@ -252,6 +252,16 @@ async function executeUploadCall(
 			}
 		}
 
+		// Skip the upload (as a success, not a failure) when no files are present
+		// and the step opts in via `skipIfNoFiles` — e.g. an org-hidden/optional
+		// passbook. Required uploads do not set this flag, so they still fail on empty.
+		if (fileList.length === 0 && pipelineStep.skipIfNoFiles) {
+			console.log(
+				`[executeUploadCall] No files for "${pipelineStep.id}" with skipIfNoFiles — skipping upload`
+			);
+			return { success: true, response: { skipped: true } };
+		}
+
 		// Extract non-file fields from formData for inclusion in params
 		const nonFileFields: Record<string, any> = {};
 		for (const [key, value] of Object.entries(formData)) {

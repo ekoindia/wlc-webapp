@@ -273,6 +273,17 @@ const nextConfig = {
 	async rewrites() {
 		return [
 			{
+				// Pretty entry paths: /eps, /eloka, /sbi_kiosk serve the landing
+				// page with ?bv=<code>. Whitelist intentionally duplicates the
+				// relevant subset of BUSINESS_VERTICAL_BY_CODE
+				// (features/onboarding/constants.ts) — 3 stable literals, keep in
+				// sync by hand if a new vertical needs a pretty path. Incoming query
+				// (?mobile=...) is auto-merged into the destination by Next.js.
+				source: "/:bv(eps|eloka|sbi_kiosk)",
+				destination: "/?bv=:bv",
+			},
+
+			{
 				// Dynamic manifest.json for each organization
 				source: "/manifest.json",
 				destination: "/api/manifest-proxy",

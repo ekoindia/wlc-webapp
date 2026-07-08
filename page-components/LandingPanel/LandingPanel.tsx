@@ -16,6 +16,21 @@ const Render = dynamic(
 );
 
 /**
+ * Sanitize a raw `?mobile` query value into a bare 10-digit number string.
+ * Removes every non-digit (spaces, hyphens, brackets, a leading "+91", etc.) and
+ * keeps only the last 10 digits, which drops any leftover country/trunk prefix
+ * ("+91", "91", or a leading "0"). Returns undefined when no usable digits remain,
+ * preserving the existing "no prefill" behavior downstream.
+ * @param {string | undefined} raw - Mobile query value (already array-normalized).
+ * @returns {string | undefined} - The last 10 digits, or undefined.
+ */
+const sanitizeMobile = (raw: string | undefined): string | undefined => {
+	if (!raw) return undefined;
+	const digits = raw.replace(/\D/g, "").slice(-10);
+	return digits || undefined;
+};
+
+/**
  * A <LandingPanel> component for the Landing Page (index).
  * It loads the standard Login Panel or the custom CMS page as per the user config.
  * @component
@@ -29,11 +44,12 @@ const LandingPanel = () => {
 	const [isImageThemeEnabled] = useFeatureFlag("CMS_IMAGE_THEME");
 	const router = useRouter();
 	// router.query values are string | string[] — a duplicated ?mobile param
-	// arrives as an array; take the first entry so downstream gets a string.
+	// arrives as an array; take the first entry so downstream gets a string,
+	// then sanitize to a bare 10-digit number before prefilling the login form.
 	const mobileQuery = router.query.mobile;
-	const initialMobile =
-		(Array.isArray(mobileQuery) ? mobileQuery[0] : mobileQuery) ||
-		undefined;
+	const initialMobile = sanitizeMobile(
+		Array.isArray(mobileQuery) ? mobileQuery[0] : mobileQuery
+	);
 
 	/*
 		org_details: {

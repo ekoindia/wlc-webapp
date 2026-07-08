@@ -15,28 +15,19 @@ interface UserDetails {
 	mobile: string;
 }
 
-interface PersonalDetails {
-	qualification: string;
-	marital_status: string;
-	gender: string;
-	dob: string;
-	name: string;
-}
+// interface PersonalDetails {
+// 	qualification: string;
+// 	marital_status: string;
+// 	gender: string;
+// 	dob: string;
+// 	name: string;
+// }
 
-interface ShopDetails {
-	shop_name: string;
-	shop_type: string;
-	shop_address: string;
-	state: string;
-	city: string;
-	pincode: string;
-	shop_location: string;
-}
-
-interface ProfileDetails {
-	personal_details: PersonalDetails;
-	shop_details: ShopDetails;
-}
+// interface ShopDetails {
+// 	shop_name?: string;
+// 	shop_type?: string;
+// 	shop_address?: string;
+// }
 
 export interface User {
 	loggedIn: boolean;
@@ -45,7 +36,8 @@ export interface User {
 	user_type: string;
 	access_token: string;
 	userDetails: UserDetails;
-	profileDetails: ProfileDetails;
+	shopDetails?: {};
+	accountDetails: {};
 }
 
 export const MockUser: User = {
@@ -59,30 +51,40 @@ export const MockUser: User = {
 		login_id: "12345678912",
 		org_id: "1",
 		date_of_joining: "2020-03-16 15:26:06",
-		shop_name: "",
+		shop_name: "Kumar General Store",
 		shopaddress: "212, Main Road, Gali 6, Chandni Chowk, New Delhi-110006",
 		user_type: "3",
 		email: "testuser@eko.co.in",
 		code: "20810282",
 		mobile: "6333331126",
 	},
-	profileDetails: {
-		personal_details: {
-			qualification: "",
-			marital_status: "",
-			gender: "",
-			dob: "1986-01-01",
-			name: "Kumar Abhishek",
-		},
-		shop_details: {
-			shop_name: "",
-			shop_type: "",
-			shop_address:
-				"212, Main Bazaar Road, Gali No. 6, Chandni Chowk, New Delhi-110006",
-			state: "",
-			city: "",
-			pincode: "",
-			shop_location: "",
-		},
+	shopDetails: {
+		shop_name: "Kumar General Store",
+		shop_type: "18",
+		shop_address: "212, Main Road, Gali 6, Chandni Chowk",
+		pincode: "110006",
+		city: "New Delhi",
+		state: "Delhi",
+	},
+	accountDetails: {
+		code: "20810282",
+		evalue_account_id: "392961",
+		mobile: "6333331126",
+		pan_number: "ABCDE1234F",
+		account_list: [
+			{
+				no_filter: 0,
+				type_id: 1,
+				product_id: 1,
+				id: 392961,
+				label: "E-value",
+			},
+			{
+				id: -500000,
+				label: "Response Awaited Transactions",
+				no_filter: 0,
+				product_id: 1,
+			},
+		],
 	},
 };

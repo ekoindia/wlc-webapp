@@ -71,6 +71,11 @@ const AddBankAccountStep = ({
 	onSkip,
 	isLoading: isSubmitting = false,
 }: CustomComponentProps): JSX.Element => {
+	// Org-configured flags for this step (component whitelists the keys it supports)
+	const orgProps = stepConfig.orgConfig?.props ?? {};
+	const hidePassbook = orgProps.hidePassbook === true;
+	const passbookOptional = orgProps.passbookOptional === true;
+
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
@@ -207,6 +212,20 @@ const AddBankAccountStep = ({
 
 	// Build dynamic parameter_list for Form component
 	const parameterList = useMemo(() => {
+		const passbookField = {
+			name: "passbook_image",
+			label: "Bank Passbook Image",
+			parameter_type_id: ParamType.FILE,
+			required: !passbookOptional,
+			meta: {
+				accept: "image/jpeg,image/png",
+				watermark: false,
+				options: {
+					aspectRatio: 2,
+				},
+			},
+		};
+
 		return [
 			{
 				name: "bank_code",
@@ -260,21 +279,16 @@ const AddBankAccountStep = ({
 					? IFSC_VALIDATION.pattern_error
 					: "Bank branch's IFSC code",
 			},
-			{
-				name: "passbook_image",
-				label: "Bank Passbook Image",
-				parameter_type_id: ParamType.FILE,
-				required: true,
-				meta: {
-					accept: "image/jpeg,image/png",
-					watermark: false,
-					options: {
-						aspectRatio: 2,
-					},
-				},
-			},
+			// Passbook upload — omitted entirely when org sets hidePassbook
+			...(hidePassbook ? [] : [passbookField]),
 		];
-	}, [banks, accountValidation, selectedBank]);
+	}, [
+		banks,
+		accountValidation,
+		selectedBank,
+		hidePassbook,
+		passbookOptional,
+	]);
 
 	// Handle form submission
 	const onFormSubmit = (data: FormData) => {

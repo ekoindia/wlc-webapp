@@ -10,11 +10,9 @@ import { buildUserObjectState } from "utils/userObjectBuilder";
 
 export const defaultUserState = {
 	loggedIn: false,
-	role: "public",
 	userId: "",
 	access_token: "",
 	userDetails: {},
-	profileDetails: {},
 	shopDetails: {},
 	accountDetails: {},
 };

@@ -102,7 +102,6 @@ const OtpVerificationForm = ({
 							TransactionIds.ASSISTED_ONBOARDING_VERIFY_AGENT_OTP,
 						csp_id: mobile,
 						otp: _otp,
-						merchant_type: "",
 					},
 					token: accessToken,
 				}

@@ -172,11 +172,12 @@ export const OnboardingProvider = ({
 		// The raw metadata has shape: { [userType]: { [stepName]: { hide, optional } } }
 		// extractStepConfiguration parses this into numeric step ID arrays
 		const stepLookupMap = createStepLookupMap(baseStepData);
-		const { disabledSteps, skippableSteps } = extractStepConfiguration(
-			orgMetadataOnboarding,
-			userType,
-			stepLookupMap
-		);
+		const { disabledSteps, skippableSteps, stepOrgConfig } =
+			extractStepConfiguration(
+				orgMetadataOnboarding,
+				userType,
+				stepLookupMap
+			);
 
 		// Apply the complete filter chain into a single pure function
 		const initialSteps = generateInitialSteps({
@@ -185,6 +186,7 @@ export const OnboardingProvider = ({
 			roleList,
 			disabledSteps,
 			skippableSteps,
+			stepOrgConfig,
 		});
 
 		// Check if we found steps
@@ -259,8 +261,15 @@ export const OnboardingProvider = ({
 				(step) => step.id === completedStepId
 			);
 
-			// Refresh user profile if configured (important for last step too)
-			if (stepConfig?.postSubmit?.refreshProfile && refreshAgentProfile) {
+			// Refresh user profile if configured. The last step ALWAYS refreshes
+			// regardless of the flag: otherwise a mis-set refreshProfile:false on the
+			// terminal step would leave the completion flag (onboarding 1→0) unobserved
+			// and strand the user on the final step until a manual reload.
+			const isLastStep = !nextStep;
+			if (
+				(stepConfig?.postSubmit?.refreshProfile || isLastStep) &&
+				refreshAgentProfile
+			) {
 				await refreshAgentProfile();
 			}
 
