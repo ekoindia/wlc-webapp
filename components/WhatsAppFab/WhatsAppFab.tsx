@@ -1,27 +1,25 @@
 import { Box, Tooltip } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useOrgDetailContext } from "contexts";
-import { useFeatureFlag } from "hooks";
 
 const WHATSAPP_PREFILL_MESSAGE = "Hi 👋";
 
 /**
- * Floating WhatsApp support button for SBI Kiosk users.
- * Gated by the WHATSAPP_WIDGET_SBIKIOSK feature flag.
+ * Floating WhatsApp support button.
+ * Rendered by the caller only when the WHATSAPP_WIDGET_SBIKIOSK feature flag is enabled.
  * The WhatsApp number is read from org metadata (support_contacts.whatsapp)
  * with a fallback to NEXT_PUBLIC_SBIKIOSK_WHATSAPP_NUMBER env var.
  */
 const WhatsAppFab = () => {
-	const [isEnabled] = useFeatureFlag("WHATSAPP_WIDGET_SBIKIOSK");
 	const { orgDetail } = useOrgDetailContext();
 	const { support_contacts } = orgDetail?.metadata || {};
 
-	const whatsappNumber =
+	const whatsappNumber: string | null =
 		support_contacts?.whatsapp ||
 		process.env.NEXT_PUBLIC_SBIKIOSK_WHATSAPP_NUMBER ||
 		null;
 
-	if (!isEnabled || !whatsappNumber) return null;
+	if (!whatsappNumber) return null;
 
 	const openWhatsApp = () => {
 		const text = encodeURIComponent(WHATSAPP_PREFILL_MESSAGE);
@@ -29,11 +27,11 @@ const WhatsAppFab = () => {
 	};
 
 	return (
-		<Tooltip label="Chat on WhatsApp" placement="right" hasArrow>
+		<Tooltip label="Chat on WhatsApp" placement="left" hasArrow>
 			<Box
 				position="fixed"
 				bottom={{ base: "80px", md: "24px" }}
-				left="24px"
+				right="24px"
 				w="56px"
 				h="56px"
 				bg="#25D366"

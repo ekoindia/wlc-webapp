@@ -1,5 +1,4 @@
 import { Grid } from "@chakra-ui/react";
-import { WhatsAppFab } from "components";
 import { useSession, useTodos } from "contexts";
 import { useFeatureFlag } from "hooks";
 import dynamic from "next/dynamic";
@@ -135,8 +134,6 @@ const Home = ({ ...rest }) => {
 					<Component key={id} />
 				))}
 			</Grid>
-
-			<WhatsAppFab />
 		</>
 	);
 };

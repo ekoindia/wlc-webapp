@@ -4,7 +4,7 @@ import { useBottomAppBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
-import { useDelayToggle, useIsSubPage } from "hooks";
+import { useDelayToggle, useFeatureFlag, useIsSubPage } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -55,6 +55,17 @@ const BottomAppBar = dynamic(
 	}
 );
 
+// Lazy-load the WhatsAppFab component
+const WhatsAppFab = dynamic(
+	() =>
+		import("components/WhatsAppFab/WhatsAppFab").then(
+			(pkg) => pkg.WhatsAppFab
+		),
+	{
+		ssr: false,
+	}
+);
+
 /**
  * The default page layout component
  * @param {string} appName - The name of the application. This will be displayed in the browser titlebar.
@@ -93,6 +104,9 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const [isPageLoading, setIsPageLoading] = useState(false);
 
 	// const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT");
+
+	// Check if the WhatsApp support FAB is enabled...
+	const [isWhatsAppEnabled] = useFeatureFlag("WHATSAPP_WIDGET_SBIKIOSK");
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -324,6 +338,11 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							/>
 						</Box>
 					) : null}
+
+					{/*
+						MARK: WhatsApp FAB
+					*/}
+					{isWhatsAppEnabled ? <WhatsAppFab /> : null}
 				</Box>
 			) : (
 				<>{children}</>
