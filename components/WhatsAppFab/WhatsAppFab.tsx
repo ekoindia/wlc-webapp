@@ -2,7 +2,7 @@ import { Box, Tooltip } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useOrgDetailContext } from "contexts";
 
-const WHATSAPP_PREFILL_MESSAGE = "Hi 👋";
+const WHATSAPP_PREFILL_MESSAGE = "Hi";
 
 /**
  * Floating WhatsApp support button.
