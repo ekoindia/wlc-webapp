@@ -139,17 +139,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Set up and manage dynamic pricing rules and commission structures for your products. This includes defining pricing tiers, setting commission rates for different user roles, etc.",
 	},
-	{
-		id: 35,
-		label: "KYC Verification",
-		icon: "verified-user",
-		link: "/admin/products/kyc-verification",
-		summary: "Verify KYC documents for customers",
-		fullDescription:
-			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
-		beta: true,
-		featureFlag: "KYC_VERIFICATION",
-	},
 	// {
 	// 	id: 30,
 	// 	label: "Company Profile",
@@ -288,17 +277,6 @@ export const sidebarMenu: sidebarMenuType[] = [
 		fullDescription:
 			"Onboard new users to your network in a assisted manner, one at a time.",
 		featureFlag: "ASSISTED_FULL_ONBOARDING",
-	},
-	{
-		id: 36,
-		label: "KYC Verification",
-		icon: "verified-user",
-		link: "/products/kyc-verification",
-		summary: "Verify KYC documents for customers",
-		fullDescription:
-			"Verify KYC documents like PAN, Aadhaar, GSTIN, Driving License, etc. for your customers. Supports single and multi-service verification.",
-		beta: true,
-		featureFlag: "KYC_VERIFICATION",
 	},
 	{
 		id: 215,
