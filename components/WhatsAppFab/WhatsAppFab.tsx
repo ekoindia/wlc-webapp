@@ -23,7 +23,11 @@ const WhatsAppFab = () => {
 
 	const openWhatsApp = () => {
 		const text = encodeURIComponent(WHATSAPP_PREFILL_MESSAGE);
-		window.open(`https://wa.me/${whatsappNumber}?text=${text}`, "_blank");
+		window.open(
+			`https://wa.me/${whatsappNumber}?text=${text}`,
+			"_blank",
+			"noopener,noreferrer"
+		);
 	};
 
 	return (
