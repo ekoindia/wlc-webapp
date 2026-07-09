@@ -152,3 +152,5 @@ export { SegmentedControl } from "./SegmentedControl";
 export { default as ToggleColumns } from "./ToggleColumns";
 
 export { WorkflowBuilder } from "./WorkflowBuilder";
+
+export { WhatsAppFab } from "./WhatsAppFab/WhatsAppFab";
