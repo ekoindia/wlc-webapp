@@ -48,8 +48,8 @@ const OtpVerificationForm = ({
 			name: "otp",
 			label: `Enter OTP`,
 			parameter_type_id: ParamType.OTP,
-			maxLength: 3,
-			minLength: 4,
+			maxLength: 4,
+			minLength: 3,
 			placeholder: "Enter OTP",
 			validations: {
 				required: "OTP is required",
@@ -59,7 +59,7 @@ const OtpVerificationForm = ({
 				},
 			},
 			helperText: "OTP is valid for 15 minutes",
-			meta: { length: 3 },
+			meta: { length: 4 },
 		},
 	];
 
