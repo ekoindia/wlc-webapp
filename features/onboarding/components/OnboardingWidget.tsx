@@ -111,16 +111,33 @@ const OnboardingWidget = ({
 		orgMetadataOnboarding?.showEnterprise === true ||
 		orgMetadataOnboarding?.showEnterprise === 1;
 
+	// Org fully controls the visible role set via metadata.onboarding.allowedRoleIds
+	// (e.g. [3] = Enterprise only, hiding Retailer + Distributor). untyped `any`,
+	// so keep only finite numbers; empty/invalid → undefined (no org override).
+	const orgAllowedRoleIds = useMemo((): number[] | undefined => {
+		const raw = orgMetadataOnboarding?.allowedRoleIds;
+		if (!Array.isArray(raw)) return undefined;
+		const ids = raw.filter((n: unknown): n is number => Number.isFinite(n));
+		return ids.length > 0 ? ids : undefined;
+	}, [orgMetadataOnboarding]);
+
 	const allowedRoleIds = useMemo(
 		(): number[] | undefined =>
 			router.isReady
 				? resolveAllowedRoleIds(
 						router.query.role,
 						router.query.bv,
-						showEnterprise
+						showEnterprise,
+						orgAllowedRoleIds
 					)
 				: undefined,
-		[router.isReady, router.query.role, router.query.bv, showEnterprise]
+		[
+			router.isReady,
+			router.query.role,
+			router.query.bv,
+			showEnterprise,
+			orgAllowedRoleIds,
+		]
 	);
 
 	// Parse the public `bv` (business vertical) query param into a canonical

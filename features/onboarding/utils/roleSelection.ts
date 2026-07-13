@@ -29,29 +29,36 @@ export const visibleAgentTypes: Record<string, number[]> = {
 
 /**
  * Resolve the `allowedRoleIds` filter from the raw `role` / `bv` query values
- * and the org's `showEnterprise` flag. Precedence (first match wins):
+ * and the org onboarding config. Precedence (first match wins):
  *
  * - Explicit `role` always wins: a CSV of ids (`?role=1,2,3`) or a duplicated
  *   param (`?role=1&role=2`, arriving as an array) is parsed to a numeric list;
  *   non-numeric entries are dropped.
  * - `role` absent BUT a valid `bv` (eloka/eps/sbi_kiosk/enterprise) present →
  *   default to Enterprise (`ROLE_IDS.ENTERPRISE`).
- * - `role`/`bv` absent BUT org `showEnterprise` set → default self-onboarding
- *   set plus Enterprise (`[1, 2, 3]`).
+ * - `role`/`bv` absent BUT org `allowedRoleIds` given → that exact set (the org
+ *   fully controls which roles show, e.g. `[3]` for Enterprise-only).
+ * - `role`/`bv`/org-list absent BUT org `showEnterprise` set → default
+ *   self-onboarding set plus Enterprise (`[1, 2, 3]`). Back-compat shorthand.
  * - Otherwise `undefined` (no role filter; RoleSelection uses its own defaults).
  * @param {string | string[] | undefined} rawRole - Raw `router.query.role`.
  * @param {string | string[] | undefined} rawBv - Raw `router.query.bv`.
  * @param {boolean} [showEnterprise] - Org `metadata.onboarding.showEnterprise`,
  *   pre-normalized to a boolean by the caller.
+ * @param {number[]} [orgAllowedRoleIds] - Org `metadata.onboarding.allowedRoleIds`,
+ *   pre-normalized to a non-empty numeric array (or undefined) by the caller.
  * @returns {number[] | undefined} Allowed role ids, or `undefined` for no filter.
  */
 export const resolveAllowedRoleIds = (
 	rawRole: string | string[] | undefined,
 	rawBv: string | string[] | undefined,
-	showEnterprise?: boolean
+	showEnterprise?: boolean,
+	orgAllowedRoleIds?: number[]
 ): number[] | undefined => {
 	if (!rawRole) {
 		if (parseBusinessVertical(rawBv)) return [ROLE_IDS.ENTERPRISE];
+		if (orgAllowedRoleIds && orgAllowedRoleIds.length > 0)
+			return orgAllowedRoleIds;
 		if (showEnterprise) {
 			// Dedup-safe in case selfOnboarding ever includes Enterprise.
 			const base = visibleAgentTypes.selfOnboarding;

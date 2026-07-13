@@ -54,4 +54,26 @@ describe("resolveAllowedRoleIds", () => {
 			resolveAllowedRoleIds(undefined, undefined, false)
 		).toBeUndefined();
 	});
+
+	it("uses org allowedRoleIds as the exact set (hides the others)", () => {
+		expect(resolveAllowedRoleIds(undefined, undefined, false, [3])).toEqual(
+			[3]
+		);
+		expect(
+			resolveAllowedRoleIds(undefined, undefined, false, [1, 3])
+		).toEqual([1, 3]);
+	});
+
+	it("lets org allowedRoleIds win over showEnterprise", () => {
+		expect(resolveAllowedRoleIds(undefined, undefined, true, [3])).toEqual([
+			3,
+		]);
+	});
+
+	it("lets an explicit role and bv win over org allowedRoleIds", () => {
+		expect(resolveAllowedRoleIds("1", undefined, false, [3])).toEqual([1]);
+		expect(resolveAllowedRoleIds(undefined, "eps", false, [1])).toEqual([
+			3,
+		]);
+	});
 });
