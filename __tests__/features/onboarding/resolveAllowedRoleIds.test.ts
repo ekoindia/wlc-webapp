@@ -31,4 +31,49 @@ describe("resolveAllowedRoleIds", () => {
 	it("returns undefined for a role param with no numeric entries", () => {
 		expect(resolveAllowedRoleIds("abc", undefined)).toBeUndefined();
 	});
+
+	it("appends Enterprise to the default set when showEnterprise is set and no role/bv", () => {
+		expect(resolveAllowedRoleIds(undefined, undefined, true)).toEqual([
+			1, 2, 3,
+		]);
+		expect(resolveAllowedRoleIds(undefined, "garbage", true)).toEqual([
+			1, 2, 3,
+		]);
+	});
+
+	it("lets an explicit role win over showEnterprise", () => {
+		expect(resolveAllowedRoleIds("1", undefined, true)).toEqual([1]);
+	});
+
+	it("lets a valid bv win over showEnterprise", () => {
+		expect(resolveAllowedRoleIds(undefined, "eps", true)).toEqual([3]);
+	});
+
+	it("ignores a falsy showEnterprise", () => {
+		expect(
+			resolveAllowedRoleIds(undefined, undefined, false)
+		).toBeUndefined();
+	});
+
+	it("uses org allowedRoleIds as the exact set (hides the others)", () => {
+		expect(resolveAllowedRoleIds(undefined, undefined, false, [3])).toEqual(
+			[3]
+		);
+		expect(
+			resolveAllowedRoleIds(undefined, undefined, false, [1, 3])
+		).toEqual([1, 3]);
+	});
+
+	it("lets org allowedRoleIds win over showEnterprise", () => {
+		expect(resolveAllowedRoleIds(undefined, undefined, true, [3])).toEqual([
+			3,
+		]);
+	});
+
+	it("lets an explicit role and bv win over org allowedRoleIds", () => {
+		expect(resolveAllowedRoleIds("1", undefined, false, [3])).toEqual([1]);
+		expect(resolveAllowedRoleIds(undefined, "eps", false, [1])).toEqual([
+			3,
+		]);
+	});
 });

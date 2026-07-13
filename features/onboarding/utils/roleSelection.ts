@@ -18,25 +18,55 @@ export const ROLE_IDS = {
 	ENTERPRISE: 3,
 } as const;
 
+// Configuration for which roles are visible in different onboarding contexts.
+// Values are role `id`s (see ROLE_IDS) — the same sequential scheme accepted by
+// the `role` URL query param — NOT applicant_type. Declared before
+// resolveAllowedRoleIds because that resolver reuses selfOnboarding as its base.
+export const visibleAgentTypes: Record<string, number[]> = {
+	assistedOnboarding: [ROLE_IDS.RETAILER],
+	selfOnboarding: [ROLE_IDS.RETAILER, ROLE_IDS.DISTRIBUTOR],
+};
+
 /**
- * Resolve the `allowedRoleIds` filter from the raw `role` and `bv` query values.
+ * Resolve the `allowedRoleIds` filter from the raw `role` / `bv` query values
+ * and the org onboarding config. Precedence (first match wins):
  *
  * - Explicit `role` always wins: a CSV of ids (`?role=1,2,3`) or a duplicated
  *   param (`?role=1&role=2`, arriving as an array) is parsed to a numeric list;
  *   non-numeric entries are dropped.
  * - `role` absent BUT a valid `bv` (eloka/eps/sbi_kiosk/enterprise) present →
  *   default to Enterprise (`ROLE_IDS.ENTERPRISE`).
+ * - `role`/`bv` absent BUT org `allowedRoleIds` given → that exact set (the org
+ *   fully controls which roles show, e.g. `[3]` for Enterprise-only).
+ * - `role`/`bv`/org-list absent BUT org `showEnterprise` set → default
+ *   self-onboarding set plus Enterprise (`[1, 2, 3]`). Back-compat shorthand.
  * - Otherwise `undefined` (no role filter; RoleSelection uses its own defaults).
  * @param {string | string[] | undefined} rawRole - Raw `router.query.role`.
  * @param {string | string[] | undefined} rawBv - Raw `router.query.bv`.
+ * @param {boolean} [showEnterprise] - Org `metadata.onboarding.showEnterprise`,
+ *   pre-normalized to a boolean by the caller.
+ * @param {number[]} [orgAllowedRoleIds] - Org `metadata.onboarding.allowedRoleIds`,
+ *   pre-normalized to a non-empty numeric array (or undefined) by the caller.
  * @returns {number[] | undefined} Allowed role ids, or `undefined` for no filter.
  */
 export const resolveAllowedRoleIds = (
 	rawRole: string | string[] | undefined,
-	rawBv: string | string[] | undefined
+	rawBv: string | string[] | undefined,
+	showEnterprise?: boolean,
+	orgAllowedRoleIds?: number[]
 ): number[] | undefined => {
 	if (!rawRole) {
-		return parseBusinessVertical(rawBv) ? [ROLE_IDS.ENTERPRISE] : undefined;
+		if (parseBusinessVertical(rawBv)) return [ROLE_IDS.ENTERPRISE];
+		if (orgAllowedRoleIds && orgAllowedRoleIds.length > 0)
+			return orgAllowedRoleIds;
+		if (showEnterprise) {
+			// Dedup-safe in case selfOnboarding ever includes Enterprise.
+			const base = visibleAgentTypes.selfOnboarding;
+			return base.includes(ROLE_IDS.ENTERPRISE)
+				? [...base]
+				: [...base, ROLE_IDS.ENTERPRISE];
+		}
+		return undefined;
 	}
 	const roleStr = Array.isArray(rawRole) ? rawRole.join(",") : rawRole;
 	const parsed = roleStr
@@ -77,14 +107,6 @@ export interface RoleConfig {
 	/** Custom user type labels mapping (e.g., {1: "Distributor", 2: "Agent"}) */
 	userTypeLabel?: Record<number, string>;
 }
-
-// Configuration for which roles are visible in different onboarding contexts.
-// Values are role `id`s (see ROLE_IDS) — the same sequential scheme accepted by
-// the `role` URL query param — NOT applicant_type.
-export const visibleAgentTypes = {
-	assistedOnboarding: [ROLE_IDS.RETAILER],
-	selfOnboarding: [ROLE_IDS.RETAILER, ROLE_IDS.DISTRIBUTOR],
-};
 
 /**
  * Base role data containing all possible roles with default labels

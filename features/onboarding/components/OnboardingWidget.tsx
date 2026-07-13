@@ -102,12 +102,42 @@ const OnboardingWidget = ({
 	// (/gateway/onboarding?role=xxx) deliver these via URL, so this is the single source
 	// of truth for both flows. Guard on router.isReady: in Next.js pages router,
 	// router.query is empty until client-side hydration, so reading it early gives undefined.
+	// Org switch: metadata.onboarding.showEnterprise appends Enterprise to the
+	// default self-onboarding role set (URL role/bv still override). orgMetadata
+	// is untyped `any`, so normalize strictly — accept boolean `true` or the
+	// numeric `1` convention this repo uses for org flags (hide/optional), and
+	// reject a stray "false" string that would otherwise be truthy.
+	const showEnterprise =
+		orgMetadataOnboarding?.showEnterprise === true ||
+		orgMetadataOnboarding?.showEnterprise === 1;
+
+	// Org fully controls the visible role set via metadata.onboarding.allowedRoleIds
+	// (e.g. [3] = Enterprise only, hiding Retailer + Distributor). untyped `any`,
+	// so keep only finite numbers; empty/invalid → undefined (no org override).
+	const orgAllowedRoleIds = useMemo((): number[] | undefined => {
+		const raw = orgMetadataOnboarding?.allowedRoleIds;
+		if (!Array.isArray(raw)) return undefined;
+		const ids = raw.filter((n: unknown): n is number => Number.isFinite(n));
+		return ids.length > 0 ? ids : undefined;
+	}, [orgMetadataOnboarding]);
+
 	const allowedRoleIds = useMemo(
 		(): number[] | undefined =>
 			router.isReady
-				? resolveAllowedRoleIds(router.query.role, router.query.bv)
+				? resolveAllowedRoleIds(
+						router.query.role,
+						router.query.bv,
+						showEnterprise,
+						orgAllowedRoleIds
+					)
 				: undefined,
-		[router.isReady, router.query.role, router.query.bv]
+		[
+			router.isReady,
+			router.query.role,
+			router.query.bv,
+			showEnterprise,
+			orgAllowedRoleIds,
+		]
 	);
 
 	// Parse the public `bv` (business vertical) query param into a canonical

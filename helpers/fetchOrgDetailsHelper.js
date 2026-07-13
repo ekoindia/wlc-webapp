@@ -76,6 +76,7 @@ export const MockOrgDetails = {
 			user_id_label: process.env.LOGIN_USER_ID_LABEL || "User ID",
 		},
 		onboarding: {
+			showEnterprise: true,
 			23: {
 				PAN_VERIFICATION: {
 					meta: {
