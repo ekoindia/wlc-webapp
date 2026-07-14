@@ -17,6 +17,7 @@ import { useOnboardingState } from "../hooks";
 import { executePipeline } from "../utils";
 import {
 	createRoleSelectionStep,
+	getCardKey,
 	ROLE_SELECTION_STEP_CONFIG,
 	visibleAgentTypes,
 	type Role,
@@ -39,7 +40,13 @@ const APPLICANT_TO_USER_TYPE: Record<number, number> = {
  */
 const getIconForApplicantType = (applicantType: number): string => {
 	const userTypeId = APPLICANT_TO_USER_TYPE[applicantType];
-	return UserTypeIcon[userTypeId] || "person";
+	// Enterprise has no UserTypeIcon entry; use the business/briefcase glyph
+	// instead of the generic "person" fallback.
+	const enterpriseFallback =
+		applicantType === APPLICANT_TYPES.ENTERPRISE
+			? "business-center"
+			: "person";
+	return UserTypeIcon[userTypeId] || enterpriseFallback;
 };
 
 interface RoleCardProps {
@@ -57,7 +64,11 @@ interface RoleCardProps {
 const RoleCard = (props: RoleCardProps): JSX.Element => {
 	const { role, isSelected, isDisabled, onClick } = props;
 	const iconName = getIconForApplicantType(role.applicant_type);
-	const { h } = useHslColor(role.label);
+	// The two Enterprise variant cards must look identical (same enterprise
+	// icon + colour), so seed the colour from a shared key rather than the
+	// per-card label — otherwise each label hashes to a different hue.
+	const colorSeed = role.businessVerticalCode ? "enterprise" : role.label;
+	const { h } = useHslColor(colorSeed);
 	const borderColor = isSelected ? "primary.DEFAULT" : "transparent";
 	const hoverBorderColor = isDisabled
 		? undefined
@@ -168,6 +179,7 @@ const RoleCard = (props: RoleCardProps): JSX.Element => {
  * @param {Function} props.refreshAgentProfile - Function to refresh the agent profile data
  * @param props.accessToken
  * @param props.generateNewToken
+ * @param props.showEnterprise
  * @returns {JSX.Element} The rendered RoleSelection component
  */
 const RoleSelection = ({
@@ -179,13 +191,14 @@ const RoleSelection = ({
 	agentMobile,
 	allowedRoleIds,
 	businessVertical,
+	showEnterprise,
 	refreshAgentProfile,
 	accessToken,
 	generateNewToken,
 }) => {
-	const [selectedApplicantType, setSelectedApplicantType] = useState<
-		number | null
-	>(null);
+	// Selection is keyed by the stable per-card key (see getCardKey), not
+	// applicant_type — the two Enterprise variant cards share applicant_type.
+	const [selectedCardKey, setSelectedCardKey] = useState<string | null>(null);
 
 	const toast = useToast();
 
@@ -208,8 +221,13 @@ const RoleSelection = ({
 	 * Submit role selection using the pipeline executor
 	 */
 	const submitRoleSelection = useCallback(
-		async (applicantType: number) => {
+		async (role: Role) => {
 			actions.setApiInProgress(true);
+
+			// A variant card carries its own vertical (EPS/Eloka); otherwise fall
+			// back to the URL-derived `businessVertical`. Sent only when resolved.
+			const resolvedBusinessVertical =
+				role.businessVertical ?? businessVertical;
 
 			try {
 				await executePipeline({
@@ -217,12 +235,13 @@ const RoleSelection = ({
 					formData: {
 						id: ROLE_SELECTION_STEP_CONFIG.id,
 						form_data: {
-							applicant_type: applicantType,
+							applicant_type: role.applicant_type,
 							csp_id: mobile,
-							// Only sent when the `?bv` query param resolved to a
-							// known vertical; omitted otherwise.
-							...(businessVertical
-								? { business_vertical: businessVertical }
+							...(resolvedBusinessVertical
+								? {
+										business_vertical:
+											resolvedBusinessVertical,
+									}
 								: {}),
 						},
 					},
@@ -301,8 +320,15 @@ const RoleSelection = ({
 		? visibleAgentTypes.assistedOnboarding
 		: allowedRoleIds || visibleAgentTypes.selfOnboarding;
 
+	// Show the two Enterprise vertical cards when the org enables Enterprise and
+	// no `?bv` already pinned the vertical (a bare `?role=3` still needs the user
+	// to pick a vertical, so it splits too). A resolved `?bv` keeps the legacy
+	// single-card auto-submit path below.
+	const splitEnterprise = Boolean(showEnterprise) && !businessVertical;
+
 	const onboardingRoleStep = createRoleSelectionStep(forAgentTypes, {
 		userTypeLabel: userTypeLabels,
+		splitEnterprise,
 	});
 
 	const roles: Role[] = onboardingRoleStep?.form_data?.roles || [];
@@ -328,37 +354,42 @@ const RoleSelection = ({
 			const singleRole = roles[0];
 
 			// Auto-select the role
-			setSelectedApplicantType(singleRole.applicant_type);
+			setSelectedCardKey(getCardKey(singleRole));
 
 			// Update selected role state
 			setSelectedRole(singleRole.applicant_type);
 
 			// Auto-submit via pipeline executor
-			submitRoleSelection(singleRole.applicant_type);
+			submitRoleSelection(singleRole);
 		}
 	}, [roles, state.ui?.apiInProgress, submitRoleSelection, setSelectedRole]);
 
 	/**
 	 * Handle role tile selection
-	 * @param {number} applicantType - Applicant type id
+	 * @param {Role} role - The selected role card
 	 * @returns {void}
 	 */
-	const handleRoleSelect = (applicantType: number) => {
+	const handleRoleSelect = (role: Role) => {
 		if (state.ui?.apiInProgress) return;
-		setSelectedApplicantType(applicantType);
+		setSelectedCardKey(getCardKey(role));
 	};
 
 	/**
 	 * Handle continue button click
 	 */
 	const handleContinue = () => {
-		if (selectedApplicantType === null) return;
+		// Resolve the selected card from the current roles by its stable key —
+		// avoids holding a stale Role object across re-renders.
+		const selectedRole = roles.find(
+			(role) => getCardKey(role) === selectedCardKey
+		);
+		if (!selectedRole) return;
 
 		// Update selected role state
-		setSelectedRole(selectedApplicantType);
+		setSelectedRole(selectedRole.applicant_type);
 
 		// Submit role selection via pipeline executor
-		submitRoleSelection(selectedApplicantType);
+		submitRoleSelection(selectedRole);
 	};
 
 	// MARK: JSX
@@ -388,15 +419,11 @@ const RoleSelection = ({
 				<VStack spacing={4} w="100%" align="stretch" mb={8}>
 					{roles.map((role) => (
 						<RoleCard
-							key={role.id}
+							key={getCardKey(role)}
 							role={role}
-							isSelected={
-								selectedApplicantType === role.applicant_type
-							}
+							isSelected={selectedCardKey === getCardKey(role)}
 							isDisabled={Boolean(state.ui?.apiInProgress)}
-							onClick={() =>
-								handleRoleSelect(role.applicant_type)
-							}
+							onClick={() => handleRoleSelect(role)}
 						/>
 					))}
 				</VStack>
@@ -407,8 +434,7 @@ const RoleSelection = ({
 					w="100%"
 					size="lg"
 					isDisabled={
-						selectedApplicantType === null ||
-						state.ui?.apiInProgress
+						selectedCardKey === null || state.ui?.apiInProgress
 					}
 					onClick={handleContinue}
 					_disabled={{
