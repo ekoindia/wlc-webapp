@@ -235,6 +235,7 @@ const OnboardingWidget = ({
 						agentMobile={agentMobile}
 						allowedRoleIds={allowedRoleIds}
 						businessVertical={businessVertical}
+						showEnterprise={showEnterprise}
 						refreshAgentProfile={refreshAgentProfile}
 						accessToken={services.accessToken}
 						generateNewToken={services.generateNewToken}
