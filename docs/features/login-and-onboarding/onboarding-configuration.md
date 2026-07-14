@@ -239,6 +239,19 @@ metadata.onboarding[userType][stepKey] = {
 }
 ```
 
+### Role-selection visibility (top-level keys)
+
+Role selection runs **before** any user type is known, so the levers that control which role cards show sit as **top-level siblings** of the per-userType keys (not under `[userType]`). Both are read in [OnboardingWidget.tsx](/features/onboarding/components/OnboardingWidget.tsx) and folded into `allowedRoleIds` via `resolveAllowedRoleIds` ([roleSelection.ts](/features/onboarding/utils/roleSelection.ts)):
+
+```
+metadata.onboarding.allowedRoleIds = [3]      // exact visible set — [3] = Enterprise only
+metadata.onboarding.showEnterprise = true     // shorthand: default set + Enterprise → [1,2,3]
+```
+
+- **`allowedRoleIds: number[]`** — the org fully controls the visible set (role ids: `1` Retailer, `2` Distributor, `3` Enterprise). `[3]` hides Retailer + Distributor; `[1,3]` shows Retailer + Enterprise. Empty/non-array/non-numeric → ignored.
+- **`showEnterprise: true | 1`** — back-compat shorthand that appends Enterprise to the default `selfOnboarding` set. Accepts boolean `true` or numeric `1` (repo's `hide:1`/`optional:1` convention); a stray `"false"` string is rejected.
+- **Precedence** (first match wins): `?role=` > `?bv=` > `allowedRoleIds` > `showEnterprise` > hardcoded `visibleAgentTypes.selfOnboarding`. URL deep-links always override org config. Assisted onboarding is unaffected (always `visibleAgentTypes.assistedOnboarding`).
+
 This lets an org tweak the flow **per user type** without code changes — keyed first by the (normalized) **EPS `user_type`** read from the profile (see [User-type numbering schemes](#user-type-numbering-schemes)), then by step. This key is the backend identity — **not** the removed `merchant_type` submit param — so it is entirely unaffected by that removal. Concrete example:
 
 ```json
@@ -356,7 +369,7 @@ Three query params let a partner deep-link into a pre-filled flow.
 - Parsed in [OnboardingWidget.tsx](/features/onboarding/components/OnboardingWidget.tsx) (guarded on `router.isReady`) into `allowedRoleIds: number[]` of **role ids** (`1` Retailer, `2` Distributor, `3` Enterprise). `?role=1,2` or duplicated `?role=1&role=2` both work. The parser only drops non-numeric tokens (`isNaN`); empty/absent or all-non-numeric input → `undefined` (falls back to defaults). Note: numeric-but-unknown ids (e.g. `?role=999`) are **not** filtered out — they pass through and simply match no role card, so the role list comes back empty rather than falling back.
 - Passed to [RoleSelection](/features/onboarding/components/RoleSelection.tsx) as `allowedRoleIds`, which sets the visible roles:
   `forAgentTypes = isAssistedOnboarding ? visibleAgentTypes.assistedOnboarding : (allowedRoleIds || visibleAgentTypes.selfOnboarding)`.
-- It **filters** which role cards show; it does not blindly auto-select. **Auto-submit only happens when exactly one role remains** (`roles.length === 1`). When `allowedRoleIds` is `undefined` (empty/non-numeric param) it falls back to the normal `visibleAgentTypes.selfOnboarding` choices.
+- It **filters** which role cards show; it does not blindly auto-select. **Auto-submit only happens when exactly one role remains** (`roles.length === 1`). When `allowedRoleIds` is `undefined` (empty/non-numeric param) it falls back to org config then the normal `visibleAgentTypes.selfOnboarding` choices — full precedence: `?role=` > `?bv=` > org `allowedRoleIds` > org `showEnterprise` > `selfOnboarding` (see [Role-selection visibility](#role-selection-visibility-top-level-keys)).
 - `RouteProtecter` preserves `?role` when it force-redirects to `/signup`, so the param survives the login→onboarding hop. See [route-protection.md](./route-protection.md).
 
 ### `?bv` — business vertical
@@ -450,3 +463,12 @@ No code change for label/description; a one-line read for a new flag.
 
 - **New filter stage**: write a pure `(steps, ...args) => steps` function, insert it at the right position inside `generateInitialSteps`, thread any new args through, and pass them from `OnboardingProvider.initializeSteps`.
 - **New metadata field**: add it to the `OnboardingStep` type in [constants.ts](/features/onboarding/constants.ts), set it on the relevant steps, and (if it drives runtime behavior) add a filter/transform stage that reads it.
+
+### 9. Restrict which role cards show at role selection, per org (config only)
+
+No code change. Set a **top-level** key on `metadata.onboarding` (sibling of the `[userType]` keys — role selection runs before a user type exists):
+
+- **Exact set**: `metadata.onboarding.allowedRoleIds = [3]` → only Enterprise (hides Retailer + Distributor). `[1,3]` → Retailer + Enterprise. Role ids: `1` Retailer, `2` Distributor, `3` Enterprise.
+- **Just add Enterprise**: `metadata.onboarding.showEnterprise = true` (or `1`) → default `selfOnboarding` set plus Enterprise (`[1,2,3]`).
+
+URL params still override: `?role=` > `?bv=` > `allowedRoleIds` > `showEnterprise` > `selfOnboarding` default. If the resulting set is a single role, role selection auto-submits. See [Role-selection visibility](#role-selection-visibility-top-level-keys).

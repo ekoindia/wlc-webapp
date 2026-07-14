@@ -2,6 +2,7 @@ import { TransactionIds } from "constants/EpsTransactions";
 import { UserTypeLabel } from "constants/UserTypes";
 import {
 	APPLICANT_TYPES,
+	BUSINESS_VERTICAL_BY_CODE,
 	parseBusinessVertical,
 	RESPONSE_TYPE_IDS,
 	type OnboardingStep,
@@ -79,6 +80,9 @@ export const resolveAllowedRoleIds = (
 /**
  * Role interface representing different user types in the onboarding process
  */
+/** The two Enterprise sub-verticals a user can self-select at role selection. */
+export type EnterpriseVerticalCode = "eps" | "eloka";
+
 export interface Role {
 	/** Unique identifier for the role */
 	id: number;
@@ -92,7 +96,28 @@ export interface Role {
 	icon: string;
 	/** Whether this role option is visible in the UI */
 	isVisible: boolean;
+	/**
+	 * Canonical `business_vertical` submitted for this card (e.g. "EPS"/"Eloka").
+	 * Set only on the two Enterprise variant cards; when present it overrides the
+	 * URL-derived `businessVertical` at submit time.
+	 */
+	businessVertical?: string;
+	/**
+	 * Discriminator for the two same-`applicant_type` Enterprise variants. Present
+	 * only on those cards; used by `getCardKey` for selection identity + React key.
+	 */
+	businessVerticalCode?: EnterpriseVerticalCode;
 }
+
+/**
+ * Stable per-card identity. The two Enterprise variants share `id` (3) and
+ * `applicant_type` (1), so those cannot key selection — fall back to the
+ * vertical code for them, and the role `id` for every other card.
+ * @param {Role} role - The role card.
+ * @returns {string} Unique key: "eps" | "eloka" | String(role.id).
+ */
+export const getCardKey = (role: Role): string =>
+	role.businessVerticalCode ?? String(role.id);
 
 /**
  * Configuration for generating role data
@@ -106,6 +131,12 @@ export interface RoleConfig {
 	descriptionMap?: Partial<Record<number, string>>;
 	/** Custom user type labels mapping (e.g., {1: "Distributor", 2: "Agent"}) */
 	userTypeLabel?: Record<number, string>;
+	/**
+	 * When true, the single Enterprise card is replaced by two vertical cards
+	 * ("Get API Access" → EPS, "Get SaaS Access" → Eloka). Set by the caller only
+	 * when `showEnterprise` is on and no `?bv` already pinned the vertical.
+	 */
+	splitEnterprise?: boolean;
 }
 
 /**
@@ -117,6 +148,7 @@ const getBaseRoleData = (
 	userTypeLabel: Record<number, string> = UserTypeLabel
 ): Role[] => [
 	{
+		// I'm a Retailer
 		id: ROLE_IDS.RETAILER,
 		applicant_type: APPLICANT_TYPES.RETAILER,
 		label: `I'm a ${userTypeLabel[2] || "Retailer"}`,
@@ -126,6 +158,7 @@ const getBaseRoleData = (
 		isVisible: true,
 	},
 	{
+		// I'm a Distributor
 		id: ROLE_IDS.DISTRIBUTOR,
 		applicant_type: APPLICANT_TYPES.DISTRIBUTOR,
 		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
@@ -134,6 +167,7 @@ const getBaseRoleData = (
 		isVisible: true,
 	},
 	{
+		// I'm an Enterprise Partner
 		id: ROLE_IDS.ENTERPRISE,
 		applicant_type: APPLICANT_TYPES.ENTERPRISE,
 		label: `I'm an ${userTypeLabel[23] || "Enterprise Partner"}`,
@@ -145,33 +179,84 @@ const getBaseRoleData = (
 ];
 
 /**
+ * The two Enterprise vertical cards. Both keep role `id` 3 and Enterprise
+ * `applicant_type`; they differ only by the `business_vertical` submitted and are
+ * told apart by `businessVerticalCode`. The card icon is derived from
+ * `applicant_type` downstream (RoleCard), so both render the Enterprise icon.
+ */
+const ENTERPRISE_VARIANTS: Role[] = [
+	{
+		id: ROLE_IDS.ENTERPRISE,
+		applicant_type: APPLICANT_TYPES.ENTERPRISE,
+		label: "Get API Access (EPS)",
+		description: "Use our Fintech & KYC APIs to build your app",
+		icon: "../assets/icons/user_enterprise.png",
+		isVisible: true,
+		businessVerticalCode: "eps",
+		businessVertical: BUSINESS_VERTICAL_BY_CODE.eps,
+	},
+	{
+		id: ROLE_IDS.ENTERPRISE,
+		applicant_type: APPLICANT_TYPES.ENTERPRISE,
+		label: "Get SaaS Access (Eloka)",
+		description: "Use our ready-made SaaS platform to run your business",
+		icon: "../assets/icons/user_enterprise.png",
+		isVisible: true,
+		businessVerticalCode: "eloka",
+		businessVertical: BUSINESS_VERTICAL_BY_CODE.eloka,
+	},
+];
+
+/**
  * Generates role data based on configuration parameters
  * @param config
  */
 export const generateRoleData = (config: RoleConfig = {}): Role[] => {
-	const { visibleAgentTypes, labelMap, descriptionMap, userTypeLabel } =
-		config;
+	const {
+		visibleAgentTypes,
+		labelMap,
+		descriptionMap,
+		userTypeLabel,
+		splitEnterprise,
+	} = config;
 
 	const effectiveUserTypeLabel = userTypeLabel || UserTypeLabel;
 	const baseRoleData = getBaseRoleData(effectiveUserTypeLabel);
 
-	return baseRoleData
-		.filter((role) => {
-			// Filter by role `id` (1: Retailer, 2: Distributor, 3: Enterprise),
-			// the intuitive sequential scheme. applicant_type is NOT used here —
-			// its values (0, 2, 3) are non-sequential and only relevant at submit.
-			if (visibleAgentTypes && visibleAgentTypes.length > 0) {
-				return visibleAgentTypes.includes(role.id);
-			}
-			return role.isVisible;
-		})
-		.map((role) => ({
-			...role,
-			label: labelMap?.[role.applicant_type] || role.label,
-			description:
-				descriptionMap?.[role.applicant_type] || role.description,
-			isVisible: true,
-		}));
+	return (
+		baseRoleData
+			.filter((role) => {
+				// Filter by role `id` (1: Retailer, 2: Distributor, 3: Enterprise),
+				// the intuitive sequential scheme. applicant_type is NOT used here —
+				// its values (0, 2, 3) are non-sequential and only relevant at submit.
+				if (visibleAgentTypes && visibleAgentTypes.length > 0) {
+					return visibleAgentTypes.includes(role.id);
+				}
+				return role.isVisible;
+			})
+			// Split the single Enterprise card into the two vertical cards when asked.
+			.flatMap((role) =>
+				role.id === ROLE_IDS.ENTERPRISE && splitEnterprise
+					? ENTERPRISE_VARIANTS
+					: [role]
+			)
+			.map((role) => {
+				// Variant cards own their labels — skip org label/description
+				// overrides (keyed by applicant_type) so both wouldn't collapse to
+				// one Enterprise override.
+				if (role.businessVerticalCode) {
+					return { ...role, isVisible: true };
+				}
+				return {
+					...role,
+					label: labelMap?.[role.applicant_type] || role.label,
+					description:
+						descriptionMap?.[role.applicant_type] ||
+						role.description,
+					isVisible: true,
+				};
+			})
+	);
 };
 
 /**
