@@ -3,6 +3,7 @@ import { OnboardingProvider, useOnboardingContext } from "../context";
 import type { OnboardingServices } from "../contracts";
 import {
 	getAgreementIdFromData,
+	getEmailFromData,
 	getMobileFromData,
 	getOnboardingStepsFromData,
 	getRoleListFromData,
@@ -155,6 +156,11 @@ const OnboardingSteps = ({
 		[onboardingUserDetails]
 	);
 
+	const email = useMemo(
+		() => getEmailFromData(onboardingUserDetails),
+		[onboardingUserDetails]
+	);
+
 	// Extract onboarding steps and role list using proper data extractors
 	// These handle both self and assisted onboarding data shapes
 	const onboardingSteps = useMemo(
@@ -192,6 +198,7 @@ const OnboardingSteps = ({
 			userName={String(userName || "")}
 			mobile={String(mobile || "")}
 			agreementId={String(agreementId || "")}
+			email={String(email || "")}
 			onboardingSteps={onboardingSteps}
 			roleList={roleList}
 			userType={userType}
