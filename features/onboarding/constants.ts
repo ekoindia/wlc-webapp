@@ -572,13 +572,14 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 		},
 	},
 	{
+		// Capture Business details for Distributor. Note: for Enterprise (Eloka/EPS), the role to captyre business details is 13100
 		id: ONBOARDING_STEP_IDS.BUSINESS,
 		name: "BUSINESS",
 		label: "Business Details",
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		applicableRoles: [13300],
+		applicableRoles: [13300, 13100],
 		primaryCTAText: "Proceed",
 		description:
 			"Provide your business information including name, type, and registration details to complete your profile.",

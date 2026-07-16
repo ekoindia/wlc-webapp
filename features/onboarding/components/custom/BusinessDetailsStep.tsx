@@ -3,8 +3,8 @@ import { ActionButtonGroup } from "components";
 import { ParamType } from "constants/trxnFramework";
 import {
 	addressValidation,
+	emailValidation,
 	nameValidation,
-	phoneValidation,
 	pincodeValidation,
 	shopNameValidation,
 } from "constants/validation";
@@ -20,15 +20,17 @@ import type { CustomComponentProps } from "../ContentRenderer";
  */
 const COMPANY_TYPE_OPTIONS = [
 	{ label: "Private Ltd", value: 1 },
-	{ label: "LLP", value: 2 },
-	{ label: "Partnership", value: 3 },
-	{ label: "Sole Proprietorship", value: 4 },
+	{ label: "LLP", value: 4 },
+	{ label: "Partnership", value: 2 },
+	{ label: "Sole Proprietorship", value: 3 },
+	{ label: "Public Limited", value: 5 },
 ];
 
 interface FormData {
 	name: string;
 	company_type: number | { value: number; label: string };
 	authorized_signatory_name: string;
+	email: string;
 	contact_person_cell: string;
 	alternate_mobile?: string;
 	current_address_line1: string;
@@ -56,7 +58,7 @@ const BusinessDetailsStep = ({
 	// Determine if step can be skipped (not required)
 	const canSkip = !stepConfig.isRequired && onSkip;
 	const toast = useToast();
-	const { pipelineResults } = useOnboardingContext();
+	const { pipelineResults, userName, email } = useOnboardingContext();
 	const lastProcessedResultRef = useRef<any>(null);
 
 	// Fetch states using the hook
@@ -67,13 +69,15 @@ const BusinessDetailsStep = ({
 		control,
 		watch,
 		handleSubmit,
+		setValue,
 		formState: { errors },
 	} = useForm<FormData>({
 		mode: "onChange",
 		defaultValues: {
-			name: "",
+			name: userName || "",
 			company_type: undefined,
 			authorized_signatory_name: "",
+			email: email || "",
 			contact_person_cell: "",
 			alternate_mobile: "",
 			current_address_line1: "",
@@ -85,6 +89,22 @@ const BusinessDetailsStep = ({
 		},
 	});
 
+	useEffect(() => {
+		if (userName && userName.length > 2) {
+			setValue("name", userName, {
+				shouldDirty: false,
+				shouldValidate: false,
+			});
+		}
+
+		if (email && email.length > 10) {
+			setValue("email", email, {
+				shouldDirty: false,
+				shouldValidate: false,
+			});
+		}
+	}, [userName, email, setValue]);
+
 	const formValues = watch();
 
 	// Build dynamic parameter_list for Form component
@@ -93,8 +113,13 @@ const BusinessDetailsStep = ({
 			{
 				name: "name",
 				label: "Company/Firm's Name",
+				description:
+					"In case of individual or sole proprietorship, enter your own name",
 				parameter_type_id: ParamType.TEXT,
 				required: true,
+				defaultValue: userName || "",
+				readonly: Boolean(userName),
+				disabled: Boolean(userName),
 				validations: {
 					pattern: {
 						value: shopNameValidation.regex,
@@ -120,7 +145,8 @@ const BusinessDetailsStep = ({
 			},
 			{
 				name: "authorized_signatory_name",
-				label: "Director/Authorised Signatory Full Name",
+				label: "Director / Authorised Signatory's Full Name",
+				description: "Used for signing agreement",
 				parameter_type_id: ParamType.TEXT,
 				required: true,
 				validations: {
@@ -139,46 +165,67 @@ const BusinessDetailsStep = ({
 				},
 			},
 			{
-				name: "contact_person_cell",
-				label: "Contact Person's Mobile Number",
-				parameter_type_id: ParamType.MOBILE,
+				name: "email",
+				label: "Email Address",
+				description: "Used for communication and agreement delivery",
+				parameter_type_id: ParamType.EMAIL,
 				required: true,
 				validations: {
 					pattern: {
-						value: phoneValidation.regex,
-						message: "Please enter a valid 10-digit mobile number",
+						value: emailValidation.regex,
+						message: "Please enter a valid email address",
 					},
 					minLength: {
-						value: phoneValidation.minLength,
-						message: `Mobile number must be ${phoneValidation.minLength} digits`,
+						value: emailValidation.minLength,
+						message: `Email must be at least ${emailValidation.minLength} characters`,
 					},
 					maxLength: {
-						value: phoneValidation.maxLength,
-						message: `Mobile number must be ${phoneValidation.maxLength} digits`,
+						value: emailValidation.maxLength,
+						message: `Email cannot exceed ${emailValidation.maxLength} characters`,
 					},
 				},
 			},
-			{
-				name: "alternate_mobile",
-				label: "Alternate Mobile Number",
-				parameter_type_id: ParamType.MOBILE,
-				required: false,
-				meta: { optional: true },
-				validations: {
-					pattern: {
-						value: phoneValidation.regex,
-						message: "Please enter a valid 10-digit mobile number",
-					},
-					minLength: {
-						value: phoneValidation.minLength,
-						message: `Mobile number must be ${phoneValidation.minLength} digits`,
-					},
-					maxLength: {
-						value: phoneValidation.maxLength,
-						message: `Mobile number must be ${phoneValidation.maxLength} digits`,
-					},
-				},
-			},
+			// {
+			// 	name: "contact_person_cell",
+			// 	label: "Contact Person's Mobile Number",
+			// 	parameter_type_id: ParamType.MOBILE,
+			// 	required: true,
+			// 	validations: {
+			// 		pattern: {
+			// 			value: phoneValidation.regex,
+			// 			message: "Please enter a valid 10-digit mobile number",
+			// 		},
+			// 		minLength: {
+			// 			value: phoneValidation.minLength,
+			// 			message: `Mobile number must be ${phoneValidation.minLength} digits`,
+			// 		},
+			// 		maxLength: {
+			// 			value: phoneValidation.maxLength,
+			// 			message: `Mobile number must be ${phoneValidation.maxLength} digits`,
+			// 		},
+			// 	},
+			// },
+			// {
+			// 	name: "alternate_mobile",
+			// 	label: "Alternate Mobile Number",
+			// 	parameter_type_id: ParamType.MOBILE,
+			// 	required: false,
+			// 	meta: { optional: true },
+			// 	validations: {
+			// 		pattern: {
+			// 			value: phoneValidation.regex,
+			// 			message: "Please enter a valid 10-digit mobile number",
+			// 		},
+			// 		minLength: {
+			// 			value: phoneValidation.minLength,
+			// 			message: `Mobile number must be ${phoneValidation.minLength} digits`,
+			// 		},
+			// 		maxLength: {
+			// 			value: phoneValidation.maxLength,
+			// 			message: `Mobile number must be ${phoneValidation.maxLength} digits`,
+			// 		},
+			// 	},
+			// },
 			{
 				name: "current_address_line1",
 				label: "Registered Business Address (Line 1)",
@@ -264,7 +311,7 @@ const BusinessDetailsStep = ({
 				},
 			},
 		];
-	}, [states, isLoadingStates]);
+	}, [states, isLoadingStates, userName, email]);
 
 	/**
 	 * Check pipeline result for step completion - auto-advance if already successful
@@ -327,6 +374,7 @@ const BusinessDetailsStep = ({
 			name: data.name,
 			company_type: companyTypeValue,
 			authorized_signatory_name: data.authorized_signatory_name,
+			email: data.email,
 			contact_person_cell: data.contact_person_cell,
 			alternate_mobile: data.alternate_mobile || "",
 			current_address_line1: data.current_address_line1,

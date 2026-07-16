@@ -69,6 +69,8 @@ export interface OnboardingContextValue extends OnboardingStateHook {
 	userName: string;
 	mobile: string;
 	agreementId: string;
+	email: string;
+	userType?: number;
 }
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null);
@@ -80,6 +82,7 @@ interface OnboardingProviderProps {
 	userName: string;
 	mobile: string;
 	agreementId: string;
+	email: string;
 	onboardingSteps?: Array<{ role: number; label?: string }>;
 	roleList?: Array<number> | string;
 	userType?: number;
@@ -114,6 +117,7 @@ export const OnboardingProvider = ({
 	userName,
 	mobile,
 	agreementId,
+	email,
 	onboardingSteps,
 	roleList,
 	userType,
@@ -508,6 +512,8 @@ export const OnboardingProvider = ({
 			userName,
 			mobile,
 			agreementId,
+			email,
+			userType,
 		}),
 		[
 			state,
@@ -525,6 +531,8 @@ export const OnboardingProvider = ({
 			userName,
 			mobile,
 			agreementId,
+			email,
+			userType,
 		]
 	);
 

@@ -7,6 +7,7 @@ export interface UserDataDetails {
 	user_type: number;
 	name: string;
 	mobile: string;
+	email?: string;
 	agreement_id: number;
 	code: string;
 	onboarding_steps: OnboardingStep[];
@@ -66,6 +67,15 @@ export const getMobileFromData = (
 	data: UnifiedUserData
 ): string | undefined => {
 	return data?.userDetails?.mobile;
+};
+
+/**
+ * Extracts the email from the unified user data object.
+ * @param {UnifiedUserData} data - The unified user data object.
+ * @returns {string | undefined} The email if found, otherwise undefined.
+ */
+export const getEmailFromData = (data: UnifiedUserData): string | undefined => {
+	return data?.userDetails?.email;
 };
 
 /**
