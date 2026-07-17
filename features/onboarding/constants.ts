@@ -521,7 +521,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: false,
+			refreshProfile: true,
 		},
 	},
 	{
@@ -604,7 +604,7 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 			],
 		},
 		postSubmit: {
-			refreshProfile: false,
+			refreshProfile: true,
 		},
 	},
 	{
