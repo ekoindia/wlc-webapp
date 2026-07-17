@@ -20,6 +20,7 @@ import { OnboardingProvider } from "../../context";
 import type { OnboardingServices } from "../../contracts";
 import {
 	getAgreementIdFromData,
+	getEmailFromData,
 	getOnboardingStepsFromData,
 	getRoleListFromData,
 	getUserNameFromData,
@@ -216,6 +217,7 @@ const AssistedOnboarding = (): JSX.Element => {
 	const userType = getUserTypeFromData(agentDetails);
 	const userName = getUserNameFromData(agentDetails);
 	const agreementId = getAgreementIdFromData(agentDetails);
+	const email = getEmailFromData(agentDetails);
 
 	// MARK: Render Functions
 	const renderCurrentStep = (): JSX.Element => {
@@ -324,6 +326,7 @@ const AssistedOnboarding = (): JSX.Element => {
 					mobile={agentMobile}
 					userName={String(userName || "")}
 					agreementId={String(agreementId || "")}
+					email={String(email || "")}
 					onboardingSteps={onboardingSteps}
 					roleList={roleList}
 					userType={userType}

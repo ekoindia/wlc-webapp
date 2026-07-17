@@ -118,7 +118,7 @@ Supporting constants in the same file:
 |------|------|------|------|
 | Retailer | `1` | `0` | `2` (MERCHANT) |
 | Distributor | `2` | `2` | `1` (DISTRIBUTOR) |
-| Enterprise | `3` | `3` | `23` (ENTERPRISE_PARTNER_ADMIN) |
+| Enterprise | `3` | `1` | `23` (ENTERPRISE_PARTNER_ADMIN) |
 
 | Scheme | What it is | Where defined |
 |--------|-----------|---------------|
