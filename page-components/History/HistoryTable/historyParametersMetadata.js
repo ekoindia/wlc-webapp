@@ -52,7 +52,7 @@ export const historyParametersMetadata = [
 
 	{
 		name: "fee",
-		label: "Charges",
+		label: "Charges (Incl. of GST)",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
@@ -88,11 +88,11 @@ export const historyParametersMetadata = [
 
 			return (
 				(row.amount_dr > 0 ? row.amount_dr : 0) +
-					(row.fee > 0 ? row.fee : 0) +
-					(row.tds > 0 ? row.tds : 0) +
-					(row.gst > 0 ? row.gst : 0) +
-					(row.insurance_amount > 0 ? row.insurance_amount : 0) +
-					(row.eko_gst > 0 ? row.eko_gst : 0) || ""
+				(row.fee > 0 ? row.fee : 0) +
+				(row.tds > 0 ? row.tds : 0) +
+				(row.insurance_amount > 0 ? row.insurance_amount : 0) // +
+				// (row.gst > 0 ? row.gst : 0) + // UPDATE 29July'26: `fee` is already inclusive of `gst`
+				// (row.eko_gst > 0 ? row.eko_gst : 0) || ""
 			);
 		},
 	},
@@ -180,7 +180,7 @@ export const historyParametersMetadata = [
 	},
 	{
 		name: "fee",
-		label: "Charges",
+		label: "Charges (Incl. of GST)",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
@@ -605,7 +605,7 @@ export const networkHistoryParametersMetadata = [
 	},
 	{
 		name: "fee",
-		label: "Charges",
+		label: "Charges (Incl. of GST)",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
