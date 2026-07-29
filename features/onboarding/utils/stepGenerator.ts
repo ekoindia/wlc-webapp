@@ -319,10 +319,13 @@ export const applyStepOrgConfigHelper = (
 		const override = stepOrgConfig.get(step.id);
 		if (!override) return step;
 
-		console.log(
-			`[StepConfiguration] Applying org overrides to step: ${step.name} (ID: ${step.id})`
-		);
 		const { label, description, props } = override;
+
+		console.log(
+			`[StepConfiguration] Applying org overrides to step: ${step.name} (ID: ${step.id})`,
+			{ label, description, props }
+		);
+
 		return {
 			...step,
 			...(isNonEmptyString(label) ? { label } : {}),
