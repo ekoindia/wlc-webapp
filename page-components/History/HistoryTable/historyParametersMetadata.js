@@ -234,17 +234,21 @@ export const historyParametersMetadata = [
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	{
+		// REDUNDANT: For 3rd-party digital service providers who would pay us commission
+		// and, Eko would deduct GST for that
 		name: "eko_service_charge",
 		label: "Service Charge",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
-	}, // For Enterprise
+	},
 	{
+		// REDUNDANT: For 3rd-party digital service providers who would pay us commission
+		// and, Eko would deduct GST for that
 		name: "eko_gst",
 		label: "GST",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
-	}, // For Enterprise (API Partners) only
+	},
 	{
 		name: "tid",
 		label: "TID",
@@ -661,17 +665,21 @@ export const networkHistoryParametersMetadata = [
 	},
 
 	{
+		// REDUNDANT: For 3rd-party digital service providers who would pay us commission
+		// and, Eko would deduct GST for that
 		name: "eko_service_charge",
 		label: "Service Charge",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
-	}, // For Enterprise
+	},
 	{
+		// REDUNDANT: For 3rd-party digital service providers who would pay us commission
+		// and, Eko would deduct GST for that
 		name: "eko_gst",
 		label: "GST",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
-	}, // For Enterprise
+	},
 
 	{
 		name: "customer_name",
