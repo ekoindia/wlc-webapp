@@ -42,6 +42,44 @@ On mount, [useRestoreLastLoginOrRoute](/page-components/LoginPanel/useRestoreLas
 
 `initialMobile` is the prefill source of truth for both the standard login page and the embedded gateway login. See [onboarding-configuration.md](./onboarding-configuration.md#url-parameter-auto-fill) for full `role`/`mobile` auto-fill semantics.
 
+## Auto-login via `?refresh_token=`
+
+Opening the landing page as `/?refresh_token=<token>` logs the user in silently — no mobile, no OTP, no click. Used to hand a session from an external system (partner portal, email link, native wrapper) into a fresh browser page.
+
+Implemented by [useAutoLoginFromRefreshToken](/page-components/LandingPanel/useAutoLoginFromRefreshToken.ts), called from `LandingPanel`. While it runs, `LandingPanel` renders a `<PageLoader />` instead of the login form — for both the CMS and the built-in login branch.
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant H as useAutoLoginFromRefreshToken
+    participant L as loginUsingRefreshToken
+    participant API as Auth API
+    participant R as RouteProtecter
+
+    B->>H: GET /?refresh_token=T&next=/history
+    H->>B: router.replace("/?next=/history", shallow) — token dropped
+    H->>L: loginUsingRefreshToken(T, ...)
+    L->>API: POST /authentication/token { refresh_token: T }
+    API-->>L: new token set
+    L->>API: POST /authentication/refresh-profile
+    API-->>L: profile
+    L->>L: updateUserInfo(res) + login(res) -> LOGIN
+    R->>B: redirect to ?next= or initialRoute[role]
+```
+
+Behavior:
+
+- The parameter is read from `window.location.search`, **not** `router.query`. `/` is statically optimized, so `router.query` stays empty until `router.isReady` flips a render later — long enough for the login form to flash.
+- Only `refresh_token` is stripped. `next`, `role`, `bv` survive, so the post-login redirect in [RouteProtecter](/components/RouteProtecter/RouteProtecter.jsx) still works.
+- The strip is **awaited** before the exchange request, so the credential is out of the address bar before any request that could carry it in a `Referer` header.
+- A `useRef` guard stops a re-render or a React StrictMode double-effect from spending the token twice.
+- Already logged in? The param is stripped and nothing else happens.
+- On any failure (bad/expired token, profile fetch failure) `logout()` clears the partial session and the normal login form appears. No toast, no error screen.
+
+> **Security.** A refresh token in a URL is a bearer credential — whoever can read the link owns the session. Stripping it from the address bar limits, but does not eliminate, exposure: the original navigation has already reached browser history, the server access log, and any proxy/CDN in between. Generate these links short-lived and single-use, and percent-encode the token (`encodeURIComponent`) — raw tokens containing `+`, `&`, `=` or `#` will otherwise be corrupted by query parsing.
+
+The token exchange itself is `loginUsingRefreshToken()`, shared with the Android `CACHED_REFRESH_TOKEN` path — see [session-tokens.md](./session-tokens.md#silent-login-from-a-refresh-token).
+
 ## Mobile + OTP flow
 
 ```mermaid

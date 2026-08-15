@@ -400,26 +400,32 @@ function generateNewAccessToken(
 }
 
 /**
- * Login using refresh token on Android platform.
- * MARK: Login Android
- * @param refresh_token
- * @param updateUserInfo
- * @param login
- * @param logout
- * @param isAndroid
+ * Login silently using a refresh token, without any user interaction.
+ * Used by the Android wrapper (cached refresh token) and by the web landing
+ * page when a `?refresh_token=` URL param is present.
+ * MARK: Login using Refresh Token
+ * @param {string} refresh_token - The refresh token to exchange for a new session
+ * @param {Function} updateUserInfo - Function to update the userState
+ * @param {Function} login - Function to mark the user as logged in
+ * @param {Function} [logout] - Function to logout/clear a half-written session on failure
+ * @param {boolean} [isAndroid] - Is the user using the Android wrapper app?
+ * @returns {Promise<void>} Resolves once the profile has been loaded and `login()` dispatched.
  */
-function loginUsingRefreshTokenAndroid(
+function loginUsingRefreshToken(
 	refresh_token,
 	updateUserInfo,
 	login,
 	logout,
 	isAndroid
 ) {
-	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
-		method: "post",
-		headers: { "Content-type": "application/x-www-form-urlencoded" },
-		body: "refresh_token=" + refresh_token,
-	})
+	return fetch(
+		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN,
+		{
+			method: "post",
+			headers: { "Content-type": "application/x-www-form-urlencoded" },
+			body: "refresh_token=" + encodeURIComponent(refresh_token),
+		}
+	)
 		.then((res) => {
 			if (!res.ok) {
 				throw new Error("Network response was not ok");
@@ -428,10 +434,13 @@ function loginUsingRefreshTokenAndroid(
 		})
 		.then((data) => {
 			setandUpdateAuthTokens(data);
-			refreshUserProfile(login, updateUserInfo);
+			// Returned so the caller's `.then`/`.finally` waits for the profile,
+			// and so a profile failure reaches the `.catch` below instead of
+			// leaving tokens in sessionStorage with no LOGIN dispatched.
+			return refreshUserProfile(login, updateUserInfo);
 		})
 		.catch((err) => {
-			console.log([loginUsingRefreshTokenAndroid], err);
+			console.error("[loginUsingRefreshToken]", err);
 			logout && logout();
 
 			if (isAndroid) {
@@ -452,19 +461,22 @@ const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
 	const access_token = sessionStorage.getItem("access_token");
 
 	let platform = isAndroid ? "android" : "web";
-	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE, {
-		body: {
-			platform: platform,
-			last_refresh_token: refresh_token,
-		},
-		token: access_token,
-	})
-		.then((res) => {
-			console.log("refreshProfile", JSON.stringify(res));
-			updateUserInfo(res);
-			login(res);
-		})
-		.catch((err) => console.error("[refreshUser] Error:", err));
+	// Returned (and errors deliberately not swallowed) so the caller can wait for
+	// the profile and clean up if it fails — see `loginUsingRefreshToken`.
+	return fetcher(
+		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE,
+		{
+			body: {
+				platform: platform,
+				last_refresh_token: refresh_token,
+			},
+			token: access_token,
+		}
+	).then((res) => {
+		console.log("refreshProfile", JSON.stringify(res));
+		updateUserInfo(res);
+		login(res);
+	});
 };
 
 export {
@@ -474,7 +486,7 @@ export {
 	getAuthTokens,
 	getSessions,
 	getTokenExpiryTime,
-	loginUsingRefreshTokenAndroid,
+	loginUsingRefreshToken,
 	revokeSession,
 	sendOtpRequest,
 	setandUpdateAuthTokens,

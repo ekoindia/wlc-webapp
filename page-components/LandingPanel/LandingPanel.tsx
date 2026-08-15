@@ -1,3 +1,4 @@
+import { PageLoader } from "components";
 import { useFeatureFlag } from "hooks";
 import { cmsConfig } from "libs/cms";
 import { useOrgDetailContext } from "contexts";
@@ -5,6 +6,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { LoginPanel } from "page-components";
 import { useEffect, useState } from "react";
+import { useAutoLoginFromRefreshToken } from "./useAutoLoginFromRefreshToken";
 
 // For CMS custom screen
 // TODO: Move to static import, and, enable SSR
@@ -50,6 +52,8 @@ const LandingPanel = () => {
 	const initialMobile = sanitizeMobile(
 		Array.isArray(mobileQuery) ? mobileQuery[0] : mobileQuery
 	);
+	// Silent login when opened as `/?refresh_token=<token>` (no user interaction)
+	const isAutoLoginBusy = useAutoLoginFromRefreshToken();
 
 	/*
 		org_details: {
@@ -116,6 +120,12 @@ const LandingPanel = () => {
 		orgDetail?.metadata?.cms_meta,
 		orgDetail?.metadata?.cms_data,
 	]);
+
+	// Silent login in flight: never show the login form, it is about to be replaced
+	// by a redirect. Checked before `pageReady` so it covers the CMS branch too.
+	if (isAutoLoginBusy) {
+		return <PageLoader />;
+	}
 
 	if (!pageReady) {
 		return null;

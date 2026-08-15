@@ -96,7 +96,22 @@ sequenceDiagram
 
 > **Implementation note.** On the success path the function does not return a reliable boolean — the promise chain is not returned, so callers should not depend on a truthy/awaitable result. Also `.finally(setIsTokenUpdating(false))` invokes the setter **immediately** (its return value is passed to `.finally`) rather than after the request settles. Treat these as current behavior; do not document a dependable refresh result or strong de-duplication beyond the `isTokenUpdating` entry guard.
 
-On Android, `loginUsingRefreshTokenAndroid()` performs a raw-`fetch` refresh from a stored refresh token and then calls `refreshUserProfile()`.
+### Silent login from a refresh token
+
+`loginUsingRefreshToken(refresh_token, updateUserInfo, login, logout, isAndroid)` ([loginHelper.js](/helpers/loginHelper.js)) turns a bare refresh token into a full logged-in session, with no user interaction:
+
+1. raw-`fetch` `POST /authentication/token` (form-encoded) → new token set,
+2. `setandUpdateAuthTokens()` writes them to `sessionStorage`,
+3. `refreshUserProfile()` → `POST /authentication/refresh-profile` → `updateUserInfo(res)` + `login(res)` → `LOGIN` dispatch.
+
+It returns the promise for the **whole** chain, so callers can show a loader until the profile has landed. A failure at either step is caught in one place: `logout()` (clearing any half-written session) plus `CLEAR_REFRESH_TOKEN` on Android.
+
+Two callers:
+
+- **Android** — [LayoutLogin](/layout-components/LayoutLogin/LayoutLogin.tsx) and [LayoutGateway](/layout-components/LayoutGateway/LayoutGateway.tsx) on the `CACHED_REFRESH_TOKEN` bridge action.
+- **Web** — the `?refresh_token=` landing-page auto-login, see [login.md](./login.md#auto-login-via-refresh_token).
+
+(Previously named `loginUsingRefreshTokenAndroid`; it is no longer Android-specific.)
 
 ## Access hooks
 
