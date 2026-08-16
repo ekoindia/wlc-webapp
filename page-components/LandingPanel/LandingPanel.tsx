@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { LoginPanel } from "page-components";
 import { useEffect, useState } from "react";
-import { useAutoLoginFromRefreshToken } from "./useAutoLoginFromRefreshToken";
+import { useAutoLoginFromUrlToken } from "./useAutoLoginFromUrlToken";
 
 // For CMS custom screen
 // TODO: Move to static import, and, enable SSR
@@ -52,8 +52,8 @@ const LandingPanel = () => {
 	const initialMobile = sanitizeMobile(
 		Array.isArray(mobileQuery) ? mobileQuery[0] : mobileQuery
 	);
-	// Silent login when opened as `/?refresh_token=<token>` (no user interaction)
-	const isAutoLoginBusy = useAutoLoginFromRefreshToken();
+	// Silent login when opened as `/?access_token=` or `/?refresh_token=`
+	const isAutoLoginBusy = useAutoLoginFromUrlToken();
 
 	/*
 		org_details: {

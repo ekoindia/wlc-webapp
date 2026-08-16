@@ -29,6 +29,8 @@ inf-forced-logout     ("1" after an explicit logout; preserved across clear)
 org_detail            (preserved across clear)
 ```
 
+`setandUpdateAuthTokens()` **removes** any of the four token keys that is absent from its payload, rather than writing it. Two reasons: `sessionStorage.setItem(key, undefined)` stores the literal string `"undefined"`, which reads back as a truthy 9-character token and gets redeemed as if it were real; and a new login must never inherit a token left behind by the previous session in that tab. So a session seeded from an `?access_token=` alone has **no** `refresh_token` key at all, and `useUser().accessTokenLite`/`accessTokenCrm` correctly fall back to `access_token`.
+
 ### localStorage (persists across sessions)
 
 ```
@@ -96,22 +98,34 @@ sequenceDiagram
 
 > **Implementation note.** On the success path the function does not return a reliable boolean — the promise chain is not returned, so callers should not depend on a truthy/awaitable result. Also `.finally(setIsTokenUpdating(false))` invokes the setter **immediately** (its return value is passed to `.finally`) rather than after the request settles. Treat these as current behavior; do not document a dependable refresh result or strong de-duplication beyond the `isTokenUpdating` entry guard.
 
-### Silent login from a refresh token
+### Silent login from a URL credential
 
-`loginUsingRefreshToken(refresh_token, updateUserInfo, login, logout, isAndroid)` ([loginHelper.js](/helpers/loginHelper.js)) turns a bare refresh token into a full logged-in session, with no user interaction:
+Two helpers in [loginHelper.js](/helpers/loginHelper.js) turn a bare token into a logged-in session with no user interaction. Both return the promise for the **whole** chain, so callers can show a loader until the profile has landed, and both funnel every failure into a single `.catch` → `logout()`, clearing any half-written session.
 
-1. raw-`fetch` `POST /authentication/token` (form-encoded) → new token set,
-2. `setandUpdateAuthTokens()` writes them to `sessionStorage`,
-3. `refreshUserProfile()` → `POST /authentication/refresh-profile` → `updateUserInfo(res)` + `login(res)` → `LOGIN` dispatch.
+**`loginUsingAccessToken(access_token, updateUserInfo, login, logout, isAndroid)`**
 
-It returns the promise for the **whole** chain, so callers can show a loader until the profile has landed. A failure at either step is caught in one place: `logout()` (clearing any half-written session) plus `CLEAR_REFRESH_TOKEN` on Android.
+1. `setandUpdateAuthTokens({ access_token })` — seeds `sessionStorage` and **clears** any stale `refresh_token`/lite/crm token from a previous session in that tab,
+2. `refreshUserProfile()` → `POST /authentication/refresh-profile` → `LOGIN` dispatch.
 
-Two callers:
+No `/authentication/token` call, so **nothing is rotated** — the app that supplied the token keeps its own session. The resulting session has no refresh token, which means:
+
+- `token_timeout` is `0`, and the `refresh_token &&` gate in [useRefreshToken.js](/hooks/useRefreshToken.js) never fires — no proactive refresh is attempted,
+- expiry is terminal: the 401 path logs out with "Session Expired. Please login again." and the user re-authenticates normally.
+
+**`loginUsingRefreshToken(refresh_token, updateUserInfo, login, logout, isAndroid)`**
+
+1. raw-`fetch` `POST /authentication/token` (form-encoded) → new token set. **This rotates the refresh token server-side — the one passed in is now dead.**
+2. `setandUpdateAuthTokens()` writes the new set to `sessionStorage`,
+3. `refreshUserProfile()` as above.
+
+Adds `CLEAR_REFRESH_TOKEN` on Android to its failure path. Callers:
 
 - **Android** — [LayoutLogin](/layout-components/LayoutLogin/LayoutLogin.tsx) and [LayoutGateway](/layout-components/LayoutGateway/LayoutGateway.tsx) on the `CACHED_REFRESH_TOKEN` bridge action.
-- **Web** — the `?refresh_token=` landing-page auto-login, see [login.md](./login.md#auto-login-via-refresh_token).
+- **Web** — landing-page auto-login, only when no `?access_token=` was supplied. See [login.md](./login.md#auto-login-via-a-url-credential).
 
 (Previously named `loginUsingRefreshTokenAndroid`; it is no longer Android-specific.)
+
+> `refreshUserProfile()` merges the session's access token into the payload it hands to `updateUserInfo`/`login` — `{ ...res, access_token: res?.access_token || access_token }`. `refresh-profile` is a profile endpoint and is not guaranteed to echo a token back, while the `LOGIN` and `UPDATE_USER_STORE` reducers both refuse a payload without `access_token`.
 
 ## Access hooks
 

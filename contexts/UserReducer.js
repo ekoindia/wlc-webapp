@@ -25,7 +25,11 @@ export const UserReducer = (state, { type, payload, meta }) => {
 		}
 
 		case "UPDATE_USER_STORE": {
-			if (payload && payload.access_token && payload.refresh_token) {
+			// `refresh_token` is deliberately NOT required: a session seeded from
+			// a URL `?access_token=` has no refresh token, and requiring one here
+			// used to drop the update (and, before the trailing `return state`
+			// below, wipe the whole session).
+			if (payload && payload.access_token) {
 				//delete payload["long_session"]; // FIX: Why remove long_session??? // Uncommented , require this variable for biometric login
 				let tokenTimeout = getTokenExpiryTime(payload);
 				const newState = buildUserObjectState({
@@ -47,13 +51,19 @@ export const UserReducer = (state, { type, payload, meta }) => {
 			break;
 		}
 
+		// Both of these return a NEW state object: mutating the nested details in
+		// place and returning the same reference does not re-render consumers.
 		case "UPDATE_SHOP_DETAILS": {
-			Object.assign(state?.shopDetails, payload);
-			break;
+			return {
+				...state,
+				shopDetails: { ...state?.shopDetails, ...payload },
+			};
 		}
 		case "UPDATE_PERSONAL_DETAILS": {
-			Object.assign(state?.personalDetails, payload);
-			break;
+			return {
+				...state,
+				personalDetails: { ...state?.personalDetails, ...payload },
+			};
 		}
 
 		case "LOGIN": {
@@ -97,4 +107,8 @@ export const UserReducer = (state, { type, payload, meta }) => {
 		default:
 			throw new Error(`Unknown action type: ${type}`);
 	}
+
+	// Any `break` above lands here. Without this the reducer returns `undefined`
+	// and React replaces the whole session state with it — a silent logout.
+	return state;
 };
