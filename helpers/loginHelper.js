@@ -199,21 +199,37 @@ function setUserDetails(data) {
 /**
  * Set the auth tokens in the session storage.
  * If running under Android wrapper app, send details to the app for caching.
+ * Any token missing from `data` is REMOVED from the session storage, so a new
+ * login never inherits a token from the previous session.
  * MARK: Set Tokens
  * @param {object} data	The object with auth tokens
- * @param {string} data.access_token	The full access token used to get transactions for the user based on assigned roles
- * @param {string} data.refresh_token	The refresh token
- * @param {string} data.access_token_lite	The light-weight access token for authenticating regular transactions
- * @param {string} data.access_token_crm	The access token for the CRM API
- * @param {boolean} isAndroid	Is the user using the Android wrapper app?
- * @param {boolean} isNewLogin	Is this a new login?
+ * @param {string} [data.access_token]	The full access token used to get transactions for the user based on assigned roles
+ * @param {string} [data.refresh_token]	The refresh token. Absent for a session seeded from an access token alone.
+ * @param {string} [data.access_token_lite]	The light-weight access token for authenticating regular transactions
+ * @param {string} [data.access_token_crm]	The access token for the CRM API
+ * @param {boolean} [isAndroid]	Is the user using the Android wrapper app?
+ * @param {boolean} [isNewLogin]	Is this a new login?
  */
 function setandUpdateAuthTokens(data, isAndroid, isNewLogin = false) {
 	try {
-		sessionStorage.setItem("access_token", data?.access_token);
-		sessionStorage.setItem("refresh_token", data?.refresh_token);
-		sessionStorage.setItem("access_token_lite", data?.access_token_lite);
-		sessionStorage.setItem("access_token_crm", data?.access_token_crm);
+		// A missing token must be REMOVED, not written. `setItem(k, undefined)`
+		// stores the string "undefined" (truthy, 9 chars) which later reads back
+		// as a real token; and merely skipping the write would leave a previous
+		// session's token in place - e.g. an access-token-only login landing in a
+		// tab that still holds someone else's refresh_token.
+		[
+			"access_token",
+			"refresh_token",
+			"access_token_lite",
+			"access_token_crm",
+		].forEach((tokenKey) => {
+			const tokenValue = data?.[tokenKey];
+			if (tokenValue) {
+				sessionStorage.setItem(tokenKey, tokenValue);
+			} else {
+				sessionStorage.removeItem(tokenKey);
+			}
+		});
 	} catch (err) {
 		console.warn("Updating to session-storage failed: ", err);
 	}
@@ -400,26 +416,32 @@ function generateNewAccessToken(
 }
 
 /**
- * Login using refresh token on Android platform.
- * MARK: Login Android
- * @param refresh_token
- * @param updateUserInfo
- * @param login
- * @param logout
- * @param isAndroid
+ * Login silently using a refresh token, without any user interaction.
+ * Used by the Android wrapper (cached refresh token) and by the web landing
+ * page when a `?refresh_token=` URL param is present.
+ * MARK: Login using Refresh Token
+ * @param {string} refresh_token - The refresh token to exchange for a new session
+ * @param {Function} updateUserInfo - Function to update the userState
+ * @param {Function} login - Function to mark the user as logged in
+ * @param {Function} [logout] - Function to logout/clear a half-written session on failure
+ * @param {boolean} [isAndroid] - Is the user using the Android wrapper app?
+ * @returns {Promise<void>} Resolves once the profile has been loaded and `login()` dispatched.
  */
-function loginUsingRefreshTokenAndroid(
+function loginUsingRefreshToken(
 	refresh_token,
 	updateUserInfo,
 	login,
 	logout,
 	isAndroid
 ) {
-	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
-		method: "post",
-		headers: { "Content-type": "application/x-www-form-urlencoded" },
-		body: "refresh_token=" + refresh_token,
-	})
+	return fetch(
+		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN,
+		{
+			method: "post",
+			headers: { "Content-type": "application/x-www-form-urlencoded" },
+			body: "refresh_token=" + encodeURIComponent(refresh_token),
+		}
+	)
 		.then((res) => {
 			if (!res.ok) {
 				throw new Error("Network response was not ok");
@@ -428,10 +450,13 @@ function loginUsingRefreshTokenAndroid(
 		})
 		.then((data) => {
 			setandUpdateAuthTokens(data);
-			refreshUserProfile(login, updateUserInfo);
+			// Returned so the caller's `.then`/`.finally` waits for the profile,
+			// and so a profile failure reaches the `.catch` below instead of
+			// leaving tokens in sessionStorage with no LOGIN dispatched.
+			return refreshUserProfile(login, updateUserInfo);
 		})
 		.catch((err) => {
-			console.log([loginUsingRefreshTokenAndroid], err);
+			console.error("[loginUsingRefreshToken]", err);
 			logout && logout();
 
 			if (isAndroid) {
@@ -452,20 +477,63 @@ const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
 	const access_token = sessionStorage.getItem("access_token");
 
 	let platform = isAndroid ? "android" : "web";
-	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE, {
-		body: {
-			platform: platform,
-			last_refresh_token: refresh_token,
-		},
-		token: access_token,
-	})
-		.then((res) => {
-			console.log("refreshProfile", JSON.stringify(res));
-			updateUserInfo(res);
-			login(res);
-		})
-		.catch((err) => console.error("[refreshUser] Error:", err));
+	// Returned (and errors deliberately not swallowed) so the caller can wait for
+	// the profile and clean up if it fails — see `loginUsingRefreshToken`.
+	return fetcher(
+		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE,
+		{
+			body: {
+				platform: platform,
+				last_refresh_token: refresh_token,
+			},
+			token: access_token,
+		}
+	).then((res) => {
+		console.log("refreshProfile", JSON.stringify(res));
+		// Carry the session's access token into the payload: the LOGIN and
+		// UPDATE_USER_STORE reducers both guard on `access_token`, and this
+		// endpoint is a profile endpoint - it is not guaranteed to echo one back.
+		const sessionData = {
+			...res,
+			access_token: res?.access_token || access_token,
+		};
+		updateUserInfo(sessionData);
+		login(sessionData);
+	});
 };
+
+/**
+ * Login silently using an access token, without any user interaction.
+ * Used by the web landing page when an `?access_token=` URL param is present.
+ *
+ * Unlike `loginUsingRefreshToken`, this does NOT call `/authentication/token`,
+ * so the caller's refresh token is never rotated and their own session survives.
+ * The trade-off: the resulting session has no refresh token, so it cannot renew
+ * itself - expiry is terminal and lands the user back on the login page.
+ * MARK: Login using Access Token
+ * @param {string} access_token - The access token to seed the session with
+ * @param {Function} updateUserInfo - Function to update the userState
+ * @param {Function} login - Function to mark the user as logged in
+ * @param {Function} [logout] - Function to clear a half-written session on failure
+ * @param {boolean} [isAndroid] - Is the user using the Android wrapper app?
+ * @returns {Promise<void>} Resolves once the profile has been loaded and `login()` dispatched.
+ */
+function loginUsingAccessToken(
+	access_token,
+	updateUserInfo,
+	login,
+	logout,
+	isAndroid
+) {
+	// Seed sessionStorage first - `refreshUserProfile` reads the token from there.
+	// Any stale refresh/lite/crm token from a previous session is cleared.
+	setandUpdateAuthTokens({ access_token }, isAndroid, true);
+
+	return refreshUserProfile(login, updateUserInfo, isAndroid).catch((err) => {
+		console.error("[loginUsingAccessToken]", err);
+		logout && logout();
+	});
+}
 
 export {
 	clearAuthTokens,
@@ -474,7 +542,8 @@ export {
 	getAuthTokens,
 	getSessions,
 	getTokenExpiryTime,
-	loginUsingRefreshTokenAndroid,
+	loginUsingAccessToken,
+	loginUsingRefreshToken,
 	revokeSession,
 	sendOtpRequest,
 	setandUpdateAuthTokens,

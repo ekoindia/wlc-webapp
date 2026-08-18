@@ -1,6 +1,6 @@
 import { PageLoader } from "components";
 import { useAppSource, usePubSub, useUser } from "contexts";
-import { loginUsingRefreshTokenAndroid } from "helpers/loginHelper";
+import { loginUsingRefreshToken } from "helpers/loginHelper";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
@@ -40,7 +40,7 @@ const LayoutLogin = ({ appName, pageMeta, children }) => {
 					setNativeVersion(parseInt(data));
 					return;
 				} else if (action === ANDROID_ACTION.CACHED_REFRESH_TOKEN) {
-					loginUsingRefreshTokenAndroid(
+					loginUsingRefreshToken(
 						data,
 						updateUserInfo,
 						login,

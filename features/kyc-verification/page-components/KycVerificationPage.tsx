@@ -34,6 +34,8 @@ const WorkflowBuilder = dynamic(
 interface KycVerificationPageProps {
 	/** Base path for navigation (defaults to /products/kyc-verification) */
 	basePath?: string;
+	/** Hide the header tool buttons (Bulk Upload / Builder / Manage) — they navigate or belong outside embedded/gateway contexts */
+	hideTools?: boolean;
 }
 
 /**
@@ -41,10 +43,12 @@ interface KycVerificationPageProps {
  * Displays a grid of verification services with category filtering, search, and multi-select support.
  * @param {KycVerificationPageProps} [props] - Component props
  * @param {string} [props.basePath] - Base path for navigation (defaults to /products/kyc-verification)
+ * @param {boolean} [props.hideTools] - Hide the header tool buttons (for embedded/gateway contexts)
  * @returns {JSX.Element} Rendered page with service grid and controls
  */
 export const KycVerificationPage = ({
 	basePath = "/products/kyc-verification",
+	hideTools = false,
 }: KycVerificationPageProps = {}): JSX.Element => {
 	const router = useRouter();
 	const { isAdmin, userType } = useSession();
@@ -185,50 +189,58 @@ export const KycVerificationPage = ({
 				isBeta
 				hideBackIcon
 				toolComponent={
-					<Flex gap="2">
-						<BulkUploadButton
-							onClick={() =>
-								isAdmin
-									? router.push(
-											"/admin/products/bulk-verification"
-										)
-									: router.push("/products/bulk-verification")
-							}
-						/>
-
-						{/* Builder mode button */}
-						{isWorkflowBuilderEnabled && isAdmin && (
-							<Button
+					hideTools ? undefined : (
+						<Flex gap="2">
+							<BulkUploadButton
 								onClick={() =>
-									setIsBuilderMode((prev) => !prev)
+									isAdmin
+										? router.push(
+												"/admin/products/bulk-verification"
+											)
+										: router.push(
+												"/products/bulk-verification"
+											)
 								}
-								size="sm"
-								icon="settings"
-								iconStyle={{ size: "xs" }}
-								variant={
-									isBuilderMode
-										? "primary"
-										: "primary_outline"
-								}
-							>
-								Builder
-							</Button>
-						)}
+							/>
 
-						{(isAdmin || userType === UserType.DISTRIBUTOR) && (
-							<Button
-								onClick={() => setIsManageMode(!isManageMode)}
-								size="sm"
-								icon="settings"
-								iconStyle={{ size: "xs" }}
-								variant={
-									isManageMode ? "primary" : "primary_outline"
-								}
-							>
-								Manage
-							</Button>
-						)}
-					</Flex>
+							{/* Builder mode button */}
+							{isWorkflowBuilderEnabled && isAdmin && (
+								<Button
+									onClick={() =>
+										setIsBuilderMode((prev) => !prev)
+									}
+									size="sm"
+									icon="settings"
+									iconStyle={{ size: "xs" }}
+									variant={
+										isBuilderMode
+											? "primary"
+											: "primary_outline"
+									}
+								>
+									Builder
+								</Button>
+							)}
+
+							{(isAdmin || userType === UserType.DISTRIBUTOR) && (
+								<Button
+									onClick={() =>
+										setIsManageMode(!isManageMode)
+									}
+									size="sm"
+									icon="settings"
+									iconStyle={{ size: "xs" }}
+									variant={
+										isManageMode
+											? "primary"
+											: "primary_outline"
+									}
+								>
+									Manage
+								</Button>
+							)}
+						</Flex>
+					)
 				}
 			/>
 

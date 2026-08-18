@@ -1,6 +1,6 @@
 import { PageLoader } from "components";
 import { useAppSource, usePubSub, useUser } from "contexts";
-import { loginUsingRefreshTokenAndroid } from "helpers/loginHelper";
+import { loginUsingRefreshToken } from "helpers/loginHelper";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Router from "next/router";
@@ -49,7 +49,7 @@ const LayoutGateway = ({ appName, children }) => {
 					setNativeVersion(parseInt(data));
 					return;
 				} else if (action === ANDROID_ACTION.CACHED_REFRESH_TOKEN) {
-					loginUsingRefreshTokenAndroid(
+					loginUsingRefreshToken(
 						data,
 						updateUserInfo,
 						login,

@@ -143,9 +143,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	},
 
 	// Eloka Gateway for redirection-based transaction processing.
+	// Enabled in every environment: gateway routes are self-gating (they render
+	// nothing without the credentials passed per-window in the URL), and
+	// partners embed them from UAT and production alike.
 	ELOKA_GATEWAY: {
 		enabled: true,
-		forEnv: ["development"],
 	},
 
 	// ------------------------------------------------------------------------

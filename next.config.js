@@ -107,7 +107,7 @@ const FRAME_SRC_DOMAINS = [
 const BASE_URI_DOMAINS = [SELF, ...EKO_DOMAINS];
 // Content Security Policy (CSP) for multi-tenant environment
 // NOTE: 'unsafe-inline' in script-src is required due to inline <Script> usage (e.g., Google Tag Manager). To improve security, migrate all inline scripts to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example. Remove 'unsafe-inline' if/when all inline scripts are eliminated.
-const cspHeaders = [
+const cspDirectives = [
 	// Only allow resources from the same origin by default. Blocks all external sources unless explicitly allowed below.
 	`default-src ${SELF}`,
 	// Allow JavaScript execution from trusted domains. 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager).
@@ -130,9 +130,16 @@ const cspHeaders = [
 	`base-uri ${BASE_URI_DOMAINS.join(" ")}`,
 	// Only allow forms to be submitted to self. Blocks data exfiltration via forms.
 	"form-action 'self'",
-	// Prevent the site from being embedded in any iframe. Protects against clickjacking.
-	"frame-ancestors 'none'",
-].join("; ");
+];
+
+// Default CSP: prevent the site from being embedded in any iframe (clickjacking).
+const cspHeaders = [...cspDirectives, "frame-ancestors 'none'"].join("; ");
+
+// Gateway CSP: /gateway/* pages are built for embedding (iframe/popup) by any
+// external caller — auth arrives per-window via URL credentials, never from an
+// ambient session, so a hostile framing page gets a dead-end screen, not a
+// logged-in UI to clickjack. The rest of the app stays 'none'.
+const gatewayCspHeaders = [...cspDirectives, "frame-ancestors *"].join("; ");
 
 // Security headers for all routes (applied in Next.js custom headers)
 // These headers help mitigate common web vulnerabilities and enforce best practices.
@@ -166,6 +173,29 @@ const securityHeaders = [
 		value: "camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), bluetooth=(), serial=()", // Restricts access to sensitive APIs to self only.
 	},
 ];
+
+// Security headers for /gateway/* (embeddable) routes:
+// - No X-Frame-Options: it has no "allow any origin" form (ALLOW-FROM is dead),
+//   and its presence would override frame-ancestors in some browsers. Omission
+//   for this path only is the point of the split.
+// - CSP with frame-ancestors * instead of 'none'.
+// - Permissions-Policy delegates camera/geolocation to any embedding parent
+//   (KYC flows capture face and location inside the partner's iframe; the
+//   parent still has to opt in with allow="camera; geolocation" on the iframe).
+const gatewaySecurityHeaders = securityHeaders
+	.filter((header) => header.key !== "X-Frame-Options")
+	.map((header) => {
+		if (header.key === "Content-Security-Policy") {
+			return { key: header.key, value: gatewayCspHeaders };
+		}
+		if (header.key === "Permissions-Policy") {
+			return {
+				key: header.key,
+				value: "camera=*, microphone=(self), geolocation=*, payment=(self), usb=(), bluetooth=(), serial=()",
+			};
+		}
+		return header;
+	});
 
 /*
 // ORIGINAL COMMENTED SECURITY HEADERS (kept for reference)
@@ -361,9 +391,17 @@ const nextConfig = {
 		if (ENABLE_SECURITY_HEADERS) {
 			return [
 				{
-					// Apply security headers to all routes to fix security vulnerabilities
-					source: "/(.*)",
+					// Apply strict security headers to every route EXCEPT /gateway/*
+					// (negative lookahead) — the exclusion is what lets the gateway
+					// rule below omit X-Frame-Options instead of overriding it.
+					source: "/((?!gateway/).*)",
 					headers: securityHeaders,
+				},
+				{
+					// Embeddable gateway routes: same headers minus X-Frame-Options,
+					// with frame-ancestors * and camera/geolocation delegation.
+					source: "/gateway/(.*)",
+					headers: gatewaySecurityHeaders,
 				},
 			];
 		}

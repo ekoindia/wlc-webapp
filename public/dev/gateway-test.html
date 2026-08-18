@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gateway Test Harness (temporary)</title>
+<style>
+	:root { color-scheme: light dark; }
+	body {
+		margin: 0;
+		font-family: system-ui, sans-serif;
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+	}
+	form {
+		display: flex;
+		gap: 8px;
+		padding: 12px;
+		border-bottom: 1px solid #8884;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+	form strong { font-size: 14px; }
+	input[type="text"] {
+		flex: 1;
+		min-width: 200px;
+		padding: 6px 8px;
+		font: inherit;
+	}
+	#path { flex: 0 1 260px; }
+	button { padding: 6px 14px; font: inherit; cursor: pointer; }
+	#newtab { font-size: 13px; }
+	iframe { flex: 1; border: 0; width: 100%; }
+	.note { font-size: 12px; opacity: 0.7; width: 100%; }
+</style>
+</head>
+<body>
+	<form id="form">
+		<strong>Gateway test</strong>
+		<input type="text" id="token" placeholder="access_token" autocomplete="off" required />
+		<input type="text" id="product" value="kyc-verification" title="Gateway product key" />
+		<button type="submit">Load</button>
+		<a id="newtab" href="#" target="_blank" hidden>open in new tab ↗</a>
+		<span class="note">Temporary harness — Mode B direct-token gateway (/gateway/products/&lt;product&gt;?access_token=…). Delete before release.</span>
+	</form>
+	<iframe id="frame" title="Verification page"></iframe>
+
+	<script>
+		document.getElementById("form").addEventListener("submit", function (e) {
+			e.preventDefault();
+			var token = document.getElementById("token").value.trim();
+			var product = document.getElementById("product").value.trim() || "kyc-verification";
+			var url =
+				"/gateway/products/" + encodeURIComponent(product) +
+				"?access_token=" + encodeURIComponent(token);
+			document.getElementById("frame").src = url;
+			var link = document.getElementById("newtab");
+			link.href = url;
+			link.hidden = false;
+		});
+	</script>
+</body>
+</html>

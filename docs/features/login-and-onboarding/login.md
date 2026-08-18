@@ -42,6 +42,54 @@ On mount, [useRestoreLastLoginOrRoute](/page-components/LoginPanel/useRestoreLas
 
 `initialMobile` is the prefill source of truth for both the standard login page and the embedded gateway login. See [onboarding-configuration.md](./onboarding-configuration.md#url-parameter-auto-fill) for full `role`/`mobile` auto-fill semantics.
 
+## Auto-login via a URL credential
+
+Opening the landing page with a credential in the query string logs the user in silently — no mobile, no OTP, no click. Used to hand a session from an external system (partner portal, email link, native wrapper) into a fresh browser page.
+
+| Parameter | Rotates the caller's token? | Resulting session |
+|-----------|-----------------------------|-------------------|
+| `?access_token=` | **No** | Cannot renew itself — expiry is terminal |
+| `?refresh_token=` | **Yes** — redeeming it at `/authentication/token` rotates it server-side | Full, self-refreshing |
+
+**Third parties must send `access_token`.** If another app (Connect, EPS, a partner portal) passes *its own* `refresh_token`, redeeming it rotates that token and kills the caller's own session. `refresh_token` is only appropriate for first-party links where the rotation is intended.
+
+When both are present, `access_token` wins.
+
+Implemented by [useAutoLoginFromUrlToken](/page-components/LandingPanel/useAutoLoginFromUrlToken.ts), called from `LandingPanel`. While it runs, `LandingPanel` renders a `<PageLoader />` instead of the login form — for both the CMS and the built-in login branch.
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant H as useAutoLoginFromUrlToken
+    participant L as loginUsingAccessToken / loginUsingRefreshToken
+    participant API as Auth API
+    participant R as RouteProtecter
+
+    B->>H: GET /?access_token=A&next=/history
+    H->>B: router.replace("/?next=/history", shallow) — credential dropped
+    H->>L: loginUsingAccessToken(A, ...)
+    opt refresh_token path only
+        L->>API: POST /authentication/token { refresh_token }
+        API-->>L: new token set (old refresh token now invalid)
+    end
+    L->>API: POST /authentication/refresh-profile
+    API-->>L: profile
+    L->>L: updateUserInfo + login({ ...profile, access_token }) -> LOGIN
+    R->>B: redirect to ?next= or initialRoute[role]
+```
+
+Behavior:
+
+- The parameters are read from `window.location.search`, **not** `router.query`. `/` is statically optimized, so `router.query` stays empty until `router.isReady` flips a render later — long enough for the login form to flash.
+- Both credential keys are stripped whenever present — including an empty `?access_token=` — while `next`, `role`, `bv` and the URL fragment survive, so the post-login redirect in [RouteProtecter](/components/RouteProtecter/RouteProtecter.jsx) still works.
+- The strip is **awaited** before the login request, so the credential is out of the address bar before any request that could carry it in a `Referer` header.
+- A `useRef` guard stops a re-render or a React StrictMode double-effect from spending the credential twice.
+- Already logged in? The credential is stripped and nothing else happens.
+- On any failure (bad/expired token, profile fetch failure) `logout()` clears the partial session and the normal login form appears. No toast, no error screen.
+- An `access_token`-seeded session has no refresh token, so it never renews. When the token expires the existing 401 path logs out with "Session Expired. Please login again." — see [session-tokens.md](./session-tokens.md#silent-login-from-a-url-credential).
+
+> **Security.** `access_token` and `refresh_token` are *both* bearer credentials — whoever can read the link owns the session. Preferring `access_token` protects the **caller's** session from rotation; it does nothing for link leakage. Stripping the credential from the address bar limits, but does not eliminate, exposure: the original navigation has already reached browser history, the server access log, analytics, and any proxy/CDN in between. Generate these links short-lived and single-use, and percent-encode the token (`encodeURIComponent`) — raw tokens containing `+`, `&`, `=` or `#` will otherwise be corrupted by query parsing.
+
 ## Mobile + OTP flow
 
 ```mermaid

@@ -8,7 +8,36 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Icon, InputLabel } from "components";
-import { ChangeEvent, forwardRef, ReactNode, Ref, useRef } from "react";
+import {
+	ChangeEvent,
+	forwardRef,
+	ReactNode,
+	Ref,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+
+/**
+ * Can `input.showPicker()` be called here?
+ *
+ * The HTML spec makes `showPicker()` throw a SecurityError for date inputs in a
+ * cross-origin iframe. Pages embedded by a partner (see /gateway/*) therefore
+ * cannot open the picker from script, so the hidden-input approach below has to
+ * fall back to a real, visible date input the user can click directly.
+ * @returns {boolean} True unless this document is embedded by a cross-origin page.
+ */
+const canShowPickerProgrammatically = (): boolean => {
+	try {
+		return (
+			window.self === window.top ||
+			window.top?.location.origin === window.location.origin
+		);
+	} catch {
+		// Reading a cross-origin top's location throws — that is the signal.
+		return false;
+	}
+};
 
 /**
  * Props for the Calendar component
@@ -101,8 +130,14 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 		ref: Ref<HTMLDivElement>
 	) => {
 		const calendarRef = useRef<HTMLInputElement>(null);
+		// Assume the picker can be opened from script until mounted: the check
+		// needs `window`, and this keeps SSR output identical for normal pages.
+		const [canShowPicker, setCanShowPicker] = useState(true);
+
+		useEffect(() => setCanShowPicker(canShowPickerProgrammatically()), []);
 
 		const handleClickForInput = () => {
+			if (!canShowPicker) return;
 			calendarRef.current?.showPicker();
 		};
 
@@ -163,16 +198,26 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 							transition: "box-shadow 0.3s ease-out",
 						}}
 					>
-						<Text
-							fontSize={{ base: "sm", md: "sm" }}
-							color={value ? "dark" : "gray.400"}
-							lineHeight="normal"
-						>
-							{value || placeholder}
-						</Text>
+						{canShowPicker ? (
+							<Text
+								fontSize={{ base: "sm", md: "sm" }}
+								color={value ? "dark" : "gray.400"}
+								lineHeight="normal"
+							>
+								{value || placeholder}
+							</Text>
+						) : null}
 
-						<Flex align="center" gap="2">
-							{/* Hidden native date input that triggers the browser's date picker */}
+						<Flex
+							align="center"
+							gap="2"
+							flex={canShowPicker ? undefined : "1"}
+						>
+							{/* Native date input. Normally hidden — the visible text
+							    above stands in for it and the click handler opens the
+							    picker via showPicker(). Where that call is blocked
+							    (cross-origin iframe), it becomes the visible control so
+							    the user can click its own calendar indicator and type. */}
 							<input
 								type="date"
 								name={name}
@@ -181,16 +226,36 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 								max={maxDate}
 								ref={calendarRef}
 								onChange={(e) => onChange(e)}
-								style={{
-									position: "absolute",
-									width: "1px",
-									height: "1px",
-									opacity: 0,
-									pointerEvents: "none",
-								}}
+								style={
+									canShowPicker
+										? {
+												position: "absolute",
+												width: "1px",
+												height: "1px",
+												opacity: 0,
+												pointerEvents: "none",
+											}
+										: {
+												width: "100%",
+												border: "none",
+												outline: "none",
+												background: "transparent",
+												font: "inherit",
+												fontSize: "0.875rem",
+												color: "inherit",
+												cursor: "pointer",
+											}
+								}
 								{...calendarProps}
 							/>
-							<Icon color="dark" name="calender" size="24px" />
+							{/* The native control draws its own calendar indicator. */}
+							{canShowPicker ? (
+								<Icon
+									color="dark"
+									name="calender"
+									size="24px"
+								/>
+							) : null}
 						</Flex>
 					</Box>
 				</InputGroup>
