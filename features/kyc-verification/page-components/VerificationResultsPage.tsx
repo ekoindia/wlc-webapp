@@ -43,6 +43,8 @@ interface StoredVerificationData {
 interface VerificationResultsPageProps {
 	/** Base path for navigation (defaults to /products/kyc-verification) */
 	basePath?: string;
+	/** Hide the "Home" button — it navigates to "/", which is outside embedded/gateway contexts */
+	hideHomeButton?: boolean;
 }
 
 /**
@@ -56,6 +58,7 @@ interface VerificationResultsPageProps {
  */
 export const VerificationResultsPage = ({
 	basePath = "/products/kyc-verification",
+	hideHomeButton = false,
 }: VerificationResultsPageProps = {}): JSX.Element => {
 	const router = useRouter();
 	const toast = useToast();
@@ -548,17 +551,23 @@ export const VerificationResultsPage = ({
 															size: "xs",
 														},
 													},
-													{
-														variant: "link",
-														label: "Home",
-														onClick: handleGoHome,
-														styles: {
-															w: {
-																base: "100%",
-																md: "200px",
-															},
-														},
-													},
+													...(hideHomeButton
+														? []
+														: [
+																{
+																	variant:
+																		"link",
+																	label: "Home",
+																	onClick:
+																		handleGoHome,
+																	styles: {
+																		w: {
+																			base: "100%",
+																			md: "200px",
+																		},
+																	},
+																},
+															]),
 												]
 											: [
 													{
