@@ -41,14 +41,27 @@ const GatewayDeadEnd = ({
 
 const GatewayProductRoute = (): JSX.Element | null => {
 	const router = useRouter();
-	const [isGatewayAllowed] = useFeatureFlag("ELOKA_GATEWAY");
+	// Use the synchronous checker, not the hook's boolean: that boolean is false
+	// both while it resolves and when the flag is off, so branching on it would
+	// leave a disabled gateway stuck on the loader forever.
+	const [, checkFeatureFlag] = useFeatureFlag("ELOKA_GATEWAY");
+	const isGatewayAllowed = checkFeatureFlag("ELOKA_GATEWAY");
 	const status = useGatewayDirectLogin(isGatewayAllowed);
 	const { isLoggedIn } = useUser();
 
-	// Loader until router hydration, the feature flag, and the silent login have
-	// all resolved (each settles client-side, a tick apart) — never a blank
-	// screen while the profile is being fetched with the provided credentials.
-	if (!router.isReady || !isGatewayAllowed || status === "pending") {
+	if (!isGatewayAllowed) {
+		return (
+			<GatewayDeadEnd
+				title="Gateway not available"
+				message="This gateway is not enabled in this environment."
+			/>
+		);
+	}
+
+	// Loader until router hydration and the silent login have resolved (each
+	// settles client-side, a tick apart) — never a blank screen while the
+	// profile is being fetched with the provided credentials.
+	if (!router.isReady || status === "pending") {
 		return (
 			<Center minH="100vh">
 				<VStack spacing="3">
