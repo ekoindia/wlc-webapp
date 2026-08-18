@@ -163,7 +163,7 @@ Explicit non-goal (v1): no "abandoned" event — partner infers abandonment from
 
 - `access_key` and `secret-key` computation stay server-side (partner's backend) — nothing signed ever appears in the popup URL. Only the one-time `code` travels in the URL, is burnt on first redeem, and expires in minutes.
 - Scoped token: product API allowlist, hard TTL, no refresh (§4).
-- Frontend serves gateway routes with `frame-ancestors 'none'` (popup-only v1) — no backend action, listed for completeness.
+- Embedding: `/gateway/*` routes are served with `frame-ancestors *`, no `X-Frame-Options`, and `Permissions-Policy: camera=*, geolocation=*` — embeddable as an iframe (or popup) on **any** parent origin; the embedding page must add `allow="camera; geolocation"` on the iframe for KYC capture to work. Clickjacking exposure is accepted for these routes because gateway pages carry no ambient session — auth arrives per-window via credentials, so a framing page without them gets a dead-end screen. The rest of the app remains `frame-ancestors 'none'` + `X-Frame-Options: SAMEORIGIN`. No backend action, listed for completeness.
 - Rate-limit `POST /gateway/sessions/redeem` per IP + per code prefix (brute-force guard).
 - **Mode B exceptions:** the guarantees above do not hold for direct-token sessions — the full token transits the URL and has no product scoping (§3b). The frontend strips it from the address bar before any network call, but the original navigation has already reached browser history and server/CDN logs. Callers must use short-TTL tokens and treat gateway URLs as credentials.
 

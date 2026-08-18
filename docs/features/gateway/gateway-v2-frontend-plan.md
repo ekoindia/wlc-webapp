@@ -2,7 +2,7 @@
 
 **Repo:** `wlc-webapp`. Depends on the EPS backend contract in [gateway-v2-api-contract.md](./gateway-v2-api-contract.md) — Phase 1 can be built against a mock of `/gateway/sessions/redeem`.
 
-**Design decisions** (2026-08-12 design session; Mode B added 2026-08-17): two auth modes — Mode A: server-side session exchange, one-time `?code=`, scoped token; Mode B: direct `?access_token=` reusing the landing page's silent-login flow, zero new backend endpoints (see contract §3b for tradeoffs); either bootstrapped as a normal session; `/gateway/products/<...path>` mirrors `/products/<...path>`; allowlist registry; nav rewrite + route fence; popup-only with `frame-ancestors 'none'`; postMessage UX events + backend webhooks; no Eko branding, optional partner theme colors; dead-end expiry screen; v1 = kyc-verification family only.
+**Design decisions** (2026-08-12 design session; Mode B added 2026-08-17): two auth modes — Mode A: server-side session exchange, one-time `?code=`, scoped token; Mode B: direct `?access_token=` reusing the landing page's silent-login flow, zero new backend endpoints (see contract §3b for tradeoffs); either bootstrapped as a normal session; `/gateway/products/<...path>` mirrors `/products/<...path>`; allowlist registry; nav rewrite + route fence; embeddable anywhere — popup or iframe on any parent origin (`frame-ancestors *`, decision changed 2026-08-18; originally popup-only); postMessage UX events + backend webhooks; no Eko branding, optional partner theme colors; dead-end expiry screen; v1 = kyc-verification family only.
 
 ## Phase 1 — Route, dual-mode bootstrap
 
@@ -36,7 +36,7 @@ Two auth modes, one route. **Direct mode ships first** — it needs zero new bac
 2. **Theme:** apply optional `theme.primary` / `theme.accent` from the redeem response as Chakra theme token overrides at the gateway layout boundary. Validate hex; fall back silently.
 3. **Link rewrite:** central navigation wrapper (the shared `Link`/router-push helper — audit for the actual chokepoint; if none exists, add `useGatewayRouter()` and patch the kyc-verification family to use it) maps internal `/products/*` targets → `/gateway/products/*` when `useGatewaySession()` is active.
 4. **Fence:** `components/RouteProtecter/RouteProtecter.jsx` — gateway session + route outside the allowlist → full-screen "Not available in this window" screen. **Never** redirect to `/login` or `/signup` for gateway sessions.
-5. **Headers:** serve gateway routes with `Content-Security-Policy: frame-ancestors 'none'` (Next.js `headers()` config for `/gateway/products/:path*`).
+5. **Headers (done, 2026-08-18):** `next.config.js` `headers()` split into two rules — strict `securityHeaders` on `/((?!gateway/).*)`, and `gatewaySecurityHeaders` on `/gateway/(.*)`: no `X-Frame-Options`, CSP `frame-ancestors *`, `Permissions-Policy: camera=*, geolocation=*` so any embedding parent can delegate capture via `allow="camera; geolocation"`. Gated by `NEXT_PUBLIC_ENABLE_SECURITY_HEADERS` (currently true on UAT, unset on prod). Clickjacking accepted on gateway routes: no ambient session — credentials arrive per-window, a bare framed URL dead-ends.
 6. **Audit (v1 family):** grep kyc-verification feature for hardcoded escapes — `router.push("/home")`, `/history`, breadcrumb `/products` links — route them through the rewrite helper or hide in gateway mode.
 
 ## Phase 3 — Events + expiry
