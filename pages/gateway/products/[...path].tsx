@@ -7,8 +7,8 @@
  * See docs/features/gateway/gateway-v2-frontend-plan.md.
  */
 
-import { Center, Heading, Text, VStack } from "@chakra-ui/react";
-import { PageLoader, PaddingBox } from "components";
+import { Center, Heading, Spinner, Text, VStack } from "@chakra-ui/react";
+import { PaddingBox } from "components";
 import { useUser } from "contexts";
 import { GATEWAY_PRODUCT_PAGES } from "features/gateway/registry";
 import { useGatewayDirectLogin } from "features/gateway/useGatewayDirectLogin";
@@ -45,12 +45,25 @@ const GatewayProductRoute = (): JSX.Element | null => {
 	const status = useGatewayDirectLogin(isGatewayAllowed);
 	const { isLoggedIn } = useUser();
 
-	// Wait for hydration & the feature flag (both resolve client-side; the flag
-	// stays false when the gateway is disabled — render nothing, like the
-	// existing /gateway/[...id] route does).
-	if (!router.isReady || !isGatewayAllowed) return null;
-
-	if (status === "pending") return <PageLoader />;
+	// Loader until router hydration, the feature flag, and the silent login have
+	// all resolved (each settles client-side, a tick apart) — never a blank
+	// screen while the profile is being fetched with the provided credentials.
+	if (!router.isReady || !isGatewayAllowed || status === "pending") {
+		return (
+			<Center minH="100vh">
+				<VStack spacing="3">
+					<Spinner
+						size="lg"
+						color="primary.DEFAULT"
+						thickness="3px"
+					/>
+					<Text color="gray.500" fontSize="sm">
+						Loading, please wait…
+					</Text>
+				</VStack>
+			</Center>
+		);
+	}
 
 	if (!isLoggedIn) {
 		return status === "no_credential" ? (
