@@ -1,3 +1,4 @@
+import { TimeIcon } from "@chakra-ui/icons";
 import {
 	Alert,
 	AlertIcon,
@@ -308,7 +309,7 @@ export const FundTransferStep = ({
 		null
 	);
 	const [otpRefId, setOtpRefId] = useState(null);
-	const [isSchedule, setIsSchedule] = useState(false);
+	const [isSchedule, setIsSchedule] = useState(true);
 
 	if (!recipient) {
 		return (
@@ -457,7 +458,10 @@ export const FundTransferStep = ({
 	const isAmountValid =
 		!isNaN(numAmount) && numAmount >= MIN_AMOUNT && numAmount <= MAX_AMOUNT;
 	const canSubmit =
-		isPinComplete && isAmountValid && !isSendingTransactionOtp;
+		isPinComplete &&
+		isAmountValid &&
+		!isSendingTransactionOtp &&
+		isSchedule;
 
 	// Non-idle terminal states (pending / success / failed)
 	if (transferStatus !== "idle") {
@@ -576,22 +580,33 @@ export const FundTransferStep = ({
 				</Box>
 
 				{/* Schedule Transfer */}
-				<Flex align="center" justify="space-between">
-					<Box>
+				<Flex
+					bg={isSchedule ? "orange.100" : "shade"}
+					borderRadius="10"
+					p={4}
+					border="1px solid"
+					borderColor={isSchedule ? "orange" : "blackAlpha.300"}
+					transition="all 0.2s ease-out"
+					direction="column"
+				>
+					<Flex align="center" gap={2} mb={1}>
+						<TimeIcon
+							color={isSchedule ? "orange.500" : "gray.500"}
+						/>
 						<Text fontSize="sm" fontWeight="medium" color="dark">
-							Schedule
+							Schedule Transfer
 						</Text>
-						<Text fontSize="xs" color="light">
-							Schedule this transfer to be sent automatically
-							after recipient verification.
-						</Text>
-					</Box>
-					<Switch
-						size={{ base: "sm", md: "md" }}
-						variant="primary"
-						isChecked={isSchedule}
-						onChange={() => setIsSchedule((prev) => !prev)}
-					/>
+						<Switch
+							size={{ base: "sm", md: "md" }}
+							variant="primary"
+							isChecked={isSchedule}
+							onChange={() => setIsSchedule((prev) => !prev)}
+						/>
+					</Flex>
+					<Text fontSize="sm" color="light">
+						This recipient is newly-added. Send automatically after
+						the cooling period (usually 5 minutes).
+					</Text>
 				</Flex>
 
 				<Button

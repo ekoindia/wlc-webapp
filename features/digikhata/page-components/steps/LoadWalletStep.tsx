@@ -5,6 +5,7 @@ import {
 	Button,
 	Flex,
 	Input,
+	Link,
 	NumberInput,
 	NumberInputField,
 	Text,
@@ -272,16 +273,42 @@ export const LoadWalletStep = ({
 
 					<Box>
 						{/* Info Note */}
-						<Alert status="info" borderRadius="10" mb={3}>
-							<AlertIcon />
+						<Alert
+							bg="primary.DEFAULT"
+							status="info"
+							borderRadius="10"
+							mb={3}
+							color="white"
+						>
+							<AlertIcon color="white" />
 							<Box>
 								<Text fontWeight="semibold" fontSize="sm">
 									Don't have a DigiKhata VPA yet?
 								</Text>
-								<Text fontSize="sm" color="light">
-									To get your VPA ID, download the{" "}
-									<strong>DigiKhata app</strong>, register
-									yourself, and find your VPA ID from the app.
+								<Text fontSize="sm">
+									To get your VPA ID, download the DigiKhata
+									app from{" "}
+									<Link
+										href="https://play.google.com/store/apps/details?id=com.paypointz.wallet&hl=en"
+										isExternal
+										fontWeight="bold"
+										textDecoration="underline"
+										color="blue.300"
+									>
+										Google Play Store
+									</Link>{" "}
+									or{" "}
+									<Link
+										href="https://apps.apple.com/in/app/digi-khata/id1194920306"
+										isExternal
+										fontWeight="bold"
+										textDecoration="underline"
+										color="blue.300"
+									>
+										Apple App Store
+									</Link>
+									, register yourself, and find your VPA ID
+									from the app.
 								</Text>
 							</Box>
 						</Alert>
@@ -361,17 +388,42 @@ export const LoadWalletStep = ({
 					</Flex>
 
 					{/* Info Note */}
-					<Alert status="info" borderRadius="10" mb={3}>
-						<AlertIcon />
+					<Alert
+						bg="primary.DEFAULT"
+						status="info"
+						borderRadius="10"
+						mb={3}
+						color="white"
+					>
+						<AlertIcon color="white" />
 						<Box>
 							<Text fontWeight="semibold" fontSize="sm">
 								Don't have a DigiKhata Virtual Account yet?
 							</Text>
-							<Text fontSize="sm" color="light">
-								To get your Virtual Account, download the{" "}
-								<strong>DigiKhata app</strong>, register
-								yourself, and find your Virtual Account from the
-								app.
+							<Text fontSize="sm">
+								To get your VPA ID, download the DigiKhata app
+								from{" "}
+								<Link
+									href="https://play.google.com/store/apps/details?id=com.paypointz.wallet&hl=en"
+									isExternal
+									fontWeight="bold"
+									textDecoration="underline"
+									color="blue.300"
+								>
+									Google Play Store
+								</Link>{" "}
+								or{" "}
+								<Link
+									href="https://apps.apple.com/in/app/digi-khata/id1194920306"
+									isExternal
+									fontWeight="bold"
+									textDecoration="underline"
+									color="blue.300"
+								>
+									Apple App Store
+								</Link>
+								, register yourself, and find your VPA ID from
+								the app.
 							</Text>
 						</Box>
 					</Alert>
