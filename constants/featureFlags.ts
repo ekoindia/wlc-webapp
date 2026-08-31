@@ -150,6 +150,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 	},
 
+	// Native React/Next.js AePS cashout flow: provider select -> Fingpay status ->
+	// [daily auth] -> payment mode -> search customer -> [otp] -> cashout -> result.
+	// Runs alongside the existing widget-driven `aeps` gateway product (GatewayProductRegistry.ts)
+	// while under development; several interaction contracts are still open items.
+	AEPS_CASHOUT: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production

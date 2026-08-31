@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useAppSource } from "contexts";
+import useRaiseIssue from "hooks/useRaiseIssue";
 import { memo, useState } from "react";
 import type { BiometricType } from "./utils/rdServiceHelpers";
 
@@ -166,6 +167,27 @@ const SetupHelpGuide = ({
 }: SetupHelpGuideProps): JSX.Element | null => {
 	const { isAndroid } = useAppSource();
 	const [selectedDevice, setSelectedDevice] = useState<string>("");
+	const { showRaiseIssueDialog } = useRaiseIssue();
+
+	const openDeviceHelpIssue = (): void => {
+		const brand =
+			selectedDevice && selectedDevice !== "other"
+				? getDriverInfo(selectedDevice, "brand", rdServiceType)
+				: undefined;
+
+		showRaiseIssueDialog(
+			{
+				heading: `${capitalize(rdServiceType)} Scanner Setup Help`,
+				customIssueType: "biometric_device_setup",
+				customIssueDetails: {
+					category: "Device Setup",
+					sub_category: brand ?? "Device not listed",
+				},
+				origin: "uidai-fingerprint-setup-help",
+			},
+			() => {}
+		);
+	};
 
 	// Don't show for face type
 	if (rdServiceType === "face") return null;
@@ -278,9 +300,16 @@ const SetupHelpGuide = ({
 								}}
 							>
 								<ListItem>
-									Click here to let us know if you have a{" "}
-									{rdServiceType} device that is not in this
-									list.
+									<Link
+										as="button"
+										color="primary.DEFAULT"
+										fontWeight={700}
+										onClick={openDeviceHelpIssue}
+									>
+										Click here to let us know
+									</Link>{" "}
+									if you have a {rdServiceType} device that is
+									not in this list.
 								</ListItem>
 								<ListItem>
 									Write the name of your device in the
@@ -347,6 +376,40 @@ const SetupHelpGuide = ({
 											"brand",
 											rdServiceType
 										)}
+										{getDriverInfo(
+											selectedDevice,
+											"register_help_video",
+											rdServiceType
+										) ? (
+											<>
+												{" "}
+												<Link
+													href={`https://www.youtube.com/watch?v=${getDriverInfo(
+														selectedDevice,
+														"register_help_video",
+														rdServiceType
+													)}`}
+													isExternal
+													bg="primary.DEFAULT"
+													color="white"
+													px={2}
+													py={0.5}
+													borderRadius="11px"
+													fontSize="13px"
+													fontWeight={700}
+													display="inline-flex"
+													alignItems="center"
+													gap={1}
+												>
+													<Icon
+														name="help-outline"
+														size="xs"
+														color="white"
+													/>
+													How?
+												</Link>
+											</>
+										) : null}
 									</ListItem>
 								) : null}
 
@@ -494,6 +557,7 @@ const SetupHelpGuide = ({
 									<Icon name="help-outline" size="sm" />
 								}
 								textTransform="none"
+								onClick={openDeviceHelpIssue}
 							>
 								Need help with the setup?
 							</Button>
