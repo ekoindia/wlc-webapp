@@ -81,7 +81,7 @@ export const BankBalance = ({
 							fontWeight="bold"
 							letterSpacing="-0.02em"
 						>
-							{formatCurrency(balance, "INR", true, true)}
+							{formatCurrency(balance, "INR", true, true, "—")}
 						</Text>
 					</Flex>
 				</Flex>
