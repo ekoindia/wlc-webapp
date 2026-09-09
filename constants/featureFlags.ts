@@ -333,6 +333,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// directly from the user's own bank account instead of their e-wallet).
 	TSP_BANK: {
 		enabled: true,
+		forEnv: ["development", "staging"],
 	},
 
 	// ------------------------------------------------------------------------
