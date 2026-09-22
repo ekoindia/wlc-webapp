@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
+	EpsConsoleBanner,
 	KnowYourCommission,
 	NotificationWidget,
 	QueryWidget,
@@ -130,6 +131,7 @@ const Home = ({ ...rest }) => {
 				width={"100%"}
 				{...rest}
 			>
+				<EpsConsoleBanner />
 				{widgets.map(({ id, component: Component }) => (
 					<Component key={id} />
 				))}
