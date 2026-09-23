@@ -221,6 +221,14 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		requiredFeatures: ["AI_MASTER_FLAG"],
 	},
 
+	// TSP Bank Account Support (Multi-wallet) – Show bank balance and statement for TSP Bank Accounts.
+	// This is used for making payments from bank accounts using UPI and other payment methods,
+	// directly from the user's own bank account instead of their e-wallet).
+	TSP_BANK: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
@@ -326,14 +334,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Face detector for images, videos, and live streams.
 	FACE_DETECTOR: {
 		enabled: true,
-	},
-
-	// TSP Bank Account Support (Multi-wallet) – Show bank balance and statement for TSP Bank Accounts.
-	// This is used for making payments from bank accounts using UPI and other payment methods,
-	// directly from the user's own bank account instead of their e-wallet).
-	TSP_BANK: {
-		enabled: true,
-		forEnv: ["development", "staging"],
 	},
 
 	// ------------------------------------------------------------------------
