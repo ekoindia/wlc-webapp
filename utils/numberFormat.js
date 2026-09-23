@@ -71,6 +71,7 @@ const currencyFormatters = {};
  * @param {string} currencyCode - Currency code (e.g. INR, USD, EUR, etc.). Defaults to INR.
  * @param {boolean} noSymbol - If true, the currency symbol is not included in the formatted string.
  * @param {boolean} noZeroFraction - If true, the decimal fraction is not included if it is zero.
+ * @param {string} fallback - Fallback value to use if the amount is invalid (e.g. null, undefined, NaN). Defaults to empty string.
  * @returns {string} - Formatted currency string
  * @example
  * formatCurrency(123456.789, "INR"); // "₹ 1,23,456.79"
@@ -84,8 +85,11 @@ export const formatCurrency = (
 	amount,
 	currencyCode = DEFAULT_CURRENCY,
 	noSymbol,
-	noZeroFraction
+	noZeroFraction,
+	fallback = ""
 ) => {
+	if (amount == null || isNaN(amount)) return fallback;
+
 	// Convert currency code to uppercase.
 	currencyCode = currencyCode ? currencyCode.toUpperCase() : DEFAULT_CURRENCY;
 

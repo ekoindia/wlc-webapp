@@ -65,7 +65,7 @@ export const getSignUrl = async (
 			token: accessToken,
 			body: {
 				interaction_type_id:
-					TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
+					TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL, // 287
 				document_id: "",
 				agreement_id: config.agreementId ?? 5,
 				latlong: config.latLong || "27.176670,78.008075,7787",
