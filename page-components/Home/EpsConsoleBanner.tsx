@@ -3,6 +3,12 @@ import { Button, Icon } from "components";
 import { UserType } from "constants/UserTypes";
 import { useUser } from "contexts";
 
+/**
+ * Dark warm gradient, deliberately off-theme so the banner stands apart
+ * from the org's (usually blue/branded) home page.
+ */
+const EPS_BANNER_GRADIENT = "#2E1708 0%, #6B3210 55%, #96500F 100%";
+
 /** Org whose Enterprise Partners are nudged to EPS Console */
 const EPS_ORG_ID = 1;
 
@@ -73,9 +79,22 @@ const EpsConsoleBanner = ({ consoleUrl, ...rest }: EpsConsoleBannerProps) => {
 			px={{ base: 6, md: 12 }}
 			py={{ base: 8, md: 14 }}
 			borderRadius="10px"
-			bgGradient="linear(to-r, primary.dark, primary.light)"
+			bgGradient={`linear(135deg, ${EPS_BANNER_GRADIENT})`}
 			color="white"
 			boxShadow="md"
+			cursor="pointer"
+			transition="box-shadow 0.2s ease, transform 0.2s ease"
+			_hover={{ boxShadow: "lg", transform: "translateY(-2px)" }}
+			role="button"
+			tabIndex={0}
+			aria-label="Login to eps.eko.in"
+			onClick={openConsole}
+			onKeyDown={(event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					openConsole();
+				}
+			}}
 			{...rest}
 		>
 			<Icon
@@ -98,13 +117,19 @@ const EpsConsoleBanner = ({ consoleUrl, ...rest }: EpsConsoleBannerProps) => {
 					console.
 				</Text>
 				<Button
-					variant="accent"
+					variant="ghost"
 					size="lg"
 					icon="arrow-forward"
 					iconPosition="right"
 					alignSelf="flex-start"
+					display="inline-flex"
+					px={8}
+					bg="#FFF6EC"
+					color="#6B3210"
+					_hover={{ bg: "white" }}
 					w={{ base: "100%", md: "auto" }}
-					onClick={openConsole}
+					// ponytail: no onClick - the click bubbles to the banner
+					tabIndex={-1}
 				>
 					Login to eps.eko.in
 				</Button>

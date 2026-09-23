@@ -18,11 +18,14 @@ const EPS_PARTNER = { org_id: "1", user_type: "23", mobile: "6710000002" };
 const ORIGINAL_ENV = process.env.NEXT_PUBLIC_EPS_CONSOLE_URL;
 
 describe("EpsConsoleBanner", () => {
-	it("opens console URL in new tab from the login button", () => {
+	it.each([
+		["banner", 0],
+		["CTA button", 1],
+	])("opens console URL in a new tab on %s click", (_label, index) => {
 		const openSpy = jest
 			.spyOn(window, "open")
 			.mockImplementation(() => null);
-		const { getByRole, getByText } = render(
+		const { getAllByRole, getByText } = render(
 			<EpsConsoleBanner consoleUrl="https://eps.eko.in/console?mobile=1" />
 		);
 
@@ -30,14 +33,29 @@ describe("EpsConsoleBanner", () => {
 			getByText(/permanently moved to eps\.eko\.in/i)
 		).toBeInTheDocument();
 		fireEvent.click(
-			getByRole("button", { name: /login to eps\.eko\.in/i })
+			getAllByRole("button", { name: /login to eps\.eko\.in/i })[index]
 		);
 
+		expect(openSpy).toHaveBeenCalledTimes(1);
 		expect(openSpy).toHaveBeenCalledWith(
 			"https://eps.eko.in/console?mobile=1",
 			"_blank",
 			"noopener,noreferrer"
 		);
+		openSpy.mockRestore();
+	});
+
+	it("opens console URL on Enter key", () => {
+		const openSpy = jest
+			.spyOn(window, "open")
+			.mockImplementation(() => null);
+		const { getAllByRole } = render(
+			<EpsConsoleBanner consoleUrl="https://eps.eko.in/console" />
+		);
+
+		fireEvent.keyDown(getAllByRole("button")[0], { key: "Enter" });
+
+		expect(openSpy).toHaveBeenCalledTimes(1);
 		openSpy.mockRestore();
 	});
 });
