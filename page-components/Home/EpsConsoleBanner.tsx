@@ -1,12 +1,14 @@
 import { Flex, FlexProps, Text } from "@chakra-ui/react";
-import { Button } from "components";
+import { Button, Icon } from "components";
 import { UserType } from "constants/UserTypes";
 import { useUser } from "contexts";
 
 /** Org whose Enterprise Partners are nudged to EPS Console */
 const EPS_ORG_ID = 1;
 
-interface EpsConsoleBannerProps extends FlexProps {}
+interface EpsConsoleBannerProps extends FlexProps {
+	consoleUrl: string;
+}
 
 /**
  * Build the EPS Console URL with the user's mobile, or null if the
@@ -32,14 +34,11 @@ const getEpsConsoleUrl = (mobile?: string): string | null => {
 };
 
 /**
- * Full-width banner nudging EPS partners (org 1, user-type 23) to EPS Console.
- * Renders nothing unless NEXT_PUBLIC_EPS_CONSOLE_URL is set.
- * Spans all columns when placed inside the Home widget grid.
- * @param {EpsConsoleBannerProps} props Extra Flex props
- * @returns {JSX.Element|null} Banner, or null when not applicable
- * @example `<EpsConsoleBanner />`
+ * EPS Console URL for the logged-in user, or null when the user isn't an
+ * EPS partner (org 1, user-type 23) or NEXT_PUBLIC_EPS_CONSOLE_URL is unset.
+ * @returns {string|null} Console URL
  */
-const EpsConsoleBanner = (props: EpsConsoleBannerProps) => {
+const useEpsConsoleUrl = (): string | null => {
 	const { userData } = useUser();
 	const { user_type, org_id, mobile } = userData?.userDetails ?? {};
 
@@ -47,10 +46,18 @@ const EpsConsoleBanner = (props: EpsConsoleBannerProps) => {
 		Number(org_id) === EPS_ORG_ID &&
 		Number(user_type) === UserType.ENTERPRISE_PARTNER_ADMIN;
 
-	const consoleUrl = isEpsPartner ? getEpsConsoleUrl(mobile) : null;
+	return isEpsPartner ? getEpsConsoleUrl(mobile) : null;
+};
 
-	if (!consoleUrl) return null;
-
+/**
+ * Full-width banner telling EPS partners their dashboard moved to EPS Console.
+ * Spans all columns when placed inside the Home widget grid.
+ * @param {EpsConsoleBannerProps} props Properties passed to the component
+ * @param {string} props.consoleUrl EPS Console URL (from useEpsConsoleUrl)
+ * @returns {JSX.Element} Banner
+ * @example `<EpsConsoleBanner consoleUrl={url} />`
+ */
+const EpsConsoleBanner = ({ consoleUrl, ...rest }: EpsConsoleBannerProps) => {
 	// ponytail: plain window.open (not useAppLink) so the mobile-bearing URL isn't logged
 	const openConsole = () =>
 		window.open(consoleUrl, "_blank", "noopener,noreferrer");
@@ -60,36 +67,50 @@ const EpsConsoleBanner = (props: EpsConsoleBannerProps) => {
 			gridColumn="1 / -1"
 			direction={{ base: "column", md: "row" }}
 			align={{ base: "flex-start", md: "center" }}
-			justify="space-between"
-			gap={{ base: 4, md: 8 }}
+			gap={{ base: 6, md: 10 }}
 			w="100%"
-			p={{ base: 5, md: 8 }}
+			minH={{ base: "auto", md: "320px" }}
+			px={{ base: 6, md: 12 }}
+			py={{ base: 8, md: 14 }}
 			borderRadius="10px"
 			bgGradient="linear(to-r, primary.dark, primary.light)"
 			color="white"
 			boxShadow="md"
-			{...props}
+			{...rest}
 		>
-			<Flex direction="column" gap={2}>
+			<Icon
+				name="open-in-new"
+				size={{ base: "56px", md: "96px" }}
+				flexShrink={0}
+				opacity={0.9}
+			/>
+			<Flex direction="column" gap={{ base: 4, md: 6 }}>
 				<Text fontSize={{ base: "xl", md: "3xl" }} fontWeight="bold">
 					Manage your API business on EPS Console
 				</Text>
-				<Text fontSize={{ base: "sm", md: "lg" }} opacity={0.9}>
-					Your EPS partner account is best managed on the new EPS
-					Console.
+				<Text
+					fontSize={{ base: "md", md: "xl" }}
+					opacity={0.9}
+					lineHeight="1.5"
+				>
+					Your dashboard, API credentials, and developer tools have
+					now permanently moved to eps.eko.in. Please login to the EPS
+					console.
 				</Text>
+				<Button
+					variant="accent"
+					size="lg"
+					icon="arrow-forward"
+					iconPosition="right"
+					alignSelf="flex-start"
+					w={{ base: "100%", md: "auto" }}
+					onClick={openConsole}
+				>
+					Login to eps.eko.in
+				</Button>
 			</Flex>
-			<Button
-				variant="accent"
-				size="lg"
-				flexShrink={0}
-				w={{ base: "100%", md: "auto" }}
-				onClick={openConsole}
-			>
-				Go to EPS Console
-			</Button>
 		</Flex>
 	);
 };
 
-export { EpsConsoleBanner };
+export { EpsConsoleBanner, useEpsConsoleUrl };

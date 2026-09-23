@@ -13,6 +13,7 @@ import {
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
+	useEpsConsoleUrl,
 } from ".";
 
 // Lazy-load the Todo Widget
@@ -43,6 +44,9 @@ const Home = ({ ...rest }) => {
 	// Check if the GPT Chat widget is enabled
 	const [isGptChatAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
 
+	// EPS partners see only the EPS Console banner (other widgets hidden)
+	const epsConsoleUrl = useEpsConsoleUrl();
+
 	// Check network speed on page load...
 	const isFastNetwork = useMemo(() => {
 		// Get network connection strength
@@ -60,6 +64,8 @@ const Home = ({ ...rest }) => {
 	}, []);
 
 	if (!isLoggedIn) return null;
+
+	if (epsConsoleUrl) return <EpsConsoleBanner consoleUrl={epsConsoleUrl} />;
 
 	const widgets = [
 		{ id: 1, component: CommonTrxnWidget },
@@ -131,7 +137,6 @@ const Home = ({ ...rest }) => {
 				width={"100%"}
 				{...rest}
 			>
-				<EpsConsoleBanner />
 				{widgets.map(({ id, component: Component }) => (
 					<Component key={id} />
 				))}

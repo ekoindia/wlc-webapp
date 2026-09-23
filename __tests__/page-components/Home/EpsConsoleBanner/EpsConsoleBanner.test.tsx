@@ -1,5 +1,8 @@
-import { fireEvent } from "@testing-library/react";
-import { EpsConsoleBanner } from "page-components/Home/EpsConsoleBanner";
+import { fireEvent, renderHook } from "@testing-library/react";
+import {
+	EpsConsoleBanner,
+	useEpsConsoleUrl,
+} from "page-components/Home/EpsConsoleBanner";
 import { render } from "test-utils";
 
 const mockUserDetails: { current: Record<string, string | undefined> } = {
@@ -15,6 +18,31 @@ const EPS_PARTNER = { org_id: "1", user_type: "23", mobile: "6710000002" };
 const ORIGINAL_ENV = process.env.NEXT_PUBLIC_EPS_CONSOLE_URL;
 
 describe("EpsConsoleBanner", () => {
+	it("opens console URL in new tab from the login button", () => {
+		const openSpy = jest
+			.spyOn(window, "open")
+			.mockImplementation(() => null);
+		const { getByRole, getByText } = render(
+			<EpsConsoleBanner consoleUrl="https://eps.eko.in/console?mobile=1" />
+		);
+
+		expect(
+			getByText(/permanently moved to eps\.eko\.in/i)
+		).toBeInTheDocument();
+		fireEvent.click(
+			getByRole("button", { name: /login to eps\.eko\.in/i })
+		);
+
+		expect(openSpy).toHaveBeenCalledWith(
+			"https://eps.eko.in/console?mobile=1",
+			"_blank",
+			"noopener,noreferrer"
+		);
+		openSpy.mockRestore();
+	});
+});
+
+describe("useEpsConsoleUrl", () => {
 	beforeEach(() => {
 		process.env.NEXT_PUBLIC_EPS_CONSOLE_URL = "https://eps.eko.in/console";
 		mockUserDetails.current = EPS_PARTNER;
@@ -24,35 +52,19 @@ describe("EpsConsoleBanner", () => {
 		process.env.NEXT_PUBLIC_EPS_CONSOLE_URL = ORIGINAL_ENV;
 	});
 
-	it("opens EPS Console with mobile for org-1 EPS partner", () => {
-		const openSpy = jest
-			.spyOn(window, "open")
-			.mockImplementation(() => null);
-		const { getByRole } = render(<EpsConsoleBanner />);
-
-		fireEvent.click(getByRole("button", { name: /go to eps console/i }));
-
-		expect(openSpy).toHaveBeenCalledWith(
-			"https://eps.eko.in/console?mobile=6710000002",
-			"_blank",
-			"noopener,noreferrer"
+	it("returns console URL with mobile for org-1 EPS partner", () => {
+		const { result } = renderHook(() => useEpsConsoleUrl());
+		expect(result.current).toBe(
+			"https://eps.eko.in/console?mobile=6710000002"
 		);
-		openSpy.mockRestore();
 	});
 
 	it("keeps existing query params and omits missing mobile", () => {
 		process.env.NEXT_PUBLIC_EPS_CONSOLE_URL =
 			"https://eps.eko.in/console?a=1";
 		mockUserDetails.current = { ...EPS_PARTNER, mobile: undefined };
-		const openSpy = jest
-			.spyOn(window, "open")
-			.mockImplementation(() => null);
-		const { getByRole } = render(<EpsConsoleBanner />);
-
-		fireEvent.click(getByRole("button", { name: /go to eps console/i }));
-
-		expect(openSpy.mock.calls[0][0]).toBe("https://eps.eko.in/console?a=1");
-		openSpy.mockRestore();
+		const { result } = renderHook(() => useEpsConsoleUrl());
+		expect(result.current).toBe("https://eps.eko.in/console?a=1");
 	});
 
 	it.each([
@@ -68,7 +80,7 @@ describe("EpsConsoleBanner", () => {
 			"https://eps.eko.in/console",
 			{ ...EPS_PARTNER, org_id: "2" },
 		],
-	])("renders nothing when %s", (_label, envUrl, userDetails) => {
+	])("returns null when %s", (_label, envUrl, userDetails) => {
 		if (envUrl === undefined)
 			delete process.env.NEXT_PUBLIC_EPS_CONSOLE_URL;
 		else process.env.NEXT_PUBLIC_EPS_CONSOLE_URL = envUrl;
@@ -77,9 +89,9 @@ describe("EpsConsoleBanner", () => {
 			.spyOn(console, "error")
 			.mockImplementation(() => {});
 
-		const { queryByText } = render(<EpsConsoleBanner />);
+		const { result } = renderHook(() => useEpsConsoleUrl());
 
-		expect(queryByText(/eps console/i)).not.toBeInTheDocument();
+		expect(result.current).toBeNull();
 		errorSpy.mockRestore();
 	});
 });
