@@ -244,7 +244,8 @@ const ProfilePanel = () => {
 					eko_code={
 						(Array.isArray(agentData?.profile?.eko_code)
 							? agentData?.profile?.eko_code[0]
-							: agentData?.profile?.eko_code) ?? agentData?.eko_code
+							: agentData?.profile?.eko_code) ??
+						agentData?.eko_code
 					}
 					mobile={mobile}
 					onUpdate={refetchAgentData}
