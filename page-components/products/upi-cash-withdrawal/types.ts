@@ -60,6 +60,28 @@ export interface UpiCashQr {
 }
 
 /**
+ * `data` payload from a Status (1109) response.
+ */
+export interface UpiCashStatusData {
+	/** Human-readable status description (display only — never branched on). */
+	txstatus_desc?: string;
+	/** Bank reference number — present ONLY when paid. */
+	bank_ref_num?: string;
+}
+
+/**
+ * Terminal/non-terminal outcome of status polling. The cash CTA is enabled ONLY for
+ * `"paid"` — every other value (including `"unknown"`: pending-after-last-poll,
+ * timeout, connection error, or an unrecognised status) means DO NOT hand over cash.
+ */
+export type UpiCashPollStatus =
+	| "idle"
+	| "pending"
+	| "paid"
+	| "failed"
+	| "unknown";
+
+/**
  * Resolved enablement/registration status used by the gate to decide routing.
  */
 export interface UpiCashStatus {

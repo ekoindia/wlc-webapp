@@ -2,6 +2,7 @@ import { Flex, Image, Text } from "@chakra-ui/react";
 import { Button, Input, PageTitle } from "components";
 import { UPI_CASH_AMOUNT } from "./constants";
 import { useUpiCashWithdrawal } from "./hooks";
+import { WithdrawalStatus } from "./WithdrawalStatus";
 
 /**
  * Build a usable <img> src from the contract's base64 PNG, tolerating a value that
@@ -118,6 +119,15 @@ export const Withdrawal = (): JSX.Element => {
 						Ask the customer to scan this QR from their own phone
 						and pay with their own UPI PIN. Do not scan it yourself.
 					</Text>
+
+					{/* Status polling + outcome + hard cash-gate (T-4). */}
+					<WithdrawalStatus
+						tid={qr.tid}
+						schedule={qr.schedule}
+						amount={qr.amount}
+						onReset={reset}
+					/>
+
 					<Button variant="outline" onClick={reset}>
 						New withdrawal
 					</Button>
