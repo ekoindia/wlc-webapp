@@ -44,6 +44,24 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// UPI Cash Withdrawal (Eloka) — REQ-2026-004.
+	// Optional staged-rollout flag on top of the backend role-gated menu
+	// (`/transactions/wlc`). Enable per-org to dark-launch the product.
+	UPI_CASH_WITHDRAWAL: {
+		enabled: true,
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [3],
+			},
+		},
+	},
+
 	// KYC Verification
 	KYC_VERIFICATION: {
 		enabled: true,

@@ -308,6 +308,18 @@ export const sidebarMenu: sidebarMenuType[] = [
 		beta: true,
 	},
 	{
+		id: 218,
+		label: "UPI Cash Withdrawal",
+		icon: "cashout",
+		link: "/products/upi-cash-withdrawal",
+		summary:
+			"Let customers withdraw cash against a UPI payment — they scan your QR and pay from their own phone.",
+		fullDescription:
+			"UPI Cash Withdrawal (Eloka) lets an enabled agent dispense cash to a customer who pays via UPI. The agent enters an amount (₹100–5000, in multiples of ₹100), generates a single-use QR, and hands over cash only after the payment is confirmed paid. Surfaces only to agents enabled via the backend role-gated menu; gated additionally by the UPI_CASH_WITHDRAWAL feature flag.",
+		featureFlag: "UPI_CASH_WITHDRAWAL",
+		beta: true,
+	},
+	{
 		id: 46,
 		label: "Pending Bank Requests",
 		icon: "description",
