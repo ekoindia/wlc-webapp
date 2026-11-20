@@ -1,5 +1,9 @@
 import { TransactionIds } from "constants/EpsTransactions";
 import { ParamType } from "constants/trxnFramework";
+import {
+	UPI_CASH_INTERACTION,
+	UPI_CASH_MERCHANT_ROLE,
+} from "page-components/products/upi-cash-withdrawal/constants";
 import type { OnboardingStateHook } from "./hooks/useOnboardingState";
 import type { Role } from "./utils/roleSelection";
 
@@ -82,6 +86,15 @@ export const RESPONSE_TYPE_IDS = {
 
 	/* Sign Agreement */
 	SIGN_AGREEMENT: 1615,
+
+	/* UPI Cash Withdrawal — Fingpay merchant self-onboarding (interaction 365).
+	 * Backend-owned success response-type ids (REQ-2026-004 T-2). The form submit
+	 * and the document upload report success via these; outcome is decided on
+	 * response_type_id (never message text). */
+	UPI_CASH_MERCHANT_ONBOARDING: 1570,
+	/* Shared document-upload success response (same value the other onboarding
+	 * UPLOAD_DOCUMENT steps key off). */
+	UPI_CASH_MERCHANT_DOC_UPLOAD: 1569,
 } as const;
 
 /**
@@ -110,6 +123,8 @@ export const ONBOARDING_STEP_IDS = {
 	PAN_VERIFICATION_DISTRIBUTOR: 16,
 	DIGILOCKER_REDIRECTION: 20,
 	ADD_BANK_ACCOUNT: 25,
+	/* UPI Cash Withdrawal — Fingpay merchant self-onboarding (REQ-2026-004 T-2) */
+	UPI_CASH_MERCHANT: 30,
 } as const;
 
 /**
@@ -716,6 +731,217 @@ export const masterOnboardingSteps: OnboardingStep[] = [
 				},
 			],
 		},
+		postSubmit: {
+			refreshProfile: true,
+		},
+	},
+	{
+		// UPI Cash Withdrawal — Fingpay merchant self-onboarding (REQ-2026-004 T-2,
+		// interaction 365). Self-service: the agent completes this themselves via the
+		// `/signup` flow; Eko only enables the role. No biometric eKYC — identity is
+		// established with Aadhaar/PAN images, not a fingerprint/face scan.
+		id: ONBOARDING_STEP_IDS.UPI_CASH_MERCHANT,
+		name: "UPI_CASH_MERCHANT",
+		label: "UPI Cash Withdrawal Registration",
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		applicableRoles: [UPI_CASH_MERCHANT_ROLE],
+		primaryCTAText: "Submit",
+		description:
+			"Register as a merchant to accept UPI cash withdrawals. Provide your details and upload clear photos of your Aadhaar and PAN. You can complete this yourself in a few minutes.",
+		form_data: {},
+		success_message: "Merchant registration submitted successfully.",
+		localRenderer: {
+			type: "form",
+			formFields: [
+				{
+					name: "merchant_name",
+					label: "Full Name (as per PAN)",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+				},
+				{
+					name: "pan",
+					label: "PAN",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^[A-Z]{5}[0-9]{4}[A-Z]$/,
+							message: "Invalid PAN (e.g., ABCDE1234F)",
+						},
+						minLength: {
+							value: 10,
+							message: "PAN must be 10 characters",
+						},
+						maxLength: {
+							value: 10,
+							message: "PAN must be 10 characters",
+						},
+					},
+				},
+				{
+					name: "aadhaar_number",
+					label: "Aadhaar Number",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^[0-9]{12}$/,
+							message: "Aadhaar must be 12 digits",
+						},
+					},
+				},
+				{
+					name: "bank_account_number",
+					label: "Settlement Bank Account Number",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^[0-9]{9,18}$/,
+							message: "Enter a valid account number",
+						},
+					},
+				},
+				{
+					name: "ifsc",
+					label: "IFSC",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+							message: "Invalid IFSC (e.g., HDFC0001234)",
+						},
+					},
+				},
+				{
+					name: "shop_address",
+					label: "Shop / Business Address",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+				},
+				{
+					name: "city",
+					label: "City",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+				},
+				{
+					name: "district",
+					label: "District",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+				},
+				{
+					name: "state",
+					label: "State",
+					parameter_type_id: ParamType.TEXT,
+					required: true,
+				},
+				{
+					name: "pincode",
+					label: "Pincode",
+					parameter_type_id: ParamType.NUMERIC,
+					required: true,
+					validations: {
+						pattern: {
+							value: /^[1-9][0-9]{5}$/,
+							message: "Enter a valid 6-digit pincode",
+						},
+					},
+				},
+				{
+					name: "merchant_category",
+					label: "Merchant Category",
+					parameter_type_id: ParamType.LIST,
+					required: true,
+					list_elements: [
+						{ label: "Kirana / Grocery", value: "KIRANA" },
+						{ label: "Mobile & Recharge", value: "MOBILE" },
+						{ label: "Medical / Pharmacy", value: "MEDICAL" },
+						{ label: "Travel & Transport", value: "TRAVEL" },
+						{ label: "Retail Store", value: "RETAIL" },
+						{ label: "Other", value: "OTHER" },
+					],
+				},
+				{
+					name: "aadhaar_front_image",
+					label: "Aadhaar Front Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+				{
+					name: "aadhaar_back_image",
+					label: "Aadhaar Back Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+				{
+					name: "pan_image",
+					label: "PAN Card Image",
+					parameter_type_id: ParamType.FILE,
+					required: true,
+					meta: { accept: "image/jpeg,image/png" },
+				},
+			],
+		},
+		// Capture the merchant's device location alongside the registration (the
+		// pipeline injects it from shared state, same as Business/Secret-Pin steps).
+		preSubmit: {
+			inject: {
+				latlong: "state.latLong",
+			},
+		},
+		api: {
+			pipeline: [
+				// 1) Submit the merchant details form (interaction 365). File fields
+				//    are stripped from the form call and sent in the upload steps below.
+				{
+					id: "submit",
+					type: "form",
+					interactionTypeId: UPI_CASH_INTERACTION.ONBOARDING,
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.UPI_CASH_MERCHANT_ONBOARDING,
+					],
+				},
+				// 2) Upload Aadhaar front/back (docType 1).
+				{
+					id: "upload-aadhaar",
+					type: "upload",
+					docType: 1,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
+					fieldMapping: {
+						aadhaar_front_image: "file1",
+						aadhaar_back_image: "file2",
+					},
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.UPI_CASH_MERCHANT_DOC_UPLOAD,
+					],
+				},
+				// 3) Upload PAN card (docType 2).
+				{
+					id: "upload-pan",
+					type: "upload",
+					docType: 2,
+					interactionTypeId: TransactionIds.UPLOAD_DOCUMENT,
+					fieldMapping: {
+						pan_image: "file1",
+					},
+					successResponseTypeIds: [
+						RESPONSE_TYPE_IDS.UPI_CASH_MERCHANT_DOC_UPLOAD,
+					],
+				},
+			],
+		},
+		// On success the backend drops the merchant role from onboarding_steps;
+		// refreshing the profile flips the product gate to "registered" (AC-2.3).
+		// On failure the pipeline stops, LocalStepForm surfaces the provider reason,
+		// and the agent stays on the form to retry — never silently enabled (AC-2.5).
 		postSubmit: {
 			refreshProfile: true,
 		},
