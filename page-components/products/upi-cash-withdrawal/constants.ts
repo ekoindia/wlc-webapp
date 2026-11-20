@@ -62,3 +62,20 @@ export const UPI_CASH_AMOUNT = {
  * T-2 reuses this as the onboarding step's `applicableRoles`.
  */
 export const UPI_CASH_MERCHANT_ROLE = 51800;
+
+/** QR defaults. Initiate returns `qr_expiry_in` (~60s); this is the fallback. */
+export const UPI_CASH_QR = {
+	DEFAULT_EXPIRY_SECONDS: 60,
+} as const;
+
+/**
+ * Daily settlement/maintenance window (minutes-of-day, local time) during which the
+ * provider does not accept new withdrawals — a normal business state, shown as an
+ * informative message (AC-3.5). Covers 23:30 → 00:05.
+ */
+export const UPI_CASH_MAINTENANCE_WINDOW = {
+	/** 23:30 = 1410 minutes past midnight. */
+	START_MIN: 23 * 60 + 30,
+	/** 00:05 = 5 minutes past midnight. */
+	END_MIN: 5,
+} as const;
