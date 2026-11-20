@@ -22,6 +22,14 @@ const hookState = {
 jest.mock("page-components/products/upi-cash-withdrawal/hooks", () => ({
 	useUpiCashWithdrawal: () => hookState,
 }));
+// The status/cash-gate panel (T-4) is covered by its own tests; stub it here so this
+// suite stays focused on the T-3 amount/QR UI.
+jest.mock(
+	"page-components/products/upi-cash-withdrawal/WithdrawalStatus",
+	() => ({
+		WithdrawalStatus: () => <div data-testid="upi-cash-status" />,
+	})
+);
 // Keep custom components light so the test focuses on the withdrawal UI.
 jest.mock("components", () => ({
 	PageTitle: ({ title }: { title: string }) => <h1>{title}</h1>,
